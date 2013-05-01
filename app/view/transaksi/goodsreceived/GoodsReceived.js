@@ -29,16 +29,17 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         {
             var me = this;
             me.gr_numsearch = null;
-            me.cust_search = null;
-            me.curr_prod_id = null;
+            me.vend_search = null;
+            me.curr_bb_id = null;
             me.curr_co_id = null;
             me.curr_gr_num = null;
+            me.curr_bb_id = null;
 
             me.step = [];
 
             me.GRStore = Ext.create( 'App.store.transaksi.goodsreceived.GoodsReceived' );
-            me.GRItemsStore = Ext.create('App.store.transaksi.goodsreceived.GRItemsStore');
-            me.GRDetailStore = Ext.create('App.store.transaksi.goodsreceived.GRDetailStore');
+            me.GRItemsStore = Ext.create('App.store.transaksi.goodsreceived.GRItems');
+            me.GRDetailStore = Ext.create('App.store.transaksi.goodsreceived.GRDetail');
             /**
              *  Sales Order Search data grid.
              * Gives a list of encounter based on the search
@@ -76,6 +77,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         {
                             header : 'Transporter',
                             dataIndex : 'vend_tr_nama',
+                            flex:1,
                             width : 200
                         }],
                     // ToolBar for Encounter DataGrid.
@@ -348,7 +350,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         {
                             text : 'Goods Received',
                             scope : me,
-                            action : 'encounters',
+                            action : 'goodsreceived',
                             tooltip : 'Kembali ke Goods Received',
                             handler : me.onBtnBack
                         }, '->',
@@ -357,7 +359,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             scope : me,
                             action : 'save',
                             tooltip : 'Simpan Data',
-                            id: 'save-btn',
+                            id: 'gr-save-btn',
                             handler: function(){
                                 var form = me.GeneralForm.getForm();
                                 if(form.isValid()){
@@ -379,7 +381,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             iconCls : 'icoArrowRightSmall',
                             iconAlign : 'right',
                             tooltip : 'Berikutnya',
-                            id:'move-next',
+                            id:'gr-move-next',
                             handler : me.onBtnNext
                         }]
                 } );
@@ -392,18 +394,21 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     bodyStyle : 'background-color:#fff',
                     items : [
                         me.ItemsGrid = Ext.create('App.ux.GridPanel', {
-                            store: me.SOItemsStore,
+                            store: me.GRItemsStore,
                             height: 250,
                             margin: '0 0 3 0',
                             region: 'north',
                             columns: [
                                 {text: 'co_id', width:70, sortable: false, dataIndex: 'co_id', hidden: true},
                                 {text: 'gr_num', width:70, sortable: false, dataIndex: 'gr_num', hidden: true},
-                                {text: 'ID', width:70, sortable: false, dataIndex: 'bb_id'},
-                                {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'bb_nama'},
+                                {text: 'ID', width:70, sortable: false, dataIndex: 'bb_id', hidden: true},
+                                {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
                                 {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
                                 {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
-                                {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty'},
+                                {text: 'Qty PCS/SAK', width: 100, sortable: false, dataIndex: 'qty_pcs'},
+                                {text: 'Qty Muatan', width: 100, sortable: false, dataIndex: 'qty_brutto'},
+                                {text: 'Qty Diterima', width: 100, sortable: false, dataIndex: 'qty_netto'},
+                                {text: 'Qty Selisih', width: 100, sortable: false, dataIndex: 'qty_selisih'},
                                 {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                             ],
                             listeners: {
@@ -445,26 +450,27 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 }
                             ]
                         }),
-                        me.LocationGrid = Ext.create('App.ux.GridPanel', {
-                            store: me.SOLocationStore,
+                        me.GRDetailGrid = Ext.create('App.ux.GridPanel', {
+                            store: me.GRDetailStore,
                             region: 'center',
                             columns: [
                                 { text: 'company', dataIndex: 'co_id', hidden: true},
                                 { text: 'gr_num', dataIndex: 'gr_num', hidden: true},
                                 { text: 'id', dataIndex: 'bb_id', hidden: true},
                                 { text: 'urut', dataIndex: 'urut', hidden: true},
-                                { text: 'Nopol', width:100, sortable: true, dataIndex: 'nopol'},
-                                { text: 'Kecamatan', width: 100, sortable: true, dataIndex: 'lokasi_kec'},
-                                { text: 'Kabupaten', width: 100, sortable: true, dataIndex: 'lokasi_kab'},
-                                { text: 'Qty', width: 50, sortable: false, dataIndex: 'qty'},
                                 { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
                                 { text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
+                                { text: 'Nopol', width:100, sortable: true, dataIndex: 'nopol'},
+                                { text: 'Jml PCS/SAK', width: 100, sortable: true, dataIndex: 'qty_pcs'},
+                                { text: 'Jml Muatan', width: 100, sortable: true, dataIndex: 'qty_brutto'},
+                                { text: 'Jml diterima', width: 100, sortable: false, dataIndex: 'qty_netto'},
+                                { text: 'Selisih', width:70, sortable: false, dataIndex: 'qty_selisih'},
                                 { text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                             ],
                             listeners: {
                                 scope: me,
                                 itemdblclick: function(view, record){
-                                    me.onLocdblclick(me.SOLocationStore, record, 'Edit Detail Qty');
+                                    me.onLocdblclick(me.GRDetailStore, record, 'Edit Detail Qty');
                                 }
                             },
                             dockedItems: [
@@ -477,7 +483,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         scope: me,
                                         handler: function(){
                                             var form = me.winLoc.down('form');
-                                            me.onNewLoc(form, 'App.model.transaksi.salesorder.SOLocation', 'Tambah Data');
+                                            me.onNewLoc(form, 'App.model.transaksi.goodsreceived.GRDetail', 'Tambah Data');
                                         }
                                     },'->',
                                         {
@@ -485,7 +491,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             text: 'Hapus Data',
                                             iconCls: 'delete',
                                             handler: function() {
-                                                me.onLocDelete(me.SOLocationStore);
+                                                me.onLocDelete(me.GRDetailStore);
                                             }
                                         }]
                                 }
@@ -538,11 +544,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 defaults: {hideLabel: true},
                                 msgTarget: 'under',
                                 items: [
-                                    {name:'co_id', xtype:'textfield', hidden : true},
-                                    {name: 'so_num', xtype: 'textfield', hidden : true},
-                                    {name: 'n_disc', xtype: 'numberfield', id:'n_disc_input', hidden : true},
-                                    {name: 'n_brutto', xtype: 'numberfield', id: 'n_brutto_input', hidden : true},
-                                    {name: 'hrg_lain', xtype: 'numberfield', id: 'hrg_lain_input', hidden : true}
+                                    {name: 'co_id', xtype:'textfield', hidden : true},
+                                    {name: 'gr_num', xtype: 'textfield', hidden : true}
                                 ]
                             },
                             {
@@ -553,10 +556,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 items: [
                                     {
                                         width: 400,
-                                        name: 'prod_id',
-                                        fieldLabel : 'Product ID ',
-                                        xtype: 'Itemslivetsearch',
-                                        itemId : 'prod_id',
+                                        name: 'bb_id',
+                                        fieldLabel : 'Bahan Baku ',
+                                        xtype: 'bblivetsearch',
+                                        itemId : 'bb_id',
                                         labelAlign : 'right',
                                         allowBlank: false
                                     }
@@ -575,164 +578,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         fieldLabel : 'Satuan ',
                                         labelAlign: 'right',
                                         allowBlank: false
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel : false,
-                                    margin: '0 0 0 0'
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'qty',
-                                        id : 'qty_input',
-                                        fieldLabel : 'Qty ',
-                                        labelAlign: 'right',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    },
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'hrg',
-                                        id : 'hrg_input',
-                                        fieldLabel : 'Harga',
-                                        labelAlign: 'right',
-                                        hideTrigger: true,
-                                        margin: '0 0 0 -15',
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    },
-                                    {
-                                        width: 150,
-                                        xtype: 'mitos.currency',
-                                        name: 'disc_prs',
-                                        fieldLabel : 'Diskon % ',
-                                        labelAlign : 'right',
-                                        id : 'disc_prs_input',
-                                        margin: '0 0 0 -15',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: false
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 300,
-                                        xtype: 'mitos.currency',
-                                        name: 'n_netto',
-                                        id : 'n_netto_input',
-                                        fieldLabel : 'Jumlah ',
-                                        labelAlign : 'right',
-                                        hideTrigger: true,
-                                        readonly : true
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: false
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'hrg_loco',
-                                        id : 'hrg_loco_input',
-                                        fieldLabel : 'Harga Loco ',
-                                        labelAlign : 'right',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: false
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'hrg_transport',
-                                        id : 'hrg_transport_input',
-                                        fieldLabel : 'Harga Transport ',
-                                        labelAlign : 'right',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: false
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'hrg_promosi',
-                                        id : 'hrg_promosi_input',
-                                        fieldLabel : 'Harga Promosi ',
-                                        labelAlign : 'right',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: false
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'hrg_sosialisasi',
-                                        id : 'hrg_sosialisasi_input',
-                                        fieldLabel : 'Hrg Sosialisasi ',
-                                        labelAlign : 'right',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
                                     }
                                 ]
                             },
@@ -763,7 +608,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         handler: function(){
                             var form = me.win.down('form').getForm();
                             if(form.isValid()){
-                                me.onitemsSave(form, me.SOItemsStore);
+                                me.onitemsSave(form, me.GRItemsStore);
                             }
                         }
                     },
@@ -787,7 +632,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             // *************************************************************************************
             // Window User Form
             // *************************************************************************************
-            me.winLoc = Ext.create('App.ux.window.Window', {
+            me.winDtl = Ext.create('App.ux.window.Window', {
                 width: 600,
                 items: [
                     {
@@ -821,8 +666,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 msgTarget: 'under',
                                 items: [
                                     {name: 'co_id', xtype:'textfield', hidden : true},
-                                    {name: 'so_num', xtype: 'textfield', hidden : true},
-                                    {name: 'prod_id', xtype: 'textfield', hidden : true}
+                                    {name: 'gr_num', xtype: 'textfield', hidden : true},
+                                    {name: 'bb_id', xtype: 'textfield', hidden : true}
                                 ]
                             },
                             {
@@ -835,12 +680,12 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 100,
                                         xtype: 'displayfield',
-                                        value: 'Lokasi : ',
+                                        value: 'NO POLISI : ',
                                         labelAlign: 'right'
                                     },
                                     {
-                                        width: 400,
-                                        name: 'lokasi_nama',
+                                        width: 200,
+                                        name: 'nopol',
                                         xtype: 'textfield'
                                     }
                                 ]
@@ -855,12 +700,12 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 100,
                                         xtype: 'displayfield',
-                                        value: 'Kecamatan : ',
+                                        value: 'DO # : ',
                                         labelAlign: 'right'
                                     },
                                     {
-                                        width: 400,
-                                        name: 'lokasi_kec',
+                                        width: 200,
+                                        name: 'do_num',
                                         xtype: 'textfield'
                                     }
                                 ]
@@ -875,32 +720,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 100,
                                         xtype: 'displayfield',
-                                        value: 'Kabupaten : ',
-                                        labelAlign: 'right'
-                                    },
-                                    {
-                                        width: 400,
-                                        name: 'lokasi_kab',
-                                        xtype: 'textfield'
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty :'
+                                        value: 'Qty PCS/SAK:'
                                     },
                                     {
                                         width: 200,
                                         xtype: 'mitos.currency',
-                                        name: 'qty',
+                                        name: 'qty_pcs',
+                                        id : 'idqty_pcs',
                                         hideTrigger: true,
                                         listeners : {
                                             scope : me,
@@ -919,16 +745,65 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 100,
                                         xtype: 'displayfield',
-                                        value: 'Satuan : ',
-                                        labelAlign: 'right'
+                                        value: 'Qty Muatan:'
                                     },
                                     {
-                                        width: 400,
-                                        name: 'sat_id',
-                                        xtype: 'satuanlivetsearch',
-                                        itemId : 'sat_id',
-                                        margin : '0 0 0 0',
-                                        allowBlank: false
+                                        width: 200,
+                                        xtype: 'mitos.currency',
+                                        name: 'qty_brutto',
+                                        id : 'idqty_brutto',
+                                        hideTrigger: true,
+                                        listeners : {
+                                            scope : me,
+                                            specialkey : me.onEnter
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'fieldcontainer',
+                                defaults: {
+                                    hideLabel: true
+                                },
+                                msgTarget: 'under',
+                                items: [
+                                    {
+                                        width: 100,
+                                        xtype: 'displayfield',
+                                        value: 'Qty Timbangan:'
+                                    },
+                                    {
+                                        width: 200,
+                                        xtype: 'mitos.currency',
+                                        name: 'qty_netto',
+                                        id : 'idqty_netto',
+                                        hideTrigger: true,
+                                        listeners : {
+                                            scope : me,
+                                            specialkey : me.onEnter
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'fieldcontainer',
+                                defaults: {
+                                    hideLabel: true
+                                },
+                                msgTarget: 'under',
+                                items: [
+                                    {
+                                        width: 100,
+                                        xtype: 'displayfield',
+                                        value: 'Selisih'
+                                    },
+                                    {
+                                        width: 200,
+                                        xtype: 'mitos.currency',
+                                        name: 'qty_selisih',
+                                        id : 'idqty_selisih',
+                                        hideTrigger: true,
+                                        readonly: true
                                     }
                                 ]
                             },
@@ -960,9 +835,9 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         text: i18n('save'),
                         cls: 'winSave',
                         handler: function(){
-                            var form = me.winLoc.down('form').getForm();
+                            var form = me.winDtl.down('form').getForm();
                             if(form.isValid()){
-                                me.onlocSave(form, me.SOLocationStore);
+                                me.onlocSave(form, me.GRDetailStore);
                             }
                         }
                     },
@@ -1008,16 +883,16 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, form = me.GeneralForm.getForm();
             form.reset();
             this.goToSODetail();
-            Ext.getCmp('move-next').setDisabled(true);
-            Ext.getCmp('so_num_input').setDisabled(false);
+            Ext.getCmp('gr-move-next').setDisabled(true);
+            Ext.getCmp('gr_num_input').setDisabled(false);
         },
         onDelete: function(){
             var me = this,
-                grid = me.SOGrid,
+                grid = me.GRGrid,
                 store = grid.getStore(),
                 record = grid.getSelectionModel().getSelection(),
                 co_id = record[0].get('co_id'),
-                so_num = record[0].get('so_num');
+                gr_num = record[0].get('gr_num');
             if (record != []) {
                 Ext.Msg.show({
                     title: 'Please Confirm' + '...',
@@ -1046,9 +921,11 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         {
             var form = this.GeneralForm;
             form.loadRecord(record);
+            me.curr_gr_num = form.getForm().findField('gr_num').getValue();
+            me.curr_co_id = form.getForm().findField('co_id').getValue();
             this.goToSODetail();
-            Ext.getCmp('move-next').setDisabled(false);
-            Ext.getCmp('so_num_input').setDisabled(true);
+            Ext.getCmp('gr-move-next').setDisabled(false);
+            Ext.getCmp('gr_num_input').setDisabled(true);
         },
 
         /**
@@ -1113,7 +990,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
              */
             store.sync({
                 success:function(){
-                    Ext.getCmp('move-next').setDisabled(false);
+                    me.curr_gr_num = Ext.getCmp('gr_num_input').getValue();
+                    Ext.getCmp('gr-move-next').setDisabled(false);
                 },
                 failure:function(){
                     me.msg('Opps!', 'Error!!', true);
@@ -1131,19 +1009,19 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         ReloadGrid : function(btn)
         {
             // Declare some variables
-            var topBarItems = this.SOGrid.getDockedItems('toolbar[dock="top"]')[0],
+            var topBarItems = this.GRGrid.getDockedItems('toolbar[dock="top"]')[0],
                 datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
                 dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
             // Load the ExtJs dataStore with the new parameters
-            this.SOStore.load(
+            this.GRStore.load(
                 {
                     params :
                     {
                         datefrom : datefrom,
                         dateto : dateto,
-                        so_numsearch : topBarItems.getComponent( 'fieldcontainerso_numsearch' ).getComponent( 'so_numsearch' ).getValue( ),
-                        cust_search : topBarItems.getComponent( 'fieldcontainercust_search' ).getComponent( 'cust_search' ).getValue( )
+                        gr_numsearch : topBarItems.getComponent( 'fieldcontainergr_numsearch' ).getComponent( 'gr_numsearch' ).getValue( ),
+                        vend_search : topBarItems.getComponent( 'fieldcontainervend_search' ).getComponent( 'vend_search' ).getValue( )
                     }
                 } );
 
@@ -1152,8 +1030,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         onNewItems: function(form, model, title){
             this.setForm(form, title);
             form.getForm().reset();
-            var newModel = Ext.ModelManager.create({
-            }, model);
+            var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gr_num: me.curr_gr_num}, model);
             form.getForm().loadRecord(newModel);
             this.action(this.win, 'new');
             this.win.show();
@@ -1164,7 +1041,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var newModel = Ext.ModelManager.create({
             }, model);
             form.getForm().loadRecord(newModel);
-            this.action(this.winLoc, 'new');
+            this.action(this.winDtl, 'new');
             this.winLoc.show();
         },
         setForm: function(form, title){
@@ -1181,10 +1058,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
         onItemsGridClick: function(grid, selected){
             var me = this;
-            me.curr_prod_id = selected.data.prod_id;
+            me.curr_bb_id = selected.data.bb_id;
             me.curr_co_id = selected.data.co_id;
-            me.curr_so_num = selected.data.so_num;
-            me.SOLocationStore.load({params:{prod_id: me.curr_prod_id}});
+            me.curr_gr_num = selected.data.gr_num;
+            me.GRDetailStore.load({params:{bb_id: me.curr_bb_id}});
         },
         onItemsdblclick: function(store, record, title){
             var form = this.win.down('form');
@@ -1194,11 +1071,11 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             this.win.show();
         },
         onLocdblclick: function(store, record, title){
-            var form = this.winLoc.down('form');
+            var form = this.winDtl.down('form');
             this.setForm(form, title);
             form.getForm().loadRecord(record);
-            this.action(this.winLoc, 'old');
-            this.winLoc.show();
+            this.action(this.winDtl, 'old');
+            this.winDtl.show();
         },
 
         onitemsSave: function(form, store){
@@ -1218,7 +1095,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             }
             store.sync({
                 success:function(){
-                    SalesOrder.updateSOnetto(params);
+//                    SalesOrder.updateSOnetto(params);
                     me.win.close();
                 },
                 failure:function(){
@@ -1236,7 +1113,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             }
             store.sync({
                 success:function(){
-                    me.winLoc.close();
+                    me.winDtl.close();
                 },
                 failure:function(){
                     me.msg('Opps!', 'Error!!', true);
@@ -1248,7 +1125,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, grid = me.ItemsGrid;
             sm = grid.getSelectionModel();
             sr = sm.getSelection();
-            bid = sr[0].get('prod_id');
+            bid = sr[0].get('bb_id');
             Ext.Msg.show({
                 title: 'Please Confirm' + '...',
                 msg: 'Are you sure want to delete' + ' ?',
@@ -1268,7 +1145,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
 
         onLocDelete: function(store){
-            var me = this, grid = me.LocationGrid;
+            var me = this, grid = me.GRDetailGrid;
             sm = grid.getSelectionModel();
             sr = sm.getSelection();
             bid = sr[0].get('urut');
@@ -1291,50 +1168,16 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
         onEnter : function(field, e)
         {
-            var hrg = 0,
-                qty = 0,
-                disc_prs = 0,
-                n_brutto = 0,
-                n_disc = 0,
-                n_loco = 0,
-                n_transport = 0,
-                n_promosi = 0,
-                n_sosialisasi = 0,
-                n_lain = 0;
+            var qty_brutto = 0,
+                qty_netto = 0,
+                qty_selisih = 0;
             if (e.getKey() == e.ENTER)
             {
-                qty = Ext.getCmp('qty_input').getValue();
-                hrg = Ext.getCmp('hrg_input').getValue();
-                disc_prs = Ext.getCmp('disc_prs_input').getValue();
-                n_loco = Ext.getCmp('hrg_loco_input').getValue();
-                n_transport = Ext.getCmp('hrg_transport_input').getValue();
-                n_promosi = Ext.getCmp('hrg_promosi_input').getValue();
-                n_sosialisasi = Ext.getCmp('hrg_sosialisasi_input').getValue();
-                n_lain = Ext.getCmp('hrg_lain_input').getValue();
-                n_brutto = qty * hrg;
-                n_netto = n_brutto;
-                if (disc_prs > 0) {
-                    n_disc = (disc_prs/100)*n_brutto;
-                    n_netto = n_brutto - n_disc;
-                }
-                if (n_loco = 0) {
-                    n_loco = n_netto;
-                    n_transport = 0;
-                    n_promosi = 0;
-                    n_sosialisasi = 0;
-                    n_lain = 0;
-                }
-                n_lain = n_netto - n_loco - n_transport - n_promosi - n_sosialisasi;
+                qty_brutto = Ext.getCmp('idqty_brutto').getValue();
+                qty_netto = Ext.getCmp('idqty_netto').getValue();
+                qty_selisih = qty_netto - qty_brutto;
             }
-            Ext.getCmp('n_disc_input').setValue(n_disc);
-            Ext.getCmp('n_brutto_input').setValue(n_brutto);
-            Ext.getCmp('n_netto_input').setValue(n_netto);
-            Ext.getCmp('hrg_loco_input').setValue(n_loco);
-            Ext.getCmp('hrg_transport_input').setValue(n_transport);
-            Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
-            Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
-            Ext.getCmp('hrg_lain_input').setValue(n_lain);
-
+            Ext.getCmp('idqty_selisih').setValue(qty_selisih);
         },
 
 

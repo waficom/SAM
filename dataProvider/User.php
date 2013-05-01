@@ -129,6 +129,11 @@ class User
 		return $user;
 	}
 
+    public function getCurrentActiveCompany()
+    {
+        return $_SESSION['user']['site'];
+    }
+
 	/**
 	 * @param stdClass $params
 	 * @return stdClass

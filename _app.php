@@ -144,7 +144,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.LiveFormulaSearch',
                 'App.ux.LiveWilayahSearch',
                 'App.ux.LiveSalesmanSearch',
-//                'App.ux.LiveFieldSearch',
 
 				'App.ux.ManagedIframe',
 				'App.ux.NodeDisabled',

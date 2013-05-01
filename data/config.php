@@ -75,7 +75,10 @@ $API = array(
 			),
 			'getCurrentUserBasicData' => array(
 				'len' => 0
-			)
+			),
+            'getCurrentActiveCompany' => array(
+                'len' => 0
+            )
 		)
 	),
 	/**
@@ -610,6 +613,52 @@ $API = array(
                 'len' => 1
             ),
             'deletePOItems' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * Goods Received Functions
+     */
+    'GoodsReceived' => array(
+        'methods' => array(
+            'getFilterGRData' => array(
+                'len' => 1
+            ),
+            'addGR' => array(
+                'len' => 1
+            ),
+            'updateGR' => array(
+                'len' => 1
+            ),
+            'deleteGR' => array(
+                'len' => 1
+            ),
+            'deletebygr_num' => array(
+                'len' => 1
+            ),
+            'getGRItems' => array(
+                'len' => 1
+            ),
+            'addGRItems' => array(
+                'len' => 1
+            ),
+            'updateGRItems' => array(
+                'len' => 1
+            ),
+            'deleteGRItems' => array(
+                'len' => 1
+            ),
+            'getGRDetail' => array(
+                'len' => 1
+            ),
+            'addGRDetail' => array(
+                'len' => 1
+            ),
+            'updateGRDetail' => array(
+                'len' => 1
+            ),
+            'deleteGRDetail' => array(
                 'len' => 1
             )
         )

@@ -16,7 +16,7 @@ Ext.define('App.ux.form.fields.UpperCaseTextField', {
     },
     listeners: {
         change: function (obj, newValue) {
-            console.log(newValue);
+//            console.log(newValue);
             obj.setRawValue(newValue.toUpperCase());
         }
     }

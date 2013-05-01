@@ -92,7 +92,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 			{
 				header : 'Netto',
 				dataIndex : 'n_netto',
-				renderer: Ext.util.Format.numberRenderer('0,0'),
+				renderer: Ext.util.Format.numberRenderer('0,000.00'),
 				width : 300
 			}],
 			// ToolBar for Encounter DataGrid.
@@ -562,12 +562,15 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                             {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'prod_nama'},
                             {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
                             {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
-                            {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty'},
-                            {text: 'Harga', width: 150, sortable: false, dataIndex: 'hrg'},
+                            {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty',
+                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
+                            {text: 'Harga', width: 150, sortable: false, dataIndex: 'hrg',
+                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
                             {text: 'Jumlah', width: 150, sortable: false, dataIndex: 'n_brutto', hidden: true},
                             {text: 'Disc %', width: 150, sortable: false, dataIndex: 'disc_prs', hidden : true},
                             {text: 'Discount', width: 150, sortable: false, dataIndex: 'n_disc', hidden : true},
-                            {text: 'Total', width: 150, sortable: false, dataIndex: 'n_netto'},
+                            {text: 'Total', width: 150, sortable: false, dataIndex: 'n_netto',
+                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
                             {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                         ],
                         listeners: {
@@ -1208,8 +1211,11 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 	 */
 	rowDblClicked : function(store, record)
 	{
+        var me = this;
         var form = this.GeneralForm;
         form.loadRecord(record);
+        me.curr_so_num = form.getForm().findField('so_num').getValue();
+        me.curr_co_id = form.getForm().findField('co_id').getValue();
 		this.goToSODetail();
         Ext.getCmp('move-next').setDisabled(false);
         Ext.getCmp('so_num_input').setDisabled(true);
@@ -1257,7 +1263,10 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 	 */
 	onBtnNext : function()
 	{
+        var me = this;
         this.getPageBody().getLayout().setActiveItem( 2 );
+        me.SOItemsStore.load({params:{co_id: 'SAM', so_num: me.curr_so_num}});
+
     },
 
 	/**
@@ -1272,11 +1281,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         }else{
             record.set(values);
         }
-/*
-        console.log(values);
-*/
         store.sync({
             success:function(){
+                me.curr_so_num = Ext.getCmp('so_num_input').getValue();
                 Ext.getCmp('move-next').setDisabled(false);
             },
             failure:function(){
@@ -1314,10 +1321,10 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 	},
 
     onNewItems: function(form, model, title){
+        var me = this;
         this.setForm(form, title);
         form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
+        var newModel = Ext.ModelManager.create({so_num:me.curr_so_num}, model);
         form.getForm().loadRecord(newModel);
         this.action(this.win, 'new');
         this.win.show();
@@ -1382,7 +1389,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         }
         store.sync({
             success:function(){
-                SalesOrder.updateSOnetto(params);
+//                SalesOrder.updateSOnetto(params);
                 me.win.close();
             },
             failure:function(){
@@ -1459,6 +1466,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
             qty = 0,
             disc_prs = 0,
             n_brutto = 0,
+            n_netto = 0,
             n_disc = 0,
             n_loco = 0,
             n_transport = 0,

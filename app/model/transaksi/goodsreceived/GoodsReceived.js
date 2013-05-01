@@ -17,7 +17,7 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
             type : 'direct',
             api :
             {
-                read : GoodsReceived.getFilterGR,
+                read : GoodsReceived.getFilterGRData,
                 create: GoodsReceived.addGR,
                 update: GoodsReceived.updateGR,
                 destroy: GoodsReceived.deleteGR

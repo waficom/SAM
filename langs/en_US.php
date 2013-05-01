@@ -97,6 +97,7 @@ $LANG = array(
     'update'                                => 'Update',
     'salesman'                              => 'Salesman',
     'wilayah'                               => 'Region',
-    'purchaseorder'                         => 'Purchase Order'
+    'purchaseorder'                         => 'Purchase Order',
+    'goodsreceived'                         => 'Goods Received'
 		
 );
