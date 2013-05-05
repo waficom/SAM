@@ -98,6 +98,7 @@ $LANG = array(
     'salesman'                              => 'Salesman',
     'wilayah'                               => 'Region',
     'purchaseorder'                         => 'Purchase Order',
-    'goodsreceived'                         => 'Goods Received'
-		
+    'goodsreceived'                         => 'Goods Received',
+    'goodsissued'                           => 'Goods Issued'
+
 );

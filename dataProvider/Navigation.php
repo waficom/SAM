@@ -144,6 +144,8 @@ class Navigation
 					'text' => $this->i18n['purchaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPO'
                 ), array(
                     'text' => $this->i18n['goodsreceived'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGR'
+                ), array(
+                    'text' => $this->i18n['goodsissued'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGI'
  				)
 			)
 		));

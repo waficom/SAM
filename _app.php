@@ -110,6 +110,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.transaksi.goodsreceived.GoodsReceived',
                 'App.model.transaksi.goodsreceived.GRDetail',
                 'App.model.transaksi.goodsreceived.GRItems',
+                'App.model.transaksi.goodsissued.GoodsIssued',
+                'App.model.transaksi.goodsissued.GIDetail',
+                'App.model.transaksi.goodsissued.GIItems',
 				'App.model.navigation.Navigation',
 
                 'App.store.transaksi.salesorder.SalesOrder',
@@ -120,6 +123,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.transaksi.goodsreceived.GoodsReceived',
                 'App.store.transaksi.goodsreceived.GRDetail',
                 'App.store.transaksi.goodsreceived.GRItems',
+                'App.store.transaksi.goodsissued.GoodsIssued',
+                'App.store.transaksi.goodsissued.GIDetail',
+                'App.store.transaksi.goodsissued.GIItems',
 				'App.store.navigation.Navigation',
 				/*
 				 * Load the activity by the user
@@ -300,6 +306,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.view.transaksi.salesorder.SalesOrder',
                 'App.view.transaksi.purchaseorder.PurchaseOrder',
                 'App.view.transaksi.goodsreceived.GoodsReceived',
+                'App.view.transaksi.goodsissued.GoodsIssued',
 				//'App.view.calendar.ExtensibleAll',
 //				'App.view.calendar.Calendar',
 //				'App.view.messages.Messages',

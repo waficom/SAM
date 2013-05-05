@@ -140,6 +140,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.purchaseorder.PurchaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GoodsReceived'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
 
         /**
          * Footer Panel
