@@ -264,13 +264,24 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             xtype: 'mitos.UpperCaseTextField',
                                             name : 'so_num',
                                             id : 'so_num_input',
-                                            width: 400,
+                                            width: 300,
                                             fieldLabel: 'Sales Order #',
                                             labelAlign: 'right',
                                             allowBlank: false,
                                             stripCharsRe: /(^\s+|\s+$)/g
+                                        },
+                                        {
+                                            xtype: 'datefield',
+                                            name : 'tanggal',
+                                            width: 300,
+                                            fieldLabel: 'Tanggal',
+                                            labelAlign: 'right',
+                                            submitFormat: 'Y-m-d',
+                                            format : globals['date_display_format']
+
                                         }
                                     ]
+/*
                                 },
                                 {
                                     xtype: 'fieldcontainer',
@@ -293,6 +304,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             submitFormat: 'Y-m-d',
                                             format : globals['date_display_format']
                                         }]
+*/
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -310,7 +322,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         xtype : 'customerlivetsearch',
                                         fieldLabel : 'Customer',
                                         hideLabel : false,
-                                        width: 400,
+                                        width: 300,
                                         itemId : 'cust_id',
                                         name : 'cust_id',
                                         labelAlign : 'right'
@@ -328,13 +340,29 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     },
                                     hideLabel : true,
                                     items : [
-                                    {
-                                        name : 'cust_po_num',
-                                        xtype: 'mitos.UpperCaseTextField',
-                                        fieldLabel: 'Customer PO #',
-                                        labelAlign: 'right',
-                                        width : 400
-                                    }]
+                                        {
+                                            name : 'cust_po_num',
+                                            xtype: 'mitos.UpperCaseTextField',
+                                            fieldLabel: 'Customer PO #',
+                                            labelAlign: 'right',
+                                            width : 300
+                                        },
+                                        {
+                                            xtype: 'mitos.UpperCaseTextField',
+                                            name : 'fp_num',
+                                            fieldLabel: 'Faktur Pajak #',
+                                            labelAlign: 'right',
+                                            width : 300
+                                        },
+                                        {
+                                            xtype: 'mitos.UpperCaseTextField',
+                                            name : 'inv_num',
+                                            fieldLabel: 'Invoice #',
+                                            labelAlign: 'right',
+                                            width : 300
+                                        }
+                                    ]
+/*
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -375,6 +403,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         labelAlign: 'right',
                                         width : 400
                                     }]
+*/
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -388,15 +417,26 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     },
                                     hideLabel : true,
                                     items : [
-                                    {
-                                        xtype: 'datefield',
-                                        name : 'cust_po_tgl',
-                                        width: 270,
-                                        fieldLabel: 'Tanggal PO',
-                                        labelAlign: 'right',
-                                        submitFormat: 'Y-m-d',
-                                        format : globals['date_display_format']
-                                    }]
+                                        {
+                                            xtype: 'datefield',
+                                            name : 'cust_po_tgl',
+                                            width: 300,
+                                            fieldLabel: 'Tanggal PO',
+                                            labelAlign: 'right',
+                                            submitFormat: 'Y-m-d',
+                                            format : globals['date_display_format']
+                                        },
+                                        {
+                                            xtype: 'datefield',
+                                            name : 'tgl_jt_kirim',
+                                            width: 300,
+                                            fieldLabel: 'Tgl JT Kirim',
+                                            labelAlign: 'right',
+                                            submitFormat: 'Y-m-d',
+                                            format : globals['date_display_format']
+                                        }
+                                    ]
+/*
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -419,6 +459,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         submitFormat: 'Y-m-d',
                                         format : globals['date_display_format']
                                     }]
+*/
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -496,8 +537,104 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             labelAlign: 'right'
                                         }
                                     ]
-                                }
-                                ]
+                                },
+                                {
+                                    xtype : 'fieldcontainer',
+                                    layout :
+                                    {
+                                        type : 'hbox'
+                                    },
+                                    defaults :
+                                    {
+                                        margin : '0 10 0 10'
+                                    },
+                                    hideLabel : false,
+                                    items : [
+                                        {
+                                            xtype: 'mitos.currency',
+                                            name: 'n_bruto',
+                                            id : 'so0_n_bruto',
+                                            fieldLabel : 'Brutto',
+                                            hideTrigger: true,
+                                            width: 300,
+                                            hideLabel : false,
+                                            labelAlign: 'right',
+                                            readonly: true
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype : 'fieldcontainer',
+                                    layout :
+                                    {
+                                        type : 'hbox'
+                                    },
+                                    defaults :
+                                    {
+                                        margin : '0 10 0 10'
+                                    },
+                                    hideLabel : false,
+                                    items : [
+                                        {
+                                            xtype: 'mitos.currency',
+                                            name: 'ppn_prs',
+                                            id : 'so0_ppn_prs',
+                                            fieldLabel : 'PPN %',
+                                            hideTrigger: true,
+                                            width: 150,
+                                            hideLabel : false,
+                                            labelAlign: 'right'
+                                        },
+                                        {
+                                            xtype: 'mitos.currency',
+                                            labelWidth : 30,
+                                            name: 'n_ppn',
+                                            id : 'so0_n_ppn',
+                                            fieldLabel : 'PPN',
+                                            hideTrigger: true,
+                                            width: 200,
+                                            hideLabel : false,
+                                            labelAlign: 'right',
+                                            readonly : true
+                                        },
+                                        {
+                                            xtype: 'mitos.currency',
+                                            labelWidth : 50,
+                                            name: 'n_disc',
+                                            id : 'so0_n_disc',
+                                            fieldLabel : 'Discount',
+                                            hideTrigger: true,
+                                            width: 200,
+                                            hideLabel : false,
+                                            labelAlign: 'right'
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype : 'fieldcontainer',
+                                    layout :
+                                    {
+                                        type : 'hbox'
+                                    },
+                                    defaults :
+                                    {
+                                        margin : '0 10 0 10'
+                                    },
+                                    hideLabel : false,
+                                    items : [
+                                        {
+                                            xtype: 'mitos.currency',
+                                            name: 'n_netto',
+                                            id : 'so0_n_netto',
+                                            fieldLabel : 'Netto',
+                                            hideTrigger: true,
+                                            width: 300,
+                                            hideLabel : false,
+                                            labelAlign: 'right',
+                                            readonly: true
+                                        }
+                                    ]
+                                }]
                             }]
                         })
                     ]
@@ -1263,9 +1400,10 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 	 */
 	onBtnNext : function()
 	{
-        var me = this;
+        var me = this, coid = globals.site;
+        me.curr_co_id = coid;
         this.getPageBody().getLayout().setActiveItem( 2 );
-        me.SOItemsStore.load({params:{co_id: 'SAM', so_num: me.curr_so_num}});
+        me.SOItemsStore.load({params:{co_id: coid, so_num: me.curr_so_num}});
 
     },
 

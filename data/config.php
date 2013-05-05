@@ -77,7 +77,7 @@ $API = array(
 				'len' => 0
 			),
             'getCurrentActiveCompany' => array(
-                'len' => 0
+                'len' => 1
             )
 		)
 	),
@@ -659,6 +659,52 @@ $API = array(
                 'len' => 1
             ),
             'deleteGRDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * Goods Issued Functions
+     */
+    'GoodsIssued' => array(
+        'methods' => array(
+            'getFilterGIData' => array(
+                'len' => 1
+            ),
+            'addGI' => array(
+                'len' => 1
+            ),
+            'updateGI' => array(
+                'len' => 1
+            ),
+            'deleteGI' => array(
+                'len' => 1
+            ),
+            'deletebygi_num' => array(
+                'len' => 1
+            ),
+            'getGIItems' => array(
+                'len' => 1
+            ),
+            'addGIItems' => array(
+                'len' => 1
+            ),
+            'updateGIItems' => array(
+                'len' => 1
+            ),
+            'deleteGIItems' => array(
+                'len' => 1
+            ),
+            'getGIDetail' => array(
+                'len' => 1
+            ),
+            'addGIDetail' => array(
+                'len' => 1
+            ),
+            'updateGIDetail' => array(
+                'len' => 1
+            ),
+            'deleteGIDetail' => array(
                 'len' => 1
             )
         )

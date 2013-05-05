@@ -43,7 +43,7 @@ Ext.define('App.ux.LiveWilayahSearch',
 				type : 'direct',
 				api :
 				{
-					read : Wilayah.getwilayahLiveSearch
+					read : Wilayah.getWilayahLiveSearch
 				},
 				reader :
 				{
