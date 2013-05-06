@@ -48,8 +48,8 @@ class Customer
                       cust_id,
                       cust_nama
                 FROM customer
-                WHERE cust_id          LIKE '$params->query%'
-                  OR cust_nama         LIKE '$params->query%'";
+                WHERE UPPER(cust_id) LIKE UPPER('%$params->query%')
+                   OR UPPER(cust_nama) LIKE UPPER('%$params->query%')";
 		$this->db->setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)

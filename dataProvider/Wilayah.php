@@ -48,8 +48,8 @@ class Wilayah
 		                          wilayah_id,
 		                          wilayah_nama
 							FROM wilayah
-   							WHERE wilayah_id          LIKE '$params->query%'
-   							  OR wilayah_nama         LIKE '$params->query%'");
+   							WHERE upper(wilayah_id) LIKE UPPER('%$params->query%')
+   							  OR upper(wilayah_nama) LIKE UPPER('%$params->query%')");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

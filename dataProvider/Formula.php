@@ -47,10 +47,9 @@ class Formula
 		$this->db->setSQL("SELECT co_id,
 		                          formula_id, 
 		                          formula_nama
-							FROM formula0");
-
-//   							WHERE formula_id          LIKE '$params->query%'
-//   							  OR formula_nama         LIKE '$params->query%'");
+							FROM formula0
+   							WHERE UPPER(formula_id)     LIKE UPPER('%$params->query%')
+   	    					   OR UPPER(formula_nama)   LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

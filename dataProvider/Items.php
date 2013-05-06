@@ -47,8 +47,8 @@ class Items
 		                          prod_id, 
 		                          prod_nama
 							FROM items
-   							WHERE prod_id          LIKE '$params->query%'
-   							  OR prod_nama         LIKE '$params->query%'");
+   							WHERE UPPER(prod_id)   LIKE UPPER('%$params->query%')
+   							   OR UPPER(prod_nama) LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {
@@ -80,7 +80,7 @@ class Items
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
-            array_change_key_case($row);
+            $row = array_change_key_case($row);
 			array_push($rows, $row);
 		}
 
@@ -161,15 +161,28 @@ class Items
 	{
 		$data = get_object_vars($params);
         unset($data['id'], $data['old_prod_id']);
+
 		foreach($data as $key => $val){
 			if($val == null || $val == ''){
 				unset($data[$key]);
 			}
 		}
-		$data['co_id'] = $_SESSION['user']['site'];		
+		$data['co_id'] = $_SESSION['user']['site'];
+        $data['tgl_efektif'] = $this->db->Date_Converter($data['tgl_efektif']);
+        if (is_null($data['ppn']) || ($data['ppn'] == '')) {
+            $data['ppn'] = '0';
+        }
+        if (is_null($data['promosi']) || ($data['promosi'] == '')) {
+            $data['promosi'] = '0';
+        }
+        if (is_null($data['puslit']) || ($data['puslit'] == '')) {
+            $data['puslit'] = '0';
+        }
+        if (is_null($data['insentif']) || ($data['insentif'] == '')) {
+            $data['insentif'] = '0';
+        }
 
-
-		$sql = $this->db->sqlBind($data, 'price', 'I');
+        $sql = $this->db->sqlBind($data, 'price', 'I');
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -183,9 +196,7 @@ class Items
 	{
 		$data       = get_object_vars($params);
 		unset($data['id'], $data['prod_id'], $data['old_tgl_efektif'], $data['tgl_efektif']);
-        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
-            $data['aktif'] = '0';
-        }
+        $data['tgl_efektif'] = $this->db->Date_Converter($data['tgl_efektif']);
 		$sql = $this->db->sqlBind($data, 'price', 'U', array('prod_id' => $params->prod_id, 'tgl_efektif' => $params->old_tgl_efektif));
 		$this->db->setSQL($sql);
 		$this->db->execLog();

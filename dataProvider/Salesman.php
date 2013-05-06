@@ -48,8 +48,8 @@ class Salesman
 		                          sales_id,
 		                          sales_nama
 							FROM salesman
-   							WHERE sales_id          LIKE'$params->query%'
-   							  OR sales_nama         LIKE'$params->query%'");
+   							WHERE UPPER(sales_id)          LIKE UPPER('%$params->query%')
+   							  OR  UPPER(sales_nama)        LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

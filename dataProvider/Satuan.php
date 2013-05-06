@@ -47,8 +47,8 @@ class Satuan
 		                          satuan_id, 
 		                          satuan_nama
 							FROM satuan
-   							WHERE satuan_id          LIKE'$params->query%'
-   							  OR satuan_nama         LIKE'$params->query%'");
+   							WHERE UPPER(satuan_id) LIKE UPPER('%$params->query%')
+   							   OR UPPER(satuan_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

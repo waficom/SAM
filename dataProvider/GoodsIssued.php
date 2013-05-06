@@ -81,21 +81,19 @@ class GoodsIssued
             $whereClause = 'WHERE ' . $whereClause;
 
         $sql = "SELECT
-                    gr0.co_id,
-                    gr0.gr_num,
-                    gr0.po_num,
-                    gr0.tgl,
-                    gr0.vend_id,
-                    gr0.vend_id_trans,
-                    gr0.keterangan,
-                    vendor.vend_nama,
-                    transportir.vend_nama as vend_tr_nama
-                FROM gr0
-                   left outer join vendor on (gr0.co_id = vendor.co_id) and (gr0.vend_id = vendor.vend_id)
-                   left outer join vendor transportir on (gr0.co_id = transportir.co_id) and (gr0.vend_id_trans = transportir.vend_id)
+                    gi0.co_id,
+                    gi0.gi_num,
+                    gi0.so_num,
+                    gi0.tgl,
+                    so0.cust_id,
+                    customer.cust_nama,
+                    gi0.keterangan
+                FROM gi0
+                   left outer join so0 on (so0.co_id = gi0.co_id) and (so0.so_num = gi0.so_num)
+                   left outer join customer on (customer.co_id = so0.co_id) and (customer.cust_id = so0.cust_id)
 				$whereClause
 				ORDER BY
-				     gr_num";
+				     gi_num";
         $this->db->setSQL($sql);
 
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -128,9 +126,9 @@ class GoodsIssued
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['vend_nama'],$data['vend_tr_nama']);
+        unset($data['cust_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
-        $sql = $this -> db -> sqlBind($data, 'gr0', 'I');
+        $sql = $this -> db -> sqlBind($data, 'gi0', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -227,7 +225,7 @@ class GoodsIssued
                     gi10.keterangan,
                     items.prod_nama,
                     satuan.satuan_nama
-                from gr10
+                from gi10
                    left outer join items on (gi10.co_id = items.co_id) and (gi10.bb_id = items.prod_id)
                    left outer join satuan on (gi10.co_id = satuan.co_id) and (gi10.sat_id = satuan.satuan_id)
                    $whereClause

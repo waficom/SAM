@@ -47,8 +47,8 @@ class BahanBaku
 		                          bb_id, 
 		                          bb_nama
 							FROM bahanbaku
-   							WHERE bb_id  LIKE '%$params->query%'
-   							  OR bb_nama LIKE '%$params->query%'");
+   							WHERE UPPER(bb_id)  LIKE UPPER('%$params->query%')
+   							  OR UPPER(bb_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

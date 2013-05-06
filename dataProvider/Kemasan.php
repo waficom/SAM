@@ -47,8 +47,8 @@ class Kemasan
 		                          kemasan_id,
 		                          kemasan_nama
 							FROM kemasan
-   							WHERE kemasan_id          LIKE'$params->query%'
-   							  OR kemasan_nama         LIKE'$params->query%'");
+   							WHERE UPPER(kemasan_id)          LIKE UPPER('%$params->query%')
+   							   OR UPPER(kemasan_nama)         LIKE UPPER('$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

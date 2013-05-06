@@ -1,5 +1,5 @@
 
-Ext.define( 'App.model.transaksi.GoodsIssued.GRDetail',
+Ext.define( 'App.model.transaksi.goodsissued.GIDetail',
     {
         extend : 'Ext.data.Model',
         fields : [

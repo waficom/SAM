@@ -1,7 +1,7 @@
 Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
     {
         extend : 'App.ux.RenderPanel',
-        id : 'panelGR',
+        id : 'panelGI',
         pageTitle : 'Goods Issued',
         uses : ['App.ux.GridPanel'],
         pageLayout : 'card',
@@ -407,7 +407,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                             region: 'center',
                             columns: [
                                 { text: 'company', dataIndex: 'co_id', hidden: true},
-                                { text: 'gr_num', dataIndex: 'gr_num', hidden: true},
+                                { text: 'gi_num', dataIndex: 'gi_num', hidden: true},
                                 { text: 'id', dataIndex: 'bb_id', hidden: true},
                                 { text: 'urut', dataIndex: 'urut', hidden: true},
                                 { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
@@ -913,8 +913,8 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
              */
             store.sync({
                 success:function(){
-                    me.curr_gr_num = Ext.getCmp('gr_num_input').getValue();
-                    Ext.getCmp('gr-move-next').setDisabled(false);
+                    me.curr_gi_num = Ext.getCmp('gi_num_input').getValue();
+                    Ext.getCmp('gi-move-next').setDisabled(false);
                 },
                 failure:function(){
                     me.msg('Opps!', 'Error!!', true);
@@ -932,19 +932,19 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
         ReloadGrid : function(btn)
         {
             // Declare some variables
-            var topBarItems = this.GRGrid.getDockedItems('toolbar[dock="top"]')[0],
+            var topBarItems = this.GIGrid.getDockedItems('toolbar[dock="top"]')[0],
                 datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
                 dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
             // Load the ExtJs dataStore with the new parameters
-            this.GRStore.load(
+            this.GIStore.load(
                 {
                     params :
                     {
                         datefrom : datefrom,
                         dateto : dateto,
                         gi_numsearch : topBarItems.getComponent( 'fieldcontainergi_numsearch' ).getComponent( 'gi_numsearch' ).getValue( ),
-                        cust_search : topBarItems.getComponent( 'fieldcontainercust_search' ).getComponent( 'cust_search' ).getValue( )
+                        cust_search : topBarItems.getComponent( 'fieldcontainergicust_search' ).getComponent( 'cust_search' ).getValue( )
                     }
                 } );
 

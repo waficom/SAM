@@ -48,8 +48,8 @@ class Vendor
 		                          vend_id, 
 		                          vend_nama
 							FROM vendor
-   							WHERE vend_id          LIKE '$params->query%'
-   							  OR vend_nama         LIKE '$params->query%'");
+   							WHERE UPPER(vend_id)          LIKE UPPER('%$params->query%')
+   							  OR UPPER(vend_nama)         LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {

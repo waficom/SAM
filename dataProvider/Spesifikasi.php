@@ -47,8 +47,8 @@ class Spesifikasi
 		                          spesifikasi_id, 
 		                          spesifikasi_nama
 							FROM spesifikasi
-   							WHERE spesifikasi_id          LIKE '$params->query%'
-   							  OR spesifikasi_nama         LIKE '$params->query%'");
+   							WHERE UPPER(spesifikasi_id)   LIKE UPPER('%$params->query%')
+   							   OR UPPER(spesifikasi_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {
