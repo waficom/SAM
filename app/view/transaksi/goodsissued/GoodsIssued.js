@@ -14,6 +14,8 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
             me.curr_prod_id = null;
             me.curr_co_id = null;
             me.curr_gi_num = null;
+            me.curr_sat_id = null;
+            me.curr_sat_nama = null;
 
             me.step = [];
 
@@ -408,14 +410,14 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                             columns: [
                                 { text: 'company', dataIndex: 'co_id', hidden: true},
                                 { text: 'gi_num', dataIndex: 'gi_num', hidden: true},
-                                { text: 'id', dataIndex: 'bb_id', hidden: true},
+                                { text: 'id', dataIndex: 'prod_id', hidden: true},
                                 { text: 'urut', dataIndex: 'urut', hidden: true},
                                 { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                                { text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
                                 { text: 'Nopol', width:100, sortable: true, dataIndex: 'nopol'},
                                 { text: 'Surat Jalan#', dataIndex: 'sj_num'},
                                 { text: 'Jml PCS/SAK', width: 100, sortable: true, dataIndex: 'qty_pcs'},
                                 { text: 'Jml Muatan', width: 100, sortable: true, dataIndex: 'qty_netto'},
+                                { text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
                                 { text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                             ],
                             listeners: {
@@ -433,7 +435,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                                         iconCls: 'icoAddRecord',
                                         scope: me,
                                         handler: function(){
-                                            var form = me.winLoc.down('form');
+                                            var form = me.winDtl.down('form');
                                             me.onNewLoc(form, 'App.model.transaksi.goodsissued.GIDetail', 'Tambah Data');
                                         }
                                     },'->',
@@ -507,7 +509,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                                 items: [
                                     {
                                         width: 400,
-                                        name: 'bb_id',
+                                        name: 'prod_id',
                                         fieldLabel : 'Product ',
                                         xtype: 'Itemslivetsearch',
                                         itemId : 'prod_id',
@@ -539,7 +541,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                                 items: [
                                     {
                                         width: 400,
-                                        name: 'vend_id',
+                                        name: 'transporter',
                                         xtype: 'vendorlivetsearch',
                                         itemId : 'vend_id',
                                         fieldLabel : 'Transporter ',
@@ -634,7 +636,8 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                                 items: [
                                     {name: 'co_id', xtype:'textfield', hidden : true},
                                     {name: 'gi_num', xtype: 'textfield', hidden : true},
-                                    {name: 'prod_id', xtype: 'textfield', hidden : true}
+                                    {name: 'prod_id', xtype: 'textfield', hidden : true},
+                                    {name: 'sat_id', xtype: 'textfield', hidden : true}
                                 ]
                             },
                             {
@@ -653,7 +656,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                                     {
                                         width: 200,
                                         name: 'nopol',
-                                        xtype: 'textfield'
+                                        xtype: 'mitos.UpperCaseTextField'
                                     }
                                 ]
                             },
@@ -773,7 +776,7 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                 listeners: {
                     scope: me,
                     close: function(){
-                        me.action(me.winLoc, 'close');
+                        me.action(me.winDtl, 'close');
                     }
                 }
             });
@@ -960,13 +963,14 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
             this.win.show();
         },
         onNewLoc: function(form, model, title){
+            var me = this;
             this.setForm(form, title);
             form.getForm().reset();
-            var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gi_num: me.curr_gi_num, prod_id: me.curr_prod_id
-            }, model);
+            var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gi_num: me.curr_gi_num, prod_id: me.curr_prod_id,
+            sat_id: me.curr_sat_id, sat_nama: me.curr_sat_nama }, model);
             form.getForm().loadRecord(newModel);
             this.action(this.winDtl, 'new');
-            this.winLoc.show();
+            this.winDtl.show();
         },
         setForm: function(form, title){
             form.up('window').setTitle(title);
@@ -985,6 +989,8 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
             me.curr_prod_id = selected.data.prod_id;
             me.curr_co_id = selected.data.co_id;
             me.curr_gi_num = selected.data.gi_num;
+            me.curr_sat_id = selected.data.sat_id;
+            me.curr_sat_nama = selected.data.sat_nama;
             me.GIDetailStore.load({params:{co_id: me.curr_co_id, gi_num: me.curr_gi_num, prod_id: me.curr_prod_id}});
         },
         onItemsdblclick: function(store, record, title){
@@ -1043,13 +1049,13 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
                     me.msg('Opps!', 'Error!!', true);
                 }
             });
-            store.load({params:{co_id: me.curr_co_id, gi_num: me.curr_gi_num, bb_id: me.curr_bb_id}});
+            store.load({params:{co_id: me.curr_co_id, gi_num: me.curr_gi_num, prod_id: me.curr_prod_id}});
         },
         onItemsDelete: function(store){
             var me = this, grid = me.ItemsGrid;
             sm = grid.getSelectionModel();
             sr = sm.getSelection();
-            bid = sr[0].get('bb_id');
+            bid = sr[0].get('prod_id');
             Ext.Msg.show({
                 title: 'Please Confirm' + '...',
                 msg: 'Are you sure want to delete' + ' ?',

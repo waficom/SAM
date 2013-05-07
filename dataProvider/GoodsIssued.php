@@ -222,15 +222,18 @@ class GoodsIssued
                     gi10.sat_id,
                     gi10.qty_netto,
                     gi10.qty_pcs,
+                    gi10.transporter,
+                    vendor.vend_nama,
                     gi10.keterangan,
                     items.prod_nama,
                     satuan.satuan_nama
                 from gi10
-                   left outer join items on (gi10.co_id = items.co_id) and (gi10.bb_id = items.prod_id)
+                   left outer join items on (gi10.co_id = items.co_id) and (gi10.prod_id = items.prod_id)
+                   left outer join vendor on (gi10.co_id = vendor.co_id) and (gi10.transporter = vendor.vend_id)
                    left outer join satuan on (gi10.co_id = satuan.co_id) and (gi10.sat_id = satuan.satuan_id)
                    $whereClause
 				ORDER BY
-				     bb_nama";
+				     prod_nama";
         $this->db->setSQL($sql);
 
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -255,7 +258,7 @@ class GoodsIssued
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['prod_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['prod_nama'], $data['id'], $data['satuan_nama'], $data['vend_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gi10', 'I');
         $this -> db -> setSQL($sql);
@@ -270,7 +273,7 @@ class GoodsIssued
     public function updateGIItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['prod_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['prod_nama'], $data['id'], $data['satuan_nama'], $data['vend_nama']);
         $cond = array('co_id' =>$params->co_id, 'gi_num' => $params->gi_num, 'prod_id' => $params->prod_id);
         $sql = $this -> db -> sqlBind($data, 'gi10', 'U', $cond);
         $this -> db -> setSQL($sql);
@@ -385,7 +388,6 @@ class GoodsIssued
     }
 
     /**
-     * Not in used. For Now you can only set the Company "inactive"
      *
      * @param stdClass $params
      * @return stdClass
