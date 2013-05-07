@@ -333,7 +333,7 @@ class GoodsIssued
                     gi11.keterangan,
                     items.prod_nama,
                     satuan.satuan_nama
-                from gr11
+                from gi11
                    left outer join items on (gi11.co_id = items.co_id) and (gi11.prod_id = items.prod_id)
                    left outer join satuan on (gi11.co_id = satuan.co_id) and (gi11.sat_id = satuan.satuan_id)
                    $whereClause

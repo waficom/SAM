@@ -991,6 +991,11 @@ Ext.define( 'App.view.transaksi.goodsissued.GoodsIssued',
             me.curr_gi_num = selected.data.gi_num;
             me.curr_sat_id = selected.data.sat_id;
             me.curr_sat_nama = selected.data.sat_nama;
+
+            console.log('me.curr_prod_id = '+ me.curr_prod_id);
+            console.log('me.curr_co_id = '+ me.curr_co_id);
+            console.log('me.curr_gi_num = '+ me.curr_gi_num);
+
             me.GIDetailStore.load({params:{co_id: me.curr_co_id, gi_num: me.curr_gi_num, prod_id: me.curr_prod_id}});
         },
         onItemsdblclick: function(store, record, title){

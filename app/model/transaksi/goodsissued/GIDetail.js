@@ -28,7 +28,7 @@ Ext.define( 'App.model.transaksi.goodsissued.GIDetail',
             },
             reader :
             {
-                root : 'gidetail',
+                root : 'gidtl',
                 totalProperty : 'totals'
             }
         }
