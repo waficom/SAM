@@ -99,6 +99,7 @@ $LANG = array(
     'wilayah'                               => 'Region',
     'purchaseorder'                         => 'Purchase Order',
     'goodsreceived'                         => 'Goods Received',
-    'goodsissued'                           => 'Goods Issued'
+    'goodsissued'                           => 'Goods Issued',
+    'workorder'                             => 'Work Order'
 
 );
