@@ -132,6 +132,8 @@ class Navigation
                     'text' => $this->i18n['salesman'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelSalesman'
                 ), array(
                     'text' => $this->i18n['wilayah'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWilayah'
+                ), array(
+                    'text' => $this->i18n['route'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoute'
                 )
             )
         ));
@@ -140,6 +142,10 @@ class Navigation
             'text' => $this->i18n['transaksi'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationTransaksi', 'children' => array(
                 array(
                     'text' => $this->i18n['salesorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelSO'
+                ), array(
+                    'text' => $this->i18n['releaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelRO'
+                ), array(
+                    'text' => $this->i18n['produksi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelProduksi'
                 ), array(
                     'text' => $this->i18n['purchaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPO'
                 ), array(

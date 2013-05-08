@@ -373,6 +373,18 @@ $API = array(
             ),
             'deletecustomer' => array(
                 'len' => 1
+            ),
+            'getcustomerL' => array(
+                'len' => 1
+            ),
+            'addcustomerL' => array(
+                'len' => 1
+            ),
+            'updatecustomerL' => array(
+                'len' => 1
+            ),
+            'deletecustomerL' => array(
+                'len' => 1
             )
         )
     ),
@@ -751,6 +763,69 @@ $API = array(
                 'len' => 1
             ),
             'deleteWOItems' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Route' => array(
+        'methods' => array(
+            'getRoute' => array(
+                'len' => 1
+            ),
+            'addRoute' => array(
+                'len' => 1
+            ),
+            'updateRoute' => array(
+                'len' => 1
+            ),
+            'deleteRoute' => array(
+                'len' => 1
+            ), 'getRouteD' => array(
+                'len' => 1
+            ),
+            'addRouteD' => array(
+                'len' => 1
+            ),
+            'updateRouteD' => array(
+                'len' => 1
+            ),
+            'deleteRouteD' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'ReleaseOrder' => array(
+        'methods' => array(
+            'updateReleaseOrder' => array(
+                'len' => 1
+            ),'getReleaseOrder' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Produksi' => array(
+        'methods' => array(
+            'getProduksi' => array(
+                'len' => 1
+            ),
+            'addProduksi' => array(
+                'len' => 1
+            ),
+            'updateProduksi' => array(
+                'len' => 1
+            ),
+            'deleteProduksi' => array(
+                'len' => 1
+            ), 'getProduksi1' => array(
+                'len' => 1
+            ),
+            'addProduksi1' => array(
+                'len' => 1
+            ),
+            'updateProduksi1' => array(
+                'len' => 1
+            ),
+            'deleteProduksi1' => array(
                 'len' => 1
             )
         )

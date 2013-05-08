@@ -140,7 +140,7 @@ Ext.define('App.view.master.Customer', {
                 }
             }
         });
-        me.CustomerLStore = Ext.create('Ext.data.Store', {
+        me.CustomerLStore = Ext.create('Ext.data.Store',  {
             model: 'CustomerL_Model',
             autoLoad: false
         });

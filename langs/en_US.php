@@ -100,6 +100,9 @@ $LANG = array(
     'purchaseorder'                         => 'Purchase Order',
     'goodsreceived'                         => 'Goods Received',
     'goodsissued'                           => 'Goods Issued',
-    'workorder'                             => 'Work Order'
+    'workorder'                             => 'Work Order',
+    'produksi'                           => 'Request Produksi',
+    'route'                           => 'Route',
+    'releaseorder'                           => 'Release Order'
 
 );

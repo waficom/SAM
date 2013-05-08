@@ -302,15 +302,18 @@ requires = [
     'App.view.master.Formula',
     'App.view.master.Salesman',
     'App.view.master.Wilayah',
+    'App.view.master.Route',
 
     /*
      * Load the root related panels
      */
     'App.view.transaksi.salesorder.SalesOrder',
+    'App.view.transaksi.salesorder.ReleaseOrder',
     'App.view.transaksi.purchaseorder.PurchaseOrder',
     'App.view.transaksi.goodsreceived.GoodsReceived',
     'App.view.transaksi.goodsissued.GoodsIssued',
     'App.view.transaksi.workorder.WorkOrder',
+    'App.view.transaksi.Produksi.Produksi',
 
     //'App.view.calendar.ExtensibleAll',
 //				'App.view.calendar.Calendar',
