@@ -708,52 +708,6 @@ $API = array(
                 'len' => 1
             )
         )
-    ),
-    /**
-     * Goods Issued Functions
-     */
-    'WorkOrder' => array(
-        'methods' => array(
-            'getFilterWOData' => array(
-                'len' => 1
-            ),
-            'addWO' => array(
-                'len' => 1
-            ),
-            'updateWO' => array(
-                'len' => 1
-            ),
-            'deleteWO' => array(
-                'len' => 1
-            ),
-            'deletebywo_num' => array(
-                'len' => 1
-            ),
-            'getWObb' => array(
-                'len' => 1
-            ),
-            'addWObb' => array(
-                'len' => 1
-            ),
-            'updateWObb' => array(
-                'len' => 1
-            ),
-            'deleteWObb' => array(
-                'len' => 1
-            ),
-            'getWOItems' => array(
-                'len' => 1
-            ),
-            'addWOItems' => array(
-                'len' => 1
-            ),
-            'updateWOItems' => array(
-                'len' => 1
-            ),
-            'deleteWOItems' => array(
-                'len' => 1
-            )
-        )
     )
 
 	

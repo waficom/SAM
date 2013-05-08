@@ -100,7 +100,6 @@ $LANG = array(
     'wilayah'                               => 'Wilayah',
     'purchaseorder'                         => 'Pembelian',
     'goodsreceived'                         => 'Penerimaan Barang',
-    'goodsissued'                           => 'Pengiriman Barang',
-    'workorder'                             => 'Produksi'
+    'goodsissued'                           => 'Pengiriman Barang'
 
 );

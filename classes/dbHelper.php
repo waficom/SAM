@@ -260,8 +260,8 @@ class dbHelper
 //				$value = addslashes($value);
 				if (isset($Where) && is_array($Where))
 				{
-					if (!array_key_exists($key, $Where))
-					{
+//					if (!array_key_exists($key, $Where))
+//					{
 						if ($value == null || $value === 'null')
 						{
 							$sql .= $key . "=NULL, ";
@@ -272,21 +272,21 @@ class dbHelper
 							$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 							$sql .= $key . "=$value, ";
 						}
-					}
-					else
-					{
-						return array(
-							'success' => false,
-							'error' => 'Where value can not be updated. please make sure to unset it from the array'
-						);
-					}
+//					}
+//					else
+//					{
+//						return array(
+//							'success' => false,
+//							'error' => 'Where value can not be updated. please make sure to unset it from the array'
+//						);
+//					}
 				}
 				else
 				{
 					// TODO: remove this... after new version (above) is implemented throughout the
 					// application
-					if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
-					{
+//					if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
+//					{
 						if ($value == null || $value === 'null')
 						{
 							$sql .= $key. "=NULL, ";
@@ -297,14 +297,14 @@ class dbHelper
 							$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 							$sql .= $key . "=$value, ";
 						}
-					}
-					else
-					{
-						return array(
-							'success' => false,
-							'error' => 'Where value can not be updated. please make sure to unset it from the array'
-						);
-					}
+//					}
+//					else
+//					{
+//						return array(
+//							'success' => false,
+//							'error' => 'Where value can not be updated. please make sure to unset it from the array'
+//						);
+//					}
 				}
 	
 			}

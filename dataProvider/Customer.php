@@ -128,6 +128,71 @@ class Customer
 		$this -> db -> execLog();
 		return $params;
 	}
+    public function getcustomerL(stdClass $params)
+    {
+        //error_reporting(-1);
+        $this->db->setSQL("SELECT *
+                         FROM customer_location
+                    WHERE cust_id = '$params->cust_id' ORDER BY location_id ASC");
+
+        $rows = array();
+        //print_r($rows);
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+
+    public function addcustomerL(stdClass $params)
+    {
+        // error_reporting(-1);
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['location_id']);
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        $sql = $this -> db -> sqlBind($data, 'customer_location', 'I');
+        $this -> db -> setSQL($sql);
+       // print_r($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+    public function updatecustomerL(stdClass $params)
+    {
+        // error_reporting(-1);
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id'],$data['cust_id'], $data['old_location_id']);
+        $sql = $this -> db -> sqlBind($data, 'customer_location', 'U', array('location_id' => $params-> old_location_id));
+        $this -> db -> setSQL($sql);
+        //print_r($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+
+    public function deletecustomerL(stdClass $params)
+    {
+        $sql = "DELETE FROM customer_location WHERE (cust_id = '$params->cust_id') and (location_id = '$params->location_id') ";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
 	
 }
 

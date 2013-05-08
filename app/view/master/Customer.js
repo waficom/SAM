@@ -20,9 +20,15 @@ Ext.define('App.view.master.Customer', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCustomer',
     pageTitle: 'Customer',
+    pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
+        me.currCust = null;
+        me.curr_coid = null;
+        me.userinput =null;
+        me.useredit=null;
+
         Ext.define('CustomerModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -110,6 +116,43 @@ Ext.define('App.view.master.Customer', {
                 },
                 autoLoad: false
             });
+        
+        Ext.define('CustomerL_Model', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'cust_id',type: 'string',  hidden : true}
+                ,{name: 'location_id',type: 'string'}
+                ,{name: 'description',type: 'string'}
+                ,{name: 'kabupaten',type: 'string'}
+                ,{name: 'kecamatan',type: 'string'}
+                ,{name: 'timeedit',type: 'date'}
+                ,{name: 'useredit',type: 'string'}
+                ,{name: 'userinput',type: 'string'}
+                ,{name: 'old_location_id',type: 'string'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Customer.getcustomerL,
+                    create: Customer.addcustomerL,
+                    update: Customer.updatecustomerL,
+                    destroy: Customer.deletecustomerL
+                }
+            }
+        });
+        me.CustomerLStore = Ext.create('Ext.data.Store', {
+            model: 'CustomerL_Model',
+            autoLoad: false
+        });
+
+        var searching={
+            ftype : 'searching',
+            mode: 'local'
+            ,           width:  200,
+            disableIndexes:['timeedit']
+
+        }
+
         function authCk(val){
             if(val == '1'){
                 return '<img src="resources/images/icons/yes.gif" />';
@@ -140,6 +183,10 @@ Ext.define('App.view.master.Customer', {
         // *************************************************************************************
         me.CustomerGrid = Ext.create('App.ux.GridPanel', {
             store: me.CustomerStore,
+            itemId: 'CustomerGrid',
+            height: 300,
+            margin: '0 0 3 0',
+            region: 'north',
             columns: [
                 {
                     text: 'Company',
@@ -251,6 +298,7 @@ Ext.define('App.view.master.Customer', {
             ],
             listeners: {
                 scope: me,
+                select: me.onCustLocationGridClick,
                 itemdblclick: function(view, record){
                     oldName = record.get('cust_id');
                     record.set("old_cust_id",oldName);
@@ -283,6 +331,66 @@ Ext.define('App.view.master.Customer', {
                 }
             ]
         });
+        me.CustomerLGrid = Ext.create('App.ux.GridPanel', {
+            store: me.CustomerLStore,
+            region: 'center',
+            enablePaging: true,
+            requires: [
+                'Ext.toolbar.Paging'
+            ],
+            columns: [
+                {text: 'location_id', sortable: false, dataIndex: 'location_id', hidden: true},
+                {text: 'Description', flex: 1,sortable: false, dataIndex: 'description'},
+                {text: 'Kecamatan', width:200, sortable: false,dataIndex: 'kecamatan'},
+                {text: 'Kabupaten', width:200, sortable: false,dataIndex: 'kabupaten'},
+                {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    oldName = record.get('location_id');
+                    record.set("old_location_id",oldName);
+                    me.onItemdblclick1(me.CustomerLStore, record, 'Edit Detail Locations');
+                }
+            },
+            features:[searching],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [{
+                        text: 'Add',
+                        iconCls: 'icoAddRecord',
+                        scope: me,
+                        handler: function(){
+                            var form1 = me.winform1.down('form');
+                            me.onNewCustLocation(form1, 'CustomerL_Model', 'Tambah Data');
+                        }
+                    },
+                        {
+                            xtype: 'button',
+                            text: 'Hapus Data',
+                            iconCls: 'delete',
+                            handler: function() {
+                                me.deleteCustLocation(me.CustomerLStore);
+                            }
+                        }
+                    ]
+                },{
+                    xtype: 'pagingtoolbar',
+                    store: me.CustomerLGrid,
+                    beforePageText: 'Page',
+                    afterPageText: 'of {0}',
+                    displayMsg: 'Diplay {0} - {1} Of {2}',
+                    emptyMsg: 'No Record Found',
+                    dock: 'bottom',
+                    displayInfo: true,
+                    pageSize: 5
+
+                }
+            ]
+        });
+        
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -612,9 +720,128 @@ Ext.define('App.view.master.Customer', {
                 }
             }
         });
+        me.winform1 = Ext.create('App.ux.window.Window', {
+            width: 600,
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    fieldDefaults: {
+                        msgTarget: 'side',
+                        labelWidth: 100
+                    },
+                    defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'cust_id'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Description :'
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'description'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Kecamatan::'
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'kecamatan'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Kabupaten :'
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'kabupaten'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.winform1.down('form').getForm();
+                        if(form.isValid()){
+                            me.onCustLocationSave(form, me.CustomerLStore);
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: i18n('cancel'),
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            features:[searching],
+            listeners: {
+                scope: me,
+                close: function(){
+                    me.action1('close');
+                }
+            }
+        });
         // END WINDOW
-        me.pageBody = [me.CustomerGrid];
+        me.pageBody = [me.CustomerGrid, me.CustomerLGrid];
         me.callParent(arguments);
+
     }, // end of initComponent
     onNew: function(form, model, title){
         this.setForm(form, title);
@@ -660,6 +887,9 @@ Ext.define('App.view.master.Customer', {
     openWin: function(){
         this.win.show();
     },
+    openWin1: function(){
+        this.winform1.show();
+    },
     action: function(action){
         var win = this.win, form = win.down('form');
         if(action == 'close'){
@@ -689,6 +919,92 @@ Ext.define('App.view.master.Customer', {
         })
 //        store.load();
     },
+    onItemdblclick1: function(store, record, title){
+        var form = this.winform1.down('form');
+        this.setForm(form, title);
+        form.getForm().loadRecord(record);
+        this.action1('old');
+        this.winform1.show();
+    },
+    onNewCustLocation: function(form, model, title){
+        this.setForm(form, title);
+        form.getForm().reset();
+        var newModel = Ext.ModelManager.create({
+        }, model);
+        form.getForm().loadRecord(newModel);
+        record = form.getRecord()
+        this.action1('new');
+        this.winform1.show();
+    },
+    deleteCustLocation: function(store){
+        var me = this, grid = me.CustomerLGrid;
+        sm = grid.getSelectionModel();
+        sr = sm.getSelection();
+        bid = sr[0].get('location_id');
+        Ext.Msg.show({
+            title: 'Please Confirm' + '...',
+            msg: 'Are you sure want to delete' + ' ?',
+            icon: Ext.MessageBox.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            fn: function(btn){
+                if(btn == 'yes'){
+//                    Route.deleteCustLocation(bid);
+                    store.remove(sm.getSelection());
+                    store.sync();
+                    if (store.getCount() > 0) {
+                        sm.select(0);
+                    }
+                }
+            }
+        })
+    },
+    onCustLocationSave: function(form, store){
+        var me = this;
+        me.saveCustLocation(form, store);
+    },
+    saveCustLocation: function(form, store){
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
+            f = me.win.down('form').getForm(), rec = f.getRecord();
+
+        form.findField('cust_id').setValue(me.currCust);
+        values = form.getValues();
+        if(storeIndex == -1){
+            store.add(values);
+        }else{
+            record.set(values);
+        }
+        store.sync({
+            success:function(){
+                me.winform1.close();
+                store.load();
+            },
+            failure:function(){
+                store.load();
+                me.msg('Opps!', 'Error!!', true);
+            }
+        });
+        // store.load({params:{no_pp: me.currRoute}});
+    },
+    action1: function(action){
+        var winf = this.winform1, form = winf.down('form');
+        if(action == 'close'){
+            form.getForm().reset();
+        }
+    },
+    onCustLocationGridClick: function(grid, selected){
+        var me = this;
+        me.currCust = selected.data.cust_id;
+/*
+        var TopBarItems = this.CustomerGrid.getDockedItems('toolbar[dock="top"]')[0];
+
+        me.userinput = selected.data.userinput;
+        me.useredit = selected.data.useredit;
+        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
+        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+*/
+        me.CustomerLStore.load({params:{cust_id: me.currCust}});
+
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -696,7 +1012,9 @@ Ext.define('App.view.master.Customer', {
      * to call every this panel becomes active
      */
     onActive: function(callback){
+        var me = this;
         this.CustomerStore.load();
+        this.CustomerLStore.load();
         callback(true);
     }
 });
