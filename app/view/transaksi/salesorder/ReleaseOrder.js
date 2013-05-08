@@ -36,7 +36,8 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                 { name : 'cust_po_num', type : 'string'},
                 { name : 'tgl_jt_kirim', type : 'string'},
                 { name : 'ppn_so', type : 'bool'},
-                { name : 'n_netto', type : 'float'}
+                { name : 'n_netto', type : 'float'},
+                { name : 'statusdesc', type : 'string'}
 
 
             ],
@@ -108,6 +109,10 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                     header : 'Netto',
                     dataIndex : 'n_netto',
                     renderer: Ext.util.Format.numberRenderer('0,000.00'),
+                    width :50
+                },{
+                    header : 'Status',
+                    dataIndex : 'statusdesc',
                     width : 300
                 }
             ],

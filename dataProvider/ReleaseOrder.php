@@ -81,7 +81,7 @@ class ReleaseOrder
         $data = get_object_vars($params);
         $data['released_date'] = $this->db->Date_Converter($data['released_date']);
         unset($data['id'], $data['so_num'], $data['co_id'], $data['old_so_num'],$data['tanggal']
-        ,$data['cust_nama'],$data['cust_po_num'],$data['tgl_jt_kirim'],$data['ppn_so'],$data['n_netto']);
+        ,$data['cust_nama'],$data['cust_po_num'],$data['tgl_jt_kirim'],$data['ppn_so'],$data['n_netto'],$data['statusdesc']);
         if (is_null($data['released']) || ($data['released'] == '')) {
             $data['released'] = '0';
         }
