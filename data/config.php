@@ -1,218 +1,218 @@
 <?php
 $API = array(
-	'Modules' => array(
-		'methods' => array(
-			'getAllModules' => array(
-				'len' => 0
-			),
-			'getActiveModules' => array(
-				'len' => 0
-			),
-			'getEnabledModules' => array(
-				'len' => 0
-			),
-			'getDisabledModules' => array(
-				'len' => 0
-			),
-			'getModuleByName' => array(
-				'len' => 1
-			),
-			'updateModule' => array(
-				'len' => 1
-			)
-		)
-	),
-	/**
-	 * Globals Functions
-	 */
-	'Globals' => array(
-		'methods' => array(
-			'setGlobals' => array(
-				'len' => 0
-			),
-			'getGlobals' => array(
-				'len' => 0
-			),
-			'getAllGlobals' => array(
-				'len' => 0
-			),
-			'updateGlobals' => array(
-				'len' => 1
-			)
-		)
-	),
-	/**
-	 * User Functions
-	 */
-	'User' => array(
-		'methods' => array(
-			'getUsers' => array(
-				'len' => 1
-			),
-			'getCurrentUserData' => array(
-				'len' => 0
-			),
-			'addUser' => array(
-				'len' => 1
-			),
-			'updateUser' => array(
-				'len' => 1
-			),
-			'chechPasswordHistory' => array(
-				'len' => 1
-			),
-			'changeMyPassword' => array(
-				'len' => 1
-			),
-			'updateMyAccount' => array(
-				'len' => 1
-			),
-			'verifyUserPass' => array(
-				'len' => 1
-			),
-			'getProviders' => array(
-				'len' => 1
-			),
-			'getCurrentUserBasicData' => array(
-				'len' => 0
-			),
+    'Modules' => array(
+        'methods' => array(
+            'getAllModules' => array(
+                'len' => 0
+            ),
+            'getActiveModules' => array(
+                'len' => 0
+            ),
+            'getEnabledModules' => array(
+                'len' => 0
+            ),
+            'getDisabledModules' => array(
+                'len' => 0
+            ),
+            'getModuleByName' => array(
+                'len' => 1
+            ),
+            'updateModule' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * Globals Functions
+     */
+    'Globals' => array(
+        'methods' => array(
+            'setGlobals' => array(
+                'len' => 0
+            ),
+            'getGlobals' => array(
+                'len' => 0
+            ),
+            'getAllGlobals' => array(
+                'len' => 0
+            ),
+            'updateGlobals' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * User Functions
+     */
+    'User' => array(
+        'methods' => array(
+            'getUsers' => array(
+                'len' => 1
+            ),
+            'getCurrentUserData' => array(
+                'len' => 0
+            ),
+            'addUser' => array(
+                'len' => 1
+            ),
+            'updateUser' => array(
+                'len' => 1
+            ),
+            'chechPasswordHistory' => array(
+                'len' => 1
+            ),
+            'changeMyPassword' => array(
+                'len' => 1
+            ),
+            'updateMyAccount' => array(
+                'len' => 1
+            ),
+            'verifyUserPass' => array(
+                'len' => 1
+            ),
+            'getProviders' => array(
+                'len' => 1
+            ),
+            'getCurrentUserBasicData' => array(
+                'len' => 0
+            ),
             'getCurrentActiveCompany' => array(
                 'len' => 1
             )
-		)
-	),
-	/**
-	 * Authorization Procedures Functions
-	 */
-	'authProcedures' => array(
-		'methods' => array(
-			'login' => array(
-				'len' => 1
-			),
-			'ckAuth' => array(
-				'len' => 0
-			),
-			'unAuth' => array(
-				'len' => 0
-			),
-			'getSites' => array(
-				'len' => 0
-			)
-		)
-	),
-	/**
-	 * Navigation Function
-	 */
-	/**
-	 * Navigation Function
-	 */
-	'Navigation' => array(
-		'methods' => array(
-			'getNavigation' => array(
-				'len' => 0
-			)
-		)
-	),
-	'Roles' => array(
-		'methods' => array(
-			'getRoleForm' => array(
-				'len' => 1
-			),
-			'getRolesData' => array(
-				'len' => 0
-			),
-			'saveRolesData' => array(
-				'len' => 1
-			)
-		)
-	),
-	/**
-	 * Navigation Function
-	 */
-	'ACL' => array(
-		'methods' => array(
-			'getAllUserPermsAccess' => array(
-				'len' => 0
-			),
-			'hasPermission' => array(
-				'len' => 1
-			)
-		)
-	),
-	/**
-	 * Navigation Function
-	 */
-	'Logs' => array(
-		'methods' => array(
-			'getLogs' => array(
-				'len' => 1
-			)
-		)
-	),
-	'CronJob' => array(
-		'methods' => array(
-			'run' => array(
-				'len' => 0
-			)
-		)
-	),
-	'i18nRouter' => array(
-		'methods' => array(
-			'getTranslation' => array(
-				'len' => 0
-			),
-			'getDefaultLanguage' => array(
-				'len' => 0
-			),
-			'getAvailableLanguages' => array(
-				'len' => 0
-			)
-		)
-	),
-	'SiteSetup' => array(
-		'methods' => array(
-			'checkDatabaseCredentials' => array(
-				'len' => 1
-			),
-			'checkRequirements' => array(
-				'len' => 0
-			),
-			'setSiteDirBySiteId' => array(
-				'len' => 1
-			),
-			'createDatabaseStructure' => array(
-				'len' => 1
-			),
-			'loadDatabaseData' => array(
-				'len' => 1
-			),
-			'createSiteAdmin' => array(
-				'len' => 1
-			),
-			'createSConfigurationFile' => array(
-				'len' => 1
-			),
-			'loadCode' => array(
-				'len' => 1
-			)
-		)
-	),
-	'Applications' => array(
-		'methods' => array(
-			'getApplications' => array(
-				'len' => 1
-			),
-			'addApplication' => array(
-				'len' => 1
-			),
-			'updateApplication' => array(
-				'len' => 1
-			),
-			'deleteApplication' => array(
-				'len' => 1
-			)
-		)
-	),
+        )
+    ),
+    /**
+     * Authorization Procedures Functions
+     */
+    'authProcedures' => array(
+        'methods' => array(
+            'login' => array(
+                'len' => 1
+            ),
+            'ckAuth' => array(
+                'len' => 0
+            ),
+            'unAuth' => array(
+                'len' => 0
+            ),
+            'getSites' => array(
+                'len' => 0
+            )
+        )
+    ),
+    /**
+     * Navigation Function
+     */
+    /**
+     * Navigation Function
+     */
+    'Navigation' => array(
+        'methods' => array(
+            'getNavigation' => array(
+                'len' => 0
+            )
+        )
+    ),
+    'Roles' => array(
+        'methods' => array(
+            'getRoleForm' => array(
+                'len' => 1
+            ),
+            'getRolesData' => array(
+                'len' => 0
+            ),
+            'saveRolesData' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * Navigation Function
+     */
+    'ACL' => array(
+        'methods' => array(
+            'getAllUserPermsAccess' => array(
+                'len' => 0
+            ),
+            'hasPermission' => array(
+                'len' => 1
+            )
+        )
+    ),
+    /**
+     * Navigation Function
+     */
+    'Logs' => array(
+        'methods' => array(
+            'getLogs' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'CronJob' => array(
+        'methods' => array(
+            'run' => array(
+                'len' => 0
+            )
+        )
+    ),
+    'i18nRouter' => array(
+        'methods' => array(
+            'getTranslation' => array(
+                'len' => 0
+            ),
+            'getDefaultLanguage' => array(
+                'len' => 0
+            ),
+            'getAvailableLanguages' => array(
+                'len' => 0
+            )
+        )
+    ),
+    'SiteSetup' => array(
+        'methods' => array(
+            'checkDatabaseCredentials' => array(
+                'len' => 1
+            ),
+            'checkRequirements' => array(
+                'len' => 0
+            ),
+            'setSiteDirBySiteId' => array(
+                'len' => 1
+            ),
+            'createDatabaseStructure' => array(
+                'len' => 1
+            ),
+            'loadDatabaseData' => array(
+                'len' => 1
+            ),
+            'createSiteAdmin' => array(
+                'len' => 1
+            ),
+            'createSConfigurationFile' => array(
+                'len' => 1
+            ),
+            'loadCode' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Applications' => array(
+        'methods' => array(
+            'getApplications' => array(
+                'len' => 1
+            ),
+            'addApplication' => array(
+                'len' => 1
+            ),
+            'updateApplication' => array(
+                'len' => 1
+            ),
+            'deleteApplication' => array(
+                'len' => 1
+            )
+        )
+    ),
     /**
      * Companies Functions
      */
@@ -708,7 +708,53 @@ $API = array(
                 'len' => 1
             )
         )
+    ),
+    /**
+     * Goods Issued Functions
+     */
+    'WorkOrder' => array(
+        'methods' => array(
+            'getFilterWOData' => array(
+                'len' => 1
+            ),
+            'addWO' => array(
+                'len' => 1
+            ),
+            'updateWO' => array(
+                'len' => 1
+            ),
+            'deleteWO' => array(
+                'len' => 1
+            ),
+            'deletebywo_num' => array(
+                'len' => 1
+            ),
+            'getWObb' => array(
+                'len' => 1
+            ),
+            'addWObb' => array(
+                'len' => 1
+            ),
+            'updateWObb' => array(
+                'len' => 1
+            ),
+            'deleteWObb' => array(
+                'len' => 1
+            ),
+            'getWOItems' => array(
+                'len' => 1
+            ),
+            'addWOItems' => array(
+                'len' => 1
+            ),
+            'updateWOItems' => array(
+                'len' => 1
+            ),
+            'deleteWOItems' => array(
+                'len' => 1
+            )
+        )
     )
 
-	
+
 );

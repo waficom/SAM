@@ -6,9 +6,9 @@
 // JavaScript has reserved variables after the dot.
 $LANG = array(
 
-	// This items are used internally by the GaiaEHR Application.
-	'id_ID'									=> 'Indonesia',
-	'i18nExtFile'							=> 'ext-lang-en.js',
+    // This items are used internally by the GaiaEHR Application.
+    'id_ID'									=> 'Indonesia',
+    'i18nExtFile'							=> 'ext-lang-en.js',
     'description'							=> 'Keterangan',
     'code'									=> 'Kode',
     'dashboard'         					=> 'Papan Instrumen',
@@ -30,9 +30,9 @@ $LANG = array(
     'transaksi'			       				=> 'Transaksi',
     'salesorder'		       				=> 'Pesanan Penjualan',
     'master_manager'						=> 'Master',
-	'miscellaneous'							=> 'Lain-lain',
-	'my_account'							=> 'Akun saya',
-	'users'									=> 'Pengguna',
+    'miscellaneous'							=> 'Lain-lain',
+    'my_account'							=> 'Akun saya',
+    'users'									=> 'Pengguna',
     'save_configuration'					=> 'Simpan Konfigurasi',
     'main_top_pane_screen'					=> 'Tampilan Utama',
     'layout_style'							=> 'Layout style',
@@ -100,6 +100,7 @@ $LANG = array(
     'wilayah'                               => 'Wilayah',
     'purchaseorder'                         => 'Pembelian',
     'goodsreceived'                         => 'Penerimaan Barang',
-    'goodsissued'                           => 'Pengiriman Barang'
+    'goodsissued'                           => 'Pengiriman Barang',
+    'workorder'                             => 'Produksi'
 
 );
