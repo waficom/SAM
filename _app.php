@@ -30,9 +30,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<title>SAM Enterprise</title>
 		<link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css"/>
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar-colors.css"/>
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/recurrence.css"/>
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 		<link rel="shortcut icon" href="favicon.ico">
