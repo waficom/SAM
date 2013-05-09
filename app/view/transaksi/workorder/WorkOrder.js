@@ -581,21 +581,16 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty Stock:'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
                                         xtype: 'mitos.currency',
                                         name: 'qty_stock',
+                                        fieldLabel : 'Qty Stock',
                                         id : 'woqty_stock',
+                                        labelAlign: 'right',
                                         hideTrigger: true,
                                         listeners : {
                                             scope : me,
@@ -606,22 +601,17 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty Masuk:'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
                                         xtype: 'mitos.currency',
                                         name: 'qty_in',
+                                        fieldLabel : 'Qty Masuk',
                                         id : 'woqty_in',
                                         hideTrigger: true,
+                                        labelAlign: 'right',
                                         listeners : {
                                             scope : me,
                                             specialkey : me.onEnter
@@ -631,20 +621,15 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty Terpakai:'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
                                         xtype: 'mitos.currency',
                                         name: 'qty_out',
+                                        labelAlign: 'right',
+                                        fieldLabel : 'Qty Keluar',
                                         id : 'woqty_out',
                                         hideTrigger: true,
                                         listeners : {
@@ -656,20 +641,15 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty Akhir:'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
                                         xtype: 'mitos.currency',
                                         name: 'qty_last',
+                                        labelAlign: 'right',
+                                        fieldLabel : 'Qty Akhir',
                                         id : 'woqty_last',
                                         hideTrigger: true,
                                         readOnly : true
@@ -799,19 +779,14 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false},
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty PCS/SAK:'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
+                                        fieldLabel : 'Qty PCS/SAK',
                                         xtype: 'mitos.currency',
+                                        labelAlign : 'right',
                                         name: 'qty_pcs',
                                         id : 'woqty_pcs',
                                         hideTrigger: true
@@ -820,19 +795,14 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Qty :'
-                                    },
-                                    {
-                                        width: 200,
+                                        width: 400,
+                                        fieldLabel : 'Qty',
                                         xtype: 'mitos.currency',
+                                        labelAlign : 'right',
                                         name: 'qty',
                                         id : 'woqty_netto',
                                         hideTrigger: true
@@ -841,19 +811,14 @@ Ext.define( 'App.view.transaksi.workorder.WorkOrder',
                             },
                             {
                                 xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
+                                defaults: { hideLabel: false },
                                 msgTarget: 'under',
                                 items: [
                                     {
-                                        width: 100,
-                                        xtype: 'displayfield',
-                                        value: 'Keterangan :'
-                                    },
-                                    {
-                                        width: 300,
+                                        width: 400,
                                         height: 100,
+                                        fieldLabel : 'Keterangan',
+                                        labelAlign: 'right',
                                         xtype: 'textareafield',
                                         name: 'keterangan'
                                     }

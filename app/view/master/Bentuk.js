@@ -19,7 +19,7 @@
 Ext.define('App.view.master.Bentuk', {
     extend: 'App.ux.RenderPanel',
     id: 'panelBentuk',
-    pageTitle: 'Bentuk',
+    pageTitle: i18n('bentuk'),
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
