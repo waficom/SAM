@@ -197,6 +197,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                     width : 100,
                     margin : '0 0 3 0',
                     text : 'Hapus Data',
+                    disabled: acl.accessdashboard,
                     listeners :
                     {
                         scope : me,
