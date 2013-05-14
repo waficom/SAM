@@ -827,6 +827,35 @@ $API = array(
             ),
             'deleteProduksi1' => array(
                 'len' => 1
+            ),
+            'getSOpopup' => array(
+                'len' => 1
+            ),
+            'getFormulapopup'=> array(
+                'len' => 1
+            )
+        )
+    ),
+    'Stock' => array(
+        'methods' => array(
+            'getStock' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Factorylocation' => array(
+        'methods' => array(
+            'getFactorylocation' => array(
+                'len' => 1
+            ),
+            'addFactorylocation' => array(
+                'len' => 1
+            ),
+            'updateFactorylocation' => array(
+                'len' => 1
+            ),
+            'deleteFactorylocation' => array(
+                'len' => 1
             )
         )
     )

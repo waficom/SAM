@@ -118,7 +118,7 @@ class Produksi
 
         $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'I');
         $this -> db -> setSQL($sql);
-//            print_r($sql);
+//           print_r($sql);
         $this -> db -> execLog();
 //        error_reporting(0);
         return $params;
@@ -191,7 +191,7 @@ class Produksi
         }
         $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'I');
         $this -> db -> setSQL($sql);
-        //    print_r($sql);
+            print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -209,7 +209,7 @@ class Produksi
         $data['est_finishdate'] = $this->db->Date_Converter($data['est_finishdate']);
         //$data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['no_pp'], $data['old_no_ppd'], $data['cust_nama'], $data['prod_nama'], $data['spesifikasi_nama'],$data['kemasan_nama'],
+        unset($data['id'],$data['no_pp'], $data['old_no_ppd'], $data['cust_nama'], $data['formula_nama'], $data['prod_nama'], $data['spesifikasi_nama'],$data['kemasan_nama'],
         $data['n'], $data['p2o5'], $data['k2o'], $data['cao'], $data['mgo'], $data['so4'], $data['b'], $data['cu'], $data['zn']
         , $data['ah'], $data['af']);
         $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'U', array('no_ppd' => $params-> old_no_ppd));
@@ -225,6 +225,36 @@ class Produksi
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
+    }
+    public function getSOpopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM so0 ORDER BY so_num ASC";
+        $this -> db -> setSQL($sql);
+       // print_r($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getFormulapopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM formula0 ORDER BY formula_id ASC";
+        $this -> db -> setSQL($sql);
+        // print_r($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
     }
 
 

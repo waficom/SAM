@@ -303,6 +303,7 @@ requires = [
     'App.view.master.Salesman',
     'App.view.master.Wilayah',
     'App.view.master.Route',
+    'App.view.master.Factory_location',
 
     /*
      * Load the root related panels
@@ -313,6 +314,7 @@ requires = [
     'App.view.transaksi.goodsreceived.GoodsReceived',
     'App.view.transaksi.goodsissued.GoodsIssued',
     'App.view.transaksi.workorder.WorkOrder',
+    'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
 
     //'App.view.calendar.ExtensibleAll',

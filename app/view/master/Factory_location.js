@@ -16,56 +16,40 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//Ext.require(['Ext.toolbar.paging'])
-Ext.define('App.view.master.Bentuk', {
+Ext.define('App.view.master.Factory_location', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelBentuk',
-    pageTitle: 'Bentuk',
+    id: 'panelFactlocation',
+    pageTitle: 'Factory location',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
-        Ext.define('BentukModel', {
+        Ext.define('FactorylocationModel', {
             extend: 'Ext.data.Model',
             fields: [
-               {
-                    name: 'co_id',
-                    type: 'string'
-                },
-                {
-                    name: 'bentuk_id',
-                    type: 'string'
-                },
-                {
-                    name: 'bentuk_nama',
-                    type: 'string'
-                },
-                {
-                    name: 'keterangan',
-                    type: 'string'
-                },
-                {
-                    name: 'aktif',
-                    type: 'bool'
-                },
-                {
-                    name: 'old_bentuk_id',
-                    type: 'string'
-                }
+                {name: 'co_id',type: 'string'},
+                {name: 'pabrik_sequence',type: 'string'},
+                {name: 'description',type: 'string'},
+                {name: 'location',type: 'string'},
+                {name: 'remarks',type: 'string'},
+                {name: 'userinput',type: 'string'},
+                {name: 'useredit',type: 'string'},
+                {name: 'timeinput',type: 'date'},
+                {name: 'timeedit',type: 'date'},
+                {name: 'aktif',type: 'bool'}
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Bentuk.getBentuk,
-                    create: Bentuk.addBentuk,
-                    update: Bentuk.updateBentuk,
-                    destroy: Bentuk.deleteBentuk
+                    read: Factorylocation.getFactorylocation,
+                    create: Factorylocation.addFactorylocation,
+                    update: Factorylocation.updateFactorylocation,
+                    destroy: Factorylocation.deleteFactorylocation
                 }
             }
         });
-        me.BentukStore = Ext.create('Ext.data.Store', {
-            model: 'BentukModel',
-            remoteSort: true,
-            pageSize: 5
+        me.FactlocationStore = Ext.create('Ext.data.Store', {
+            model: 'FactorylocationModel',
+            remoteSort: true
         });
         function authCk(val){
             if(val == '1'){
@@ -84,49 +68,24 @@ Ext.define('App.view.master.Bentuk', {
         // *************************************************************************************
         // Create the GridPanel
         // *************************************************************************************
-        me.BentukGrid = Ext.create('Ext.grid.Panel', {
-            store: me.BentukStore,
-            enablePaging: true,
-           // loadMask: true,
+        me.FactorylocationGrid = Ext.create('Ext.grid.Panel', {
+            store: me.FactlocationStore,
             columns: [
-                {
-                    text: 'co_id',
-                    sortable: false,
-                    dataIndex: 'co_id',
-                    hidden: true
-                },
-                {
-                    text: 'Bentuk ID',
-                    width: 100,
-                    sortable: true,
-                    dataIndex: 'bentuk_id'
-                },
-                {
-                    text: 'Nama Bentuk',
-                    flex:1,
-                    sortable: true,
-                    dataIndex: 'bentuk_nama'
-                },
-                {
-                    text: 'Keterangan',
-                    width: 200,
-                    sortable: true,
-                    dataIndex: 'keterangan'
-                },
-                {
-                    text: 'Aktif',
-                    sortable: true,
-                    dataIndex: 'aktif',
-                    renderer: authCk
-                }
+                {text: 'co_id',sortable: false,dataIndex: 'co_id',hidden: true },
+                {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
+                {text: 'Description',width: 100,sortable: true,dataIndex: 'description'},
+                {text: 'Location',width: 100,sortable: true,dataIndex: 'location'},
+                {text: 'Remarks',width: 100,sortable: true,dataIndex: 'remarks'},
+                {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
+                {text: 'LastUpdate',width: 100,sortable: true,dataIndex: 'timeedit'}
             ],
             features: [searching],
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
-                    oldName = record.get('bentuk_id');
-                    record.set("old_bentuk_id",oldName);
-                    me.onItemdblclick(me.BentukStore, record, 'Edit Bentuk');
+                    oldName = record.get('pabrik_sequence');
+                    record.set("old_pabrik_sequence",oldName);
+                    me.onItemdblclick(me.FactlocationStore, record, 'Edit Factory Location');
                 }
             },
             dockedItems: [
@@ -140,7 +99,7 @@ Ext.define('App.view.master.Bentuk', {
                             iconCls: 'save',
                             handler: function(){
                                 var form = me.win.down('form');
-                                me.onNew(form, 'BentukModel', 'Tambah Data');
+                                me.onNew(form, 'FactorylocationModel', 'Tambah Data');
                             }
                         },'->',
                         {
@@ -148,21 +107,10 @@ Ext.define('App.view.master.Bentuk', {
                             text: 'Hapus Data',
                             iconCls: 'delete',
                             handler: function() {
-                                me.hapusBentuk(me.BentukStore)
+                                me.hapusFactlocation(me.FactlocationStore)
                             }
                         }
                     ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.BentukStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
                 }
             ]
         });
@@ -204,33 +152,12 @@ Ext.define('App.view.master.Bentuk', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'ID'
+                                    value: 'Description :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    name: 'bentuk_id',
-                                    allowBlank: false,
-                                    stripCharsRe: /(^\s+|\s+$)/g
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nama Bentuk'
-                                },
-                                {
-                                    width: 300,
+                                    width: 150,
                                     xtype: 'textfield',
-                                    name: 'bentuk_nama'
+                                    name: 'description'
                                 }
                             ]
                         },
@@ -244,12 +171,31 @@ Ext.define('App.view.master.Bentuk', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Keterangan'
+                                    value: 'Location :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'location'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Remarks :'
                                 },
                                 {
                                     width: 450,
                                     xtype: 'textfield',
-                                    name: 'keterangan'
+                                    name: 'remarks'
                                 }
                             ]
                         },
@@ -275,7 +221,7 @@ Ext.define('App.view.master.Bentuk', {
                     handler: function(){
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
-                            me.onBentukSave(form, me.BentukStore);
+                            me.onFactlocationSave(form, me.FactlocationStore);
                         }
                     }
                 },
@@ -296,7 +242,7 @@ Ext.define('App.view.master.Bentuk', {
             }
         });
         // END WINDOW
-        me.pageBody = [me.BentukGrid];
+        me.pageBody = [me.FactorylocationGrid];
         me.callParent(arguments);
     }, // end of initComponent
 
@@ -308,11 +254,11 @@ Ext.define('App.view.master.Bentuk', {
         this.action('new');
         this.win.show();
     },
-    onBentukSave: function(form, store){
+    onFactlocationSave: function(form, store){
         var me = this;
-        me.saveBentuk(form, store);
+        me.saveFactlocation(form, store);
     },
-    saveBentuk: function(form, store){
+    saveFactlocation: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -348,11 +294,11 @@ Ext.define('App.view.master.Bentuk', {
             form.getForm().reset();
         }
     },
-    hapusBentuk: function(store){
-        var me = this, grid = me.BentukGrid;
+    hapusFactlocation: function(store){
+        var me = this, grid = me.FactorylocationGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('bentuk_id');
+        bid = sr[0].get('pabrik_sequence');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -360,7 +306,7 @@ Ext.define('App.view.master.Bentuk', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    Bentuk.deleteBentuk;
+//                    Factlocation.deleteFactlocation;
                     store.remove(sr);
                     store.sync();
                     if (store.getCount() > 0) {
@@ -379,7 +325,7 @@ Ext.define('App.view.master.Bentuk', {
      * to call every this panel becomes active
      */
     onActive: function(callback){
-        this.BentukStore.load({params:{start:0, limit:5}});
+        this.FactlocationStore.load();
         callback(true);
     }
 });

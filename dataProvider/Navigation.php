@@ -134,6 +134,8 @@ class Navigation
                     'text' => $this->i18n['wilayah'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWilayah'
                 ), array(
                     'text' => $this->i18n['route'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoute'
+                ),array(
+                    'text' => $this->i18n['factory'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelFactlocation'
                 )
             )
         ));
@@ -154,6 +156,8 @@ class Navigation
                     'text' => $this->i18n['goodsissued'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGI'
                 ), array(
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
+                ), array(
+                    'text' => $this->i18n['stock'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelStock'
                 )
             )
         ));
