@@ -300,8 +300,8 @@ class SalesOrder
     public function updateSOItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['prod_nama'], $data['id'], $data['satuan_nama']);
-        $cond = array('co_id' =>$params->co_id, 'so_num' => $params->so_num, 'prod_id' => $params->prod_id);
+        unset($data['prod_nama'], $data['id'], $data['satuan_nama'], $data['old_prod_id']);
+        $cond = array('co_id' =>$params->co_id, 'so_num' => $params->so_num, 'prod_id' => $params->old_prod_id);
         $sql = $this -> db -> sqlBind($data, 'so10', 'U', $cond);
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

@@ -363,48 +363,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             width : 300
                                         }
                                     ]
-/*
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                    {
-                                        xtype: 'mitos.UpperCaseTextField',
-                                        name : 'fp_num',
-                                        fieldLabel: 'Faktur Pajak #',
-                                        labelAlign: 'right',
-                                        width : 400
-                                    }]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                    {
-                                        xtype: 'mitos.UpperCaseTextField',
-                                        name : 'inv_num',
-                                        fieldLabel: 'Invoice #',
-                                        labelAlign: 'right',
-                                        width : 400
-                                    }]
-*/
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -437,30 +395,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             format : globals['date_display_format']
                                         }
                                     ]
-/*
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                    {
-                                        xtype: 'datefield',
-                                        name : 'tgl_jt_kirim',
-                                        width: 270,
-                                        fieldLabel: 'Tgl JT Kirim',
-                                        labelAlign: 'right',
-                                        submitFormat: 'Y-m-d',
-                                        format : globals['date_display_format']
-                                    }]
-*/
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -1628,23 +1562,23 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 n_disc = (disc_prs/100)*n_brutto;
                 n_netto = n_brutto - n_disc;
             }
-            if (n_loco = 0) {
-                n_loco = n_netto;
+            if (n_loco == 0) {
+                n_loco = hrg;
                 n_transport = 0;
                 n_promosi = 0;
                 n_sosialisasi = 0;
                 n_lain = 0;
             }
-            n_lain = n_netto - n_loco - n_transport - n_promosi - n_sosialisasi;
+            n_lain = hrg - n_loco - n_transport - n_promosi - n_sosialisasi;
         }
-       Ext.getCmp('n_disc_input').setValue(n_disc);
-       Ext.getCmp('n_brutto_input').setValue(n_brutto);
-       Ext.getCmp('n_netto_input').setValue(n_netto);
-       Ext.getCmp('hrg_loco_input').setValue(n_loco);
-       Ext.getCmp('hrg_transport_input').setValue(n_transport);
-       Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
-       Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
-       Ext.getCmp('hrg_lain_input').setValue(n_lain);
+        Ext.getCmp('n_disc_input').setValue(n_disc);
+        Ext.getCmp('n_brutto_input').setValue(n_brutto);
+        Ext.getCmp('n_netto_input').setValue(n_netto);
+        Ext.getCmp('hrg_loco_input').setValue(n_loco);
+        Ext.getCmp('hrg_transport_input').setValue(n_transport);
+        Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
+        Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
+        Ext.getCmp('hrg_lain_input').setValue(n_lain);
 
     },
 
