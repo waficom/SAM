@@ -9,6 +9,13 @@ Ext.define('App.view.master.Formula', {
 
         me.currFormula = null;
         me.curr_coid = null;
+        var searching={
+            ftype : 'searching',
+            mode: 'local'
+            ,           width:  200,
+            disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
+
+        }
 
         Ext.define('FormulaModel', {
             extend: 'Ext.data.Model',
@@ -65,6 +72,101 @@ Ext.define('App.view.master.Formula', {
         me.Formula1Store = Ext.create('Ext.data.Store', {
             model: 'Formula1Model',
             autoLoad: false
+        });
+
+        Ext.define('SpesifikasiPopup', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'spesifikasi_id',type: 'string'},
+                {name: 'spesifikasi_nama',type: 'string'}
+                ,{name: 'n',type: 'string'}
+                ,{name: 'p2o5',type: 'string'}
+                ,{name: 'k2o',type: 'string'}
+                ,{name: 'cao',type: 'string'}
+                ,{name: 'mgo',type: 'string'}
+                ,{name: 'so4',type: 'string'}
+                ,{name: 'b',type: 'string'}
+                ,{name: 'cu',type: 'string'}
+                ,{name: 'zn',type: 'string'}
+                ,{name: 'ah',type: 'string'}
+                ,{name: 'af',type: 'string'},
+                {name: 'timeedit',type: 'date'}
+                // {name: 'timeedit',type: 'date'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read:  Spesifikasi.getspesifikasi
+
+                }
+            }
+        });
+        me.SpesifikasiPopupStore = Ext.create('Ext.data.Store', {
+            model: 'SpesifikasiPopup',
+            autoLoad: true
+        });
+
+        Ext.define('SatuanPopup', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'satuan_id',type: 'string'},
+                {name: 'satuan_nama',type: 'string'},
+                {name: 'timeedit',type: 'date'}
+                // {name: 'timeedit',type: 'date'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read:  Satuan.getsatuan
+
+                }
+            }
+        });
+        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
+            model: 'SatuanPopup',
+            autoLoad: true
+        });
+
+        Ext.define('BahanBakuPopup', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'bb_id',type: 'string'},
+                {name: 'bb_nama',type: 'string'}
+                // {name: 'timeedit',type: 'date'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read:  BahanBaku.getbb
+
+                }
+            }
+        });
+        me.BBPopupStore = Ext.create('Ext.data.Store', {
+            model: 'BahanBakuPopup',
+            autoLoad: true
+        });
+
+        Ext.define('CustomerPopup', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'cust_id',type: 'string'},
+                {name: 'cust_nama',type: 'string'}
+                ,{name: 'kota',type: 'string'}
+
+                // {name: 'timeedit',type: 'date'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read:  Customer.getcustomer
+
+                }
+            }
+        });
+        me.CustomerPopupStore = Ext.create('Ext.data.Store', {
+            model: 'CustomerPopup',
+            autoLoad: true
         });
 
         /**
@@ -176,6 +278,117 @@ Ext.define('App.view.master.Formula', {
             ]
         });
 
+        me.SpesifikasiGrid = Ext.create('App.ux.GridPanel', {
+            store: me.SpesifikasiPopupStore,
+            columns: [
+                {
+                    width: 200,
+                    text: 'ID',
+                    sortable: true,
+                    dataIndex: 'spesifikasi_id'
+                },
+                {
+                    flex: 1,
+                    text: 'Spesifikasi :',
+                    sortable: true,
+                    dataIndex: 'spesifikasi_nama'
+                },
+                {text: 'N', width:50, sortable: false,dataIndex: 'n'},
+                {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
+                {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
+                {text: 'CAO', width:50, sortable: false,dataIndex: 'cao'},
+                {text: 'MGO', width:50, sortable: false,dataIndex: 'mgo'},
+                {text: 'SO4', width:50, sortable: false,dataIndex: 'so4'},
+                {text: 'B', width:50, sortable: false,dataIndex: 'b'},
+                {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
+                {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
+                {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
+                {text: 'AF', width:50, sortable: false,dataIndex: 'af'}
+            ],
+            listeners: {
+                scope: me,
+                select: me.onItemGridClick
+
+            },
+            features:[searching]
+
+        });
+
+        me.CustomerGrid = Ext.create('App.ux.GridPanel', {
+            store: me.CustomerPopupStore,
+            columns: [
+                {
+                    width: 200,
+                    text: 'ID',
+                    sortable: true,
+                    dataIndex: 'cust_id'
+                },
+                {
+                    flex: 1,
+                    text: 'Customer :',
+                    sortable: true,
+                    dataIndex: 'cust_nama'
+                },
+                {text: 'Kota', width:50, sortable: false,dataIndex: 'kota'}
+            ],
+            listeners: {
+                scope: me,
+                select: me.onItemGridClick
+
+            },
+            features:[searching]
+
+        });
+
+        me.SatuanGrid = Ext.create('App.ux.GridPanel', {
+            store: me.SatuanPopupStore,
+            columns: [
+                {
+                    width: 200,
+                    text: 'ID',
+                    sortable: true,
+                    dataIndex: 'satuan_id'
+                },
+                {
+                    flex: 1,
+                    text: 'Kemasan',
+                    sortable: true,
+                    dataIndex: 'satuan_nama'
+                }
+            ],
+            listeners: {
+                scope: me,
+                select: me.onItemGridClick
+
+            },
+            features:[searching]
+
+        });
+        me.BahanBakuGrid = Ext.create('App.ux.GridPanel', {
+            store: me.BBPopupStore,
+            columns: [
+                {
+                    width: 200,
+                    text: 'ID',
+                    sortable: true,
+                    dataIndex: 'bb_id'
+                },
+                {
+                    flex: 1,
+                    text: 'bahan Baku',
+                    sortable: true,
+                    dataIndex: 'bb_nama'
+                }
+            ],
+            listeners: {
+                scope: me,
+                select: me.onItemGridClick
+
+            },
+            features:[searching]
+
+        });
+
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -274,15 +487,23 @@ Ext.define('App.view.master.Formula', {
                             msgTarget: 'under',
                             items: [
                                 {
-                                    xtype : 'customerlivetsearch',
-                                    fieldLabel : 'Customer',
-                                    hideLabel : false,
-                                    itemId : 'cust_id',
-                                    name : 'cust_id',
-                                    anchor : null,
-                                    labelWidth : 100,
-                                    width : 400,
-                                    margin : '0 0 0 0'
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Customer :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'cust_id',
+                                    id: 'cust_id_formula'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'choose item',
+                                    handler: function(){
+                                        //me.myWinChooseItem.show();
+                                        me.ShowGridPopup(me.CustomerPopupStore,'Customer',me.CustomerGrid);
+                                    }
                                 }
                             ]
                         },
@@ -294,15 +515,23 @@ Ext.define('App.view.master.Formula', {
                             msgTarget: 'under',
                             items: [
                                 {
-                                    xtype : 'spesifikasilivetsearch',
-                                    fieldLabel : 'Spesifikasi',
-                                    hideLabel : false,
-                                    itemId : 'spesifikasi_id',
-                                    name : 'spesifikasi_id',
-                                    anchor : null,
-                                    labelWidth : 100,
-                                    width : 400,
-                                    margin : '0 0 0 0'
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Spesifikasi :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'spesifikasi_id',
+                                    id: 'spesifikasi_id_formula'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'choose item',
+                                    handler: function(){
+                                        //me.myWinChooseItem.show();
+                                        me.ShowGridPopup(me.SpesifikasiPopupStore,'Spesifikasi',me.SpesifikasiGrid);
+                                    }
                                 }
                             ]
                         },
@@ -411,15 +640,23 @@ Ext.define('App.view.master.Formula', {
                             msgTarget: 'under',
                             items: [
                                 {
-                                    xtype : 'bblivetsearch',
-                                    fieldLabel : 'Bahan Baku',
-                                    hideLabel : false,
-                                    itemId : 'bb_id',
-                                    name : 'bb_id',
-                                    anchor : null,
-                                    labelWidth : 100,
-                                    width : 400,
-                                    margin : '0 0 0 0'
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Bahan Baku :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'bb_id',
+                                    id: 'bb_id_formula'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'choose item',
+                                    handler: function(){
+                                        //me.myWinChooseItem.show();
+                                        me.ShowGridPopup(me.BBPopupStore,'Satuan',me.BahanBakuGrid);
+                                    }
                                 }
                             ]
                         },
@@ -453,15 +690,23 @@ Ext.define('App.view.master.Formula', {
                             msgTarget: 'under',
                             items: [
                                 {
-                                    xtype : 'satuanlivetsearch',
-                                    fieldLabel : 'Satuan',
-                                    hideLabel : false,
-                                    itemId : 'satuan_id',
-                                    name : 'satuan_id',
-                                    anchor : null,
-                                    labelWidth : 100,
-                                    width : 400,
-                                    margin : '0 0 0 0'
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Satuan :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'satuan_id',
+                                    id: 'satuan_id_formula'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'choose item',
+                                    handler: function(){
+                                        //me.myWinChooseItem.show();
+                                        me.ShowGridPopup(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
+                                    }
                                 }
                             ]
                         }
@@ -667,6 +912,38 @@ Ext.define('App.view.master.Formula', {
                 }
             }
         })
+    },
+    ShowGridPopup: function(store, title, grid){
+        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
+            layout: 'fit',
+            title: title,
+            width: 400,
+            height: 300,
+            items:[grid],
+            modal:true
+
+        });
+        this.myWinChooseItem.show();
+    },
+
+    onItemGridClick: function(grid,selected){ //
+        var me = this;
+
+        var getSpesifikasi= selected.data.spesifikasi_id;
+        var getSatuan= selected.data.satuan_id;
+        var getCustomer= selected.data.cust_id;
+        var getBB= selected.data.bb_id;
+
+        if(selected.data.cust_id != null){
+            Ext.getCmp('cust_id_formula').setValue(getCustomer);
+        }else if(selected.data.spesifikasi_id != null){
+            Ext.getCmp('spesifikasi_id_formula').setValue(getSpesifikasi);
+        }else if(selected.data.satuan_id != null){
+            Ext.getCmp('satuan_id_formula').setValue(getSatuan);
+        }else if(selected.data.bb_id != null){
+            Ext.getCmp('bb_id_formula').setValue(getBB);
+        }
+        me.myWinChooseItem.close();
     },
     /**
      * This function is called from Viewport.js when

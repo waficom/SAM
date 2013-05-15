@@ -104,6 +104,8 @@ $LANG = array(
     'workorder'                             => 'Produksi',
     'produksi'                              => 'Request Produksi',
     'route'                                  => 'Route',
-    'releaseorder'                           => 'Release Order'
+    'releaseorder'                           => 'Release Order',
+    'stock'                                 => 'Stok',
+    'factory'                                 => 'Pabrik'
 
 );

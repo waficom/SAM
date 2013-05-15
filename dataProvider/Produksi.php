@@ -189,9 +189,10 @@ class Produksi
             if ($val == '')
                 unset($data[$key]);
         }
+
         $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'I');
         $this -> db -> setSQL($sql);
-            print_r($sql);
+            //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -214,7 +215,7 @@ class Produksi
         , $data['ah'], $data['af']);
         $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'U', array('no_ppd' => $params-> old_no_ppd));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
+        print_r($sql);
         $this -> db -> execLog();
         return $params;
     }

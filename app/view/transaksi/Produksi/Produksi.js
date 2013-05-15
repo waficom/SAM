@@ -526,8 +526,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     width: 100,
                                     xtype: 'textfield',
                                     id:'so_num_id',
-                                    name: 'so_num',
-                                    disabled: true
+                                    name: 'so_num'
+                                   // disabled: true
                                 },
                                 {
                                     xtype: 'button',
@@ -555,7 +555,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     width: 100,
                                     xtype: 'textfield',
                                     id:'formula_id_id',
-                                    disabled: true,
+                                   // disabled: true,
                                     name: 'formula_id'
                                 },
                                 {
@@ -738,12 +738,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
         var getso_num= selected.data.so_num;
         var getformula_id= selected.data.formula_id;
-        /*if((getformula_id != null) || (getformula_id = '')){
-            Ext.getCmp('formula_id_id').setValue(getformula_id);
-        } else
-        {
-            Ext.getCmp('so_num_id').setValue(getso_num);
-        }*/
 
         if(selected.data.so_num != null){
             Ext.getCmp('so_num_id').setValue(getso_num);
@@ -810,7 +804,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
     },
     saveProduksi1: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-            f = me.win.down('form').getForm(), rec = f.getRecord();
+            f = me.winform1.down('form').getForm(), rec = f.getRecord();
 
         form.findField('no_pp').setValue(me.currProduksi);
         //  form.findField('co_id').setValue(me.curr_coid);
