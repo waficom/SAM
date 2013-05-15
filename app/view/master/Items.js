@@ -322,7 +322,7 @@ Ext.define('App.view.master.Items', {
             ]
         });
         me.JenisGrid = Ext.create('App.ux.GridPanel', {
-            store: me.JenisStore,
+            store: me.JenisPopupStore,
             columns: [
                 {
                     width: 200,
