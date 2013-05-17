@@ -141,12 +141,12 @@ class Items
 		$this->db->setSQL("SELECT p.*
                          FROM price p
                     LEFT JOIN items i ON i.prod_id = p.prod_id and i.co_id = p.co_id
-                    WHERE p.prod_id = '" . $params->prod_id ."'");
+                    WHERE p.prod_id = '$params->prod_id'");
 
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
 		{
-            array_change_key_case($row);
+            $row = array_change_key_case($row);
 			array_push($rows, $row);
 		}
 
@@ -160,7 +160,7 @@ class Items
 	public function addprice(stdClass $params)
 	{
 		$data = get_object_vars($params);
-        unset($data['id'], $data['old_prod_id']);
+        unset($data['id'], $data['old_prod_id'],$data['sequence_no']);
 
 		foreach($data as $key => $val){
 			if($val == null || $val == ''){
@@ -184,6 +184,7 @@ class Items
 
         $sql = $this->db->sqlBind($data, 'price', 'I');
 		$this->db->setSQL($sql);
+      // print_r($sql);
 		$this->db->execLog();
 		return $params;
 	}
@@ -195,21 +196,23 @@ class Items
 	public function updateprice(stdClass $params)
 	{
 		$data       = get_object_vars($params);
-		unset($data['id'], $data['prod_id'], $data['old_tgl_efektif'], $data['tgl_efektif']);
+		unset($data['id'], $data['prod_id'], $data['sequence_no'],$data['prod_nama'],$data['old_prod_id'],$data['puslit'],$data['insentif']);
         $data['tgl_efektif'] = $this->db->Date_Converter($data['tgl_efektif']);
-		$sql = $this->db->sqlBind($data, 'price', 'U', array('prod_id' => $params->prod_id, 'tgl_efektif' => $params->old_tgl_efektif));
+		$sql = $this->db->sqlBind($data, 'price', 'U', array('prod_id' => $params->prod_id, 'sequence_no' => $params->sequence_no));
 		$this->db->setSQL($sql);
+        //print_r($sql);
 		$this->db->execLog();
 		return $params;
 	}
 
 	public function deleteprice(stdClass $params)
 	{
-        $tgl = $this->db->Date_Converter($params['tgl_efektif']);
-
+        //$tgl = $this->db->Date_Converter($params['tgl_efektif']);
+       // error_reporting(-1);
         $sql = "DELETE FROM price WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id')
-		        and (tgl_efektif = '$tgl')";
+		        and (sequence_no = 'sequence_no')";
 		$this -> db -> setSQL($sql);
+        //print_r($sql);
 		$this -> db -> execLog();
 		return $params;
 	}

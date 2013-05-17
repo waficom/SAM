@@ -134,10 +134,11 @@ class Formula
 
 	public function deleteformula(stdClass $params)
 	{
-		$sql = "DELETE FROM formula1 WHERE formula_id = '". $params -> formula_id . "'";
+
+		$sql = "DELETE FROM formula1 WHERE (formula_id = '$params->formula_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
-		$sql = "DELETE FROM formula0 WHERE formula_id = '". $params -> formula_id . "'";
+		$sql = "DELETE FROM formula0 WHERE (formula_id = '$params->formula_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

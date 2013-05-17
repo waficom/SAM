@@ -89,7 +89,8 @@ Ext.define('App.view.master.Formula', {
                 ,{name: 'cu',type: 'string'}
                 ,{name: 'zn',type: 'string'}
                 ,{name: 'ah',type: 'string'}
-                ,{name: 'af',type: 'string'},
+                ,{name: 'af',type: 'string'}
+                ,{name: 'te',type: 'string'},
                 {name: 'timeedit',type: 'date'}
                 // {name: 'timeedit',type: 'date'}
             ],
@@ -303,7 +304,8 @@ Ext.define('App.view.master.Formula', {
                 {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
                 {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
                 {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'}
+                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
+                {text: 'TE', width:50, sortable: false,dataIndex: 'te'}
             ],
             listeners: {
                 scope: me,

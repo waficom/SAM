@@ -58,6 +58,7 @@ Ext.define('App.view.master.Items', {
             extend: 'Ext.data.Model',
             fields: [
                 { name: 'co_id', type: 'string'},
+                { name: 'sequence_no', type: 'string'},
                 { name: 'prod_id', type: 'string'},
                 { name: 'prod_nama', type: 'string'},
                 { name: 'harga', type: 'float'},
@@ -161,8 +162,9 @@ Ext.define('App.view.master.Items', {
                 ,{name: 'cu',type: 'string'}
                 ,{name: 'zn',type: 'string'}
                 ,{name: 'ah',type: 'string'}
-                ,{name: 'af',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                ,{name: 'af',type: 'string'}
+                ,{name: 'te',type: 'string'}
+                ,{name: 'timeedit',type: 'date'}
                 // {name: 'timeedit',type: 'date'}
             ],
             proxy: {
@@ -283,12 +285,13 @@ Ext.define('App.view.master.Items', {
             region: 'center',
             columns: [
                 { width: 100, text: 'Company', sortable: true, dataIndex: 'co_id', hidden: true},
+                { width: 100, text: 'sequence_no', sortable: true, dataIndex: 'sequence_no', hidden: true},
                 { width: 200, text: 'ID', sortable: true, dataIndex: 'prod_id', hidden: true},
                 { width: 200, text: 'Harga', sortable: true, dataIndex: 'harga'},
                 { width : 100, text: 'PPN', sortable: true, dataIndex: 'ppn', renderer: authCk},
                 { width : 100, text: 'Promosi', sortable: true, dataIndex: 'promosi', renderer: authCk},
-                { width : 100, text: 'Puslit', sortable: true, dataIndex: 'puslit', renderer: authCk},
-                { width : 100, text: 'Insentif', sortable: true, dataIndex: 'insentif', renderer: authCk},
+               // { width : 100, text: 'Puslit', sortable: true, dataIndex: 'puslit', renderer: authCk},
+                //{ width : 100, text: 'Insentif', sortable: true, dataIndex: 'insentif', renderer: authCk},
                 { width : 150, text: 'Tanggal Efektif', sortable: true, dataIndex: 'tgl_efektif', renderer: Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             listeners: {
@@ -309,7 +312,7 @@ Ext.define('App.view.master.Items', {
                             var form1 = me.winform1.down('form');
                             me.onNewPrice(form1, 'PriceModel', 'Tambah Data');
                         }
-                    },'->',
+                    },
                     {
                         xtype: 'button',
                         text: 'Hapus Data',
@@ -442,7 +445,8 @@ Ext.define('App.view.master.Items', {
                 {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
                 {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
                 {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'}
+                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
+                {text: 'TE', width:50, sortable: false,dataIndex: 'te'}
             ],
             listeners: {
                 scope: me,
@@ -741,6 +745,11 @@ Ext.define('App.view.master.Items', {
                             name: 'prod_id'
                         },
                         {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'sequence_no'
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -786,30 +795,6 @@ Ext.define('App.view.master.Items', {
                                 }
                             ]
 						},
-						{
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width : 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'PUSLIT',
-                                    name: 'puslit'
-                                }
-                            ]
-						},
-						{
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width : 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Insentif',
-                                    name: 'insentif'
-                                }
-                            ]
-                        },
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -1019,7 +1004,7 @@ Ext.define('App.view.master.Items', {
         var me = this, grid = me.PriceGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('tgl_efektif');
+        bid = sr[0].get('sequence_no');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
