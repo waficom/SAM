@@ -103,9 +103,17 @@ $LANG = array(
     'goodsissued'                           => 'Pengiriman Barang',
     'workorder'                             => 'Produksi',
     'produksi'                              => 'Request Produksi',
-    'route'                                  => 'Route',
-    'releaseorder'                           => 'Release Order',
+    'route'                                 => 'Route',
+    'releaseorder'                          => 'Release Order',
     'stock'                                 => 'Stok',
-    'factory'                                 => 'Pabrik'
+    'factory'                               => 'Pabrik',
+    'report'                                => 'Laporan',
+    'reportpanel'                           => 'Panel Laporan',
+    'generate_report'                       => 'Buat Laporan',
+    'get_pdf'                               => 'Ambil PDF',
+    'reset'                                 => 'Kembalikan',
+    'print'                                 => 'Cetak',
+    'filter'                                => 'Parameter Saringan'
+
 
 );

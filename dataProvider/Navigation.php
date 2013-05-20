@@ -161,6 +161,20 @@ class Navigation
                 )
             )
         ));
+
+        // *************************************************************************************
+        // Report Folder
+        // *************************************************************************************
+        $report = array(
+            'text' => $this->i18n['report'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationReport'
+        );
+//		if($this->ACL->hasPermission('access_gloabal_settings')){
+        $report['children'][] = array(
+            'text' => $this->i18n['reportpanel'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReportPanel'
+        );
+
+        array_push($nav, $report);
+
         // *************************************************************************************
         // Administration Folder
         // *************************************************************************************

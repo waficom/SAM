@@ -101,10 +101,17 @@ $LANG = array(
     'goodsreceived'                         => 'Goods Received',
     'goodsissued'                           => 'Goods Issued',
     'workorder'                             => 'Work Order',
-    'produksi'                           => 'Request Produksi',
-    'route'                           => 'Route',
-    'releaseorder'                           => 'Release Order',
-    'stock'                             => 'Stock',
-    'factory'                             => 'Factory'
+    'produksi'                              => 'Request Produksi',
+    'route'                                 => 'Route',
+    'releaseorder'                          => 'Release Order',
+    'stock'                                 => 'Stock',
+    'factory'                               => 'Factory',
+    'report'                                => 'Report',
+    'reportpanel'                           => 'Report Panel',
+    'generate_report'                       => 'Generate Report',
+    'get_pdf'                               => 'Get PDF',
+    'reset'                                 => 'Reset',
+    'print'                                 => 'Print',
+    'filter'                                => 'Filter Parameter'
 
 );

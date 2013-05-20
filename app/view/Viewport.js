@@ -148,6 +148,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
 
+        me.MainPanel.add(Ext.create('App.view.report.ReportPanel'));
+
 
         /**
          * Footer Panel

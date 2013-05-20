@@ -333,7 +333,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                         hideLabel : true,
                                                         items : [
                                                             {
-                                                                xtype: 'mitos.UpperCaseTextField',
+//                                                                xtype: 'mitos.UpperCaseTextField',
+                                                                xtype: 'searchfield',
                                                                 name : 'po_num',
                                                                 fieldLabel: 'PO #',
                                                                 labelAlign: 'right',
@@ -855,6 +856,89 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     close: function(){
                         me.action(me.winLoc, 'close');
                     }
+                }
+            });
+
+            var storeGrid = Ext.create('Ext.data.Store',{
+                model: 'treeMenu'
+                ,proxy: {
+                    type: 'ajax'
+                    ,url : 'http://lokal.com/'
+                    ,noCache    : false
+                    ,params     : Ext.encode({
+                        start   : 0
+                        ,limit  : 20
+                    })
+                    ,actionMethods  : 'POST'
+                    ,reader: {
+                        type: 'json'
+                        ,root: 'response'
+                        ,totalProperty: 'jumlah'
+                        ,idProperty: 'MN_ID'
+                    }
+                }
+                ,autoLoad: true
+                ,sorters: [{
+                    property    : 'MN_ID',
+                    direction   : 'ASC'
+                }]
+            });
+
+            var smGrid = Ext.create('Ext.selection.CheckboxModel');
+            // create the Grid
+            var grid = Ext.create('Ext.grid.Panel', {
+                store: storeGrid
+                ,columns: [
+                    { header: 'NAMA',width: 200,sortable: true,dataIndex: 'MN_NAME'}
+                    ,{ header: 'LINK',width: 100,sortable: true,dataIndex: 'MN_LINK'}
+                    ,{ header: 'PARENT',width: 100,sortable: true,dataIndex: 'MN_PARENT'}
+                    ,{ header: 'GROUP',width: 100,sortable: true,dataIndex: 'MN_GRP'}
+                    ,{ header: 'URUTAN',width: 100,sortable: true,dataIndex: 'MN_SORT'}
+                    ,{ header: 'STATUS',width: 100,sortable: true,dataIndex: 'MN_STATUS'}
+                    ,{ header: 'ICON',width: 100,sortable: true,dataIndex: 'MN_ICON'}
+                    ,{ header: 'TYPE',width: 100,sortable: true,dataIndex: 'MN_TYPE'}
+                ]
+                ,height: 350
+                ,selModel : smGrid
+                ,width: 600
+                ,title: 'CRUD'
+                ,viewConfig: {
+                    stripeRows: true
+                }
+                ,bbar: new Ext.PagingToolbar({
+                    pageSize    : 20
+                    ,store      : storeGrid
+                    ,displayInfo: true
+                    ,displayMsg : 'Data yang ada {0} - {1} Dari {2}'
+                    ,emptyMsg   : "Tidak ada data"
+                })
+            });
+
+            var helpGrid = new Ext.menu.Menu();
+            helpGrid.add(grid);
+
+            Ext.define('Ext.ux.form.SearchField', {
+                extend: 'Ext.form.field.Trigger',
+                alias: 'widget.searchfield',
+                trigger1Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
+                trigger2Cls: Ext.baseCSSPrefix + 'form-search-trigger',
+                hasSearch : false,
+                paramName : 'query',
+                initComponent: function(){
+                    this.callParent(arguments);
+                    this.on('specialkey', function(f, e){
+                        if(e.getKey() == e.ENTER){
+                            this.onTrigger2Click();
+                        }
+                    }, this);
+                },
+                afterRender: function(){
+                    this.callParent();
+                    this.triggerEl.item(0).setDisplayed('none');
+                },
+                onTrigger1Click : Ext.form.field.Trigger.prototype.onTriggerClick,
+                onTrigger2Click : function(){
+                    helpGrid.showAt([this.getPosition()[0],this.getPosition()[1]+this.getHeight()]);
                 }
             });
 

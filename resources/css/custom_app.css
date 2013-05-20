@@ -702,6 +702,11 @@ body#login {
 	color: #fff !important;
 }
 
+.winChoose {
+    background: none;
+    background-color: #3b9bff !important
+}
+
 #panelLayout .x-layout-split-bottom {
 	background: none !important;
 }

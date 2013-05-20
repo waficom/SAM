@@ -91,6 +91,7 @@ requires = [
     'Ext.ux.SlidingPager',
     'Ext.ux.PreviewPlugin',
     'Ext.ux.grid.feature.Searching',
+    'Ext.ux.form.SearchField',
     'App.ux.grid.GridToHtml',
     'App.ux.grid.Printer',
 /**
@@ -316,6 +317,8 @@ requires = [
     'App.view.transaksi.workorder.WorkOrder',
     'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
+
+    'App.view.report.ReportPanel',
 
     //'App.view.calendar.ExtensibleAll',
 //				'App.view.calendar.Calendar',
