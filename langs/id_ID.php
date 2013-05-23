@@ -107,13 +107,15 @@ $LANG = array(
     'releaseorder'                          => 'Release Order',
     'stock'                                 => 'Stok',
     'factory'                               => 'Pabrik',
+    'report_center'                         => 'Report Center',
     'report'                                => 'Laporan',
     'reportpanel'                           => 'Panel Laporan',
     'generate_report'                       => 'Buat Laporan',
     'get_pdf'                               => 'Ambil PDF',
     'reset'                                 => 'Kembalikan',
     'print'                                 => 'Cetak',
-    'filter'                                => 'Parameter Saringan'
-
-
+    'filter'                                => 'Parameter Saringan',
+    'report_center'                         => 'Pusat Laporan',
+    'modules'                               => 'Modul',
+    'back'                                  => 'Kembali'
 );

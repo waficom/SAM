@@ -111,7 +111,11 @@ $LANG = array(
     'generate_report'                       => 'Generate Report',
     'get_pdf'                               => 'Get PDF',
     'reset'                                 => 'Reset',
+    'report_center'                         => 'Report Center',
     'print'                                 => 'Print',
-    'filter'                                => 'Filter Parameter'
+    'filter'                                => 'Filter Parameter',
+    'report_center'                         => 'Report Center',
+    'modules'                               => 'Modules',
+    'back'                                  => 'Back'
 
 );

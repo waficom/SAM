@@ -4,12 +4,12 @@ if(!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-/*
+
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
     include_once($_SESSION['root'] . '/dataProvider/Modules.php');
     $m = new Modules();
 }
-*/
+
 /*
  * getREMOTING_API
  */
@@ -53,10 +53,9 @@ echo 'Ext.ns("App.data");';
 echo 'App.data = [];';
 echo 'App.data.push(' . getREMOTING_API($API) . ');';
 
-/*
+
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
     foreach ($m->getEnabledModules() AS $module) {
         echo 'App.data.push(' . getREMOTING_API($module['actionsAPI'], $module['dir']) . ');';
     }
 }
-*/

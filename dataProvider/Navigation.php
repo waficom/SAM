@@ -49,19 +49,10 @@ class Navigation
         $nav = array(
             array(
                 'text' => $this->i18n['dashboard'], 'disabled' => ($this->ACL->hasPermission('access_dashboard') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoDash', 'id' => 'panelDashboard'
-                /*			), array(
-                                'text' => $this->i18n['calendar'], 'disabled' => ($this->ACL->hasPermission('access_calendar') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoCalendar', 'id' => 'panelCalendar'
-                /*			), array(
-                                'text' => $this->i18n['messages'], 'disabled' => ($this->ACL->hasPermission('access_messages') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'mail', 'id' => 'panelMessages'
-                */		//	)
-                //, array(
-                //		'text' => $this->i18n['patient_search'], 'disabled' => ($this->ACL->hasPermission('access_patient_search') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'searchUsers', 'id' => 'panelPatientSearch'
-                /*			), array(
-                                'text' => $this->i18n['area_floor_plan'], 'disabled' => false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoZoneAreas', 'id' => 'panelAreaFloorPlan'
-                            ), array(
-                                'text' => $this->i18n['patient_pool_areas'], 'disabled' => false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoPoolArea16', 'id' => 'panelPoolArea'
-                */
-            )
+//                			), array(
+//                                'text' => $this->i18n['reportcenter'], 'disabled' => ($this->ACL->hasPermission('access_reportcenter') ? false : true), 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelReportCenter'
+//                                'text' => $this->i18n['report_center'], 'disabled' => false, 'leaf' => true, 'cls' => 'file', 'iconCls' => 'icoReport', 'id' => 'panelReportCenter'
+                			)
         );
         // *************************************************************************************
         // Patient Folder
@@ -165,16 +156,17 @@ class Navigation
         // *************************************************************************************
         // Report Folder
         // *************************************************************************************
+/*
         $report = array(
             'text' => $this->i18n['report'], 'cls' => 'folder', 'expanded' => true, 'id' => 'navigationReport'
         );
 //		if($this->ACL->hasPermission('access_gloabal_settings')){
         $report['children'][] = array(
-            'text' => $this->i18n['reportpanel'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReportPanel'
+            'text' => $this->i18n['reportpanel'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReportCenter'
         );
 
         array_push($nav, $report);
-
+*/
         // *************************************************************************************
         // Administration Folder
         // *************************************************************************************
@@ -261,10 +253,11 @@ class Navigation
                 //}
 
                 if($this->ACL->hasPermission('access_documents')){
+*/
                 $admin['children'][] = array(
                     'text' => $this->i18n['modules'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelModules'
                     );
-                }
+/*                }
         */
 //		if($this->ACL->hasPermission('access_gloabal_settings')
 //		|| $this->ACL->hasPermission('access_users')

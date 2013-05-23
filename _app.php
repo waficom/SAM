@@ -23,7 +23,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             settings = {},
             globals = {},
             ext = 'extjs-4.1.1a',
-            version = '0.0.6.175',
+            version = '0.5.6.175',
             requires;
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -68,10 +68,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         paths: {
             'Ext': 'lib/extjs-4.1.1a/src',
             'Ext.ux': 'app/ux/ux',
-            'App' : 'app'
-            /*                    'App': 'app',
-             'Modules': 'modules',
-             'Extensible': 'lib/extensible-1.5.1/src'
+            'App' : 'app',
+//            'Report': 'app/view/reportcenter',
+            'Modules': 'modules'
+/*             'Extensible': 'lib/extensible-1.5.1/src'
              */
         }
     });
@@ -318,8 +318,6 @@ requires = [
     'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
 
-    'App.view.report.ReportPanel',
-
     //'App.view.calendar.ExtensibleAll',
 //				'App.view.calendar.Calendar',
 //				'App.view.messages.Messages',
@@ -381,9 +379,9 @@ requires = [
      'App.view.administration.Lists',
      'App.view.administration.Log',
      'App.view.administration.Medications',
-
+*/
      'App.view.administration.Modules',
-
+/*
      'App.view.administration.FloorPlans',
      'App.view.administration.Practice',
      'App.view.administration.PreventiveCare',
@@ -396,7 +394,7 @@ requires = [
      * Load the miscellaneous related panels
      */
 //				'App.view.miscellaneous.Addressbook',
-    'App.view.miscellaneous.MyAccount'
+    'App.view.miscellaneous.MyAccount',
 //				'App.view.miscellaneous.MySettings',
     /*
      'App.view.miscellaneous.OfficeNotes',
@@ -406,7 +404,7 @@ requires = [
     /*
      * Dynamically load the modules
      */
-//				'Modules.Module'
+	'Modules.Module'
 ];
 (function(){
     var scripts = document.getElementsByTagName('script'), localhostTests = [/^localhost$/, /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?\b/ // IP v4

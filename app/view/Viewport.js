@@ -122,7 +122,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.administration.Globals'));
         me.MainPanel.add(Ext.create('App.view.administration.Users'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
-        
+        me.MainPanel.add(Ext.create('App.view.administration.Modules'));
+
         me.MainPanel.add(Ext.create('App.view.master.Companies'));
         me.MainPanel.add(Ext.create('App.view.master.Bentuk'));
         me.MainPanel.add(Ext.create('App.view.master.BahanBaku'));
@@ -148,7 +149,6 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
 
-        me.MainPanel.add(Ext.create('App.view.report.ReportPanel'));
 
 
         /**
@@ -350,7 +350,7 @@ Ext.define('App.view.Viewport', {
      */
     loadModules: function(){
         say('Loading Modules');
-/*        
+
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
@@ -358,7 +358,6 @@ Ext.define('App.view.Viewport', {
                 Ext.create('Modules.' + modules[i].dir + '.Main');
             }
         });
-*/        
     },
     removeAppMask: function(){
         Ext.get('mainapp-loading').remove();
