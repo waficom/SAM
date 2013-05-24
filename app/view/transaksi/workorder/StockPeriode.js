@@ -23,6 +23,11 @@ Ext.define('App.view.transaksi.workorder.StockPeriode', {
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
+        var searching = {
+            ftype: 'searching',
+            mode: 'local',
+            width: 200
+        };
         Ext.define('StockModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -34,18 +39,17 @@ Ext.define('App.view.transaksi.workorder.StockPeriode', {
                 {name: 'stock_out',type: 'string'},
                 {name: 'stock_total',type: 'string'},
                 {name: 'stockdate',type: 'date'}
-                //{name: 'old_Stock_id',type: 'string'}
+
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Stock.getStock
+                    read: StockPeriode.getStock
                 }
             }
         });
         me.StockStore = Ext.create('Ext.data.Store', {
-            model: 'StockModel',
-            remoteSort: true
+            model: 'StockModel'
         });
         function authCk(val){
             if(val == '1'){
@@ -55,11 +59,7 @@ Ext.define('App.view.transaksi.workorder.StockPeriode', {
             }
             return val;
         }
-        var searching = {
-            ftype: 'searching',
-            mode: 'local',
-            width: 200
-        };
+
 
         // *************************************************************************************
         // Create the GridPanel
@@ -67,10 +67,10 @@ Ext.define('App.view.transaksi.workorder.StockPeriode', {
         me.StockGrid = Ext.create('Ext.grid.Panel', {
             store: me.StockStore,
             columns: [
-                {text: 'co_id',sortable: false,dataIndex: 'co_id',hidden: true },
+                //{text: 'co_id',sortable: false,dataIndex: 'co_id',hidden: true },
                 {text: 'No.R.Produksi',width: 100,sortable: true,dataIndex: 'no_pp'},
                 {text: 'Sales Order',width: 100,sortable: true,dataIndex: 'so_num'},
-                {text: 'no_ppd',width: 100,sortable: true,dataIndex: 'no_ppd', hidden: true},
+                //{text: 'no_ppd',width: 100,sortable: true,dataIndex: 'no_ppd', hidden: true},
                 {text: 'tanggal',width: 100,sortable: true,dataIndex: 'stockdate'},
                 {text: 'IN',width: 100,sortable: true,dataIndex: 'stock_in'},
                 {text: 'OUT',width: 100,sortable: true,dataIndex: 'stock_out'},
@@ -86,7 +86,9 @@ Ext.define('App.view.transaksi.workorder.StockPeriode', {
         me.pageBody = [me.StockGrid];
         me.callParent(arguments);
     }, // end of initComponent
-
+    setForm: function(form, title){
+        form.up('window').setTitle(title);
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

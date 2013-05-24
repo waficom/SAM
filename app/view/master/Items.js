@@ -544,11 +544,17 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.JenisPopupStore,'jenis',me.JenisGrid);
                                     }
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'jenis_desc_itm'
                                 }
                             ]
                         },
@@ -572,11 +578,17 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.KemasanPopupStore,'Kemasan',me.KemasanGrid);
                                     }
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'kemasan_desc_itm'
                                 }
                             ]
                         },
@@ -601,11 +613,17 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
                                     }
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'satuan_desc_itm'
                                 }
                             ]
                         },
@@ -629,11 +647,17 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.SpesifikasiPopupStore,'Spesifikasi',me.SpesifikasiGrid);
                                     }
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'spesifikasi_desc_itm'
                                 }
                             ]
                         },
@@ -657,11 +681,17 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.BentukPopupStore,'Bentuk',me.BentukGrid);
                                     }
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'bentuk_desc_itm'
                                 }
                             ]
                         },
@@ -946,12 +976,13 @@ Ext.define('App.view.master.Items', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+        store.load(pro);
     },
 
     onPriceSave: function(form, store){
         var me = this;
 			me.saveprice(form, store);
+
     },
     saveprice: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record), 
@@ -975,7 +1006,7 @@ Ext.define('App.view.master.Items', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+        store.load({params:{prod_id: me.currprod_id}});
     },
     onItemsDelete: function(store){
         var me = this, grid = me.ItemsGrid;
@@ -1044,16 +1075,23 @@ Ext.define('App.view.master.Items', {
         var getSpesifikasi= selected.data.spesifikasi_id;
         var getJenis= selected.data.jenis_id;
 
+
+
         if(selected.data.kemasan_id != null){
             Ext.getCmp('kemasan_id_item').setValue(getKemasan);
+            Ext.getCmp('kemasan_desc_itm').setValue(selected.data.kemasan_nama);
         }else if(selected.data.bentuk_id != null){
             Ext.getCmp('bentuk_id_item').setValue(getBentuk);
+            Ext.getCmp('bentuk_desc_itm').setValue(selected.data.bentuk_nama);
         }else if(selected.data.satuan_id != null){
             Ext.getCmp('satuan_id_item').setValue(getSatuan);
+            Ext.getCmp('satuan_desc_itm').setValue(selected.data.satuan_nama);
         }else if(selected.data.spesifikasi_id != null){
             Ext.getCmp('spesifikasi_id_item').setValue(getSpesifikasi);
+            Ext.getCmp('spesifikasi_desc_itm').setValue(selected.data.spesifikasi_nama);
         }else if(selected.data.jenis_id != null){
             Ext.getCmp('jenis_id_item').setValue(getJenis);
+            Ext.getCmp('jenis_desc_itm').setValue(selected.data.jenis_nama);
         }
         me.myWinChooseItem.close();
     },

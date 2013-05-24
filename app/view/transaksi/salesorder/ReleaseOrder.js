@@ -110,6 +110,12 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                     dataIndex : 'n_netto',
                     renderer: Ext.util.Format.numberRenderer('0,000.00'),
                     width :50
+                },
+                {
+                    header : 'Tgl Release',
+                    dataIndex : 'released_date',
+                    renderer:Ext.util.Format.dateRenderer('d-m-Y'),
+                    width : 100
                 },{
                     header : 'Status',
                     dataIndex : 'statusdesc',
@@ -260,6 +266,7 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
+        store.load();
 
     },
     onItemdblclick: function(store, record, title){

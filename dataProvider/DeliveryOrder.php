@@ -25,7 +25,7 @@ if(!isset($_SESSION)){
 }
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
-class Produksi
+class DeliveryOrder
 {
 
     /**
@@ -43,12 +43,10 @@ class Produksi
     }
 
 
-    public function getProduksi(stdClass $params)
+
+    public function getDeliveryOrder(stdClass $params)
     {
-        $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.secuence_no, A.pabrik_sequence
-, A.userinput, A.useredit, case A.status when '0' then 'new' else 'Release' end as statusdesc, B.description as factory
-from pp_produksi A
-left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence where A.status='0' ORDER BY A.timeedit DESC";
+        $sql = "SELECT * FROM viewdeliveryorder ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -61,46 +59,30 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
 
     }
 
-    public function getViewDetailProduksi(stdClass $params)
-    {
-        $this->db->setSQL("SELECT *
-                         FROM PP_DETAILPRODUKSI
-                    WHERE no_ppd = '" . $params->no_ppd ."'ORDER BY timeedit DESC");
-//        $this -> db -> setSQL($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
     /**
      * @param stdClass $params
      * @return stdClass
      */
-    public function addProduksi(stdClass $params)
+    public function addDeliveryOrder(stdClass $params)
     {
 //        error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
-        $data['pp_date'] = $this->db->Date_Converter($data['pp_date']);
+        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['no_pp']);
+        unset($data['id'],$data['do_num']);
         foreach ($data AS $key => $val)
         {
             if ($val == '')
                 unset($data[$key]);
         }
 
-        $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'I');
+        $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'I');
         $this -> db -> setSQL($sql);
-//           print_r($sql);
+          //print_r($sql);
         $this -> db -> execLog();
 //        error_reporting(0);
         return $params;
@@ -110,39 +92,39 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateProduksi(stdClass $params)
+    public function updateDeliveryOrder(stdClass $params)
     {
         //error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        //$data['status'] = 'C';
-        unset($data['id'], $data['old_no_pp'],$data['factory'],$data['statusdesc']);
-        $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'U', array('no_pp' => $params-> old_no_pp));
+        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
+        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery']);
+        $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> old_do_num));
         $this -> db -> setSQL($sql);
-       // print_r($sql);
+        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function deleteProduksi(stdClass $params)
+    public function deleteDeliveryOrder(stdClass $params)
     {
-        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE no_pp = '$params->no_pp'";
+        $sql = "DELETE FROM deliveryorderdetai WHERE do_num = '$params->do_num'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM PP_Produksi WHERE no_pp = '$params->no_pp'";
+        $sql = "DELETE FROM deliveryorder WHERE do_num = '$params->do_num'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function getProduksi1(stdClass $params)
+    public function getDeliveryOrder1(stdClass $params)
     {
-         //error_reporting(-1);
-        $this->db->setSQL("SELECT *
-                         FROM VIEWDETAILPRODUKSI
-                    WHERE no_pp = '" . $params->no_pp ."'ORDER BY timeedit DESC");
+        //error_reporting(-1);
+        $this->db->setSQL("SELECT A.*, B.prod_nama FROM deliveryorderdetai A
+        left join items B on A.co_id=B.co_id and A.prod_id=B.prod_id
+         WHERE do_num = '" . $params->do_num ."'ORDER BY timeedit DESC");
 
         $rows = array();
         //print_r($rows);
@@ -155,27 +137,26 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
         return $rows;
     }
 
-    public function addProduksi1(stdClass $params)
+    public function addDeliveryOrder1(stdClass $params)
     {
         // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['finishdate'] = $this->db->Date_Converter($data['finishdate']);
-        $data['est_finishdate'] = $this->db->Date_Converter($data['est_finishdate']);
+        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['no_ppd']);
+        unset($data['id'],$data['prod_nama']);
         foreach ($data AS $key => $val)
         {
             if ($val == '')
                 unset($data[$key]);
         }
 
-        $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'I');
+        $sql = $this -> db -> sqlBind($data, 'deliveryorderdetai', 'I');
         $this -> db -> setSQL($sql);
-            //print_r($sql);
+        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -183,51 +164,33 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateProduksi1(stdClass $params)
+    public function updateDeliveryOrder1(stdClass $params)
     {
-       // error_reporting(-1);
+        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
-        $data['finishdate'] = $this->db->Date_Converter($data['finishdate']);
-        $data['est_finishdate'] = $this->db->Date_Converter($data['est_finishdate']);
+        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         //$data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['no_pp'], $data['old_no_ppd'], $data['cust_nama'], $data['formula_nama'], $data['prod_nama'], $data['spesifikasi_nama'],$data['kemasan_nama'],
-        $data['n'], $data['p2o5'], $data['k2o'], $data['cao'], $data['mgo'], $data['so4'], $data['b'], $data['cu'], $data['zn']
-        , $data['ah'], $data['af']);
-        $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'U', array('no_ppd' => $params-> old_no_ppd));
+        unset($data['id'],$data['do_num'], $data['old_sequence_no'], $data['status'], $data['sequence_no'], $data['prod_nama']);
+        $sql = $this -> db -> sqlBind($data, 'deliveryorderdetai', 'U', array('do_num' => $params-> do_num, 'sequence_no' => $params-> sequence_no));
         $this -> db -> setSQL($sql);
         //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function deleteProduksi1(stdClass $params)
+    public function deleteDeliveryOrder1(stdClass $params)
     {
-        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE (no_ppd = '$params->no_ppd') ";
+        $sql = "DELETE FROM deliveryorderdetai WHERE (do_num = '$params->do_num') and (sequence_no = '$params->sequence_no')   ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }
     public function getSOpopup(stdClass $params)
     {
-        $sql = "SELECT * FROM so0 where status='B' ORDER BY so_num ASC";
-        $this -> db -> setSQL($sql);
-       // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
-    public function getFormulapopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM formula0 ORDER BY formula_id ASC";
+        $sql = "SELECT * FROM so0 ORDER BY so_num ASC";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();
@@ -240,6 +203,37 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
         return $rows;
 
     }
+    public function getVEpopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM vendor ORDER BY vend_id ASC";
+        $this -> db -> setSQL($sql);
+        // print_r($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getSatpopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM satuan ORDER BY satuan_id ASC";
+        $this -> db -> setSQL($sql);
+        // print_r($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+
 
 
 }

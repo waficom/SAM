@@ -128,6 +128,7 @@ requires = [
     'App.store.transaksi.goodsissued.GIDetail',
     'App.store.transaksi.goodsissued.GIItems',
     'App.store.transaksi.workorder.WorkOrder',
+
     'App.store.transaksi.workorder.WObb',
     'App.store.transaksi.workorder.WOItems',
     'App.store.navigation.Navigation',
@@ -315,8 +316,12 @@ requires = [
     'App.view.transaksi.goodsreceived.GoodsReceived',
     'App.view.transaksi.goodsissued.GoodsIssued',
     'App.view.transaksi.workorder.WorkOrder',
+    'App.view.transaksi.workorder.WorkOrder1',
     'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
+    'App.view.transaksi.DeliveryOrder.DeliveryOrder',
+    'App.view.transaksi.OrderMonitoring.OrderMonitoring',
+  //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',
 //				'App.view.calendar.Calendar',

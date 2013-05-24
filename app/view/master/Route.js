@@ -668,14 +668,14 @@ Ext.define('App.view.master.Route', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                store.load();
+               // store.load();
             },
             failure:function(){
-                store.load();
+                //store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        // store.load({params:{no_pp: me.currRoute}});
+        store.load({params:{route_code: me.currRoute}});
     },
     onRouteDelete: function(store){
         var me = this, grid = me.RouteGrid;

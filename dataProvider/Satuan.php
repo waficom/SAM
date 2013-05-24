@@ -137,7 +137,7 @@ class Satuan
 
 	public function deletesatuan(stdClass $params)
 	{
-		$sql = "DELETE FROM satuan WHERE (co_id = '$params->co_id') and (satuan_id = '$params -> satuan_id')";
+		$sql = "DELETE FROM satuan WHERE (co_id = '$params->co_id') and (satuan_id = '$params->satuan_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

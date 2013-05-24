@@ -534,7 +534,7 @@ Ext.define('App.view.master.Wilayah', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+        store.load({params:{wilayah_id: me.currWilayah}});
     },
     onWilayahDelete: function(store){
         var me = this, grid = me.WilayahGrid;

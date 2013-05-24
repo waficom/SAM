@@ -976,7 +976,7 @@ Ext.define('App.view.master.Customer', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                store.load();
+               // store.load();
             },
             failure:function(){
                 store.load();
@@ -984,6 +984,7 @@ Ext.define('App.view.master.Customer', {
             }
         });
         // store.load({params:{no_pp: me.currRoute}});
+        store.load({params:{cust_id: me.currCust}});
     },
     action1: function(action){
         var winf = this.winform1, form = winf.down('form');

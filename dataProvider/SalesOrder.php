@@ -182,13 +182,13 @@ class SalesOrder
     {
         $data = get_object_vars($params);
 //        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
-        $sql = "DELETE FROM SO11 WHERE (co_id = '$params->co_id') and (so_num = '$params -> so_num')";
+        $sql = "DELETE FROM SO11 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM SO10 WHERE (co_id = '$params->co_id') and (so_num = '$params -> so_num')";
+        $sql = "DELETE FROM SO10 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-		$sql = "DELETE FROM SO0 WHERE (co_id = '$params->co_id') and (so_num = '$params -> so_num')";
+		$sql = "DELETE FROM SO0 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

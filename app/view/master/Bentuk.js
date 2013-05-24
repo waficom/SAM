@@ -142,7 +142,7 @@ Ext.define('App.view.master.Bentuk', {
                                 var form = me.win.down('form');
                                 me.onNew(form, 'BentukModel', 'Tambah Data');
                             }
-                        },'->',
+                        },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',

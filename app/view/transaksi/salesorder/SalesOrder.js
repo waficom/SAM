@@ -33,12 +33,20 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_prod_id = null;
         me.curr_co_id = null;
         me.curr_so_num = null;
+        var searching={
+            ftype : 'searching',
+            mode: 'local'
+            ,           width:  200,
+            disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
+
+        }
 
         me.step = [];
 
 		me.SOStore = Ext.create( 'App.store.transaksi.salesorder.SalesOrder' );
         me.SOItemsStore = Ext.create('App.store.transaksi.salesorder.SOItems');
         me.SOLocationStore = Ext.create('App.store.transaksi.salesorder.SOLocation');
+
 /*
         me.SOModel = Ext.create('App.model.transaksi.salesorder.SalesOrder');
         me.SOItemsModel = Ext.create('App.model.transaksi.salesorder.SOItems');
@@ -49,8 +57,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 		 * Gives a list of encounter based on the search
 		 *
 		 */
-		me.SOGrid = Ext.create( 'Ext.grid.Panel',
-		{
+		me.SOGrid = Ext.create( 'Ext.grid.Panel',{
 			store : me.SOStore,
 			viewConfig :
 			{
@@ -219,8 +226,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 		/**
 		 * Panel:
 		 */
-		me.salesorderpnl = Ext.create( 'Ext.panel.Panel',
-		{
+		me.salesorderpnl = Ext.create( 'Ext.panel.Panel',{
 			defaultTitle : 'Sales Order',
 			title : 'Sales Order Detail',
 			layout : 'border',
@@ -282,30 +288,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 
                                         }
                                     ]
-/*
-                                },
-                                {
-                                    xtype: 'fieldcontainer',
-                                    hidden: false,
-                                    layout: {
-                                        type: 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel: true,
-                                    items : [
-                                        {
-                                            xtype: 'datefield',
-                                            name : 'tanggal',
-                                            width: 270,
-                                            fieldLabel: 'Tanggal',
-                                            labelAlign: 'right',
-                                            submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format']
-                                        }]
-*/
+
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -326,6 +309,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         width: 300,
                                         itemId : 'cust_id',
                                         name : 'cust_id',
+                                        id: 'cust_id_so',
                                         labelAlign : 'right'
                                     }]
                                 },
@@ -424,7 +408,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                                 fieldLabel: 'Exclude PPN',
                                                 labelAlign: 'right',
                                                 name: 'ppn_exc'
-                                            }]
+                                            }
+                                        ]
+
                                     }]
                                 },
                                 {
@@ -494,7 +480,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             width: 300,
                                             hideLabel : false,
                                             labelAlign: 'right',
-                                            readonly: true
+                                            disabled:true
                                         }
                                     ]
                                 },
@@ -615,8 +601,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 }]
 		} );
 
-        me.SOItemspnl = Ext.create( 'Ext.panel.Panel',
-            {
+        me.SOItemspnl = Ext.create( 'Ext.panel.Panel',{
                 defaultTitle : 'Sales Order',
                 title : 'Sales Order Items',
                 layout : 'border',
@@ -742,6 +727,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                         handler : me.onButtonBack
                     }]
             });
+
+
 
         // *************************************************************************************
         // Window User Form
@@ -883,7 +870,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     fieldLabel : 'Jumlah ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
-                                    readonly : true
+                                    readonly : false
                                 }
                             ]
                         },
@@ -1469,10 +1456,12 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+        store.load({params:{co_id: coid, so_num: me.curr_so_num}});
     },
     saveloc: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+
+       // form.findField('prod_id').setValue(me.curr_prod_id);
         if(storeIndex == -1){
             store.add(values);
         }else{
@@ -1486,7 +1475,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+        store.load({params:{prod_id: me.curr_prod_id}});
     },
     onItemsDelete: function(store){
         var me = this, grid = me.ItemsGrid;

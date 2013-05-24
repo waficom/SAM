@@ -35,9 +35,56 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
             me.curr_po_num = null;
 
             me.step = [];
+            var searching={
+                ftype : 'searching',
+                mode: 'local'
+                ,           width:  200,
+                disableIndexes:['timeedit']
+
+            }
 
             me.POStore = Ext.create( 'App.store.transaksi.purchaseorder.PurchaseOrder' );
             me.POItemsStore = Ext.create('App.store.transaksi.purchaseorder.POItems');
+
+            Ext.define('VendorPopupModel', {
+                extend: 'Ext.data.Model',
+                fields: [
+                    {name: 'vend_id',type: 'string'},
+                    {name: 'vend_nama',type: 'string'},
+                    {name: 'contact',type: 'string'}
+                ],
+                proxy: {
+                    type: 'direct',
+                    api: {
+                        read: DeliveryOrder.getVEpopup
+
+                    }
+                }
+            });
+            me.VEpopupStore = Ext.create('Ext.data.Store', {
+                model: 'VendorPopupModel',
+                autoLoad: true
+            });
+            me.VEpopupGrid = Ext.create('App.ux.GridPanel', {
+                store: me.VEpopupStore,
+                itemId: 'VEpopupGrid',
+                //height: 300,
+                margin: '0 0 3 0',
+                region: 'north',
+                enablePaging: true,
+                columns: [
+                    {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
+                    {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
+                    {text: 'Contact', width : 80, sortable: true, dataIndex: 'contact'}
+
+                ],
+                listeners: {
+                    scope: me,
+                    select: me.onItemGridClick
+                },
+
+                features:[searching]
+            });
             /**
              *  Sales Order Search data grid.
              * Gives a list of encounter based on the search
@@ -306,7 +353,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                                                                 width: 400,
                                                                 itemId : 'povend_id',
                                                                 name : 'vend_id',
-                                                                labelAlign : 'right'
+                                                                labelAlign : 'right',
+                                                                id:'vend_id_po'
                                                             }]
                                                     },
                                                     {
@@ -1024,7 +1072,31 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
             Ext.getCmp('pon_brutto_input').setValue(n_brutto);
             Ext.getCmp('pon_netto_input').setValue(n_netto);
         },
+        onItemGridClick: function(grid,selected){ //
+            var me = this;
 
+            var vend_id= selected.data.vend_id;
+
+
+            if(selected.data.vend_id != null){
+                Ext.getCmp('vend_id_po').setValue(vend_id);
+                Ext.getCmp('vend_desc_po').setValue(selected.data.vend_nama);
+            }
+            me.myWinChooseItem.close();
+        },
+
+        ShowGridPopup: function(store, title, grid){
+            this.myWinChooseItem= Ext.create('App.ux.window.Window',{
+                layout: 'fit',
+                title: title,
+                width: 400,
+                height: 300,
+                items:[grid],
+                modal:true
+
+            });
+            this.myWinChooseItem.show();
+        },
         /**
          * This function is called from Viewport.js when
          * this panel is selected in the navigation panel.

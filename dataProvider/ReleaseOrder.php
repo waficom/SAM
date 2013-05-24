@@ -57,7 +57,7 @@ class ReleaseOrder
         {
             $orderx = 'so_num';
         }
-        $sql = "SELECT * FROM releasedorder ORDER BY $orderx";
+        $sql = "SELECT * FROM releasedorder ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -88,7 +88,7 @@ class ReleaseOrder
         $data['status'] = 'B';
         $sql = $this -> db -> sqlBind($data, 'so0', 'U', array('so_num' => $params -> so_num));
         $this -> db -> setSQL($sql);
-        print_r($sql);
+        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }

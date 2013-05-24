@@ -165,7 +165,7 @@ class Formula
 	public function addformula1(stdClass $params)
 	{
 		$data = get_object_vars($params);
-        unset($data['id'], $data['old_bb_id']);
+        unset($data['id'], $data['old_bb_id'],$data['sequence_no']);
 		foreach($data as $key => $val){
 			if($val == null || $val == ''){
 				unset($data[$key]);
@@ -185,16 +185,17 @@ class Formula
 	public function updateformula1(stdClass $params)
 	{
 		$data       = get_object_vars($params);
-		unset($data['id'], $data['bb_id'], $data['old_bb_id']);
-		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('bb_id' => trim($params->old_bb_id)));
+		unset($data['id'], $data['bb_id'], $data['old_bb_id'], $data['bb_nama'], $data['satuan_nama'],$data['sequence_no']);
+		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('sequence_no' => trim($params->sequence_no)));
 		$this->db->setSQL($sql);
+        //print_r($sql);
 		$this->db->execLog();
 		return $params;
 	}
 
 	public function deleteformula1(stdClass $params)
 	{
-		$sql = "DELETE FROM formula1 WHERE (co_id = '$params->co_id') and (formula_id = '$params->formula_id')";
+		$sql = "DELETE FROM formula1 WHERE (co_id = '$params->co_id') and (formula_id = '$params->formula_id') and (sequence_no = '$params->sequence_no')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

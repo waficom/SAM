@@ -140,8 +140,9 @@ class Bentuk
 	public function deleteBentuk(stdClass $params)
 	{
 //		$sql = $this -> db -> sqlBind($data, 'bentuk', 'U', array('bentuk_id' => $params -> bentuk_id));
-        $sql = "DELETE FROM bentuk WHERE (co_id = '$params-co_id') and (bentuk_id = '$params->bentuk_id')";
+        $sql = "DELETE FROM bentuk WHERE (co_id = '$params->co_id') and (bentuk_id = '$params->bentuk_id')";
 		$this -> db -> setSQL($sql);
+       // print_r($sql);
 		$this -> db -> execLog();
 		return $params;
 	}

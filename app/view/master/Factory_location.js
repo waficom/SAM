@@ -20,9 +20,13 @@ Ext.define('App.view.master.Factory_location', {
     extend: 'App.ux.RenderPanel',
     id: 'panelFactlocation',
     pageTitle: 'Factory location',
+    pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
+
     initComponent: function(){
         var me = this;
+        me.currSequence = null;
+
         Ext.define('FactorylocationModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -40,10 +44,10 @@ Ext.define('App.view.master.Factory_location', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Factorylocation.getFactorylocation,
-                    create: Factorylocation.addFactorylocation,
-                    update: Factorylocation.updateFactorylocation,
-                    destroy: Factorylocation.deleteFactorylocation
+                    read: Factory_location.getFactorylocation,
+                    create: Factory_location.addFactorylocation,
+                    update: Factory_location.updateFactorylocation,
+                    destroy: Factory_location.deleteFactorylocation
                 }
             }
         });
@@ -51,6 +55,38 @@ Ext.define('App.view.master.Factory_location', {
             model: 'FactorylocationModel',
             remoteSort: true
         });
+
+        Ext.define('GudanglocationModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'co_id',type: 'string'},
+                {name: 'pabrik_sequence',type: 'string'},
+                {name: 'gudang_id',type: 'string'},
+                {name: 'gudang_nama',type: 'string'},
+                {name: 'location',type: 'string'},
+                {name: 'remarks',type: 'string'},
+                {name: 'userinput',type: 'string'},
+                {name: 'useredit',type: 'string'},
+                {name: 'timeinput',type: 'date'},
+                {name: 'timeedit',type: 'date'},
+                {name: 'aktif',type: 'bool'},
+                {name: 'old_gudang_id',type: 'string'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Factory_location.getGudanglocation,
+                    create: Factory_location.addGudanglocation,
+                    update: Factory_location.updateGudanglocation,
+                    destroy: Factory_location.deleteGudanglocation
+                }
+            }
+        });
+        me.GudanglocationStore = Ext.create('Ext.data.Store', {
+            model: 'GudanglocationModel',
+            remoteSort: true
+        });
+
         function authCk(val){
             if(val == '1'){
                 return '<img src="resources/images/icons/yes.gif" />';
@@ -70,22 +106,29 @@ Ext.define('App.view.master.Factory_location', {
         // *************************************************************************************
         me.FactorylocationGrid = Ext.create('Ext.grid.Panel', {
             store: me.FactlocationStore,
+            itemId: 'GudanglocationGrid',
+            height: 300,
+            margin: '0 0 3 0',
+            region: 'north',
             columns: [
-                {text: 'co_id',sortable: false,dataIndex: 'co_id',hidden: true },
+                {text: 'co_id',width: 100,sortable: true,dataIndex: 'co_id', hidden:true},
                 {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
-                {text: 'Description',width: 100,sortable: true,dataIndex: 'description'},
-                {text: 'Location',width: 100,sortable: true,dataIndex: 'location'},
-                {text: 'Remarks',width: 100,sortable: true,dataIndex: 'remarks'},
+                {text: 'Description',width: 100,sortable: true,flex:1, dataIndex: 'description'},
+                {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
+                {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
                 {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
-                {text: 'LastUpdate',width: 100,sortable: true,dataIndex: 'timeedit'}
+                {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+
             ],
             features: [searching],
             listeners: {
                 scope: me,
+                select: me.onOrderGridClick,
                 itemdblclick: function(view, record){
                     oldName = record.get('pabrik_sequence');
                     record.set("old_pabrik_sequence",oldName);
-                    me.onItemdblclick(me.FactlocationStore, record, 'Edit Factory Location');
+                    var form = this.win.down('form');
+                    me.onItemdblclick(me.FactlocationStore, record, 'Edit Factory Location', me.win,form);
                 }
             },
             dockedItems: [
@@ -98,10 +141,11 @@ Ext.define('App.view.master.Factory_location', {
                             text: 'Tambah Data',
                             iconCls: 'save',
                             handler: function(){
+                                //var me=this;
                                 var form = me.win.down('form');
-                                me.onNew(form, 'FactorylocationModel', 'Tambah Data');
+                                me.onNew(form, 'FactorylocationModel', 'Tambah Data', me.win);
                             }
-                        },'->',
+                        },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',
@@ -109,7 +153,74 @@ Ext.define('App.view.master.Factory_location', {
                             handler: function() {
                                 me.hapusFactlocation(me.FactlocationStore)
                             }
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'getPrint',
+                            iconCls: 'iconReport',
+                           // scope: me,
+                            handler: function(){
+                                print();
+                            }
+                        },'->',
+                        {
+                            xtype:'displayfield',
+                            itemId:'itemuserinput',
+                            margin : '0 5 0 0'
                         }
+
+                    ]
+                }
+            ]
+        });
+        me.GudanglocationGrid = Ext.create('Ext.grid.Panel', {
+            store: me.GudanglocationStore,
+            region: 'center',
+            enablePaging: true,
+            columns: [
+                {text: 'co_id',width: 100,sortable: true,dataIndex: 'co_id', hidden:true},
+                {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
+                {text: 'Gudang ID',width: 100,sortable: true,dataIndex: 'gudang_id'},
+                {text: 'Gudang',width: 100,sortable: true,flex:1,dataIndex: 'gudang_nama'},
+                {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
+                {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
+                {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
+                {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            features: [searching],
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    oldName = record.get('gudang_id');
+                    record.set("old_gudang_id",oldName);
+                    var form = this.winform1.down('form');
+                    me.onItemdblclick(me.GudanglocationStore, record, 'Edit Gudang Location', me.winform1, form);
+                }
+            },
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [
+                        {
+                            xtype: 'button',
+                            text: 'Tambah Data',
+                            iconCls: 'save',
+                            handler: function(){
+                                //var me=this;
+                                var form = me.winform1.down('form');
+                                me.onNew(form, 'GudanglocationModel', 'Tambah Data', me.winform1 );
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'Hapus Data',
+                            iconCls: 'delete',
+                            handler: function() {
+                                me.hapusGudanglocation(me.GudanglocationStore)
+                            }
+                        }
+
                     ]
                 }
             ]
@@ -142,6 +253,16 @@ Ext.define('App.view.master.Factory_location', {
                         }
                     },
                     items: [
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'co_id'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'pabrik_sequence'
+                        },
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -237,23 +358,194 @@ Ext.define('App.view.master.Factory_location', {
             listeners: {
                 scope: me,
                 close: function(){
-                    me.action('close');
+                    me.action('close', me.win);
+                }
+            }
+        });
+
+        me.winform1 = Ext.create('App.ux.window.Window', {
+            width: 600,
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    fieldDefaults: {
+                        msgTarget: 'side',
+                        labelWidth: 100
+                    },
+                    defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'co_id'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'pabrik_sequence'
+
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Gudang ID :'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'gudang_id'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: ' Gudang Desc :'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'gudang_nama'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Location :'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'location'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Remarks :'
+                                },
+                                {
+                                    width: 450,
+                                    xtype: 'textfield',
+                                    name: 'remarks'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Aktif',
+                                    name: 'aktif'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.winform1.down('form').getForm();
+                        if(form.isValid()){
+                            me.onGudanglocationSave(form, me.GudanglocationStore);
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: i18n('cancel'),
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            listeners: {
+                scope: me,
+                close: function(){
+                    //var form = me.winform1.down('form').getForm();
+                    me.action('close', me.winform1);
                 }
             }
         });
         // END WINDOW
-        me.pageBody = [me.FactorylocationGrid];
+        me.pageBody = [me.FactorylocationGrid, me.GudanglocationGrid];
         me.callParent(arguments);
+
     }, // end of initComponent
 
-    onNew: function(form, model, title){
+    onNew: function(form, model, title, win){
         this.setForm(form, title);
         form.getForm().reset();
         var newModel = Ext.ModelManager.create({}, model);
         form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
+        this.action('new', win);
+        win.show();
     },
+
+    onOrderGridClick: function(grid, selected){
+        var me = this;
+        me.currSequence = selected.data.pabrik_sequence;
+        //console.log('currseq ='+ me.currSequence);
+        var TopBarItems = this.FactorylocationGrid.getDockedItems('toolbar[dock="top"]')[0];
+        me.userinput = selected.data.userinput;
+        me.useredit = selected.data.useredit;
+        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
+        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+        me.GudanglocationStore.load({params:{pabrik_sequence: me.currSequence}});
+
+    },
+
     onFactlocationSave: function(form, store){
         var me = this;
         me.saveFactlocation(form, store);
@@ -275,12 +567,40 @@ Ext.define('App.view.master.Factory_location', {
         });
         store.load();
     },
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
+
+    onGudanglocationSave: function(form, store){
+        var me = this;
+        me.saveGudanglocation(form, store);
+    },
+    saveGudanglocation: function(form, store){
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
+            f = me.winform1.down('form').getForm(), rec = f.getRecord();
+
+        form.findField('pabrik_sequence').setValue(me.currSequence);
+
+        values = form.getValues();
+        if(storeIndex == -1){
+            store.add(values);
+        }else{
+            record.set(values);
+        }
+        store.sync({
+            success:function(){
+                me.winform1.close();
+            },
+            failure:function(){
+                me.msg('Opps!', 'Error!!', true);
+            }
+        });
+        store.load({params:{pabrik_sequence: me.currSequence}});
+    },
+
+    onItemdblclick: function(store, record, title, win, form){
+
         this.setForm(form, title);
         form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
+        this.action('old', win, form);
+        win.show();
     },
     setForm: function(form, title){
         form.up('window').setTitle(title);
@@ -288,8 +608,8 @@ Ext.define('App.view.master.Factory_location', {
     openWin: function(){
         this.win.show();
     },
-    action: function(action){
-        var win = this.win, form = win.down('form');
+    action: function(action, win){
+        var win = win; form = win.down('form');
         if(action == 'close'){
             form.getForm().reset();
         }
@@ -317,6 +637,63 @@ Ext.define('App.view.master.Factory_location', {
         });
 //        store.load();
     },
+    hapusGudanglocation: function(store){
+        var me = this, grid = me.GudanglocationGrid;
+        sm = grid.getSelectionModel();
+        sr = sm.getSelection();
+        bid = sr[0].get('gudang_id');
+        Ext.Msg.show({
+            title: 'Please Confirm' + '...',
+            msg: 'Are you sure want to delete' + ' ?',
+            icon: Ext.MessageBox.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            fn: function(btn){
+                if(btn == 'yes'){
+//                    Factlocation.deleteFactlocation;
+                    store.remove(sr);
+                    store.sync();
+                    if (store.getCount() > 0) {
+                        sm.select(0);
+                    }
+                }
+            }
+        });
+//        store.load();
+    },
+
+   print: function(){
+        var grid3= new Ext.grid.panel({
+            id:'print',
+            title:'print factory',
+            store: 'FactlocationStore',
+            cm: 'FactorylocationModel',
+            height:400,
+            width:1100
+
+        })
+       var printWindow = window.open ('','SyslogMessages','status=1,toolbar=1,menubar=1,resizable=1,scrollbars=1,height=600,width=800');
+       printWindow.document.writeln( '<html><head><title>Syslog Print Window</title>' );
+       printWindow.document.writeln( '<script>');
+       printWindow.document.writeln( 'var ss = document.createElement("link"); ss.setAttribute("rel", "stylesheet");ss.setAttribute("type", "text/css"); ss.setAttribute("href", "/thirdpartyjs/ext/resources/css/ext-all.css");document.getElementsByTagName("head")[0].appendChild(ss);');
+       printWindow.document.writeln( 'var ss = document.createElement("link"); ss.setAttribute("rel", "stylesheet");ss.setAttribute("type", "text/css"); ss.setAttribute("href", "/thirdpartyjs/ext/examples/grid-filtering/grid/summary.css");document.getElementsByTagName("head")[0].appendChild(ss);');
+       printWindow.document.writeln( '</script>');
+       printWindow.document.writeln( '</head><body><div id="print" style="margin: 10px;"></div></body></html>' );
+       grid3.render( printWindow.document.body );
+       printWindow.document.close();
+
+   },
+    getReport: function(grid, title){
+       this.myWinChooseItem= Ext.create('App.ux.window.Window',{
+           layout: 'fit',
+           title: title,
+           width: 400,
+           height: 300,
+           items:grid,
+           modal:true
+
+       });
+       this.myWinChooseItem.show();
+    },
 
     /**
      * This function is called from Viewport.js when
@@ -326,6 +703,7 @@ Ext.define('App.view.master.Factory_location', {
      */
     onActive: function(callback){
         this.FactlocationStore.load();
+        this.GudanglocationStore.load();
         callback(true);
     }
 });

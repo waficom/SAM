@@ -148,7 +148,13 @@ class Navigation
                 ), array(
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
                 ), array(
+                    'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
+                ), array(
                     'text' => $this->i18n['stock'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelStock'
+                ), array(
+                    'text' => $this->i18n['deliveryorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelDeliveryOrder'
+                ), array(
+                    'text' => $this->i18n['ordermonitoring'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelOM'
                 )
             )
         ));

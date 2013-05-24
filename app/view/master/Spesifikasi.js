@@ -83,6 +83,10 @@ Ext.define('App.view.master.Spesifikasi', {
                     type: 'float'
                 },
                 {
+                    name: 'te',
+                    type: 'float'
+                },
+                {
                     name: 'keterangan',
                     type: 'string'
                 },
@@ -197,6 +201,11 @@ Ext.define('App.view.master.Spesifikasi', {
                     width: 50,
                     text: 'AF',
                     dataIndex: 'af'
+                },
+                {
+                    width: 50,
+                    text: 'TE',
+                    dataIndex: 'te'
                 },
                 {
                     flex: 1,
@@ -483,7 +492,17 @@ Ext.define('App.view.master.Spesifikasi', {
                                     width: 50,
                                     xtype: 'numberfield',
                                     name: 'so4'
-                                }                               
+                                }  ,
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'TE :'
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'numberfield',
+                                    name: 'te'
+                                }
                             ]
                         },
                         {

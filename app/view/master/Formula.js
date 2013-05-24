@@ -52,6 +52,7 @@ Ext.define('App.view.master.Formula', {
             fields: [
                 {name: 'co_id',type: 'string'}
                 ,{name: 'formula_id',type: 'string'}
+                ,{name: 'sequence_no',type: 'string'}
                 ,{name: 'bb_id',type: 'string'}
                 ,{name: 'bb_nama',type: 'string'}
                 ,{name: 'jumlah',type: 'float', convert: null}
@@ -240,6 +241,7 @@ Ext.define('App.view.master.Formula', {
                 {text: 'id', sortable: false, dataIndex: 'id', hidden : true},
                 {text: 'co_id', sortable: false, dataIndex: 'co_id', hidden : true},
                 {text: 'Formula', width:70, sortable: false,dataIndex: 'formula_id', hidden : true},
+                {text: 'sequence_no', width:70, sortable: false,dataIndex: 'sequence_no', hidden : true},
                 {text: 'BB', sortable : false, dataIndex: 'bb_id', hidden : true},
                 {text: 'Bahan Baku', flex: 1, sortable: true, dataIndex: 'bb_nama'},
                 {text: 'Jumlah', width : 80, sortable: false, dataIndex: 'jumlah' },
@@ -501,11 +503,17 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.CustomerPopupStore,'Customer',me.CustomerGrid);
                                     }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'cust_desc_fo'
                                 }
                             ]
                         },
@@ -529,11 +537,17 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.SpesifikasiPopupStore,'Spesifikasi',me.SpesifikasiGrid);
                                     }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'spesifikasi_desc_fo'
                                 }
                             ]
                         },
@@ -635,6 +649,11 @@ Ext.define('App.view.master.Formula', {
                             name: 'formula_id'
                         },
                         {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'sequence_no'
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -654,11 +673,17 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.BBPopupStore,'Satuan',me.BahanBakuGrid);
                                     }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'bb_desc_fo'
                                 }
                             ]
                         },
@@ -704,11 +729,17 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text :'choose item',
+                                    text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
                                         me.ShowGridPopup(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
                                     }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'satuan_desc_fo'
                                 }
                             ]
                         }
@@ -862,13 +893,14 @@ Ext.define('App.view.master.Formula', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                store.load();
+               //store.load();
             },
             failure:function(){
                 store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
+        store.load({params:{formula_id: me.currFormula}});
     },
     onFormulaDelete: function(store){
         var me = this, grid = me.FormulaGrid;
@@ -938,12 +970,16 @@ Ext.define('App.view.master.Formula', {
 
         if(selected.data.cust_id != null){
             Ext.getCmp('cust_id_formula').setValue(getCustomer);
+            Ext.getCmp('cust_desc_fo').setValue(selected.data.cust_nama);
         }else if(selected.data.spesifikasi_id != null){
             Ext.getCmp('spesifikasi_id_formula').setValue(getSpesifikasi);
+            Ext.getCmp('spesifikasi_desc_fo').setValue(selected.data.spesifikasi_nama);
         }else if(selected.data.satuan_id != null){
             Ext.getCmp('satuan_id_formula').setValue(getSatuan);
+            Ext.getCmp('satuan_desc_fo').setValue(selected.data.satuan_nama);
         }else if(selected.data.bb_id != null){
             Ext.getCmp('bb_id_formula').setValue(getBB);
+            Ext.getCmp('bb_desc_fo').setValue(selected.data.bb_nama);
         }
         me.myWinChooseItem.close();
     },

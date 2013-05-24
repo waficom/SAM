@@ -26,7 +26,7 @@ if (!isset($_SESSION))
 }
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
-class StockPeriode
+class OrderMonitoring
 {
     /**
      * @var dbHelper
@@ -46,9 +46,7 @@ class StockPeriode
      * @return array
      */
 
-
-
-    public function getStock(stdClass $params)
+    public function getOrderMonitoring(stdClass $params)
     {
 
         if (isset($params -> sort))
@@ -57,9 +55,9 @@ class StockPeriode
         }
         else
         {
-            $orderx = 'no_ppd';
+            $orderx = 'so_num';
         }
-        $sql = "SELECT * FROM stock ORDER BY $orderx";
+        $sql = "SELECT * FROM viewordermonitoring ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -71,4 +69,17 @@ class StockPeriode
         return $rows;
 
     }
+
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+
+
+    /**
+     *
+     * @param stdClass $params
+     * @return stdClass
+     */
+
 }

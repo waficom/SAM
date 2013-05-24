@@ -146,8 +146,12 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GoodsReceived'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder1'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.DeliveryOrder'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.OrderMonitoring.OrderMonitoring'));
+       // me.MainPanel.add(Ext.create('App.view.transaksi.Report.Report'));
 
 
 

@@ -1,88 +1,85 @@
-Ext.define('App.view.transaksi.Produksi.Produksi', {
+Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelProduksi',
-    pageTitle: 'Produksi',
+    id: 'panelDeliveryOrder',
+    pageTitle: 'DeliveryOrder',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
-        me.currProduksi = null;
+        me.currDeliveryOrder = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
-        Ext.define('ProduksiModel', {
+
+        Ext.define('DeliveryOrderModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'no_pp',type: 'string'},
-                {name: 'description',type: 'string'},
-                {name: 'pabrik_sequence',type: 'string'},
-                {name: 'factory',type: 'string'},
-                {name: 'pp_date',type: 'date'},
-                {name: 'status',type: 'string'},
-                {name: 'statusdesc',type: 'string'},
+                {name: 'do_num',type: 'string'},
+                {name: 'so_num',type: 'string'},
+                {name: 'route',type: 'string'},
+                {name: 'deliverydate',type: 'date'},
+                {name: 'cust_nama',type: 'string'},
+                {name: 'qty',type: 'string'},
+                {name: 'qty_delivery',type: 'string'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'timeedit',type: 'date'},
-                {name: 'old_no_pp',type: 'string'}
+                {name: 'timeinput',type: 'date'},
+                {name: 'old_do_num',type: 'string'}
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Produksi.getProduksi,
-                    create: Produksi.addProduksi,
-                    update: Produksi.updateProduksi,
-                    destroy: Produksi.deleteProduksi
+                    read: DeliveryOrder.getDeliveryOrder,
+                    create: DeliveryOrder.addDeliveryOrder,
+                    update: DeliveryOrder.updateDeliveryOrder,
+                    destroy: DeliveryOrder.deleteDeliveryOrder
                 }
             }
         });
-        me.ProduksiStore = Ext.create('Ext.data.Store', {
-            model: 'ProduksiModel',
+        me.DeliveryOrderStore = Ext.create('Ext.data.Store', {
+            model: 'DeliveryOrderModel',
             autoLoad: false
         });
 
-        Ext.define('Produksi1Model', {
+        Ext.define('DeliveryOrder1Model', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'no_pp',type: 'string',  hidden : true}
-                ,{name: 'no_ppd',type: 'string'}
-                ,{name: 'so_num',type: 'string'}
-                ,{name: 'cust_nama',type: 'string'}
-                ,{name: 'formula_nama',type: 'string'}
-                ,{name: 'formula_id',type: 'string'}
+                {name: 'do_num',type: 'string'}
+                ,{name: 'sequence_no',type: 'string'}
+                ,{name: 'ordersource',type: 'string'}
+                ,{name: 'deliverydate',type: 'date'}
+                ,{name: 'vend_id',type: 'string'}
+                ,{name: 'police_no',type: 'string'}
+                ,{name: 'suratjalan',type: 'string'}
+                ,{name: 'prod_id',type: 'string'}
                 ,{name: 'prod_nama',type: 'string'}
-                ,{name: 'kemasan_nama',type: 'string'}
-                ,{name: 'spesifikasi_nama',type: 'string'}
-                ,{name: 'n',type: 'string'}
-                ,{name: 'p2o5',type: 'string'}
-                ,{name: 'k2o',type: 'string'}
-                ,{name: 'cao',type: 'string'}
-                ,{name: 'mgo',type: 'string'}
-                ,{name: 'so4',type: 'string'}
-                ,{name: 'b',type: 'string'}
-                ,{name: 'cu',type: 'string'}
-                ,{name: 'zn',type: 'string'}
-                ,{name: 'ah',type: 'string'}
-                ,{name: 'af',type: 'string'}
-                ,{name: 'finishdate',type: 'date'}
-                ,{name: 'est_finishdate',type: 'date'}
+                ,{name: 'vessel',type: 'string'}
+                ,{name: 'origin',type: 'string'}
+                ,{name: 'destination',type: 'string'}
+                ,{name: 'qty',type: 'string'}
+                ,{name: 'satuan_id',type: 'string'}
+                ,{name: 'status',type: 'string'}
                 ,{name: 'timeedit',type: 'date'}
+                ,{name: 'timeinput',type: 'date'}
                 ,{name: 'useredit',type: 'string'}
                 ,{name: 'userinput',type: 'string'}
-                ,{name: 'old_no_ppd',type: 'string'}
+                ,{name: 'old_sequence_no',type: 'string'}
+
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Produksi.getProduksi1,
-                    create: Produksi.addProduksi1,
-                    update: Produksi.updateProduksi1,
-                    destroy: Produksi.deleteProduksi1
+                    read: DeliveryOrder.getDeliveryOrder1,
+                    create: DeliveryOrder.addDeliveryOrder1,
+                    update: DeliveryOrder.updateDeliveryOrder1,
+                    destroy: DeliveryOrder.deleteDeliveryOrder1
                 }
             }
         });
-        me.Produksi1Store = Ext.create('Ext.data.Store', {
-            model: 'Produksi1Model',
+        me.DeliveryOrder1Store = Ext.create('Ext.data.Store', {
+            model: 'DeliveryOrder1Model',
             autoLoad: false
         });
 
@@ -92,12 +89,12 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 {name: 'so_num',type: 'string'},
                 {name: 'cust_id',type: 'string'},
                 {name: 'tanggal',type: 'date'}
-               // {name: 'timeedit',type: 'date'}
+                // {name: 'timeedit',type: 'date'}
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Produksi.getSOpopup
+                    read: DeliveryOrder.getSOpopup
 
                 }
             }
@@ -107,44 +104,64 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             autoLoad: true
         });
 
-        Ext.define('FormulaPopupModel', {
+        Ext.define('VendorPopupModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'formula_id',type: 'string'},
-                {name: 'formula_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'vend_id',type: 'string'},
+                {name: 'vend_nama',type: 'string'},
+                {name: 'contact',type: 'string'}
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Produksi.getFormulapopup
+                    read: DeliveryOrder.getVEpopup
 
                 }
             }
         });
-        me.FormulapopupStore = Ext.create('Ext.data.Store', {
-            model: 'FormulaPopupModel',
+        me.VEpopupStore = Ext.create('Ext.data.Store', {
+            model: 'VendorPopupModel',
             autoLoad: true
         });
 
-        Ext.define('FactoryPopupModel', {
+        Ext.define('SatuanPopup', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'pabrik_sequence',type: 'string'},
-                {name: 'description',type: 'string'},
-                {name: 'location',type: 'string'},
+                {name: 'satuan_id',type: 'string'},
+                {name: 'satuan_nama',type: 'string'},
+                {name: 'timeedit',type: 'date'}
+                // {name: 'timeedit',type: 'date'}
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read:  Satuan.getsatuan
+
+                }
+            }
+        });
+        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
+            model: 'SatuanPopup',
+            autoLoad: true
+        });
+
+        Ext.define('ProdPopup', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'prod_id',type: 'string'},
+                {name: 'prod_nama',type: 'string'},
                 {name: 'timeedit',type: 'date'}
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Factory_location.getFactorylocation
+                    read:  Items.getitems
 
                 }
             }
         });
-        me.FactorypopupStore = Ext.create('Ext.data.Store', {
-            model: 'FactoryPopupModel',
+        me.ProdPopupStore = Ext.create('Ext.data.Store', {
+            model: 'ProdPopup',
             autoLoad: true
         });
 
@@ -152,38 +169,37 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
+            disableIndexes:['timeedit']
 
         }
 
         /**
          * Lists Grid
          */
-        me.ProduksiGrid = Ext.create('App.ux.GridPanel', {
-            store: me.ProduksiStore,
-            itemId: 'ProduksiGrid',
+        me.DeliveryOrderGrid = Ext.create('App.ux.GridPanel', {
+            store: me.DeliveryOrderStore,
+            itemId: 'DeliveryOrderGrid',
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'No. Produksi', sortable: false, dataIndex: 'no_pp'},
-                {text: 'Deskripsi', width:200, sortable: false,dataIndex: 'description'},
-                {text: 'sequence_no', width:200, sortable: false,dataIndex: 'pabrik_sequence', hidden: true},
-                {text: 'Factory', width:200, sortable: false,dataIndex: 'factory'},
-                {text: 'Status', width:200, sortable: false,dataIndex: 'statusdesc'},
-                {text: 'status',width:70, sortable: true, dataIndex: 'status',hidden:true},
-                {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'pp_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Do_num', sortable: false, dataIndex: 'do_num'},
+                {text: 'So_num', sortable: false, dataIndex: 'so_num'},
+                {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
+                {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Customer', width:200, sortable: false,flex: 1,dataIndex: 'cust_nama'},
+                {text: 'Qty', width:200, sortable: false,dataIndex: 'qty'},
+                {text: 'Qty Delivery', width:200, sortable: false,dataIndex: 'qty_delivery'},
                 {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
             ],
             listeners: {
                 scope: me,
-               select: me.onProduksiGridClick,
+                select: me.onDeliveryOrderGridClick,
                 itemdblclick: function(view, record){
-                    oldName = record.get('no_pp');
-                    record.set("old_no_pp",oldName);
-                    me.onItemdblclick(me.ProduksiStore, record, 'Edit Produksi');
+                    oldName = record.get('do_num');
+                    record.set("old_do_num",oldName);
+                    me.onItemdblclick(me.DeliveryOrderStore, record, 'Edit DeliveryOrder');
                 }
             },
             features:[searching],
@@ -198,7 +214,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             scope: me,
                             handler: function(){
                                 var form = me.win.down('form');
-                                me.onNewProduksi(form, 'ProduksiModel', 'Tambah Data');
+                                me.onNewDeliveryOrder(form, 'DeliveryOrderModel', 'Tambah Data');
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -208,7 +224,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             itemId: 'listDeleteBtn',
                             scope: me,
                             handler:function() {
-                                me.onProduksiDelete(me.ProduksiStore);
+                                me.onDeliveryOrderDelete(me.DeliveryOrderStore);
                             },
                             tooltip: 'Hapus Data'
                         },'->',
@@ -220,7 +236,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.ProduksiStore,
+                    store: me.DeliveryOrderStore,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -232,46 +248,34 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 }
             ]
         });
-        /**
-         * Options Grid
-         */
-        me.Produksi1Grid = Ext.create('App.ux.GridPanel', {
-            store: me.Produksi1Store,
+        me.DeliveryOrder1Grid = Ext.create('App.ux.GridPanel', {
+            store: me.DeliveryOrder1Store,
             region: 'center',
             enablePaging: true,
             columns: [
-                {text: 'NO PP', sortable: false, dataIndex: 'no_pp',  hidden : true},
-                {text: 'NO PPD', sortable: false, dataIndex: 'no_ppd'},
-                {text: 'Sales Number', width:100, sortable: false,dataIndex: 'so_num'},
-                {text: 'Customer', width:150, sortable: false,dataIndex: 'cust_nama'},
-                {text: 'Formula', width:100, sortable: false,dataIndex: 'formula_nama'},
-                {text: 'Formula id', width:100, sortable: false,dataIndex: 'formula_id', hidden: true},
-                {text: 'Produk', width:100, sortable: false,dataIndex: 'prod_nama'},
-                {text: 'Kemasan', width:100, sortable: false,dataIndex: 'kemasan_nama'},
-                {text: 'Spesifikasi', width:100, sortable: false,dataIndex: 'spesifikasi_nama'},
-                {text: 'N', width:50, sortable: false,dataIndex: 'n'},
-                {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
-                {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
-                {text: 'CAO', width:50, sortable: false,dataIndex: 'cao'},
-                {text: 'MGO', width:50, sortable: false,dataIndex: 'mgo'},
-                {text: 'SO4', width:50, sortable: false,dataIndex: 'so4'},
-                {text: 'B', width:50, sortable: false,dataIndex: 'b'},
-                {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
-                {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
-                {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-                {text: 'tgl selesai', sortable : false, dataIndex: 'finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'est tgl selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'do_num', sortable: false, dataIndex: 'do_num',  hidden : true},
+                {text: 'prod_id', sortable: false, dataIndex: 'prod_id',  hidden : true},
+                {text: 'sequence_no', sortable: false, dataIndex: 'sequence_no', hidden: true},
+                {text: 'Produk', sortable: false, width:200, dataIndex: 'prod_nama'},
+                {text: 'Vend_id', width:100, sortable: false,dataIndex: 'vend_id'},
+                {text: 'Police_no', width:150, sortable: false,dataIndex: 'police_no'},
+                {text: 'Surat Jalan', width:200, sortable: false,dataIndex: 'suratjalan'},
+                {text: 'Vessel', width:200, sortable: false,dataIndex: 'vessel'},
+                {text: 'Delivery Date', sortable : false, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Origin', width:200, sortable: false,dataIndex: 'origin'},
+                {text: 'Destination', width:200, sortable: false,dataIndex: 'destination'},
+                {text: 'Qty', width:100, sortable: false,dataIndex: 'qty'},
+                {text: 'satuan_id', width:100, sortable: false,dataIndex: 'satuan_id'},
+                {text: 'status', width:50, sortable: false,dataIndex: 'status'},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-//flex: 1
             ],
             listeners: {
                 scope: me,
                 //select: me.onGridClick,
                 itemdblclick: function(view, record){
-                    oldName = record.get('no_ppd');
-                    record.set("old_no_ppd",oldName);
-                    me.onItemdblclick1(me.Produksi1Store, record, 'Edit Detail Produksi');
+                    oldName = record.get('sequence_no');
+                    record.set("old_sequence_no",oldName);
+                    me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
                 }
             },
             features:[searching],
@@ -285,7 +289,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
-                            me.onNewProduksi1(form1, 'Produksi1Model', 'Tambah Data');
+                            me.onNewDeliveryOrder1(form1, 'DeliveryOrder1Model', 'Tambah Data');
                         }
                     },
                         {
@@ -293,24 +297,13 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             text: 'Hapus Data',
                             iconCls: 'delete',
                             handler: function() {
-                                me.deleteProduksi1(me.Produksi1Store);
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'View Detail',
-                            scope: me,
-
-                            handler: function(){
-                                var form1 = me.winform1.down('form');
-                                me.onviewdetail(form1, 'ProduksiModel', 'View Detail');
-
+                                me.deleteDeliveryOrder1(me.DeliveryOrder1Store);
                             }
                         }
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Produksi1Grid,
+                    store: me.DeliveryOrder1Grid,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -322,7 +315,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 }
             ]
         });
-
         me.SOpopupGrid = Ext.create('App.ux.GridPanel', {
             store: me.SOpopupStore,
             itemId: 'SOpopupGrid',
@@ -337,23 +329,23 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
 
             ],
             listeners: {
-               scope: me,
-               select: me.onItemGridClick
+                scope: me,
+                select: me.onItemGridClick
             },
 
             features:[searching]
         });
-        me.FormulapopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.FormulapopupStore,
-            itemId: 'FormulapopupGrid',
+        me.VEpopupGrid = Ext.create('App.ux.GridPanel', {
+            store: me.VEpopupStore,
+            itemId: 'VEpopupGrid',
             //height: 300,
             margin: '0 0 3 0',
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'Formula ID', sortable: false, dataIndex: 'formula_id'},
-                {text: 'Description', width:200, sortable: false,dataIndex: 'formula_nama'},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
+                {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
+                {text: 'Contact', width : 80, sortable: true, dataIndex: 'contact'}
 
             ],
             listeners: {
@@ -363,18 +355,35 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
 
             features:[searching]
         });
-        me.FactorypopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.FactorypopupStore,
-            itemId: 'FactorypopupGrid',
+        me.SatpopupGrid = Ext.create('App.ux.GridPanel', {
+            store: me.SatuanPopupStore,
+            itemId: 'SatpopupGrid',
             //height: 300,
             margin: '0 0 3 0',
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'Factory ID', sortable: false, dataIndex: 'pabrik_sequence'},
-                {text: 'Description', width:200, sortable: false,dataIndex: 'description'},
-                {text: 'Location', width:200, sortable: false,dataIndex: 'location'},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                {text: 'Satuan  ID', sortable: false, dataIndex: 'satuan_id'},
+                {text: 'Satuan Nama', width:200, sortable: false,dataIndex: 'satuan_nama'}
+
+            ],
+            listeners: {
+                scope: me,
+                select: me.onItemGridClick
+            },
+
+            features:[searching]
+        });
+        me.ProdpopupGrid = Ext.create('App.ux.GridPanel', {
+            store: me.ProdPopupStore,
+            itemId: 'ProdpopupGrid',
+            //height: 300,
+            margin: '0 0 3 0',
+            region: 'north',
+            enablePaging: true,
+            columns: [
+                {text: 'Produk  ID', sortable: false, dataIndex: 'prod_id'},
+                {text: 'Produk Nama', width:200, sortable: false,dataIndex: 'prod_nama'}
 
             ],
             listeners: {
@@ -422,7 +431,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'no_pp'
+                            name: 'do_num'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -434,54 +443,13 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Description :'
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'description'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal :'
-                                },
-                                {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'pp_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Factory:'
+                                    value: 'So_Num:'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'textfield',
-                                    id:'factory_id_pro',
-                                    name: 'pabrik_sequence'
+                                    id:'so_num_do',
+                                    name: 'so_num'
                                     // disabled: true
                                 },
                                 {
@@ -489,27 +457,51 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     text :'...',
                                     handler: function(){
                                         //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.FactorypopupStore, 'Sales Order',me.FactorypopupGrid);
+                                        me.ShowGridPopup(me.SOpopupStore,'Sales Order',me.SOpopupGrid);
                                     }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'factory_desc_pro'
                                 }
                             ]
                         },
                         {
                             xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
                             msgTarget: 'under',
                             items: [
                                 {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Release',
-                                    name: 'status'
-                                }]
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Route :'
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'route'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Delivery Date:'
+                                },
+                                {
+                                    fieldLabel : 'Tanggal',
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'deliverydate',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s'
+                                }
+                            ]
                         }
                     ]
                 }
@@ -521,7 +513,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     handler: function(){
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksiSave(form, me.ProduksiStore);
+                            me.onDeliveryOrderSave(form, me.DeliveryOrderStore);
                         }
                     }
                 },
@@ -566,20 +558,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                         }
                     },
                     items: [
-                       {
+                        {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'co_id'
+                            name: 'sequence_no'
                         },
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'no_pp'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'no_ppd'
+                            name: 'do_num'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -591,58 +578,29 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'So_Num:'
+                                    value: 'Produk :'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'textfield',
-                                    id:'so_num_id',
-                                    name: 'so_num'
-                                   // disabled: true
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SOpopupStore, 'Sales Order',me.SOpopupGrid);
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Formula ID:'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'formula_id_id',
-                                   // disabled: true,
-                                    name: 'formula_id'
+                                    id:'prod_id_do',
+                                    // disabled: true,
+                                    name: 'prod_id'
                                 },
                                 {
                                     xtype: 'button',
                                     text :'...',
                                     handler: function(){
                                         //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.FormulapopupStore,'Formula',me.FormulapopupGrid);
+                                        me.ShowGridPopup(me.ProdPopupStore, 'Produk',me.ProdpopupGrid);
 
                                     }
                                 },
                                 {
-                                    width: 100,
+                                    width: 200,
                                     xtype: 'displayfield',
                                     value: '',
-                                    id: 'formula_desc_pro'
+                                    id: 'Prod_desc_do'
                                 }
                             ]
                         },
@@ -656,13 +614,33 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Tanggal selesai :'
+                                    value: 'Source :'
                                 },
                                 {
-                                    fieldLabel : 'Tanggal',
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'ordersource'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'deliverydate:'
+                                },
+                                {
+                                    fieldLabel : 'Delivery Date',
                                     xtype : 'datefield',
                                     width : 100,
-                                    name : 'finishdate',
+                                    name : 'deliverydate',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s'
                                 }
@@ -678,18 +656,190 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'est. tgl selesai :'
+                                    value: 'Vendor ID:'
                                 },
                                 {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'est_finishdate',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    id:'vend_id_do',
+                                    // disabled: true,
+                                    name: 'vend_id'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'...',
+                                    handler: function(){
+                                        //me.myFormulaChooseItem.showAt(400,200);
+                                        me.ShowGridPopup(me.VEpopupStore, 'Vendor',me.VEpopupGrid);
+
+                                    }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'vend_desc_do'
+                                }
+                            ]
+                        },
+
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Police No:'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'police_no'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Surat jalan :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'suratjalan'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Vessel:'
+                                },
+                                {
+                                    width:200,
+                                    xtype: 'textfield',
+                                    name: 'vessel'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Origin:'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'origin'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Destination:'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'destination'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Qty :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'qty'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Sat  ID :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    id:'sat_id_do',
+                                    // disabled: true,
+                                    name: 'satuan_id'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text :'...',
+                                    handler: function(){
+                                        //me.myFormulaChooseItem.showAt(400,200);
+                                        me.ShowGridPopup(me.SatuanPopupStore, 'Satuan',me.SatpopupGrid);
+
+                                    }
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    value: '',
+                                    id: 'satuan_desc_do'
                                 }
                             ]
                         }
+
                     ]
                 }
             ],
@@ -700,7 +850,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     handler: function(){
                         var form = me.winform1.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksi1Save(form, me.Produksi1Store);
+                            me.onDeliveryOrder1Save(form, me.DeliveryOrder1Store);
                         }
                     }
                 },
@@ -722,9 +872,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             }
         });
 
-
-
-        me.pageBody = [me.ProduksiGrid, me.Produksi1Grid];
+        me.pageBody = [me.DeliveryOrderGrid, me.DeliveryOrder1Grid];
         me.callParent(arguments);
     },
     setForm: function(form, title){
@@ -749,19 +897,14 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             form.getForm().reset();
         }
     },
-    action2: function(action){
-        var winview = this.winform1, form = winview.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
+
 
 
     /**
      * This wll load a new record to the grid
      * and start the rowEditor
      */
-    onNewProduksi: function(form, model, title){
+    onNewDeliveryOrder: function(form, model, title){
         this.setForm(form, title);
         form.getForm().reset();
         var newModel = Ext.ModelManager.create({
@@ -771,19 +914,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         this.win.show();
 
     },
-    onviewdetail: function(form, model,title){
 
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new');
-        this.winform1.show();
-
-    },
-    onNewProduksi1: function(form, model, title){
+    onNewDeliveryOrder1: function(form, model, title){
         this.setForm(form, title);
         form.getForm().reset();
         var newModel = Ext.ModelManager.create({
@@ -799,50 +931,51 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
      * @param grid
      * @param selected
      */
-    onProduksiGridClick: function(grid, selected){
+    onDeliveryOrderGridClick: function(grid, selected){
         var me = this;
-       me.currProduksi = selected.data.no_pp;
-       var TopBarItems = this.ProduksiGrid.getDockedItems('toolbar[dock="top"]')[0];
+        me.currDeliveryOrder = selected.data.do_num;
+        var TopBarItems = this.DeliveryOrderGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.Produksi1Store.load({params:{no_pp: me.currProduksi}});
+        me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
 
     },
     onItemGridClick: function(grid,selected){ //
         var me = this;
         //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
         var getso_num= selected.data.so_num;
-        var getformula_id= selected.data.formula_id;
-        var getformula_desc= selected.data.formula_nama;
-        var getFactory_id= selected.data.pabrik_sequence;
-        var getFactory_desc= selected.data.description;
+        var vend_id= selected.data.vend_id;
+        var sat_id= selected.data.satuan_id;
 
         if(selected.data.so_num != null){
-            Ext.getCmp('so_num_id').setValue(getso_num);
-        }else if(selected.data.formula_id != null){
-            Ext.getCmp('formula_id_id').setValue(getformula_id);
-            Ext.getCmp('formula_desc_pro').setValue(getformula_desc);
-        }else if(selected.data.pabrik_sequence != null){
-            Ext.getCmp('factory_id_pro').setValue(getFactory_id);
-            Ext.getCmp('factory_desc_pro').setValue(getFactory_desc);
+            Ext.getCmp('so_num_do').setValue(getso_num);
+        }else if(selected.data.vend_id != null){
+            Ext.getCmp('vend_id_do').setValue(vend_id);
+            Ext.getCmp('vend_desc_do').setValue(selected.data.vend_nama);
+        }else if(selected.data.satuan_id != null){
+            Ext.getCmp('sat_id_do').setValue(sat_id);
+            Ext.getCmp('satuan_desc_do').setValue(selected.data.satuan_nama);
+        }else if(selected.data.prod_id != null){
+            Ext.getCmp('prod_id_do').setValue(selected.data.prod_id);
+            Ext.getCmp('prod_desc_do').setValue(selected.data.prod_nama);
         }
-       me.myWinChooseItem.close();
+        me.myWinChooseItem.close();
     },
 
     ShowGridPopup: function(store, title, grid){
         this.myWinChooseItem= Ext.create('App.ux.window.Window',{
             layout: 'fit',
             title: title,
-            width: 500,
+            width: 400,
             height: 300,
             items:[grid],
             modal:true
 
         });
         this.myWinChooseItem.show();
-},
+    },
     onItemdblclick: function(store, record, title){
         var form = this.win.down('form');
         this.setForm(form, title);
@@ -859,11 +992,11 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         this.winform1.show();
     },
 
-    onProduksiSave: function(form, store){
+    onDeliveryOrderSave: function(form, store){
         var me = this;
-        me.saveProduksi(form, store);
+        me.saveDeliveryOrder(form, store);
     },
-    saveProduksi: function(form, store){
+    saveDeliveryOrder: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -874,7 +1007,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             success:function(){
                 me.win.close();
                 store.load();
-                me.Produksi1Store.load();
             },
             failure:function(){
                 store.load();
@@ -883,16 +1015,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         });
     },
 
-    onProduksi1Save: function(form, store){
+    onDeliveryOrder1Save: function(form, store){
         var me = this;
-        me.saveProduksi1(form, store);
+        me.saveDeliveryOrder1(form, store);
     },
-    saveProduksi1: function(form, store){
+    saveDeliveryOrder1: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
             f = me.winform1.down('form').getForm(), rec = f.getRecord();
 
-        form.findField('no_pp').setValue(me.currProduksi);
-        //  form.findField('co_id').setValue(me.curr_coid);
+        form.findField('do_num').setValue(me.currDeliveryOrder);
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -902,20 +1033,21 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                //store.load();
+               // store.load();
             },
             failure:function(){
                 //store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-       store.load({params:{no_pp: me.currProduksi}});
+        store.load({params:{do_num: me.currDeliveryOrder}});
+        me.DeliveryOrderStore.load();
     },
-    onProduksiDelete: function(store){
-        var me = this, grid = me.ProduksiGrid;
+    onDeliveryOrderDelete: function(store){
+        var me = this, grid = me.DeliveryOrderGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('no_pp');
+        bid = sr[0].get('do_num');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -923,7 +1055,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    Produksi.deleteProduksi(bid);
+//                    DeliveryOrder.deleteDeliveryOrder(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
@@ -933,11 +1065,11 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             }
         });
     },
-    deleteProduksi1: function(store){
-        var me = this, grid = me.Produksi1Grid;
+    deleteDeliveryOrder1: function(store){
+        var me = this, grid = me.DeliveryOrder1Grid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('no_ppd');
+        bid = sr[0].get('do_num');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -945,7 +1077,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    Produksi.deleteProduksi1(bid);
+//                    DeliveryOrder.deleteDeliveryOrder1(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
@@ -964,8 +1096,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
      */
     onActive: function(callback){
         var me = this;
-        this.ProduksiStore.load({params:{start:0, limit:5}});
-        this.Produksi1Store.load();
+        this.DeliveryOrderStore.load({params:{start:0, limit:5}});
+        this.DeliveryOrder1Store.load({params:{start:0, limit:5}});
 
         callback(true);
     }

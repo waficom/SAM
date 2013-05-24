@@ -136,7 +136,7 @@ class BahanBaku
 
 	public function deletebb(stdClass $params)
 	{
-		$sql = "DELETE FROM bahanbaku WHERE (co_id = '$params-co_id') and (bb_id = '$params->bb_id')" ;
+		$sql = "DELETE FROM bahanbaku WHERE (co_id = '$params->co_id') and (bb_id = '$params->bb_id')" ;
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

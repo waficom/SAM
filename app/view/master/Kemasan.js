@@ -134,7 +134,7 @@ Ext.define('App.view.master.Kemasan', {
                                 var form = me.win.down('form');
                                 me.onNew(form, 'KemasanModel', 'Tambah Data');
                             }
-                        },'->',
+                        },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',
