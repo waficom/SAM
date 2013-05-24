@@ -40,26 +40,29 @@ function report_parse_post_parameters() {
     return $params;
 }
 
-function report_execute( $filename = 'output-filename' ) {
-    global $dbhost;
-    global $dbname;
-    global $dbuser;
-    global $dbpass;
+function report_execute( $report = 'report.jasper', $filename = 'output-filename' ) {
 
     $PERSIST = 'jdbc';
 
+    $dbhost = (string)$_SESSION['site']['db']['host'];
+    $dbport = (int)$_SESSION['site']['db']['port'];
+    $dbname = (string)$_SESSION['site']['db']['database'];
+    $dbuser = (string)$_SESSION['site']['db']['username'];
+    $dbpass = (string)$_SESSION['site']['db']['password'];
+
+
     $conn = null;
-    $report = realpath( './reports/report-filename.jasper' );
+//    $report = realpath( './reports/report-filename.jasper' );
 
     try {
         $params = report_parse_post_parameters();
 
         # Load the PostgreSQL database driver.
-        java( 'java.lang.Class' )->forName( 'org.postgresql.Driver' );
+        java( 'java.lang.Class' )->forName( 'org.firebirdsql.jdbc.FBDriver' );
 
         # Attempt a database connection.
         $conn = java( 'java.sql.DriverManager' )->getConnection(
-            "jdbc:postgresql://$dbhost/$dbname?user=$dbuser&password=$dbpass" );
+            "jdbc:firebirdsql://$dbhost:$dbport//$dbname",$dbuser, $dbpass);
 
         # Use the fill manager to produce the report.
         $fm = java('net.sf.jasperreports.engine.JasperFillManager');
@@ -67,7 +70,7 @@ function report_execute( $filename = 'output-filename' ) {
 
         header('Cache-Control: private');
         header('Content-Description: File Transfer');
-        header("Content-Disposition: attachment, filename=$filename.pdf");
+        header("Content-Disposition: attachment; filename=$filename.pdf");
         header('Content-Type: application/pdf');
         header('Content-Transfer-Encoding: binary');
 

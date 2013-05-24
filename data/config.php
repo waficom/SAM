@@ -858,16 +858,6 @@ $API = array(
                 'len' => 1
             )
         )
-    ),
-    /**
-     * Globals Functions
-     */
-    'Test' => array(
-        'methods' => array(
-            'TestList' => array(
-                'len' => 1
-            )
-        )
     )
 
 

@@ -4,12 +4,10 @@ if(!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
-
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
     include_once($_SESSION['root'] . '/dataProvider/Modules.php');
     $m = new Modules();
 }
-
 /*
  * getREMOTING_API
  */
@@ -49,13 +47,13 @@ function getREMOTING_API($API, $moduleDir = false)
 require ('config.php');
 // convert API config to Ext.Direct spec
 header('Content-Type: text/javascript');
+//header("Content-Type: application/x-javascript; charset=UTF-8");
 echo 'Ext.ns("App.data");';
 echo 'App.data = [];';
 echo 'App.data.push(' . getREMOTING_API($API) . ');';
-
-
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
     foreach ($m->getEnabledModules() AS $module) {
         echo 'App.data.push(' . getREMOTING_API($module['actionsAPI'], $module['dir']) . ');';
     }
 }
+

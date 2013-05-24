@@ -19,7 +19,7 @@
  */
 
 require_once("lib/JavaBridge/java/Java.inc");
-
+/*
 try {
 
     $jasperxml = new java("net.sf.jasperreports.engine.xml.JRXmlLoader");
@@ -32,6 +32,9 @@ try {
 } catch (JavaException $ex) {
     echo $ex;
 }
+*/
+$jaspercompiledreport = new java("net.sf.jasperreports.engine.util.JRLoader");
+$report = $jaspercompiledreport->loadObject("/var/www/sam-new/bs.jasper");
 
 $fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
 
@@ -114,34 +117,19 @@ switch ($_POST['format']) {
         }
         break;
     case 'pdf':
-//        $outputPath = realpath(".") . "/temp/" . "output.pdf";
+        $outputPath = realpath(".") . "/temp/" . "output.pdf";
 
-//        $exporter = new java("net.sf.jasperreports.engine.export.JRPdfExporter");
-//        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
-//        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+        try {
+            $exporter = new java("net.sf.jasperreports.engine.export.JRPdfExporter");
+            $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+            $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
 
-//        header("Content-type: application/pdf");
-//        header("Content-Disposition: attachment; filename=output.pdf");
+        } catch (JavaException $ex) {
+            echo $ex;
+        }
 
-        # Use the fill manager to produce the report.
-//        $fm = java('net.sf.jasperreports.engine.JasperFillManager');
-//        $pm = $fm->fillReport($report, $params, $conn);
-
-        header('Cache-Control: private');
-        header('Content-Description: File Transfer');
+        header("Content-type: application/pdf");
         header("Content-Disposition: attachment; filename=output.pdf");
-        header('Content-Type: application/pdf');
-        header('Content-Transfer-Encoding: binary');
-
-        java_set_file_encoding('ISO-8859-1');
-
-        $em = java('net.sf.jasperreports.engine.JasperExportManager');
-        $result = $em->exportReportToPdf($jasperPrint);
-
-        $conn->close();
-
-        header('Content-Length: ' . strlen( $result ) );
-        echo $result;
 
         break;
     case 'ods':
@@ -215,8 +203,8 @@ switch ($_POST['format']) {
         header("Content-Disposition: attachment; filename=output.pptx");
         break;
 }
-//$exporter->exportReport();
+$exporter->exportReport();
 
-//readfile($outputPath);
-//unlink($outputPath);
+readfile($outputPath);
+unlink($outputPath);
 ?>
