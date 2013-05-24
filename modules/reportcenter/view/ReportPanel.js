@@ -1,7 +1,17 @@
-Ext.define('App.view.report.ReportPanel', {
+//******************************************************************************
+// ClientListReport.js
+// Client List (Patient) Report
+// v0.0.1
+//
+// Author: Gino Rivera Falu (GI Technologies)
+// Modified:
+//
+// GaiaEHR (Electronic Health Records) 2012
+//******************************************************************************
+Ext.define('Modules.reportcenter.view.ReportPanel', {
     extend: 'App.ux.RenderPanel',
     id: 'panelReportPanel',
-    pageTitle: 'Report Panel',
+    pageTitle: i18n('report_center'),
     pageLayout: {
         type: 'vbox',
         align: 'stretch'
@@ -32,6 +42,7 @@ Ext.define('App.view.report.ReportPanel', {
                     scope: me,
                     handler: me.generateReport
                 },
+/*
                 '-',
                 {
                     text: i18n('get_pdf'),
@@ -41,6 +52,7 @@ Ext.define('App.view.report.ReportPanel', {
                     scope: me,
                     handler: me.generatePDF
                 },
+*/
                 '-',
                 {
                     text: i18n('reset'),
@@ -50,7 +62,7 @@ Ext.define('App.view.report.ReportPanel', {
                 },
                 '->',
                 {
-                    text: i18n('print'),
+                    text: 'Print',
                     iconCls: 'icon-print',
                     handler : function(){
                         App.ux.grid.Printer.printAutomatically = false;
@@ -61,8 +73,38 @@ Ext.define('App.view.report.ReportPanel', {
         });
         me.pageBody = [me.formPanel, me.renderContainer];
         me.callParent(arguments);
+        me.getPageBody().addDocked({
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [
+                    {
+                        text: i18n('back'),
+                        iconCls: 'icoArrowLeftSmall',
+                        handler: me.goToReportCenter
+                    }
+                ]
+            });
     },
 
+    setReportPanel: function(config){
+        var me = this;
+        if(config.title) me.formPanel.setTitle(config.title);
+        if(config.action) me.formPanel.action = config.action;
+        if(config.fn) me.formPanel.reportFn = config.fn;
+//        if(config.store) me.store = config.store;
+//        if(config.columns) me.columns = config.columns;
+        me.formPanel.removeAll();
+        me.formPanel.add(config.items);
+        me.resetRenderContainer();
+        say(config);
+
+
+    },
+
+    goToReportCenter: function(){
+        app.MainPanel.getLayout().setActiveItem('panelReportCenter');
+    },
+/*
     getGridPanel:function(){
         var me = this;
         return this.renderContainer.add(Ext.create('Ext.grid.Panel',{
@@ -71,6 +113,7 @@ Ext.define('App.view.report.ReportPanel', {
             border:false
         }));
     },
+*/
     /**
      * PDF render panel
      * Just create the panel and do not display the PDF yet, until
@@ -78,7 +121,7 @@ Ext.define('App.view.report.ReportPanel', {
      * @return {*}
      */
     getPDFPanel:function(src){
-        //-----------------------------------------------------------------------
+       //-----------------------------------------------------------------------
         // PDF render panel
         // Just create the panel and do not display the PDF yet, until
         // the user click create report.
@@ -89,41 +132,54 @@ Ext.define('App.view.report.ReportPanel', {
     },
 
     generateReport:function(btn){
-        var me = this,
-            botton= btn.up('toolbar').getComponent('pdf'),
-            values = me.formPanel.getForm().getValues();
+        var me = this, form = me.formPanel, params = form.getForm().getValues()
+//            botton= btn.up('toolbar').getComponent('pdf'),
+//        values = me.formPanel.getForm().getValues();
         this.renderContainer.removeAll(true);
         delete this.pdf;
-        me.grid = this.getGridPanel();
-
-        me.store.load({params:values});
-        botton.setDisabled(false);
-    },
-
-    generatePDF: function(btn){
-        var me = this, form = me.formPanel, params = form.getForm().getValues();
-//        me.resetRenderContainer();
+//        me.grid = this.getGridPanel();
+//        me.store.load({params:values});
+//        botton.setDisabled(false);
         if(typeof form.reportFn == 'function'){
-            var html =App.ux.grid.GridToHtml.getHtml(me.grid);
+//            var html = App.ux.grid.GridToHtml.getHtml(me.grid);
             this.renderContainer.removeAll(true);
-            delete this.grid;
-            form.reportFn({html:html}, function(provider, response){
+//            delete this.grid;
+            form.reportFn({params:params}, function(provider, response){
 
                 me.pdf = me.getPDFPanel(response.result.url);
             });
         }else{
             Ext.Msg.alert('Oops!', 'No function provided');
         }
-        btn.setDisabled(true);
+//        btn.setDisabled(true);
+
+    },
+    generatePDF: function(btn){
+        var me = this, form = me.formPanel, params = form.getForm().getValues();
+//        me.resetRenderContainer();
+        if(typeof form.reportFn == 'function'){
+//            var html =App.ux.grid.GridToHtml.getHtml(me.grid);
+            this.renderContainer.removeAll(true);
+            delete this.grid;
+            form.reportFn({}, function(provider, response){
+
+                me.pdf = me.getPDFPanel(response.result.url);
+            });
+        }else{
+            Ext.Msg.alert('Oops!', 'No function provided');
+        }
+//        btn.setDisabled(true);
     },
 
 
-    resetRenderContainer:function(){
-        this.formPanel.down('toolbar').getComponent('pdf').setDisabled(true);
+    resetRenderContainer:function(btn){
+//        this.formPanel.down('toolbar').getComponent('pdf').setDisabled(true);
+//        var botton = btn.up('toolbar').getComponent('pdf')
         this.formPanel.getForm().reset();
         this.renderContainer.removeAll(true);
-        delete this.grid;
+//        delete this.grid;
         delete this.pdf;
+//        botton.setDisabled(false);
 
     },
     /**

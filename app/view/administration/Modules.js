@@ -27,9 +27,9 @@ Ext.define('App.view.administration.Modules', {
             fields: [
                 { name: 'id', type: 'int' },
                 { name: 'title', type: 'string' },
-                { name: 'name', type: 'string' },
+                { name: 'module_name', type: 'string' },
                 { name: 'description', type: 'string' },
-                { name: 'enable', type: 'bool' },
+                { name: 'enabled', type: 'bool' },
                 { name: 'installed_version', type: 'string' },
                 { name: 'licensekey', type: 'string' },
                 { name: 'localkey', type: 'string' }
@@ -89,7 +89,7 @@ Ext.define('App.view.administration.Modules', {
                     width: 60,
                     sortable: true,
                     renderer: me.boolRenderer,
-                    dataIndex: 'enable',
+                    dataIndex: 'enabled',
                     editor:{
                         xtype:'checkbox'
                     }

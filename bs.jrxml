@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bs" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f5b92492-ecde-442f-969b-c0da02f95e46">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="staff" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from bs
+where staff_nama = $P{staff}]]>
+	</queryString>
+	<field name="NOMOR" class="java.lang.String"/>
+	<field name="TGL" class="java.sql.Date"/>
+	<field name="KEGIATAN" class="java.lang.String"/>
+	<field name="STAFF_NAMA" class="java.lang.String"/>
+	<field name="CUSTOMER" class="java.lang.String"/>
+	<field name="TOTAL_RUPIAH" class="java.lang.Double"/>
+	<field name="TOTAL_USD" class="java.lang.Double"/>
+	<field name="TERBILANG" class="java.lang.Object"/>
+	<field name="TERBILANG_USD" class="java.lang.Object"/>
+	<field name="ORDER_NO" class="java.lang.String"/>
+	<field name="KAPAL" class="java.lang.String"/>
+	<field name="PARTY" class="java.lang.String"/>
+	<field name="SELISIH_RUPIAH" class="java.lang.Double"/>
+	<field name="SELISIH_USD" class="java.lang.Double"/>
+	<field name="LEBIH_KURANG" class="java.lang.Integer"/>
+	<field name="JENIS" class="java.lang.String"/>
+	<field name="DUE_DATE" class="java.sql.Date"/>
+	<field name="JENIS_CONT" class="java.lang.String"/>
+	<field name="DOCUMENT" class="java.lang.String"/>
+	<field name="REALISASI" class="java.lang.Integer"/>
+	<field name="KETERANGAN" class="java.lang.Object"/>
+	<field name="TANPAORDER" class="java.lang.Integer"/>
+	<field name="SUPPLIER" class="java.lang.String"/>
+	<field name="VALCODE" class="java.lang.Integer"/>
+	<field name="TGLREALISASI" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2ffe4d29-523e-4377-8dc1-7ae238ad4ece" x="0" y="22" width="100" height="13"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[NOMOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ad480137-e849-44dd-b09b-9afeea1f170f" x="100" y="22" width="100" height="13"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[CUSTOMER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="807e0d82-06c0-477e-ae57-1939fd70ffb3" x="200" y="22" width="100" height="13"/>
+				<textElement/>
+				<text><![CDATA[STAFF_NAMA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f009f354-ddc9-4fe3-81d4-47932069d8da" x="0" y="0" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NOMOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2758da5e-fbde-4a44-a064-b3cdd83068e6" x="100" y="0" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CUSTOMER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db46af92-3f26-49fe-a315-17ef8a3dea44" x="200" y="0" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{STAFF_NAMA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

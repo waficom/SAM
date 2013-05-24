@@ -1,0 +1,41 @@
+{
+    "title":"Report Center Module",
+    "name":"reportcenter",
+    "version":"1.0.0",
+    "extjs_version":"4.1.1",
+    "author":"Saraswanti",
+    "description":"A report center for Kelompok Usaha Saraswanti, has all the necessary report for start ups.",
+    "dir":"reportcenter",
+    "active":true,
+    "debug":false,
+    "actionsAPI":{
+        "Test":{
+            "methods":{
+                "TestList":
+                {
+                    "len":1
+                }
+            }
+        }
+    },
+    "extjs":[
+        {
+            "file":"ModuleModel.js",
+            "path":"model/"
+        },
+        {
+            "file":"store/ModuleStore.js",
+            "path":"store/"
+        },
+        {
+            "file":"view/reportCenter.js",
+            "path":"view/"
+        }
+    ],
+    "install":[
+        {
+            "file":""
+        }
+    ]
+
+}

@@ -39,13 +39,13 @@ class Reports
     {
         $data = get_object_vars($parameters);
 
-/*        if (is_object($data['params'])) {
-            // Gets the properties of the given object
-            // with get_object_vars function
-            $data = get_object_vars($data['params']);
-        }
-        print_r($data);
-*/        # Automatically extract report parameters (data types converted in report).
+        /*        if (is_object($data['params'])) {
+                    // Gets the properties of the given object
+                    // with get_object_vars function
+                    $data = get_object_vars($data['params']);
+                }
+                print_r($data);
+        */        # Automatically extract report parameters (data types converted in report).
         $params = new java('java.util.HashMap');
 
         # Pass the remaining POST "report_TYP" variables as report parameters.
