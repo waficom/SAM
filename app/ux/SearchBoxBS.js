@@ -15,22 +15,17 @@ Ext.define('App.ux.SearchBoxBS',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {
-                            name : 'bb_id'
-                        },
-                        {
-                            name : 'bb_nama'
-                        }
+                        { name : 'nomor'},
+                        { name : 'tanggal'},
+                        { name : 'kegiatan'},
+                        { name : 'staff_nama'},
+                        { name : 'customer'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api :
-                        {
-                            read : BahanBaku.getbbLiveSearch
-                        },
-                        reader :
-                        {
+                        api : {read : BahanBaku.getbsLiveSearch},
+                        reader : {
                             totalProperty : 'totals',
                             root : 'rows'
                         }
@@ -39,10 +34,37 @@ Ext.define('App.ux.SearchBoxBS',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'livebbSearchModel',
+                    model : 'bsSearchModel',
                     pageSize : 10,
                     autoLoad : false
                 });
+            smGrid = Ext.create('Ext.selection.CheckboxModel');
+            // create the Grid
+            grid = Ext.create('Ext.grid.Panel', {
+                store: me.store,
+                columns: [
+                    { header: 'Nomor',width: 100, sortable: true, dataIndex: 'nomor'},
+                    { header: 'Tanggal',width: 100, sortable: false, dataIndex: 'tanggal'},
+                    { header: 'Kegiatan',width: 100,sortable: true,dataIndex: 'kegiatan'},
+                    { header: 'Staff',width: 150,sortable: true,dataIndex: 'staff_nama'},
+                    { header: 'Pelanggan',width: 200,sortable: true,dataIndex: 'customer'}
+                ],
+                height: 350,
+                selModel : smGrid,
+                width: 600,
+                title: 'BS',
+                viewConfig: {stripeRows: true},
+                bbar: new Ext.PagingToolbar({
+                    pageSize    : 20,
+                    store      : storeGrid,
+                    displayInfo: true,
+                    displayMsg : 'Data yang ada {0} - {1} Dari {2}',
+                    emptyMsg   : "Tidak ada data"
+                })
+            });
+
+            MenuGrid = new Ext.menu.Menu();
+            MenuGrid.add(grid);
 
             me.callParent(arguments);
             me.on('specialkey', function(f, e){
