@@ -21,9 +21,7 @@ require_once($_SESSION['root'] . '/lib/JavaBridge/java/Java.inc');
 class Reports
 {
     public $reportfile;
-    public $pdffile;
-    public $url;
-    public $uri;
+    public $filename;
     protected $fileManager;
 
     /*
@@ -39,13 +37,7 @@ class Reports
     {
         $data = get_object_vars($parameters);
 
-        /*        if (is_object($data['params'])) {
-                    // Gets the properties of the given object
-                    // with get_object_vars function
-                    $data = get_object_vars($data['params']);
-                }
-                print_r($data);
-        */        # Automatically extract report parameters (data types converted in report).
+        # Automatically extract report parameters (data types converted in report).
         $params = new java('java.util.HashMap');
 
         # Pass the remaining POST "report_TYP" variables as report parameters.
@@ -96,18 +88,11 @@ class Reports
 
 
         $conn = null;
-        $this->pdffile = $this->fileManager->getTempDirAvailableName();
-        $this->uri = $_SESSION['site']['temp']['path'] . '/' . $this->pdffile;
-        $this->url = $_SESSION['site']['temp']['url'] . '/' . $this->pdffile;
+        $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.pdf';
 
         try {
-//            error_reporting(-1);
 
             $params = $this->report_parse_post_parameters($parameters);
-
-//            print_r($params);
-
-//            jana('xxx');
 
             # Load the PostgreSQL database driver.
             java( 'java.lang.Class' )->forName( 'org.firebirdsql.jdbc.FBDriver' );
@@ -127,17 +112,19 @@ class Reports
             try {
                 $exporter = new java("net.sf.jasperreports.engine.export.JRPdfExporter");
                 $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
-                $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $this->uri.'.pdf');
+                $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                                        $_SESSION['site']['temp']['path'] . '/' .$this->filename);
 
             } catch (JavaException $ex) {
                 echo $ex;
             }
             header("Content-type: application/pdf");
-            header("Content-Disposition: attachment; filename=$this->pdffile.pdf");
+            header("Content-Disposition: attachment; filename=$this->filename");
 
             $exporter->exportReport();
 
             $conn->close();
+
         }
         catch( Exception $ex ) {
             if( $conn != null ) {
@@ -146,6 +133,9 @@ class Reports
 
             throw $ex;
         }
+
+        return $_SESSION['site']['temp']['url'] . '/' . $this->filename;
+
     }
 
 
