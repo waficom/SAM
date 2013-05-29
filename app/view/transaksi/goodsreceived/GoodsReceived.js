@@ -333,8 +333,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                         hideLabel : true,
                                                         items : [
                                                             {
-//                                                                xtype: 'mitos.UpperCaseTextField',
-                                                                xtype: 'searchfield',
+                                                                xtype: 'mitos.UpperCaseTextField',
                                                                 name : 'po_num',
                                                                 fieldLabel: 'PO #',
                                                                 labelAlign: 'right',
@@ -858,7 +857,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     }
                 }
             });
-
+/*
             var storeGrid = Ext.create('Ext.data.Store',{
                 model: 'treeMenu'
                 ,proxy: {
@@ -941,7 +940,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     helpGrid.showAt([this.getPosition()[0],this.getPosition()[1]+this.getHeight()]);
                 }
             });
-
+*/
             me.pageBody = [me.GRGrid, me.grpnl, me.GRItemspnl];
             me.callParent( arguments );
         },

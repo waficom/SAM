@@ -243,6 +243,9 @@ $API = array(
             'getbbLiveSearch' => array(
                 'len' => 1
             ),
+            'getbsLiveSearch' => array(
+                'len' => 1
+            ),
             'getbb' => array(
                 'len' => 1
             ),
@@ -350,6 +353,9 @@ $API = array(
                 'len' => 1
             ),
             'updateprice' => array(
+                'len' => 1
+            ),
+            'ProductListSearch' => array(
                 'len' => 1
             )
         )

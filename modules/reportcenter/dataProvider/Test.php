@@ -21,11 +21,7 @@ class Test extends Reports
     public function TestList(stdClass $params)
     {
 
-//        error_reporting(-1);
         $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
-//        $this->reportfile = '/var/www/sam-new/bs.jasper';
-//        print_r($this->reportfile);
-//        man();
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,

@@ -136,7 +136,7 @@ class Reports
 
     public function report_parse_post_parameters(stdClass $parameters)
     {
-        error_reporting(-1);
+
         $data = get_object_vars($parameters);
 
         # Automatically extract report parameters (data types converted in report).

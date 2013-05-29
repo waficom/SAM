@@ -197,7 +197,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                     width : 100,
                     margin : '0 0 3 0',
                     text : 'Hapus Data',
-                    disabled: acl.accessdashboard,
+//                    disabled: acl.accessdashboard,
                     listeners :
                     {
                         scope : me,
@@ -791,10 +791,11 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                             msgTarget: 'under',
                             items: [
                                 {
-                                    width: 400,
+                                    width: 300,
                                     name: 'prod_id',
                                     fieldLabel : 'Product ID ',
-                                    xtype: 'Itemslivetsearch',
+//                                    xtype: 'Itemslivetsearch',
+                                    xtype : 'xtlistproduct',
                                     itemId : 'prod_id',
                                     labelAlign : 'right',
                                     allowBlank: false
