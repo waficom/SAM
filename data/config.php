@@ -809,6 +809,39 @@ $API = array(
             )
         )
     ),
+    'WorkOrder1' => array(
+        'methods' => array(
+            'getWorkOrder1' => array(
+                'len' => 1
+            ),'getWorkOrder1Detail' => array(
+                'len' => 1
+            ),'addWorkOrder1Detail' => array(
+                'len' => 1
+            ),'updateWorkOrder1Detail' => array(
+                'len' => 1
+            ),'deleteWorkOrder1Detail' => array(
+                'len' => 1
+            ),'getWorkOrder1DetailBBaku' => array(
+                'len' => 1
+            ),'addWorkOrder1DetailBBaku' => array(
+                'len' => 1
+            ),'updateWorkOrder1DetailBBaku' => array(
+                'len' => 1
+            ),'deleteWorkOrder1DetailBBaku' => array(
+                'len' => 1
+            ),'getWorkOrder1DetailBJadi' => array(
+                'len' => 1
+            ),'addWorkOrder1DetailBJadi' => array(
+                'len' => 1
+            ),'updateWorkOrder1DetailBJadi' => array(
+                'len' => 1
+            ),'deleteWorkOrder1DetailBJadi' => array(
+                'len' => 1
+            ),'getGudanglocation' => array(
+                'len' => 1
+            )
+        )
+    ),
     'Produksi' => array(
         'methods' => array(
             'getProduksi' => array(
@@ -842,14 +875,15 @@ $API = array(
             )
         )
     ),
-    'Stock' => array(
+    'StockPeriode' => array(
         'methods' => array(
             'getStock' => array(
                 'len' => 1
             )
         )
     ),
-    'Factorylocation' => array(
+
+    'Factory_location' => array(
         'methods' => array(
             'getFactorylocation' => array(
                 'len' => 1
@@ -862,9 +896,68 @@ $API = array(
             ),
             'deleteFactorylocation' => array(
                 'len' => 1
+            ),'getGudanglocation' => array(
+                'len' => 1
+            ),
+            'addGudanglocation' => array(
+                'len' => 1
+            ),
+            'updateGudanglocation' => array(
+                'len' => 1
+            ),
+            'deleteGudanglocation' => array(
+                'len' => 1
             )
         )
+    ),
+    'DeliveryOrder' => array(
+        'methods' => array(
+            'getDeliveryOrder' => array(
+                'len' => 1
+            ),
+            'getSOpopup' => array(
+                'len' => 1
+            ),
+            'getVEpopup' => array(
+                'len' => 1
+            ),
+            'addDeliveryOrder' => array(
+                'len' => 1
+            ),
+            'deleteDeliveryOrder' => array(
+                'len' => 1
+            ),
+            'updateDeliveryOrder' => array(
+                'len' => 1
+            ),
+            'getDeliveryOrder1' => array(
+                'len' => 1
+            ),
+            'addDeliveryOrder1' => array(
+                'len' => 1
+            ),
+            'deleteDeliveryOrder1' => array(
+                'len' => 1
+            ),
+            'updateDeliveryOrder1' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'OrderMonitoring' => array(
+    'methods' => array(
+        'getOrderMonitoring' => array(
+            'len' => 1
+        )
     )
+)
+    /*'Report' => array(
+        'methods' => array(
+            'getReportSO' => array(
+                'len' => 1
+            )
+        )
+    )*/
 
 
 

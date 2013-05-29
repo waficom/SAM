@@ -670,7 +670,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     text :'...',
                                     handler: function(){
                                         //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.VEpopupStore, 'Vendor',me.VEpopupGrid);
+                                        me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'T'}}), 'Vendor',me.VEpopupGrid);
 
                                     }
                                 },

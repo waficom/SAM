@@ -39,6 +39,14 @@ Ext.define('App.view.master.Vendor', {
                     type: 'string'
                 },
                 {
+                    name: 'vend_type',
+                    type: 'string'
+                },
+                {
+                    name: 'vend_type_desc',
+                    type: 'string'
+                },
+                {
                     name: 'contact',
                     type: 'string'
                 },
@@ -138,6 +146,12 @@ Ext.define('App.view.master.Vendor', {
                     text: 'Vendor',
                     sortable: true,
                     dataIndex: 'vend_nama'
+                },
+                {
+                    flex: 1,
+                    text: 'Type :',
+                    sortable: true,
+                    dataIndex: 'vend_type_desc'
                 },
                 {
                     flex: 1,
@@ -320,6 +334,22 @@ Ext.define('App.view.master.Vendor', {
                                     xtype: 'textfield',
                                     name: 'vend_nama'
                                 }                                
+                            ]
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Type ",
+                            id: "vend_type_v",
+                            defaults: {xtype: "radio",name: "vend_type"},
+                            items: [
+                                {
+                                    boxLabel: "Suplier",
+                                    inputValue: "S"
+                                },
+                                {
+                                    boxLabel: "Transporter",
+                                    inputValue: "T"
+                                }
                             ]
                         },
                         {

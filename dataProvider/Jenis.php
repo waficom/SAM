@@ -125,7 +125,7 @@ class Jenis
 	public function updatejenis(stdClass $params)
 	{
 		$data       = get_object_vars($params);
-		unset($data['id'], $data['old_jenis_id'], $data['jenis_id']);
+		unset($data['id'], $data['old_jenis_id']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }

@@ -16,6 +16,38 @@
                     "len":1
                 }
             }
+        },
+        "SalesOrder_Rpt":{
+            "methods":{
+                "SalesOrder":
+                {
+                    "len":1
+                },
+                "DataKonsumen":
+                {
+                    "len":1
+                },
+                "RekapPenjualan":
+                {
+                    "len":1
+                },
+                "PerformanceCabang":
+                {
+                    "len":1
+                },
+                "PriceList":
+                {
+                    "len":1
+                },
+                "SuratPesanan":
+                {
+                    "len":1
+                },
+                "PermintaanProduksi":
+                {
+                    "len":1
+                }
+            }
         }
     },
     "extjs":[

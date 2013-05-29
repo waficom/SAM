@@ -122,12 +122,13 @@ class Bentuk
 	public function updateBentuk(stdClass $params)
 	{
 		$data = get_object_vars($params);
-        unset($data['id'], $data['bentuk_id'], $data['old_bentuk_id']);
+        unset($data['id'], $data['old_bentuk_id']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this -> db -> sqlBind($data, 'bentuk', 'U', array('bentuk_id' => $params -> bentuk_id));
+		$sql = $this -> db -> sqlBind($data, 'bentuk', 'U', array('bentuk_id' => $params -> old_bentuk_id));
 		$this -> db -> setSQL($sql);
+       // print_r($sql);
 		$this -> db -> execLog();
 		return $params;
 	}

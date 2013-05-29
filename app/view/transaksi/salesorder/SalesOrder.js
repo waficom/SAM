@@ -433,6 +433,14 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             width: 300,
                                             fieldLabel: 'Wilayah',
                                             labelAlign: 'right'
+                                        },
+                                        {
+                                            width: 400,
+                                            height: 100,
+                                            fieldLabel : 'Pembayaran',
+                                            labelAlign : 'right',
+                                            xtype: 'textareafield',
+                                            name: 'pembayaran'
                                         }
                                     ]
                                 },

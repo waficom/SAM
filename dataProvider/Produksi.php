@@ -151,7 +151,7 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
             $row = array_change_key_case($row);
             array_push($rows, $row);
         }
-
+        //print_r($row);
         return $rows;
     }
 

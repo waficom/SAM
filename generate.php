@@ -23,7 +23,7 @@ require_once("lib/JavaBridge/java/Java.inc");
 try {
 
     $jasperxml = new java("net.sf.jasperreports.engine.xml.JRXmlLoader");
-    $jasperDesign = $jasperxml->load(realpath("bs.jrxml"));
+    $jasperDesign = $jasperxml->load(realpath("report1.jrxml"));
 //    $query = new java("net.sf.jasperreports.engine.design.JRDesignQuery");
 //    $query->setText("SELECT * FROM  bs");
 //    $jasperDesign->setQuery($query);
@@ -31,15 +31,15 @@ try {
     $report = $compileManager->compileReport($jasperDesign);
 } catch (JavaException $ex) {
     echo $ex;
-}
-*/
+}*/
+
 $jaspercompiledreport = new java("net.sf.jasperreports.engine.util.JRLoader");
-$report = $jaspercompiledreport->loadObject("/var/www/sam-new/bs.jasper");
+$report = $jaspercompiledreport->loadObject("/var/www/report1.jasper");
 
 $fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
 
 $params = new Java("java.util.HashMap");
-$params->put("staff", "IMAM");
+$params->put("sonum", "00071");
 
 $class = new JavaClass("java.lang.Class");
 $class->forName("org.firebirdsql.jdbc.FBDriver");

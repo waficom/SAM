@@ -44,7 +44,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         Ext.define('Produksi1Model', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'no_pp',type: 'string',  hidden : true}
+                {name: 'no_pp',type: 'string'}
                 ,{name: 'no_ppd',type: 'string'}
                 ,{name: 'so_num',type: 'string'}
                 ,{name: 'cust_nama',type: 'string'}

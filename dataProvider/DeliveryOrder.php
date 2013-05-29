@@ -205,7 +205,7 @@ class DeliveryOrder
     }
     public function getVEpopup(stdClass $params)
     {
-        $sql = "SELECT * FROM vendor ORDER BY vend_id ASC";
+        $sql = "SELECT * FROM vendor where (vend_type = '$params->vend_type') ORDER BY vend_id ASC";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();

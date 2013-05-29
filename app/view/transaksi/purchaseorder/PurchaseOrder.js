@@ -51,7 +51,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                 fields: [
                     {name: 'vend_id',type: 'string'},
                     {name: 'vend_nama',type: 'string'},
-                    {name: 'contact',type: 'string'}
+                    {name: 'vend_type',type: 'string'}
                 ],
                 proxy: {
                     type: 'direct',
@@ -75,7 +75,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                 columns: [
                     {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
                     {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
-                    {text: 'Contact', width : 80, sortable: true, dataIndex: 'contact'}
+                    {text: 'vend_type', width : 80, sortable: true, dataIndex: 'vend_type'}
 
                 ],
                 listeners: {
@@ -354,7 +354,21 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                                                                 itemId : 'povend_id',
                                                                 name : 'vend_id',
                                                                 labelAlign : 'right',
-                                                                id:'vend_id_po'
+                                                                id:'vend_id_s_po'
+                                                            },{
+                                                                xtype: 'button',
+                                                                text :'...',
+                                                                handler: function(){
+                                                                    //me.myFormulaChooseItem.showAt(400,200);
+                                                                    me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'S'}}), 'Suplier',me.VEpopupGrid);
+
+                                                                }
+                                                            },
+                                                            {
+                                                                width: 200,
+                                                                xtype: 'displayfield',
+                                                                value: '',
+                                                                id: 'vend_s_desc_po'
                                                             }]
                                                     },
                                                     {
@@ -1074,15 +1088,12 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
         },
         onItemGridClick: function(grid,selected){ //
             var me = this;
-
-            var vend_id= selected.data.vend_id;
-
-
-            if(selected.data.vend_id != null){
-                Ext.getCmp('vend_id_po').setValue(vend_id);
-                Ext.getCmp('vend_desc_po').setValue(selected.data.vend_nama);
+            var vend_type= selected.data.vend_type;
+            if(vend_type == 'S'){
+                Ext.getCmp('vend_id_s_po').setValue(selected.data.vend_id);
+                Ext.getCmp('vend_s_desc_po').setValue(selected.data.vend_nama);
             }
-            me.myWinChooseItem.close();
+            //me.myWinChooseItem.close();
         },
 
         ShowGridPopup: function(store, title, grid){

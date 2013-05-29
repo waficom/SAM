@@ -36,6 +36,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_bb_id = null;
 
             me.step = [];
+            var searching={
+                ftype : 'searching',
+                mode: 'local'
+                ,           width:  200,
+                disableIndexes:['timeedit']
+
+            }
 
             me.GRStore = Ext.create( 'App.store.transaksi.goodsreceived.GoodsReceived' );
             me.GRItemsStore = Ext.create('App.store.transaksi.goodsreceived.GRItems');
@@ -45,6 +52,46 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
              * Gives a list of encounter based on the search
              *
              */
+            Ext.define('VendorPopupModel', {
+                extend: 'Ext.data.Model',
+                fields: [
+                    {name: 'vend_id',type: 'string'},
+                    {name: 'vend_nama',type: 'string'},
+                    {name: 'vend_type',type: 'string'}
+                ],
+                proxy: {
+                    type: 'direct',
+                    api: {
+                        read: DeliveryOrder.getVEpopup
+
+                    }
+                }
+            });
+            me.VEpopupStore = Ext.create('Ext.data.Store', {
+                model: 'VendorPopupModel',
+                autoLoad: true
+            });
+            me.VEpopupGrid = Ext.create('App.ux.GridPanel', {
+                store: me.VEpopupStore,
+                itemId: 'VEpopupGrid',
+                //height: 300,
+                margin: '0 0 3 0',
+                region: 'north',
+                enablePaging: true,
+                columns: [
+                    {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
+                    {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
+                    {text: 'vend_type', width : 80, sortable: true, dataIndex: 'vend_type'}
+
+                ],
+                listeners: {
+                    scope: me,
+                    select: me.onItemGridClick
+                },
+
+                features:[searching]
+            });
+
             me.GRGrid = Ext.create( 'Ext.grid.Panel',
                 {
                     store : me.GRStore,
@@ -295,7 +342,23 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 width: 400,
                                                                 itemId : 'vend_id',
                                                                 name : 'vend_id',
-                                                                labelAlign : 'right'
+                                                                labelAlign : 'right',
+                                                                id:'vend_id_s_gr'
+                                                            },
+                                                            {
+                                                                xtype: 'button',
+                                                                text :'...',
+                                                                handler: function(){
+                                                                    //me.myFormulaChooseItem.showAt(400,200);
+                                                                    me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'S'}}), 'Suplier',me.VEpopupGrid);
+
+                                                                }
+                                                            },
+                                                            {
+                                                                width: 200,
+                                                                xtype: 'displayfield',
+                                                                value: '',
+                                                                id: 'vend_s_desc_gr'
                                                             }]
                                                     },
                                                     {
@@ -317,7 +380,23 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 width: 400,
                                                                 itemId : 'vend_id_trans',
                                                                 name : 'vend_id_trans',
-                                                                labelAlign : 'right'
+                                                                labelAlign : 'right',
+                                                                id: 'vend_id_t_gr'
+                                                            },
+                                                            {
+                                                                xtype: 'button',
+                                                                text :'...',
+                                                                handler: function(){
+                                                                    //me.myFormulaChooseItem.showAt(400,200);
+                                                                    me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'T'}}), 'Transporter',me.VEpopupGrid);
+
+                                                                }
+                                                            },
+                                                            {
+                                                                width: 200,
+                                                                xtype: 'displayfield',
+                                                                value: '',
+                                                                id: 'vend_t_desc_gr'
                                                             }]
                                                     },
                                                     {
@@ -857,90 +936,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     }
                 }
             });
-/*
-            var storeGrid = Ext.create('Ext.data.Store',{
-                model: 'treeMenu'
-                ,proxy: {
-                    type: 'ajax'
-                    ,url : 'http://lokal.com/'
-                    ,noCache    : false
-                    ,params     : Ext.encode({
-                        start   : 0
-                        ,limit  : 20
-                    })
-                    ,actionMethods  : 'POST'
-                    ,reader: {
-                        type: 'json'
-                        ,root: 'response'
-                        ,totalProperty: 'jumlah'
-                        ,idProperty: 'MN_ID'
-                    }
-                }
-                ,autoLoad: true
-                ,sorters: [{
-                    property    : 'MN_ID',
-                    direction   : 'ASC'
-                }]
-            });
 
-            var smGrid = Ext.create('Ext.selection.CheckboxModel');
-            // create the Grid
-            var grid = Ext.create('Ext.grid.Panel', {
-                store: storeGrid
-                ,columns: [
-                    { header: 'NAMA',width: 200,sortable: true,dataIndex: 'MN_NAME'}
-                    ,{ header: 'LINK',width: 100,sortable: true,dataIndex: 'MN_LINK'}
-                    ,{ header: 'PARENT',width: 100,sortable: true,dataIndex: 'MN_PARENT'}
-                    ,{ header: 'GROUP',width: 100,sortable: true,dataIndex: 'MN_GRP'}
-                    ,{ header: 'URUTAN',width: 100,sortable: true,dataIndex: 'MN_SORT'}
-                    ,{ header: 'STATUS',width: 100,sortable: true,dataIndex: 'MN_STATUS'}
-                    ,{ header: 'ICON',width: 100,sortable: true,dataIndex: 'MN_ICON'}
-                    ,{ header: 'TYPE',width: 100,sortable: true,dataIndex: 'MN_TYPE'}
-                ]
-                ,height: 350
-                ,selModel : smGrid
-                ,width: 600
-                ,title: 'CRUD'
-                ,viewConfig: {
-                    stripeRows: true
-                }
-                ,bbar: new Ext.PagingToolbar({
-                    pageSize    : 20
-                    ,store      : storeGrid
-                    ,displayInfo: true
-                    ,displayMsg : 'Data yang ada {0} - {1} Dari {2}'
-                    ,emptyMsg   : "Tidak ada data"
-                })
-            });
-
-            var helpGrid = new Ext.menu.Menu();
-            helpGrid.add(grid);
-
-            Ext.define('Ext.ux.form.SearchField', {
-                extend: 'Ext.form.field.Trigger',
-                alias: 'widget.searchfield',
-                trigger1Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
-                trigger2Cls: Ext.baseCSSPrefix + 'form-search-trigger',
-                hasSearch : false,
-                paramName : 'query',
-                initComponent: function(){
-                    this.callParent(arguments);
-                    this.on('specialkey', function(f, e){
-                        if(e.getKey() == e.ENTER){
-                            this.onTrigger2Click();
-                        }
-                    }, this);
-                },
-                afterRender: function(){
-                    this.callParent();
-                    this.triggerEl.item(0).setDisplayed('none');
-                },
-                onTrigger1Click : Ext.form.field.Trigger.prototype.onTriggerClick,
-                onTrigger2Click : function(){
-                    helpGrid.showAt([this.getPosition()[0],this.getPosition()[1]+this.getHeight()]);
-                }
-            });
-*/
             me.pageBody = [me.GRGrid, me.grpnl, me.GRItemspnl];
             me.callParent( arguments );
         },
@@ -1291,7 +1287,31 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
 //        Ext.getCmp('move-prev').setVisible(layout.getPrev());
 
         },
+        onItemGridClick: function(grid,selected){ //
+            var me = this;
+            var vend_type= selected.data.vend_type;
+            if(vend_type == 'T'){
+                Ext.getCmp('vend_id_t_gr').setValue(selected.data.vend_id);
+                Ext.getCmp('vend_t_desc_gr').setValue(selected.data.vend_nama);
+            }else if(vend_type == 'S'){
+                Ext.getCmp('vend_id_s_gr').setValue(selected.data.vend_id);
+                Ext.getCmp('vend_s_desc_gr').setValue(selected.data.vend_nama);
+            }
+            //me.myWinChooseItem.close();
+        },
 
+        ShowGridPopup: function(store, title, grid){
+            this.myWinChooseItem= Ext.create('App.ux.window.Window',{
+                layout: 'fit',
+                title: title,
+                width: 400,
+                height: 300,
+                items:[grid],
+                modal:true
+
+            });
+            this.myWinChooseItem.show();
+        },
         /*
          * Event: okToGoNext
          */

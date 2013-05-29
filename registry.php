@@ -51,7 +51,7 @@ $_SESSION['site']['AESkey'] = "k6g4j0ffjhnjg4wq0y3gyadtomy0c37k";
 
 
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
-$_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'].'/'.basename(dirname(__FILE__));
+$_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'];//.'/'. basename(dirname(__FILE__));
 // sites values
 $_SESSION['sites']['sites'] = $sites;
 $_SESSION['sites']['count'] = count($sites);;

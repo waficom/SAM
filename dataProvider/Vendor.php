@@ -69,7 +69,7 @@ class Vendor
 	public function getvendor(stdClass $params)
 	{
 
-		$sql = "SELECT * FROM vendor ORDER BY vend_id";
+		$sql = "SELECT A.*, case vend_type when 'S' then 'Suplier' else 'Transporter' end as vend_type_desc FROM vendor A ORDER BY A.vend_id";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -109,7 +109,7 @@ class Vendor
 	public function updatevendor(stdClass $params)
 	{
 		$data = get_object_vars($params);
-		unset($data['id'], $data['vend_id'], $data['old_vend_id']);
+		unset($data['id'], $data['vend_id'], $data['old_vend_id'], $data['vend_type_desc']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
