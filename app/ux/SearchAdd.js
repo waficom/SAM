@@ -1,9 +1,9 @@
-Ext.define('App.ux.SearchBoxBS',
+Ext.define('App.ux.SearchAdd',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.srchbox',
-        trigger1Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
-        trigger2Cls: Ext.baseCSSPrefix + 'form-search-trigger',
+        alias : 'widget.srchadd',
+
+        trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
         paramName : 'query',
         hasSearch : false,
@@ -14,7 +14,8 @@ Ext.define('App.ux.SearchBoxBS',
                 ftype: 'searching',
                 mode: 'local',
                 width: 200
-            };
+            },
+            nomor = null;
 
             Ext.define('bsSearchModel',
                 {
@@ -40,7 +41,7 @@ Ext.define('App.ux.SearchBoxBS',
             me.store = Ext.create('Ext.data.Store',
                 {
                     model : 'bsSearchModel',
-                    pageSize : 10,
+                    pageSize : 50,
                     autoLoad : false
                 });
 
@@ -56,42 +57,75 @@ Ext.define('App.ux.SearchBoxBS',
                     { header: 'Staff',width: 150,sortable: true,dataIndex: 'staff_nama'},
                     { header: 'Pelanggan',width: 200,sortable: true,dataIndex: 'customer'}
                 ],
-                height: 300,
+                height: 200,
 //                selModel : me.smGrid,
                 width: 600,
                 title: 'BS',
+                features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
-                    pageSize    : 10,
+                    pageSize    : 50,
                     store      : me.store,
                     displayInfo: false,
 //                    displayMsg : 'Data yang ada {0} - {1} Dari {2}',
                     emptyMsg   : "Tidak ada data"
-                })
+                }),
+                listeners: {
+                    scope: me,
+                    select: me.onGridClick,
+                    itemdblclick: me.ondblclick
+                }
             });
 
-
-            me.MenuGrid = new Ext.menu.Menu();
-            me.MenuGrid.add(me.grid);
+            me.win = Ext.create('App.ux.window.Window', {
+                border : false,
+                items: [ me.grid ],
+                buttons: [
+                    {
+                        text: 'Pilih',
+                        cls: 'winSave',
+                        handler: me.btnSavePressed
+                    },
+                    '-',
+                    {
+                        text: i18n('cancel'),
+                        scope: me,
+                        handler: me.btnCancelPressed
+                    }
+                ]
+            });
 
             me.callParent(arguments);
             me.on('specialkey', function(f, e){
                 if(e.getKey() == e.ENTER){
-                    me.onTrigger2Click();
+                    me.onTrigger1Click();
                 }
             }, me);
         },
-        afterRender: function(){
-            this.callParent();
-//            this.triggerEl.item(0).setDisplayed('none');
-        },
-        onTrigger1Click : Ext.form.field.Trigger.prototype.onTriggerClick,
-        onTrigger2Click : function(){
+
+        onTrigger1Click : function(){
             var me = this;
-            me.MenuGrid.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
+            me.win.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
             me.store.load();
             me.doComponentLayout();
+        },
+        onGridClick: function(grid, selected){
+            nomor = selected.data.nomor;
+            this.setValue(nomor);
+        },
+        ondblclick: function(grid, selected){
+            var me = this;
+            me.onGridClick(grid, selected);
+            me.win.close();
+        },
+        btnCancelPressed : function(btn) {
+            var me = this;
+            this.reset();
+            me.win.close();
+        },
+        btnSavePressed : function(btn) {
+            var me = this;
+            me.win.close();
         }
-
     }
 )

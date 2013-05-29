@@ -34,10 +34,17 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:'Testing 123',
                     items : [
                         {
-                            xtype          : 'textfield',
-                            fieldLabel     : 'STAFF',
+                            xtype          : 'datefield',
+                            fieldLabel     : 'from',
                             hideLabel      : false,
-                            name           : 'report_staff',
+                            name           : 'report_date_datefrom',
+                            width          : 350
+                        },
+                        {
+                            xtype          : 'datefield',
+                            fieldLabel     : 'to',
+                            hideLabel      : false,
+                            name           : 'report_date_dateto',
                             width          : 350
                         }
                     ],

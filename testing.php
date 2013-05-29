@@ -1,95 +1,151 @@
 <?php
 
+// java.util.Date example
 
-function report_parse_post_parameters() {
-    # Automatically extract report parameters (data types converted in report).
-    $params = new java('java.util.HashMap');
+require_once("lib/JavaBridge/java/Java.inc");
 
-    # Pass the remaining POST "report_TYP" variables as report parameters.
-    foreach( $_POST as $name => $value ) {
-        if( strpos( $name, 'report_' ) === 0 ) {
-            $length = strlen( 'report_' );
+function DateConvert($date) {
 
-            if( strpos( $name, 'report_int_' ) === 0 ) {
-                $value = intval( $value );
-                $length = strlen( 'report_int_' );
+    # Exception
+    if (!is_null($date))
+    {
+//        $date = new DateTime($date, new DateTimeZone($_SESSION['site']['timezone']));
+        $date = new DateTime($date, new DateTimeZone('Asia/Jakarta'));
+        $strdate = $date->format('m/d/Y H:i:s');
 
-                $value = convertValue( $value, 'java.lang.Integer' );
-                $params->put( substr( $name, $length ), $value );
-            }
-            else if( strpos( $name, 'report_arr_' ) === 0 ) {
-                $length = strlen( 'report_arr_' );
-                $arrays = array_filter( explode( ',', $_POST[ $name ] ) );
+        # Separate Date from Time
+        $strdate = explode(" ", $strdate);
 
-                # Map the values of the array form parameter to a java.util.ArrayList.
-                $arrayList = new java( 'java.util.ArrayList' );
+        $date = $strdate[0];
 
-                foreach( $arrays as $value ) {
-                    $arrayList->add( $value );
-                }
-
-                # Pass values into the report (without the "report_arr_" prefix).
-                $params->put( substr( $name, $length ), $arrayList );
-            }
-            else {
-                $params->put( substr( $name, $length ), $value );
-            }
-        }
     }
 
-    return $params;
-}
+    return $date;
 
-function report_execute( $report = 'report.jasper', $filename = 'output-filename' ) {
+} # End Function
 
-    $PERSIST = 'jdbc';
+function convertValue($value, $className)
 
-    $dbhost = (string)$_SESSION['site']['db']['host'];
-    $dbport = (int)$_SESSION['site']['db']['port'];
-    $dbname = (string)$_SESSION['site']['db']['database'];
-    $dbuser = (string)$_SESSION['site']['db']['username'];
-    $dbpass = (string)$_SESSION['site']['db']['password'];
+{
 
+    // if we are a string, just use the normal conversion
 
-    $conn = null;
-//    $report = realpath( './reports/report-filename.jasper' );
+    // methods from the java extension...
 
-    try {
-        $params = report_parse_post_parameters();
+    try
 
-        # Load the PostgreSQL database driver.
-        java( 'java.lang.Class' )->forName( 'org.firebirdsql.jdbc.FBDriver' );
+    {
 
-        # Attempt a database connection.
-        $conn = java( 'java.sql.DriverManager' )->getConnection(
-            "jdbc:firebirdsql://$dbhost:$dbport//$dbname",$dbuser, $dbpass);
+        if ($className == 'java.lang.String')
 
-        # Use the fill manager to produce the report.
-        $fm = java('net.sf.jasperreports.engine.JasperFillManager');
-        $pm = $fm->fillReport($report, $params, $conn);
+        {
 
-        header('Cache-Control: private');
-        header('Content-Description: File Transfer');
-        header("Content-Disposition: attachment; filename=$filename.pdf");
-        header('Content-Type: application/pdf');
-        header('Content-Transfer-Encoding: binary');
+            $temp = new Java('java.lang.String', $value);
 
-        java_set_file_encoding('ISO-8859-1');
+            return $temp;
 
-        $em = java('net.sf.jasperreports.engine.JasperExportManager');
-        $result = $em->exportReportToPdf($pm);
-
-        $conn->close();
-
-        header('Content-Length: ' . strlen( $result ) );
-        echo $result;
-    }
-    catch( Exception $ex ) {
-        if( $conn != null ) {
-            $conn->close();
         }
 
-        throw $ex;
+        else if ($className == 'java.lang.Date')
+
+        {
+
+            $formatter = new Java('java.text.SimpleDateFormat', "MM-dd-yyyy");
+
+            $tgl = $formatter->parse($value);
+
+            $temp = new Java($className);
+
+            $javaObject = $temp->valueOf($tgl);
+
+            return $javaObject;
+
+        }
+
+        else if ($className == 'java.lang.Boolean' ||
+
+            $className == 'java.lang.Integer' ||
+
+            $className == 'java.lang.Long' ||
+
+            $className == 'java.lang.Short' ||
+
+            $className == 'java.lang.Double' ||
+
+            $className == 'java.math.BigDecimal')
+
+        {
+
+            $temp = new Java($className, $value);
+
+            return $temp;
+
+        }
+
+        else if ($className == 'java.sql.Timestamp' ||
+
+            $className == 'java.sql.Time')
+
+        {
+
+            $temp = new Java($className);
+
+            $javaObject = $temp->valueOf($value);
+
+            return $javaObject;
+
+        }
+
+    }
+
+    catch (Exception $err)
+
+    {
+
+        echo (  'unable to convert value, ' . $value .
+
+            ' could not be converted to ' . $className);
+
+        return false;
+
     }
 }
-?>
+
+
+$tgl = new DateTime($date, new DateTimeZone('Asia/Jakarta'));
+
+// java.util.Date example
+$formatter = new Java('java.text.SimpleDateFormat',
+    "EEEE, MM dd, yyyy h:mm:ss a zzzz");
+
+print $formatter->format(new Java('java.util.Date'));
+
+
+$formatter = new Java('java.text.SimpleDateFormat', "MM-dd-yyyy");
+
+String dateString = "2001/03/09";
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+    Date convertedDate = dateFormat.parse(dateString);
+
+
+
+print $formatter->;
+print '<br>';
+
+print $formatter->format(new Java('java.util.Date'));
+print '<br>';
+
+print convertValue($formatter->value, 'java.lang.Date');
+print '<br>';
+
+$date = "2013-05-28T07:00:00";
+
+$tgl = new DateTime($date, new DateTimeZone('Asia/Jakarta'));
+
+$tgl = DateConvert($date);
+
+print $tgl;
+//print convertValue($tgl, 'java.lang.Date');
+
+

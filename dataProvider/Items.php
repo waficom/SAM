@@ -216,4 +216,33 @@ class Items
 		$this -> db -> execLog();
 		return $params;
 	}
+
+    public function ProductListSearch(stdClass $params)
+    {
+
+//		$sql = "SELECT * FROM items WHERE $wherex ORDER BY $orderx LIMIT $params->start,$params->limit";
+        $sql = "SELECT i.*, j.jenis_nama, k.kemasan_nama, s.satuan_nama, sp.spesifikasi_nama, b.bentuk_nama
+		        FROM items i
+		        LEFT JOIN jenis  j ON j.jenis_id = i.jenis_id and j.co_id = i.co_id
+		        LEFT JOIN kemasan  k ON k.kemasan_id = i.kemasan_id and k.co_id = i.co_id
+		        LEFT JOIN satuan s ON s.satuan_id = i.satuan_id and s.co_id = i.co_id
+		        LEFT JOIN spesifikasi sp ON sp.spesifikasi_id = i.spesifikasi_id and sp.co_id = i.co_id
+		        LEFT JOIN bentuk b ON b.bentuk_id = i.bentuk_id and b.co_id = i.co_id";
+        $this -> db -> setSQL($sql);
+        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        foreach ($records as $key => $value)
+        {
+            if (is_array($value))
+            {
+                $records[$key] = array_change_key_case($value);
+            }
+        }
+        $total   = count($records);
+        $records = array_slice($records, $params->start, $params->limit);
+        return array(
+            'totals' => $total,
+            'rows'   => $records
+        );
+    }
+
 }

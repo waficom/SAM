@@ -143,6 +143,10 @@ requires = [
      */
     'App.ux.AbstractPanel',
 
+    'App.ux.SearchBoxBS',
+    'App.ux.SearchAdd',
+    'App.ux.PilihProductSearch',
+
     'App.ux.LiveJenisSearch',
     'App.ux.LivebbSearch',
     'App.ux.LiveBentukSearch',

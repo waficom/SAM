@@ -65,6 +65,26 @@ class BahanBaku
 		);
 	}
 
+    public function getbsLiveSearch(stdClass $params)
+    {
+        $this->db->setSQL("SELECT *
+							FROM bs");
+        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+        foreach ($records as $key => $value)
+        {
+            if (is_array($value))
+            {
+                $records[$key] = array_change_key_case($value);
+            }
+        }
+        $total   = count($records);
+        $records = array_slice($records, $params->start, $params->limit);
+        return array(
+            'totals' => $total,
+            'rows'   => $records
+        );
+    }
+
 	public function getbb(stdClass $params)
 	{
 

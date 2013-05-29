@@ -1,5 +1,5 @@
 <?php
-
+/*
 require_once('classes/pdo_database.class.php');
 $_SESSION['site']['db']['type'] = 'fbd';
 $_SESSION['site']['db']['host'] = 'localhost';
@@ -35,7 +35,7 @@ catch(PDOException $e)
     $this->err = $e->getMessage();
 }
 
-/*
+
 $date = new DateTime("2013-04-15 16:43:21", new DateTimeZone('Asia/Jakarta'));
 $locale="unix";
 
@@ -57,17 +57,21 @@ if (!is_null($date))
 
 }
 */
-$date = "2013-04-18T07:00:00";
+
+require_once("lib/JavaBridge/java/Java.inc");
+$date = "10/01/08";
 if (!is_null($date))
 {
     $date = new DateTime($date, new DateTimeZone('Asia/Jakarta'));
 
     echo $date->format('U');
-//    $strdate = date('Y-m-d H:i:s', $date->format('c'));
+    echo '<br>';
 
     # Separate Date from Time
-    $strdate = $date->format('Y-m-d H:i:s');
+    $strdate = $date->format('m/d/Y H:i:s');
     echo $strdate;
+
+    echo '<br>';
 
     $strdate = explode(" ", $strdate);
 
@@ -75,5 +79,17 @@ if (!is_null($date))
 
 }
 
-echo 'Inilah : '.$date;
+echo 'Inilah : '.$date.'<br>';
+
+
+$formatter = new Java('java.text.SimpleDateFormat', "MM/dd/yyyy");
+
+$tgl = $formatter->parse($date);
+
+$temp = new Java('java.util.Date', $date);
+
+echo 'temp = ' . $temp . '<br>';
+echo 'tgl = ' . $tgl . '<br>';
+
+
 ?>
