@@ -34,6 +34,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_co_id = null;
             me.curr_gr_num = null;
             me.curr_bb_id = null;
+            me.curr_sat_id = null;
 
             me.step = [];
             var searching={
@@ -561,7 +562,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         iconCls: 'icoAddRecord',
                                         scope: me,
                                         handler: function(){
-                                            var form = me.winLoc.down('form');
+                                            var form = me.winDtl.down('form');
                                             me.onNewLoc(form, 'App.model.transaksi.goodsreceived.GRDetail', 'Tambah Data');
                                         }
                                     },'->',
@@ -932,7 +933,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                 listeners: {
                     scope: me,
                     close: function(){
-                        me.action(me.winLoc, 'close');
+                        me.action(me.winDtl, 'close');
                     }
                 }
             });
@@ -1119,13 +1120,14 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             this.win.show();
         },
         onNewLoc: function(form, model, title){
+            var me = this;
             this.setForm(form, title);
             form.getForm().reset();
-            var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id
-            }, model);
+            var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id,
+            sat_id: me.curr_sat_id}, model);
             form.getForm().loadRecord(newModel);
             this.action(this.winDtl, 'new');
-            this.winLoc.show();
+            this.winDtl.show();
         },
         setForm: function(form, title){
             form.up('window').setTitle(title);
@@ -1144,6 +1146,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_bb_id = selected.data.bb_id;
             me.curr_co_id = selected.data.co_id;
             me.curr_gr_num = selected.data.gr_num;
+            me.curr_sat_id = selected.data.sat_id;
             me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id}});
         },
         onItemsdblclick: function(store, record, title){
