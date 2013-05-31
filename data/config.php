@@ -950,7 +950,28 @@ $API = array(
             'len' => 1
         )
     )
-)
+),
+    'Popup' => array(
+    'methods' => array(
+        'SalesOrderPopup' => array(
+            'len' => 1
+            ),
+        'FormulaPopup' => array(
+            'len' => 1
+        ),
+        'GudangPopup' => array(
+            'len' => 1
+        ),
+        'VendorSuplierPopup' => array(
+            'len' => 1
+        ),
+        'VendorTransporterPopup' => array(
+            'len' => 1
+        )
+      )
+
+
+    )
     /*'Report' => array(
         'methods' => array(
             'getReportSO' => array(

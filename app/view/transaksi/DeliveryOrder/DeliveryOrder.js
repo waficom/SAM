@@ -83,88 +83,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             autoLoad: false
         });
 
-        Ext.define('SalesOrderPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'so_num',type: 'string'},
-                {name: 'cust_id',type: 'string'},
-                {name: 'tanggal',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: DeliveryOrder.getSOpopup
-
-                }
-            }
-        });
-        me.SOpopupStore = Ext.create('Ext.data.Store', {
-            model: 'SalesOrderPopupModel',
-            autoLoad: true
-        });
-
-        Ext.define('VendorPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'vend_id',type: 'string'},
-                {name: 'vend_nama',type: 'string'},
-                {name: 'contact',type: 'string'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: DeliveryOrder.getVEpopup
-
-                }
-            }
-        });
-        me.VEpopupStore = Ext.create('Ext.data.Store', {
-            model: 'VendorPopupModel',
-            autoLoad: true
-        });
-
-        Ext.define('SatuanPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'satuan_id',type: 'string'},
-                {name: 'satuan_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Satuan.getsatuan
-
-                }
-            }
-        });
-        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SatuanPopup',
-            autoLoad: true
-        });
-
-        Ext.define('ProdPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'prod_id',type: 'string'},
-                {name: 'prod_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Items.getitems
-
-                }
-            }
-        });
-        me.ProdPopupStore = Ext.create('Ext.data.Store', {
-            model: 'ProdPopup',
-            autoLoad: true
-        });
-
         var searching={
             ftype : 'searching',
             mode: 'local'
@@ -315,85 +233,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 }
             ]
         });
-        me.SOpopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SOpopupStore,
-            itemId: 'SOpopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'so_num', sortable: false, dataIndex: 'so_num'},
-                {text: 'cust_id', width:200, sortable: false,dataIndex: 'cust_id'},
-                {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-        me.VEpopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.VEpopupStore,
-            itemId: 'VEpopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
-                {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
-                {text: 'Contact', width : 80, sortable: true, dataIndex: 'contact'}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-        me.SatpopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SatuanPopupStore,
-            itemId: 'SatpopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'Satuan  ID', sortable: false, dataIndex: 'satuan_id'},
-                {text: 'Satuan Nama', width:200, sortable: false,dataIndex: 'satuan_nama'}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-        me.ProdpopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.ProdPopupStore,
-            itemId: 'ProdpopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'Produk  ID', sortable: false, dataIndex: 'prod_id'},
-                {text: 'Produk Nama', width:200, sortable: false,dataIndex: 'prod_nama'}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-
 
         // *************************************************************************************
         // Window User Form
@@ -446,19 +285,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     value: 'So_Num:'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'so_num_do',
-                                    name: 'so_num'
-                                    // disabled: true
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SOpopupStore,'Sales Order',me.SOpopupGrid);
-                                    }
+                                    width: 200,
+                                    xtype: 'xtSalesOrderPopup',
+                                    name:'so_num'
                                 }
                             ]
                         },
@@ -581,26 +410,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     value: 'Produk :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'prod_id_do',
-                                    // disabled: true,
-                                    name: 'prod_id'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.ProdPopupStore, 'Produk',me.ProdpopupGrid);
-
-                                    }
-                                },
-                                {
                                     width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'Prod_desc_do'
+                                    xtype: 'xtlistproduct',
+                                    name:'prod_id'
                                 }
                             ]
                         },
@@ -659,26 +471,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     value: 'Vendor ID:'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'vend_id_do',
-                                    // disabled: true,
-                                    name: 'vend_id'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'T'}}), 'Vendor',me.VEpopupGrid);
-
-                                    }
-                                },
-                                {
                                     width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'vend_desc_do'
+                                    xtype: 'xtVendorTransporterPopup',
+                                    name:'vend_id'
                                 }
                             ]
                         },
@@ -817,25 +612,8 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    id:'sat_id_do',
-                                    // disabled: true,
-                                    name: 'satuan_id'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.SatuanPopupStore, 'Satuan',me.SatpopupGrid);
-
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'satuan_desc_do'
+                                    xtype: 'xtSatuanPopup',
+                                    name:'satuan_id'
                                 }
                             ]
                         }
@@ -942,40 +720,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
 
     },
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-        //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
-        var getso_num= selected.data.so_num;
-        var vend_id= selected.data.vend_id;
-        var sat_id= selected.data.satuan_id;
 
-        if(selected.data.so_num != null){
-            Ext.getCmp('so_num_do').setValue(getso_num);
-        }else if(selected.data.vend_id != null){
-            Ext.getCmp('vend_id_do').setValue(vend_id);
-            Ext.getCmp('vend_desc_do').setValue(selected.data.vend_nama);
-        }else if(selected.data.satuan_id != null){
-            Ext.getCmp('sat_id_do').setValue(sat_id);
-            Ext.getCmp('satuan_desc_do').setValue(selected.data.satuan_nama);
-        }else if(selected.data.prod_id != null){
-            Ext.getCmp('prod_id_do').setValue(selected.data.prod_id);
-            Ext.getCmp('prod_desc_do').setValue(selected.data.prod_nama);
-        }
-        me.myWinChooseItem.close();
-    },
-
-    ShowGridPopup: function(store, title, grid){
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 400,
-            height: 300,
-            items:[grid],
-            modal:true
-
-        });
-        this.myWinChooseItem.show();
-    },
     onItemdblclick: function(store, record, title){
         var form = this.win.down('form');
         this.setForm(form, title);

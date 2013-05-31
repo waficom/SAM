@@ -46,45 +46,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
             me.POStore = Ext.create( 'App.store.transaksi.purchaseorder.PurchaseOrder' );
             me.POItemsStore = Ext.create('App.store.transaksi.purchaseorder.POItems');
 
-            Ext.define('VendorPopupModel', {
-                extend: 'Ext.data.Model',
-                fields: [
-                    {name: 'vend_id',type: 'string'},
-                    {name: 'vend_nama',type: 'string'},
-                    {name: 'vend_type',type: 'string'}
-                ],
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read: DeliveryOrder.getVEpopup
-
-                    }
-                }
-            });
-            me.VEpopupStore = Ext.create('Ext.data.Store', {
-                model: 'VendorPopupModel',
-                autoLoad: true
-            });
-            me.VEpopupGrid = Ext.create('App.ux.GridPanel', {
-                store: me.VEpopupStore,
-                itemId: 'VEpopupGrid',
-                //height: 300,
-                margin: '0 0 3 0',
-                region: 'north',
-                enablePaging: true,
-                columns: [
-                    {text: 'vend_id', sortable: false, dataIndex: 'vend_id'},
-                    {text: 'Vendor Name', width:200, sortable: false,dataIndex: 'vend_nama'},
-                    {text: 'vend_type', width : 80, sortable: true, dataIndex: 'vend_type'}
-
-                ],
-                listeners: {
-                    scope: me,
-                    select: me.onItemGridClick
-                },
-
-                features:[searching]
-            });
             /**
              *  Sales Order Search data grid.
              * Gives a list of encounter based on the search
@@ -154,15 +115,13 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                         },
                         {
                             xtype : 'fieldcontainer',
-                            itemId : 'fieldcontainervend_search',
                             items : [
                                 {
                                     xtype : 'displayfield',
                                     fieldLabel : 'Supplier'
                                 },
                                 {
-                                    xtype : 'textfield',
-                                    itemId : 'vend_search',
+                                    xtype : 'xtVendorSuplierPopup',
                                     width : 235,
                                     margin : '0 5 0 0'
                                 }]
@@ -347,28 +306,13 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
                                                         hideLabel : true,
                                                         items : [
                                                             {
-                                                                xtype : 'vendorlivetsearch',
+                                                                xtype : 'xtVendorSuplierPopup',
                                                                 fieldLabel : 'Supplier',
                                                                 hideLabel : false,
                                                                 width: 400,
                                                                 itemId : 'povend_id',
                                                                 name : 'vend_id',
-                                                                labelAlign : 'right',
-                                                                id:'vend_id_s_po'
-                                                            },{
-                                                                xtype: 'button',
-                                                                text :'...',
-                                                                handler: function(){
-                                                                    //me.myFormulaChooseItem.showAt(400,200);
-                                                                    me.ShowGridPopup(me.VEpopupStore.load({params:{vend_type: 'S'}}), 'Suplier',me.VEpopupGrid);
-
-                                                                }
-                                                            },
-                                                            {
-                                                                width: 200,
-                                                                xtype: 'displayfield',
-                                                                value: '',
-                                                                id: 'vend_s_desc_po'
+                                                                labelAlign : 'right'
                                                             }]
                                                     },
                                                     {
@@ -1085,28 +1029,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',
             Ext.getCmp('pon_disc_input').setValue(n_disc);
             Ext.getCmp('pon_brutto_input').setValue(n_brutto);
             Ext.getCmp('pon_netto_input').setValue(n_netto);
-        },
-        onItemGridClick: function(grid,selected){ //
-            var me = this;
-            var vend_type= selected.data.vend_type;
-            if(vend_type == 'S'){
-                Ext.getCmp('vend_id_s_po').setValue(selected.data.vend_id);
-                Ext.getCmp('vend_s_desc_po').setValue(selected.data.vend_nama);
-            }
-            //me.myWinChooseItem.close();
-        },
-
-        ShowGridPopup: function(store, title, grid){
-            this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-                layout: 'fit',
-                title: title,
-                width: 400,
-                height: 300,
-                items:[grid],
-                modal:true
-
-            });
-            this.myWinChooseItem.show();
         },
         /**
          * This function is called from Viewport.js when

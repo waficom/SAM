@@ -113,36 +113,6 @@ class WorkOrder1
 
         return $rows;
     }
-    public function getGudanglocation(stdClass $params)
-    {
-
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
-
-        $sql = "select * from gudang A
-                where A.pabrik_sequence = (
-                select D.pabrik_sequence from wo2 B
-                left join pp_detailproduksi C on B.no_ppd=C.no_ppd
-                left join pp_produksi D on C.no_pp=D.no_pp
-                where B.no_ppd='2/PPD/SAM') ORDER BY $orderx";
-        $this -> db -> setSQL($sql);
-        //print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
 
     public function addWorkOrder1Detail(stdClass $params)
     {
@@ -162,7 +132,7 @@ class WorkOrder1
         unset($data['id']);
         $sql = $this -> db -> sqlBind($data, 'wo0', 'I');
         $this -> db -> setSQL($sql);
-       // print_r($sql);
+       //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -182,7 +152,7 @@ class WorkOrder1
         unset($data['id'],$data['sequence_no']);
         $sql = $this -> db -> sqlBind($data, 'wo1', 'I');
         $this -> db -> setSQL($sql);
-        //print_r($sql);
+        print_r($sql);
         $this -> db -> execLog();
         return $params;
     }

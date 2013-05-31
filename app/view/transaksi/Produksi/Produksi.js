@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Produksi.Produksi', {
     extend: 'App.ux.RenderPanel',
     id: 'panelProduksi',
-    pageTitle: 'Produksi',
+    pageTitle: 'Permintaan Produksi',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -84,68 +84,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         me.Produksi1Store = Ext.create('Ext.data.Store', {
             model: 'Produksi1Model',
             autoLoad: false
-        });
-
-        Ext.define('SalesOrderPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'so_num',type: 'string'},
-                {name: 'cust_id',type: 'string'},
-                {name: 'tanggal',type: 'date'}
-               // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Produksi.getSOpopup
-
-                }
-            }
-        });
-        me.SOpopupStore = Ext.create('Ext.data.Store', {
-            model: 'SalesOrderPopupModel',
-            autoLoad: true
-        });
-
-        Ext.define('FormulaPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'formula_id',type: 'string'},
-                {name: 'formula_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Produksi.getFormulapopup
-
-                }
-            }
-        });
-        me.FormulapopupStore = Ext.create('Ext.data.Store', {
-            model: 'FormulaPopupModel',
-            autoLoad: true
-        });
-
-        Ext.define('FactoryPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'pabrik_sequence',type: 'string'},
-                {name: 'description',type: 'string'},
-                {name: 'location',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Factory_location.getFactorylocation
-
-                }
-            }
-        });
-        me.FactorypopupStore = Ext.create('Ext.data.Store', {
-            model: 'FactoryPopupModel',
-            autoLoad: true
         });
 
         var searching={
@@ -323,68 +261,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             ]
         });
 
-        me.SOpopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SOpopupStore,
-            itemId: 'SOpopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'so_num', sortable: false, dataIndex: 'so_num'},
-                {text: 'cust_id', width:200, sortable: false,dataIndex: 'cust_id'},
-                {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
-            listeners: {
-               scope: me,
-               select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-        me.FormulapopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.FormulapopupStore,
-            itemId: 'FormulapopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'Formula ID', sortable: false, dataIndex: 'formula_id'},
-                {text: 'Description', width:200, sortable: false,dataIndex: 'formula_nama'},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-        me.FactorypopupGrid = Ext.create('App.ux.GridPanel', {
-            store: me.FactorypopupStore,
-            itemId: 'FactorypopupGrid',
-            //height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            enablePaging: true,
-            columns: [
-                {text: 'Factory ID', sortable: false, dataIndex: 'pabrik_sequence'},
-                {text: 'Description', width:200, sortable: false,dataIndex: 'description'},
-                {text: 'Location', width:200, sortable: false,dataIndex: 'location'},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-            },
-
-            features:[searching]
-        });
-
 
         // *************************************************************************************
         // Window User Form
@@ -479,24 +355,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    id:'factory_id_pro',
-                                    name: 'pabrik_sequence'
-                                    // disabled: true
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.FactorypopupStore, 'Sales Order',me.FactorypopupGrid);
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'factory_desc_pro'
+                                    xtype: 'xtFactoryPopup',
+                                    name:'pabrik_sequence'
                                 }
                             ]
                         },
@@ -591,22 +451,12 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'So_Num:'
+                                    value: 'So Number :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'so_num_id',
-                                    name: 'so_num'
-                                   // disabled: true
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SOpopupStore, 'Sales Order',me.SOpopupGrid);
-                                    }
+                                    width: 250,
+                                    xtype: 'xtSalesOrderPopup',
+                                    name :'so_num'
                                 }
                             ]
                         },
@@ -623,26 +473,9 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     value: 'Formula ID:'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'formula_id_id',
-                                   // disabled: true,
-                                    name: 'formula_id'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.FormulapopupStore,'Formula',me.FormulapopupGrid);
-
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'formula_desc_pro'
+                                    width: 250,
+                                    xtype: 'xtFormulaPopup',
+                                    name:'formula_id'
                                 }
                             ]
                         },
@@ -810,39 +643,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         me.Produksi1Store.load({params:{no_pp: me.currProduksi}});
 
     },
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-        //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
-        var getso_num= selected.data.so_num;
-        var getformula_id= selected.data.formula_id;
-        var getformula_desc= selected.data.formula_nama;
-        var getFactory_id= selected.data.pabrik_sequence;
-        var getFactory_desc= selected.data.description;
 
-        if(selected.data.so_num != null){
-            Ext.getCmp('so_num_id').setValue(getso_num);
-        }else if(selected.data.formula_id != null){
-            Ext.getCmp('formula_id_id').setValue(getformula_id);
-            Ext.getCmp('formula_desc_pro').setValue(getformula_desc);
-        }else if(selected.data.pabrik_sequence != null){
-            Ext.getCmp('factory_id_pro').setValue(getFactory_id);
-            Ext.getCmp('factory_desc_pro').setValue(getFactory_desc);
-        }
-       me.myWinChooseItem.close();
-    },
-
-    ShowGridPopup: function(store, title, grid){
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 500,
-            height: 300,
-            items:[grid],
-            modal:true
-
-        });
-        this.myWinChooseItem.show();
-},
     onItemdblclick: function(store, record, title){
         var form = this.win.down('form');
         this.setForm(form, title);

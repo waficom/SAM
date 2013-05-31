@@ -85,121 +85,7 @@ Ext.define('App.view.master.Items', {
                 autoLoad: false
             });
 
-        Ext.define('JenisPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'jenis_id',type: 'string'},
-                {name: 'jenis_nama',type: 'string'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Jenis.getjenis
 
-                }
-            }
-        });
-        me.JenisPopupStore = Ext.create('Ext.data.Store', {
-            model: 'JenisPopup',
-            autoLoad: true
-        });
-
-        Ext.define('KemasanPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'kemasan_id',type: 'string'},
-                {name: 'kemasan_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Kemasan.getkemasan
-
-                }
-            }
-        });
-        me.KemasanPopupStore = Ext.create('Ext.data.Store', {
-            model: 'KemasanPopup',
-            autoLoad: true
-        });
-
-        Ext.define('SatuanPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'satuan_id',type: 'string'},
-                {name: 'satuan_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Satuan.getsatuan
-
-                }
-            }
-        });
-        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SatuanPopup',
-            autoLoad: true
-        });
-
-        Ext.define('SpesifikasiPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'spesifikasi_id',type: 'string'},
-                {name: 'spesifikasi_nama',type: 'string'}
-                ,{name: 'n',type: 'string'}
-                ,{name: 'p2o5',type: 'string'}
-                ,{name: 'k2o',type: 'string'}
-                ,{name: 'cao',type: 'string'}
-                ,{name: 'mgo',type: 'string'}
-                ,{name: 'so4',type: 'string'}
-                ,{name: 'b',type: 'string'}
-                ,{name: 'cu',type: 'string'}
-                ,{name: 'zn',type: 'string'}
-                ,{name: 'ah',type: 'string'}
-                ,{name: 'af',type: 'string'}
-                ,{name: 'te',type: 'string'}
-                ,{name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Spesifikasi.getspesifikasi
-
-                }
-            }
-        });
-        me.SpesifikasiPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SpesifikasiPopup',
-            autoLoad: true
-        });
-
-        Ext.define('BentukPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'bentuk_id',type: 'string'},
-                {name: 'bentuk_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Bentuk.getBentuk
-
-                }
-            }
-        });
-        me.BentukPopupStore = Ext.create('Ext.data.Store', {
-            model: 'BentukPopup',
-            autoLoad: true
-        });
 
 
 
@@ -324,138 +210,7 @@ Ext.define('App.view.master.Items', {
                 }
             ]
         });
-        me.JenisGrid = Ext.create('App.ux.GridPanel', {
-            store: me.JenisPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'jenis_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Jenis',
-                    sortable: true,
-                    dataIndex: 'jenis_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
 
-            },
-            features:[searching]
-
-        });
-        me.KemasanGrid = Ext.create('App.ux.GridPanel', {
-            store: me.KemasanPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'kemasan_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Kemasan',
-                    sortable: true,
-                    dataIndex: 'kemasan_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-        me.SatuanGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SatuanPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'satuan_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Kemasan',
-                    sortable: true,
-                    dataIndex: 'satuan_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-        me.BentukGrid = Ext.create('App.ux.GridPanel', {
-            store: me.BentukPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'bentuk_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Bentuk',
-                    sortable: true,
-                    dataIndex: 'bentuk_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-        me.SpesifikasiGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SpesifikasiPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'spesifikasi_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Spesifikasi :',
-                    sortable: true,
-                    dataIndex: 'spesifikasi_nama'
-                },
-                {text: 'N', width:50, sortable: false,dataIndex: 'n'},
-                {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
-                {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
-                {text: 'CAO', width:50, sortable: false,dataIndex: 'cao'},
-                {text: 'MGO', width:50, sortable: false,dataIndex: 'mgo'},
-                {text: 'SO4', width:50, sortable: false,dataIndex: 'so4'},
-                {text: 'B', width:50, sortable: false,dataIndex: 'b'},
-                {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
-                {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
-                {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-                {text: 'TE', width:50, sortable: false,dataIndex: 'te'}
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -538,23 +293,8 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'jenis_id',
-                                    id: 'jenis_id_item'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.JenisPopupStore,'jenis',me.JenisGrid);
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'jenis_desc_itm'
+                                    xtype: 'xtJenisPopup',
+                                    name: 'jenis_id'
                                 }
                             ]
                         },
@@ -572,23 +312,8 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'kemasan_id',
-                                    id: 'kemasan_id_item'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.KemasanPopupStore,'Kemasan',me.KemasanGrid);
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'kemasan_desc_itm'
+                                    xtype: 'xtKemasanPopup',
+                                    name: 'kemasan_id'
                                 }
                             ]
                         },
@@ -607,23 +332,8 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'satuan_id',
-                                    id: 'satuan_id_item'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'satuan_desc_itm'
+                                    xtype: 'xtSatuanPopup',
+                                    name: 'satuan_id'
                                 }
                             ]
                         },
@@ -641,23 +351,8 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'spesifikasi_id',
-                                    id: 'spesifikasi_id_item'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SpesifikasiPopupStore,'Spesifikasi',me.SpesifikasiGrid);
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'spesifikasi_desc_itm'
+                                    xtype: 'xtSpesifikasiPopup',
+                                    name: 'spesifikasi_id'
                                 }
                             ]
                         },
@@ -675,23 +370,8 @@ Ext.define('App.view.master.Items', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'bentuk_id',
-                                    id: 'bentuk_id_item'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.BentukPopupStore,'Bentuk',me.BentukGrid);
-                                    }
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'bentuk_desc_itm'
+                                    xtype: 'xtBentukPopup',
+                                    name: 'bentuk_id'
                                 }
                             ]
                         },
@@ -1054,47 +734,7 @@ Ext.define('App.view.master.Items', {
         });
 //        store.load();
     },
-    ShowGridPopup: function(store, title, grid){
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 400,
-            height: 300,
-            items:[grid],
-            modal:true
 
-        });
-        this.myWinChooseItem.show();
-    },
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-        //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
-        var getKemasan= selected.data.kemasan_id;
-        var getBentuk= selected.data.bentuk_id;
-        var getSatuan= selected.data.satuan_id;
-        var getSpesifikasi= selected.data.spesifikasi_id;
-        var getJenis= selected.data.jenis_id;
-
-
-
-        if(selected.data.kemasan_id != null){
-            Ext.getCmp('kemasan_id_item').setValue(getKemasan);
-            Ext.getCmp('kemasan_desc_itm').setValue(selected.data.kemasan_nama);
-        }else if(selected.data.bentuk_id != null){
-            Ext.getCmp('bentuk_id_item').setValue(getBentuk);
-            Ext.getCmp('bentuk_desc_itm').setValue(selected.data.bentuk_nama);
-        }else if(selected.data.satuan_id != null){
-            Ext.getCmp('satuan_id_item').setValue(getSatuan);
-            Ext.getCmp('satuan_desc_itm').setValue(selected.data.satuan_nama);
-        }else if(selected.data.spesifikasi_id != null){
-            Ext.getCmp('spesifikasi_id_item').setValue(getSpesifikasi);
-            Ext.getCmp('spesifikasi_desc_itm').setValue(selected.data.spesifikasi_nama);
-        }else if(selected.data.jenis_id != null){
-            Ext.getCmp('jenis_id_item').setValue(getJenis);
-            Ext.getCmp('jenis_desc_itm').setValue(selected.data.jenis_nama);
-        }
-        me.myWinChooseItem.close();
-    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

@@ -155,69 +155,6 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             autoLoad: false
         });
 
-        Ext.define('SatuanPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'satuan_id',type: 'string'},
-                {name: 'satuan_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Satuan.getsatuan
-
-                }
-            }
-        });
-        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SatuanPopup',
-            autoLoad: true
-        });
-
-        Ext.define('BahanBakuPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'bb_id',type: 'string'},
-                {name: 'bb_nama',type: 'string'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  BahanBaku.getbb
-
-                }
-            }
-        });
-        me.BBPopupStore = Ext.create('Ext.data.Store', {
-            model: 'BahanBakuPopup',
-            autoLoad: true
-        });
-        Ext.define('GudangPopupModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'gudang_id',type: 'string'},
-                {name: 'gudang_nama',type: 'string'},
-                {name: 'location',type: 'string'},
-                {name: 'pabrik_sequence',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    //read: Factory_location.getGudanglocation
-                    read: WorkOrder1.getGudanglocation
-
-                }
-            }
-        });
-        me.GudangpopupStore = Ext.create('Ext.data.Store', {
-            model: 'GudangPopupModel',
-            autoLoad: true
-        });
 
         var searching={
             ftype : 'searching',
@@ -477,85 +414,6 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             ]
         });
 
-        me.SatuanGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SatuanPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'satuan_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Kemasan',
-                    sortable: true,
-                    dataIndex: 'satuan_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-        me.BahanBakuGrid = Ext.create('App.ux.GridPanel', {
-            store: me.BBPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'bb_id'
-                },
-                {
-                    flex: 1,
-                    text: 'bahan Baku',
-                    sortable: true,
-                    dataIndex: 'bb_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-
-        me.GudangGrid = Ext.create('App.ux.GridPanel', {
-            store: me.GudangpopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'gudang_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Gudang',
-                    sortable: true,
-                    dataIndex: 'gudang_nama'
-                },
-                {
-                    flex: 1,
-                    text: 'Location',
-                    sortable: true,
-                    dataIndex: 'location'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -750,24 +608,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Bahan Baku :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'bb_id',
-                                    id: 'bahanbaku_id_wo'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup2(me.BBPopupStore,'Bentuk',me.BahanBakuGrid);
-                                    }
-                                },
-                                {
                                     width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'bahanbaku_desc_wo'
+                                    xtype: 'xtBahanBakuPopup',
+                                    name:'bb_id'
                                 }
                             ]
                         },
@@ -785,24 +628,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Satuan :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'sat_id',
-                                    id: 'satuan_id_wo'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup2(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
-                                    }
-                                },
-                                {
                                     width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'satuan_desc_wo'
+                                    xtype: 'xtSatuanPopup',
+                                    name:'sat_id'
                                 }
                             ]
                         },
@@ -1027,23 +855,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Gudang :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'gudang_id',
-                                    id: 'gudang_id_wo'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        me.ShowGridPopup2(me.GudangpopupStore,'Gudang',me.GudangGrid);
-                                    }
-                                },
-                                {
                                     width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'gudang_desc_wo'
+                                    xtype: 'xtGudangPopup',
+                                    name:'gudang_id'
                                 }
                             ]
                         },
@@ -1119,38 +933,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         store.load({params:{no_ppd: me.currProduksi, wo_num:me.currWo_num}});
         this.myWinChooseItem.show();
     },
-    ShowGridPopup2: function(store, title, grid){
-        var me = this;
-        this.myWinChooseItem2= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 500,
-            height: 300,
-            items:[grid],
-            modal:true
 
-        });
-        this.myWinChooseItem2.show();
-    },
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-        //var getso_num = grid.getSelectionModel().getSelection()[0].get('so_num');
-        var getBBaku= selected.data.bb_id;
-        var getSatuan= selected.data.satuan_id;
-
-
-        if(selected.data.bb_id != null){
-            Ext.getCmp('bahanbaku_id_wo').setValue(getBBaku);
-            Ext.getCmp('bahanbaku_desc_wo').setValue(selected.data.bb_nama);
-        }else if(selected.data.satuan_id != null){
-            Ext.getCmp('satuan_id_wo').setValue(getSatuan);
-            Ext.getCmp('satuan_desc_wo').setValue(selected.data.satuan_nama);
-        }else if(selected.data.gudang_id != null){
-            Ext.getCmp('gudang_id_wo').setValue(selected.data.gudang_id);
-            Ext.getCmp('gudang_desc_wo').setValue(selected.data.satuan_nama);
-        }
-        me.myWinChooseItem2.close();
-    },
     setForm: function(form, title){
         form.up('window').setTitle(title);
     },

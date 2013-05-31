@@ -426,10 +426,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     hideLabel : false,
                                     items : [
                                         {
-                                            xtype: 'wilayahlivetsearch',
+                                            xtype: 'xtWilayahPopup',
                                             name : 'wilayah_id',
                                             hideLabel : false,
-                                            itemId : 'wilayah_id',
                                             width: 300,
                                             fieldLabel: 'Wilayah',
                                             labelAlign: 'right'
@@ -457,12 +456,11 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     hideLabel : false,
                                     items : [
                                         {
-                                            xtype: 'salesmanlivetsearch',
+                                            xtype: 'xtSalesPopup',
                                             name : 'sales_id',
                                             width: 300,
                                             fieldLabel: 'Sales',
                                             hideLabel : false,
-                                            itemId : 'sales_id',
                                             labelAlign: 'right'
                                         }
                                     ]
@@ -803,10 +801,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                             msgTarget: 'under',
                             items: [
                                 {
-                                    width: 400,
+                                    width: 250,
                                     name: 'sat_id',
-                                    xtype: 'satuanlivetsearch',
-                                    itemId : 'sat_id',
+                                    xtype: 'xtSatuanPopup',
                                     fieldLabel : 'Satuan ',
                                     labelAlign: 'right',
                                     allowBlank: false
@@ -1158,9 +1155,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     labelAlign: 'right'
                                 },
                                 {
-                                    width: 400,
+                                    width: 100,
                                     name: 'sat_id',
-                                    xtype: 'satuanlivetsearch',
+                                    xtype: 'xtSatuanPopup',
                                     itemId : 'sat_id',
                                     margin : '0 0 0 0',
                                     allowBlank: false

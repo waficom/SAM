@@ -75,101 +75,7 @@ Ext.define('App.view.master.Formula', {
             autoLoad: false
         });
 
-        Ext.define('SpesifikasiPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'spesifikasi_id',type: 'string'},
-                {name: 'spesifikasi_nama',type: 'string'}
-                ,{name: 'n',type: 'string'}
-                ,{name: 'p2o5',type: 'string'}
-                ,{name: 'k2o',type: 'string'}
-                ,{name: 'cao',type: 'string'}
-                ,{name: 'mgo',type: 'string'}
-                ,{name: 'so4',type: 'string'}
-                ,{name: 'b',type: 'string'}
-                ,{name: 'cu',type: 'string'}
-                ,{name: 'zn',type: 'string'}
-                ,{name: 'ah',type: 'string'}
-                ,{name: 'af',type: 'string'}
-                ,{name: 'te',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Spesifikasi.getspesifikasi
 
-                }
-            }
-        });
-        me.SpesifikasiPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SpesifikasiPopup',
-            autoLoad: true
-        });
-
-        Ext.define('SatuanPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'satuan_id',type: 'string'},
-                {name: 'satuan_nama',type: 'string'},
-                {name: 'timeedit',type: 'date'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Satuan.getsatuan
-
-                }
-            }
-        });
-        me.SatuanPopupStore = Ext.create('Ext.data.Store', {
-            model: 'SatuanPopup',
-            autoLoad: true
-        });
-
-        Ext.define('BahanBakuPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'bb_id',type: 'string'},
-                {name: 'bb_nama',type: 'string'}
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  BahanBaku.getbb
-
-                }
-            }
-        });
-        me.BBPopupStore = Ext.create('Ext.data.Store', {
-            model: 'BahanBakuPopup',
-            autoLoad: true
-        });
-
-        Ext.define('CustomerPopup', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'cust_id',type: 'string'},
-                {name: 'cust_nama',type: 'string'}
-                ,{name: 'kota',type: 'string'}
-
-                // {name: 'timeedit',type: 'date'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read:  Customer.getcustomer
-
-                }
-            }
-        });
-        me.CustomerPopupStore = Ext.create('Ext.data.Store', {
-            model: 'CustomerPopup',
-            autoLoad: true
-        });
 
         /**
          * Lists Grid
@@ -281,117 +187,6 @@ Ext.define('App.view.master.Formula', {
             ]
         });
 
-        me.SpesifikasiGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SpesifikasiPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'spesifikasi_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Spesifikasi :',
-                    sortable: true,
-                    dataIndex: 'spesifikasi_nama'
-                },
-                {text: 'N', width:50, sortable: false,dataIndex: 'n'},
-                {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
-                {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
-                {text: 'CAO', width:50, sortable: false,dataIndex: 'cao'},
-                {text: 'MGO', width:50, sortable: false,dataIndex: 'mgo'},
-                {text: 'SO4', width:50, sortable: false,dataIndex: 'so4'},
-                {text: 'B', width:50, sortable: false,dataIndex: 'b'},
-                {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
-                {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
-                {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-                {text: 'TE', width:50, sortable: false,dataIndex: 'te'}
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-
-        me.CustomerGrid = Ext.create('App.ux.GridPanel', {
-            store: me.CustomerPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'cust_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Customer :',
-                    sortable: true,
-                    dataIndex: 'cust_nama'
-                },
-                {text: 'Kota', width:50, sortable: false,dataIndex: 'kota'}
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-
-        me.SatuanGrid = Ext.create('App.ux.GridPanel', {
-            store: me.SatuanPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'satuan_id'
-                },
-                {
-                    flex: 1,
-                    text: 'Kemasan',
-                    sortable: true,
-                    dataIndex: 'satuan_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
-        me.BahanBakuGrid = Ext.create('App.ux.GridPanel', {
-            store: me.BBPopupStore,
-            columns: [
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'bb_id'
-                },
-                {
-                    flex: 1,
-                    text: 'bahan Baku',
-                    sortable: true,
-                    dataIndex: 'bb_nama'
-                }
-            ],
-            listeners: {
-                scope: me,
-                select: me.onItemGridClick
-
-            },
-            features:[searching]
-
-        });
 
         // *************************************************************************************
         // Window User Form
@@ -496,24 +291,9 @@ Ext.define('App.view.master.Formula', {
                                     value: 'Customer :'
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'cust_id',
-                                    id: 'cust_id_formula'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.CustomerPopupStore,'Customer',me.CustomerGrid);
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'cust_desc_fo'
+                                    width: 250,
+                                    xtype: 'xtCustomerPopup',
+                                    name: 'cust_id'
                                 }
                             ]
                         },
@@ -531,23 +311,8 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'spesifikasi_id',
-                                    id: 'spesifikasi_id_formula'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SpesifikasiPopupStore,'Spesifikasi',me.SpesifikasiGrid);
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'spesifikasi_desc_fo'
+                                    xtype: 'xtSpesifikasiPopup',
+                                    name: 'spesifikasi_id'
                                 }
                             ]
                         },
@@ -667,23 +432,8 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'bb_id',
-                                    id: 'bb_id_formula'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.BBPopupStore,'Satuan',me.BahanBakuGrid);
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'bb_desc_fo'
+                                    xtype: 'xtBahanBakuPopup',
+                                    name: 'bb_id'
                                 }
                             ]
                         },
@@ -723,23 +473,8 @@ Ext.define('App.view.master.Formula', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'satuan_id',
-                                    id: 'satuan_id_formula'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myWinChooseItem.show();
-                                        me.ShowGridPopup(me.SatuanPopupStore,'Satuan',me.SatuanGrid);
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    value: '',
-                                    id: 'satuan_desc_fo'
+                                    xtype: 'xtSatuanPopup',
+                                    name: 'satuan_id'
                                 }
                             ]
                         }
@@ -947,42 +682,7 @@ Ext.define('App.view.master.Formula', {
             }
         })
     },
-    ShowGridPopup: function(store, title, grid){
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 400,
-            height: 300,
-            items:[grid],
-            modal:true
 
-        });
-        this.myWinChooseItem.show();
-    },
-
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-
-        var getSpesifikasi= selected.data.spesifikasi_id;
-        var getSatuan= selected.data.satuan_id;
-        var getCustomer= selected.data.cust_id;
-        var getBB= selected.data.bb_id;
-
-        if(selected.data.cust_id != null){
-            Ext.getCmp('cust_id_formula').setValue(getCustomer);
-            Ext.getCmp('cust_desc_fo').setValue(selected.data.cust_nama);
-        }else if(selected.data.spesifikasi_id != null){
-            Ext.getCmp('spesifikasi_id_formula').setValue(getSpesifikasi);
-            Ext.getCmp('spesifikasi_desc_fo').setValue(selected.data.spesifikasi_nama);
-        }else if(selected.data.satuan_id != null){
-            Ext.getCmp('satuan_id_formula').setValue(getSatuan);
-            Ext.getCmp('satuan_desc_fo').setValue(selected.data.satuan_nama);
-        }else if(selected.data.bb_id != null){
-            Ext.getCmp('bb_id_formula').setValue(getBB);
-            Ext.getCmp('bb_desc_fo').setValue(selected.data.bb_nama);
-        }
-        me.myWinChooseItem.close();
-    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
