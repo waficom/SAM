@@ -50,7 +50,6 @@ class SalesOrder_Rpt extends Reports
 
 //        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
         $this->reportfile = '/var/www/modules/reportcenter/report/marketing/RekapPenjualan.jasper';
-        $params =
         //print_r($params->params);
         $url = $this->report_execute($params->params);
         return array(

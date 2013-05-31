@@ -39,6 +39,10 @@ Ext.define('App.view.master.Kemasan', {
                     type: 'string'
                 },
                 {
+                    name: 'size',
+                    type: 'string'
+                },
+                {
                     name: 'keterangan',
                     type: 'string'
                 },
@@ -100,6 +104,13 @@ Ext.define('App.view.master.Kemasan', {
                     sortable: true,
                     dataIndex: 'kemasan_nama'
                 },
+                {
+                    flex: 1,
+                    text: 'Size',
+                    sortable: true,
+                    dataIndex: 'size'
+                }
+                ,
                 {
                     flex: 1,
                     text: 'Keterangan',
@@ -213,6 +224,25 @@ Ext.define('App.view.master.Kemasan', {
                                     xtype: 'textfield',
                                     name: 'kemasan_nama'
                                 }                                
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Size :'
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'textfield',
+                                    name: 'size'
+                                }
                             ]
                         },
                         {

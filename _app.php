@@ -175,6 +175,8 @@ requires = [
     'App.ux.SpesifikasiPopup',
     'App.ux.BentukPopup',
     'App.ux.CustomerPopup',
+    'App.ux.DeliveryOrderPopup',
+    'App.ux.ProduksiPopup',
 
 
     'App.ux.ManagedIframe',

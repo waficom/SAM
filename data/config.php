@@ -967,8 +967,12 @@ $API = array(
         ),
         'VendorTransporterPopup' => array(
             'len' => 1
-        )
-      )
+        ),
+        'ProduksiPopup' => array(
+    'len' => 1
+            )
+
+    )
 
 
     )

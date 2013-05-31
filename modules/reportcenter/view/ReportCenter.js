@@ -23,64 +23,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 disableIndexes:['timeedit']
 
             }
-            Ext.define('ProdPopup', {
-                extend: 'Ext.data.Model',
-                fields: [
-                    {name: 'prod_id',type: 'string'},
-                    {name: 'prod_nama',type: 'string'},
-                    {name: 'timeedit',type: 'date'}
-                ],
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read:  Items.getitems
-
-                    }
-                }
-            });
-            me.ProdPopupStore = Ext.create('Ext.data.Store', {
-                model: 'ProdPopup',
-                autoLoad: true
-            });
-            Ext.define('WilayahPopup', {
-                extend: 'Ext.data.Model',
-                fields: [
-                    {name: 'wilayah_id',type: 'string'},
-                    {name: 'wilayah_nama',type: 'string'},
-                    {name: 'keterangan',type: 'string'}
-                ],
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read:  Wilayah.getwilayah
-
-                    }
-                }
-            });
-            me.WilayahPopupStore = Ext.create('Ext.data.Store', {
-                model: 'WilayahPopup',
-                autoLoad: true
-            });
-            Ext.define('PpPopup', {
-                extend: 'Ext.data.Model',
-                fields: [
-                    {name: 'no_pp',type: 'string'},
-                    {name: 'description',type: 'string'},
-                    {name: 'timeedit',type: 'date'}
-                ],
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read:  Produksi.getProduksi
-
-                    }
-                }
-            });
-            me.PpPopupStore = Ext.create('Ext.data.Store', {
-                model: 'PpPopup',
-                autoLoad: true
-            });
-
 
             me.reports = Ext.create('Ext.panel.Panel', {
                 layout: 'auto'
@@ -92,65 +34,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
              * TODO: Pass the report indicator telling what report should be rendering
              * this indicator will also be the logic for field rendering.
              */
-            me.ProdpopupGrid = Ext.create('App.ux.GridPanel', {
-                store: me.ProdPopupStore,
-                itemId: 'ProdpopupGrid',
-                //height: 300,
-                margin: '0 0 3 0',
-                region: 'north',
-                enablePaging: true,
-                columns: [
-                    {text: 'Produk  ID', sortable: false, dataIndex: 'prod_id'},
-                    {text: 'Produk Nama', width:200, sortable: false,dataIndex: 'prod_nama'}
-
-                ],
-                listeners: {
-                    scope: me,
-                    select: me.onItemGridClick
-                },
-
-                features:[searching]
-            });
-            me.WilayahGrid = Ext.create('App.ux.GridPanel', {
-                store: me.WilayahPopupStore,
-                itemId: 'Wilayah',
-                height: 300,
-                margin: '0 0 3 0',
-                region: 'north',
-                columns: [
-                    {text: 'Wilayah', width:70, sortable: false,dataIndex: 'wilayah_id'},
-                    {text: 'Nama Wilayah', flex: 1, sortable: true, dataIndex: 'wilayah_nama'},
-                    {text: 'Keterangan', width : 150, dataIndex: 'keterangan', sortable : true }
-
-                ],
-                listeners: {
-                    scope: me,
-                    select: me.onItemGridClick
-                },
-
-                features:[searching]
-            });
-            me.ProduksiGrid = Ext.create('App.ux.GridPanel', {
-                store: me.PpPopupStore,
-                height: 300,
-                margin: '0 0 3 0',
-                region: 'north',
-                enablePaging: true,
-                columns: [
-                    {text: 'No. Produksi', sortable: false, dataIndex: 'no_pp'},
-                    {text: 'Deskripsi', width:200, sortable: false,dataIndex: 'description'},
-                    {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-                ],
-                listeners: {
-                    scope: me,
-                    select: me.onItemGridClick
-
-                },
-                features:[searching]
-
-            });
-
 
             me.MarketingCategory = me.addCategory('Report Marketing', 260);
             me.TestReport = me.addReportByCategory(me.MarketingCategory, 'Maketing', function(btn) {
@@ -184,7 +67,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:'Insert Parameter',
                     items : [
                             {
-                            xtype          : 'textfield',
+                            xtype          : 'xtSalesOrderPopup',
                             fieldLabel     : 'So Num :',
                             hideLabel      : false,
                             name           : 'report_sonum',
@@ -213,21 +96,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             hideLabel : true,
                             items : [
                                 {
-                                    xtype : 'textfield',
+                                    xtype : 'xtlistproduct',
                                     fieldLabel : 'Produk',
                                     hideLabel : false,
                                     width: 350,
                                     name : 'report_produk',
                                     labelAlign : 'right',
                                     id: 'produk_id_dk'
-                                },{
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.ProdPopupStore, 'Produk',me.ProdpopupGrid);
-
-                                    }
                                 }
                                 ]
 
@@ -245,21 +120,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             hideLabel : true,
                             items : [
                                 {
-                                    xtype : 'textfield',
+                                    xtype : 'xtWilayahPopup',
                                     fieldLabel : 'Wilayah',
                                     hideLabel : false,
                                     width: 350,
                                     name : 'report_wilayah',
                                     labelAlign : 'right',
                                     id:'wilayah_id_dk'
-                                },{
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.WilayahPopupStore, 'Wilayah',me.WilayahGrid);
-
-                                    }
                                 }
                             ]
 
@@ -324,21 +191,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             hideLabel : true,
                             items : [
                                 {
-                                    xtype : 'textfield',
+                                    xtype : 'xtWilayahPopup',
                                     fieldLabel : 'Wilayah',
                                     hideLabel : false,
                                     width: 350,
                                     name : 'report_wilayah',
                                     labelAlign : 'right',
                                     id:'wilayah_id_pc'
-                                },{
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.WilayahPopupStore, 'Wilayah',me.WilayahGrid);
-
-                                    }
                                 }
                             ]
 
@@ -366,21 +225,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             hideLabel : true,
                             items : [
                                 {
-                                    xtype : 'textfield',
+                                    xtype : 'xtlistproduct',
                                     fieldLabel : 'Produk',
                                     hideLabel : false,
                                     width: 350,
                                     name : 'report_produk',
                                     labelAlign : 'right',
                                     id: 'produk_id_pl'
-                                },{
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.ProdPopupStore, 'Produk',me.ProdpopupGrid);
-
-                                    }
                                 }
                             ]
 
@@ -396,7 +247,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:'Insert Parameter',
                     items : [
                         {
-                            xtype          : 'textfield',
+                            xtype          : 'xtSalesOrderPopup',
                             fieldLabel     : 'So Num :',
                             hideLabel      : false,
                             name           : 'report_sonum',
@@ -423,36 +274,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     title:'Insert Parameter',
                     items : [
                         {
-                            xtype : 'fieldcontainer',
-                            layout :
-                            {
-                                type : 'hbox'
-                            },
-                            defaults :
-                            {
-                                margin : '0 10 0 10'
-                            },
-                            hideLabel : true,
-                            items : [
-                                {
-                                    xtype : 'textfield',
-                                    fieldLabel : 'No PP',
-                                    hideLabel : false,
-                                    width: 350,
-                                    name : 'report_nopp',
-                                    labelAlign : 'right',
-                                    id: 'no_pp_pp'
-                                },{
-                                    xtype: 'button',
-                                    text :'...',
-                                    handler: function(){
-                                        //me.myFormulaChooseItem.showAt(400,200);
-                                        me.ShowGridPopup(me.PpPopupStore, 'Produksi',me.ProduksiGrid);
-
-                                    }
-                                }
-                            ]
-
+                            xtype          : 'xtProduksiPopup',
+                            fieldLabel     : 'No. PP:',
+                            hideLabel      : false,
+                            name           : 'report_nopp',
+                            width          : 350
                         }
 
                     ],
@@ -460,6 +286,98 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
+            me.ProduksiCategory = me.addCategory('Report Produksi', 260);
+            me.BarangMasuk = me.addReportByCategory(me.ProduksiCategory, 'Barang Masuk', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Produksi_Rpt.BarangMasuk
+                });
+            });
+            me.PengirimanBarang = me.addReportByCategory(me.ProduksiCategory, 'Pengiriman Barang', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Produksi_Rpt.PengirimanBarang
+                });
+            });
+            me.SuratJalan = me.addReportByCategory(me.ProduksiCategory, 'Surat Jalan', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtDOPopup',
+                            fieldLabel     : 'No. Do :',
+                            hideLabel      : false,
+                            name           : 'report_do_num',
+                            width          : 350
+                        }
+
+                    ],
+                    fn:Produksi_Rpt.SuratJalan
+                });
+            });
 
             me.callParent(arguments);
 
@@ -517,30 +435,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 //            formPanel.add(config.items);
         },
 
-    onItemGridClick: function(grid,selected){ //
-        var me = this;
-        if(selected.data.prod_id != null){
-            Ext.getCmp('produk_id_dk').setValue(selected.data.prod_id);
-        }else if(selected.data.wilayah_id != null){
-            Ext.getCmp('wilayah_id_dk').setValue(selected.data.wilayah_id);
-           Ext.getCmp('wilayah_id_pc').setValue(selected.data.wilayah_id);
-        }
-
-        //me.myWinChooseItem.close();
-    },
-
-    ShowGridPopup: function(store, title, grid){
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 400,
-            height: 300,
-            items:[grid],
-            modal:true
-
-        });
-        this.myWinChooseItem.show();
-    },
 
         /**
          * This function is called from MitosAPP.js when

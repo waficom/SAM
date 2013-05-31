@@ -23,6 +23,11 @@ Ext.define('App.view.master.BahanBaku', {
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
+        var searching = {
+            ftype: 'searching',
+            mode: 'local',
+            width: 200
+        };
         Ext.define('BahanBakuModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -62,8 +67,13 @@ Ext.define('App.view.master.BahanBaku', {
                         create: BahanBaku.addbb,
                         update: BahanBaku.updatebb,
                         destroy : BahanBaku.deletebb
+                    },
+                    reader : {
+                        totalProperty : 'totals',
+                        root : 'rows'
                     }
                 },
+                pageSize : 10,
                 autoLoad: false
             });
         function authCk(val){
@@ -113,6 +123,14 @@ Ext.define('App.view.master.BahanBaku', {
                     renderer: authCk
                 }
             ],
+            bbar: new Ext.PagingToolbar({
+                //pageSize    : 10,
+                store      : me.BahanBakuStore,
+                displayInfo: false,
+//                    displayMsg : 'Data yang ada {0} - {1} Dari {2}',
+                emptyMsg   : "Tidak ada data"
+            }),
+            features: [searching],
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){

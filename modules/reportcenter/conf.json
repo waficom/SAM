@@ -48,6 +48,22 @@
                     "len":1
                 }
             }
+        },
+        "Produksi_Rpt":{
+            "methods":{
+                "BarangMasuk":
+                {
+                    "len":1
+                },
+                "PengirimanBarang":
+                {
+                    "len":1
+                },
+                "SuratJalan":
+                {
+                    "len":1
+                }
+            }
         }
     },
     "extjs":[

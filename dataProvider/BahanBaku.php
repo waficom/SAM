@@ -41,34 +41,12 @@ class BahanBaku
 		return;
 	}
 
-    public function getbbLiveSearch(stdClass $params)
-	{
-		$this->db->setSQL("SELECT co_id,
-		                          bb_id, 
-		                          bb_nama
-							FROM bahanbaku
-   							WHERE UPPER(bb_id)  LIKE UPPER('%$params->query%')
-   							  OR UPPER(bb_nama) LIKE UPPER('%$params->query%')");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
-        {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
-        }
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
 
-    public function getbsLiveSearch(stdClass $params)
-    {
-        $this->db->setSQL("SELECT *
-							FROM bs");
+
+	public function getbb(stdClass $params)
+	{
+		$sql = "SELECT * FROM bahanbaku ORDER BY bb_nama";
+		$this -> db -> setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
         {
@@ -77,44 +55,13 @@ class BahanBaku
                 $records[$key] = array_change_key_case($value);
             }
         }
+
         $total   = count($records);
         $records = array_slice($records, $params->start, $params->limit);
         return array(
             'totals' => $total,
             'rows'   => $records
         );
-    }
-
-	public function getbb(stdClass $params)
-	{
-
-/*		if (isset($params -> aktif))
-		{
-			$wherex = "aktif = '" . $params -> aktif . "'";
-		}
-		else
-		{
-			$wherex = "aktif = '1'";
-		}
-*/
-		if (isset($params -> sort))
-		{
-			$orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-		}
-		else
-		{
-			$orderx = 'bb_nama';
-		}
-		$sql = "SELECT * FROM bahanbaku ORDER BY $orderx";
-		$this -> db -> setSQL($sql);
-		$rows = array();
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-		{
-		    $row = array_change_key_case($row);
-			array_push($rows, $row);
-		}
-
-		return $rows;
 
 	}
 	/**

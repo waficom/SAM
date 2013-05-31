@@ -229,7 +229,7 @@ where A.no_pp=$P{nopp}]]>
 				<text><![CDATA[Kemasan]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afabb5c7-5492-44e6-9feb-4d34e4655633" x="416" y="1" width="79" height="20"/>
+				<reportElement uuid="afabb5c7-5492-44e6-9feb-4d34e4655633" x="416" y="1" width="54" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>

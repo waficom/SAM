@@ -133,6 +133,21 @@ class Popup
         return $rows;
 
     }
+    public function ProduksiPopup(stdClass $params)
+    {
+
+        $sql = "SELECT * from pp_produksi ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
 
     /**
      *

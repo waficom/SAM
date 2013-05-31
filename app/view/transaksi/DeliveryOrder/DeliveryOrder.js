@@ -56,6 +56,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 ,{name: 'prod_id',type: 'string'}
                 ,{name: 'prod_nama',type: 'string'}
                 ,{name: 'vessel',type: 'string'}
+                ,{name: 'container_name',type: 'string'}
+                ,{name: 'container_no',type: 'string'}
+                ,{name: 'seal_no',type: 'string'}
                 ,{name: 'origin',type: 'string'}
                 ,{name: 'destination',type: 'string'}
                 ,{name: 'qty',type: 'string'}
@@ -176,14 +179,17 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 {text: 'sequence_no', sortable: false, dataIndex: 'sequence_no', hidden: true},
                 {text: 'Produk', sortable: false, width:200, dataIndex: 'prod_nama'},
                 {text: 'Vend_id', width:100, sortable: false,dataIndex: 'vend_id'},
-                {text: 'Police_no', width:150, sortable: false,dataIndex: 'police_no'},
+                {text: 'Police_no', width:100, sortable: false,dataIndex: 'police_no'},
                 {text: 'Surat Jalan', width:200, sortable: false,dataIndex: 'suratjalan'},
                 {text: 'Vessel', width:200, sortable: false,dataIndex: 'vessel'},
+                {text: 'Container Name', width:200, sortable: false,dataIndex: 'container_name'},
+                {text: 'Container No', width:200, sortable: false,dataIndex: 'container_no'},
+                {text: 'Seal No', width:200, sortable: false,dataIndex: 'seal_no'},
                 {text: 'Delivery Date', sortable : false, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'Origin', width:200, sortable: false,dataIndex: 'origin'},
                 {text: 'Destination', width:200, sortable: false,dataIndex: 'destination'},
                 {text: 'Qty', width:100, sortable: false,dataIndex: 'qty'},
-                {text: 'satuan_id', width:100, sortable: false,dataIndex: 'satuan_id'},
+                {text: 'satuan_id', width:50, sortable: false,dataIndex: 'satuan_id'},
                 {text: 'status', width:50, sortable: false,dataIndex: 'status'},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
@@ -363,7 +369,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             }
         });
         me.winform1 = Ext.create('App.ux.window.Window', {
-            width: 400,
+            width: 750,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -548,6 +554,48 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
+                                    value: 'Container Name:'
+                                },
+                                {
+                                    width:150,
+                                    xtype: 'textfield',
+                                    name: 'container_name'
+                                    // disabled: true
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'displayfield',
+                                    value: 'Container No:'
+                                },
+                                {
+                                    width:150,
+                                    xtype: 'textfield',
+                                    name: 'container_no'
+                                    // disabled: true
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'displayfield',
+                                    value: 'Seal No:'
+                                },
+                                {
+                                    width:150,
+                                    xtype: 'textfield',
+                                    name: 'seal_no'
+                                    // disabled: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
                                     value: 'Origin:'
                                 },
                                 {
@@ -595,20 +643,11 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     xtype: 'textfield',
                                     name: 'qty'
                                     // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                                },
                                 {
-                                    width: 100,
+                                    width: 50,
                                     xtype: 'displayfield',
-                                    value: 'Sat  ID :'
+                                    value: 'Satuan :'
                                 },
                                 {
                                     width: 100,
