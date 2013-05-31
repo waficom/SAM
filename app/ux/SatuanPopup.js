@@ -1,7 +1,7 @@
-Ext.define('App.ux.PilihProductSearch',
+Ext.define('App.ux.SatuanPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtlistproduct',
+        alias : 'widget.xtSatuanPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,28 +17,28 @@ Ext.define('App.ux.PilihProductSearch',
                 },
                 prod_id = null;
 
-            Ext.define('prodSearchModel',
+            Ext.define('SatuanSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        { name: 'prod_id', type: 'string'},
-                        { name: 'prod_nama', type: 'string'},
-                        { name: 'jenis_id', type: 'string'},
-                        { name: 'jenis_nama', type: 'string'},
-                        { name: 'kemasan_id', type: 'string'},
-                        { name: 'kemasan_nama', type: 'string'},
-                        { name: 'kemasan_qty', type: 'float'},
-                        { name: 'satuan_id', type: 'string'},
-                        { name: 'satuan_nama', type: 'string'},
-                        { name: 'spesifikasi_id', type: 'string'},
-                        { name: 'spesifikasi_nama', type: 'string'},
-                        { name: 'bentuk_id', type: 'string'},
-                        { name: 'bentuk_nama', type: 'string'}
+                        {
+                            name: 'satuan_id',
+                            type: 'string'
+                        },
+                        {
+                            name: 'satuan_nama',
+                            type: 'string'
+                        },
+                        {
+                            name: 'keterangan',
+                            type: 'string'
+                        }
+
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Items.getitems},//ProductListSearch},
+                        api : {read : Satuan.getsatuan},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -48,7 +48,7 @@ Ext.define('App.ux.PilihProductSearch',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'prodSearchModel',
+                    model : 'SatuanSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -59,23 +59,29 @@ Ext.define('App.ux.PilihProductSearch',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {text: 'ID', width:70, sortable: false, dataIndex: 'prod_id'},
-                    {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'prod_nama'},
-                    {text: 'Jenis ID', flex: 1, sortable: true, dataIndex: 'jenis_id', hidden : true},
-                    {text: 'Jenis', flex: 1, sortable: true, dataIndex: 'jenis_nama'},
-                    {text: 'Kemasan ID', flex: 1, sortable: true, dataIndex: 'kemasan_id', hidden : true},
-                    {text: 'Kemasan', flex: 1, sortable: true, dataIndex: 'kemasan_nama'},
-                    {text: 'spesifikasi_id', dataIndex: 'spesifikasi_id', hidden : true },
-                    {text: 'Spesifikasi', flex : 1, dataIndex: 'spesifikasi_nama', sortable : true },
-                    {text: 'Satuan ID', flex: 1, sortable: true, dataIndex: 'satuan_id', hidden : true},
-                    {text: 'Satuan', flex: 1, sortable: true, dataIndex: 'satuan_nama'},
-                    {text: 'Bentuk ID', flex: 1, sortable: true, dataIndex: 'bentuk_id', hidden : true},
-                    {text: 'Bentuk', flex: 1, sortable: true, dataIndex: 'bentuk_nama'}
+                    {
+                        width: 200,
+                        text: 'ID',
+                        sortable: true,
+                        dataIndex: 'satuan_id'
+                    },
+                    {
+                        flex: 1,
+                        text: 'Satuan',
+                        sortable: true,
+                        dataIndex: 'satuan_nama'
+                    },
+                    {
+                        flex: 1,
+                        text: 'Keterangan',
+                        sortable: true,
+                        dataIndex: 'keterangan'
+                    }
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'Barang Jadi',
+                title: 'Satuan',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -128,8 +134,8 @@ Ext.define('App.ux.PilihProductSearch',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            prod_id = selected.data.prod_id;
-            this.setValue(prod_id);
+            satuan_id = selected.data.satuan_id;
+            this.setValue(satuan_id);
         },
         ondblclick: function(grid, selected){
             var me = this;

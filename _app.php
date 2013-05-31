@@ -160,6 +160,23 @@ requires = [
     'App.ux.LiveWilayahSearch',
     'App.ux.LiveSalesmanSearch',
 
+    'App.ux.SalesOrderPopup',
+    'App.ux.FormulaPopup',
+    'App.ux.FactoryPopup',
+    'App.ux.BahanBakuPopup',
+    'App.ux.SatuanPopup',
+    'App.ux.GudangPopup',
+    'App.ux.VendorSuplierPopup',
+    'App.ux.VendorTransporterPopup',
+    'App.ux.WilayahPopup',
+    'App.ux.SalesPopup',
+    'App.ux.JenisPopup',
+    'App.ux.KemasanPopup',
+    'App.ux.SpesifikasiPopup',
+    'App.ux.BentukPopup',
+    'App.ux.CustomerPopup',
+
+
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
     /*

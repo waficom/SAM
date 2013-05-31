@@ -1,7 +1,7 @@
-Ext.define('App.ux.PilihProductSearch',
+Ext.define('App.ux.FactoryPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtlistproduct',
+        alias : 'widget.xtFactoryPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,28 +17,24 @@ Ext.define('App.ux.PilihProductSearch',
                 },
                 prod_id = null;
 
-            Ext.define('prodSearchModel',
+            Ext.define('FactorySearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        { name: 'prod_id', type: 'string'},
-                        { name: 'prod_nama', type: 'string'},
-                        { name: 'jenis_id', type: 'string'},
-                        { name: 'jenis_nama', type: 'string'},
-                        { name: 'kemasan_id', type: 'string'},
-                        { name: 'kemasan_nama', type: 'string'},
-                        { name: 'kemasan_qty', type: 'float'},
-                        { name: 'satuan_id', type: 'string'},
-                        { name: 'satuan_nama', type: 'string'},
-                        { name: 'spesifikasi_id', type: 'string'},
-                        { name: 'spesifikasi_nama', type: 'string'},
-                        { name: 'bentuk_id', type: 'string'},
-                        { name: 'bentuk_nama', type: 'string'}
+                        {name: 'pabrik_sequence',type: 'string'},
+                        {name: 'description',type: 'string'},
+                        {name: 'location',type: 'string'},
+                        {name: 'remarks',type: 'string'},
+                        {name: 'userinput',type: 'string'},
+                        {name: 'useredit',type: 'string'},
+                        {name: 'timeinput',type: 'date'},
+                        {name: 'timeedit',type: 'date'}
+
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Items.getitems},//ProductListSearch},
+                        api : {read : Factory_location.getFactorylocation},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -48,7 +44,7 @@ Ext.define('App.ux.PilihProductSearch',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'prodSearchModel',
+                    model : 'FactorySearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -59,23 +55,17 @@ Ext.define('App.ux.PilihProductSearch',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {text: 'ID', width:70, sortable: false, dataIndex: 'prod_id'},
-                    {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'prod_nama'},
-                    {text: 'Jenis ID', flex: 1, sortable: true, dataIndex: 'jenis_id', hidden : true},
-                    {text: 'Jenis', flex: 1, sortable: true, dataIndex: 'jenis_nama'},
-                    {text: 'Kemasan ID', flex: 1, sortable: true, dataIndex: 'kemasan_id', hidden : true},
-                    {text: 'Kemasan', flex: 1, sortable: true, dataIndex: 'kemasan_nama'},
-                    {text: 'spesifikasi_id', dataIndex: 'spesifikasi_id', hidden : true },
-                    {text: 'Spesifikasi', flex : 1, dataIndex: 'spesifikasi_nama', sortable : true },
-                    {text: 'Satuan ID', flex: 1, sortable: true, dataIndex: 'satuan_id', hidden : true},
-                    {text: 'Satuan', flex: 1, sortable: true, dataIndex: 'satuan_nama'},
-                    {text: 'Bentuk ID', flex: 1, sortable: true, dataIndex: 'bentuk_id', hidden : true},
-                    {text: 'Bentuk', flex: 1, sortable: true, dataIndex: 'bentuk_nama'}
+                    {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence'},
+                    {text: 'Description',width: 100,sortable: true,flex:1, dataIndex: 'description'},
+                    {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
+                    {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
+                    {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'Barang Jadi',
+                title: 'Factory',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -128,8 +118,8 @@ Ext.define('App.ux.PilihProductSearch',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            prod_id = selected.data.prod_id;
-            this.setValue(prod_id);
+            pabrik_sequence = selected.data.pabrik_sequence;
+            this.setValue(pabrik_sequence);
         },
         ondblclick: function(grid, selected){
             var me = this;
