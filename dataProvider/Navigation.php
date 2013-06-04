@@ -155,6 +155,8 @@ class Navigation
                     'text' => $this->i18n['deliveryorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelDeliveryOrder'
                 ), array(
                     'text' => $this->i18n['ordermonitoring'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelOM'
+                ), array(
+                    'text' => $this->i18n['pengadaanbarang'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPengadaanBarang'
                 )
             )
         ));

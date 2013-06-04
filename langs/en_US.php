@@ -119,6 +119,7 @@ $LANG = array(
     'filter'                                => 'Filter Parameter',
     'report_center'                         => 'Report Center',
     'modules'                               => 'Modules',
-    'back'                                  => 'Back'
+    'back'                                  => 'Back',
+    'pengadaanbarang'                                  => 'Pengadaan Barang'
 
 );

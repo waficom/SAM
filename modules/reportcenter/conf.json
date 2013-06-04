@@ -64,6 +64,18 @@
                     "len":1
                 }
             }
+        },
+        "Logistics_Rpt":{
+            "methods":{
+                "PurchaseOrder":
+                {
+                    "len":1
+                },
+                "PengadaanBarang":
+                {
+                    "len":1
+                }
+            }
         }
     },
     "extjs":[

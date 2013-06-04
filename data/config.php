@@ -975,7 +975,35 @@ $API = array(
     )
 
 
-    )
+    ),
+    'PengadaanBarang' => array(
+        'methods' => array(
+            'getPB' => array(
+                'len' => 1
+            ),
+            'addPB' => array(
+                'len' => 1
+            ),
+            'updatePB' => array(
+                'len' => 1
+            ),
+            'deletePB' => array(
+                'len' => 1
+            ),
+            'getPB0' => array(
+                'len' => 1
+            ),
+            'addPB0' => array(
+                'len' => 1
+            ),
+            'updatePB0' => array(
+                'len' => 1
+            ),
+            'deletePB0' => array(
+                'len' => 1
+            )
+        )
+    ),
     /*'Report' => array(
         'methods' => array(
             'getReportSO' => array(

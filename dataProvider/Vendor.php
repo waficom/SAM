@@ -42,29 +42,6 @@ class Vendor
 		return;
 	}
 
-    public function getVendorLiveSearch(stdClass $params)
-	{
-		$this->db->setSQL("SELECT co_id,
-		                          vend_id, 
-		                          vend_nama
-							FROM vendor
-   							WHERE UPPER(vend_id)          LIKE UPPER('%$params->query%')
-   							  OR UPPER(vend_nama)         LIKE UPPER('%$params->query%')");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
-        {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
-        }
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
 
 	public function getvendor(stdClass $params)
 	{

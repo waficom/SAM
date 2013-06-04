@@ -54,40 +54,12 @@ class PurchaseOrder
     public function getFilterPOData(stdClass $params)
     {
         // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$purchaseorder = '';
-        (int)$total = 0;
-        (string)$sql = '';
-
-//        error_reporting(-1);
-        // Look between service date
-
-        if ($params->datefrom && $params->dateto)
-//			$whereClause .= chr(13) . " AND so0.tanggal BETWEEN '" . substr($params->datefrom, 0, -9) . " 00:00:00' AND '" . substr($params->dateto, 0, -9) . " 23:59:59'";
-            $whereClause .= chr(13) . " AND po0.tgl BETWEEN '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'" ;
-
-        if ($params->po_numsearch)
-            $whereClause .= chr(13) . " AND po0.po_num like '%" . $params->po_numsearch . "%'";
-
-        if ($params->vend_search)
-            $whereClause .= chr(13) . " AND vendor.vend_nama like '%" . $params->vend_search . "%'";
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
-
         $sql = "SELECT po0.*, vendor.vend_nama
 				FROM
 					po0
 				LEFT JOIN
 					vendor
 				ON vendor.vend_id = po0.vend_id
-				$whereClause
 				ORDER BY
 				     po_num";
         $this->db->setSQL($sql);
@@ -115,8 +87,12 @@ class PurchaseOrder
     public function addPO(stdClass $params)
     {
         $data = get_object_vars($params);
-
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         if (is_null($data['ppn_po']) || ($data['ppn_po'] == '')) {
             $data['ppn_po'] = '0';
         }
@@ -144,7 +120,7 @@ class PurchaseOrder
     public function updatePO(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['so_num'], $data['id'], $data['cust_nama'], $data['co_id']);
+        unset($data['po_num'], $data['id'], $data['cust_nama'], $data['co_id'], $data['vend_nama']);
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         if (is_null($data['ppn_po']) || ($data['ppn_po'] == '')) {
@@ -153,7 +129,7 @@ class PurchaseOrder
         if (is_null($data['ppn_exc']) || ($data['ppn_exc'] == '')) {
             $data['ppn_exc'] = '0';
         }
-        $cond = array('co_id' =>$params->co_id, 'po_num' => $params->so_num);
+        $cond = array('co_id' =>$params->co_id, 'po_num' => $params->po_num);
         $sql = $this -> db -> sqlBind($data, 'po0', 'U', $cond);
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -199,26 +175,7 @@ class PurchaseOrder
 
     public function getPOItems(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$soitems = '';
-        (int)$total = 0;
-        (string)$sql = '';
 
-        // Look between service date
-
-        $whereClause .= chr(13) . " AND po1.co_id = '" . $params->co_id . "'";
-        $whereClause .= chr(13) . " AND po1.po_num = '" . $params->po_num . "'";
-
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
         $sql = "select
                     po1.co_id,
                     po1.po_num,
@@ -237,10 +194,10 @@ class PurchaseOrder
                 from po1
                    left outer join bahanbaku on (po1.bb_id = bahanbaku.bb_id) and (po1.co_id = bahanbaku.co_id)
                    left outer join satuan on (po1.co_id = satuan.co_id) and (po1.sat_id = satuan.satuan_id)
-                   $whereClause
-				ORDER BY
-				     prod_nama";
+                  WHERE po_num = '" . $params->po_num ."'
+				";
         $this->db->setSQL($sql);
+       // print_r($sql);
 
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
@@ -258,7 +215,10 @@ class PurchaseOrder
     public function addPOItems(stdClass $params)
     {
         $data = get_object_vars($params);
-
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -268,6 +228,7 @@ class PurchaseOrder
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'po1', 'I');
         $this -> db -> setSQL($sql);
+       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -279,8 +240,8 @@ class PurchaseOrder
     public function updatePOItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama']);
-        $cond = array('co_id' =>$params->co_id, 'po_num' => $params->so_num, 'bb_id' => $params->bb_id);
+        unset($data['bb_nama'], $data['id'], $data['satuan_nama'],$data['old_bb_id']);
+        $cond = array('co_id' =>$params->co_id, 'po_num' => $params->po_num, 'bb_id' => $params->bb_id);
         $sql = $this -> db -> sqlBind($data, 'po1', 'U', $cond);
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

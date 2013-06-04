@@ -285,6 +285,61 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:SalesOrder_Rpt.PermintaanProduksi
                 });
             });
+            me.PurchaseOrder = me.addReportByCategory(me.LogisticsCategory, 'Purchase Order', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Logistics_Rpt.PurchaseOrder
+                });
+            });
+            me.PengadaanBarang = me.addReportByCategory(me.LogisticsCategory, 'Pengadaan Barang', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtPBPopup',
+                            fieldLabel     : 'No PB:',
+                            hideLabel      : false,
+                            name           : 'report_pbnum',
+                            width          : 350
+                        }
+
+                    ],
+                    fn:Logistics_Rpt.PengadaanBarang
+                });
+            });
+
 
             me.ProduksiCategory = me.addCategory('Report Produksi', 260);
             me.BarangMasuk = me.addReportByCategory(me.ProduksiCategory, 'Barang Masuk', function(btn) {

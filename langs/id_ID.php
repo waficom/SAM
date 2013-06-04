@@ -117,5 +117,6 @@ $LANG = array(
     'filter'                                => 'Parameter Saringan',
     'report_center'                         => 'Pusat Laporan',
     'modules'                               => 'Modul',
-    'back'                                  => 'Kembali'
+    'back'                                  => 'Kembali',
+    'pengadaanbarang'                                  => 'Pengadaan Barang'
 );

@@ -88,6 +88,12 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             dataIndex : 'vend_tr_nama',
                             flex:1,
                             width : 200
+                        }
+                        ,
+                        {
+                            header : 'Type',
+                            dataIndex : 'gr_type_desc',
+                            width : 200
                         }],
                     // ToolBar for Encounter DataGrid.
                     tbar : [
@@ -348,7 +354,31 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 labelAlign: 'right',
                                                                 width : 400
                                                             }]
+                                                    },
+                                                    {
+                                                        xtype : 'radiogroup',
+                                                        fieldLabel: "Type ",
+                                                        layout :
+                                                        {
+                                                            type : 'hbox'
+                                                        },
+                                                        defaults :
+                                                        {
+                                                           // margin : '0 0 0 10',
+                                                            xtype: "radio",name: "gr_type"
+                                                        },
+                                                        hideLabel : false,
+                                                        items : [
+                                                            {
+                                                                boxLabel: "Received",
+                                                                inputValue: "R"
+                                                            },
+                                                            {
+                                                                boxLabel: "Return",
+                                                                inputValue: "B"
+                                                            }]
                                                     }
+
                                                 ]
                                             }]
                                     })

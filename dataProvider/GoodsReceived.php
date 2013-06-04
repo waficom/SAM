@@ -89,7 +89,9 @@ class GoodsReceived
                     gr0.vend_id_trans,
                     gr0.keterangan,
                     vendor.vend_nama,
-                    transportir.vend_nama as vend_tr_nama
+                    transportir.vend_nama as vend_tr_nama,
+                    gr0.gr_type,
+                    case gr0.gr_type when 'R' then 'Received' else 'Return' end as gr_type_desc
                 FROM gr0
                    left outer join vendor on (gr0.co_id = vendor.co_id) and (gr0.vend_id = vendor.vend_id)
                    left outer join vendor transportir on (gr0.co_id = transportir.co_id) and (gr0.vend_id_trans = transportir.vend_id)
@@ -128,7 +130,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['vend_nama'],$data['vend_tr_nama']);
+        unset($data['vend_nama'],$data['vend_tr_nama'], $data['gr_type_desc']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gr0', 'I');
         $this -> db -> setSQL($sql);
@@ -143,7 +145,7 @@ class GoodsReceived
     public function updateGR(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama']);
+        unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama'], $data['gr_type_desc']);
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num);
         $sql = $this -> db -> sqlBind($data, 'gr0', 'U', $cond);

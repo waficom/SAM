@@ -5,6 +5,7 @@ Ext.define( 'App.model.transaksi.purchaseorder.PurchaseOrder',
             { name : 'co_id', type : 'string'},
             { name : 'po_num', type : 'string'},
             { name : 'tgl',	type : 'date'},
+            { name : 'tgl_jt',	type : 'date'},
             { name : 'vend_id', type : 'string'},
             { name : 'vend_nama', type : 'string'},
             { name : 'vend_inq_num', type : 'string'},
@@ -18,7 +19,10 @@ Ext.define( 'App.model.transaksi.purchaseorder.PurchaseOrder',
             { name : 'n_disc', type : 'float'},
             { name : 'n_ppn', type : 'float'},
             { name : 'n_netto', type : 'float'},
-            { name : 'keterangan', type : 'string'}
+            { name : 'keterangan', type : 'string'},
+            {name: 'useredit',type: 'string'},
+            {name: 'userinput',type: 'string'},
+            {name: 'timeedit',type: 'date'}
         ],
         proxy :
         {
