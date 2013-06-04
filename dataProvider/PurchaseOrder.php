@@ -60,6 +60,7 @@ class PurchaseOrder
 				LEFT JOIN
 					vendor
 				ON vendor.vend_id = po0.vend_id
+				where po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
 				ORDER BY
 				     po_num";
         $this->db->setSQL($sql);
@@ -121,6 +122,8 @@ class PurchaseOrder
     {
         $data = get_object_vars($params);
         unset($data['po_num'], $data['id'], $data['cust_nama'], $data['co_id'], $data['vend_nama']);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         if (is_null($data['ppn_po']) || ($data['ppn_po'] == '')) {
@@ -240,6 +243,8 @@ class PurchaseOrder
     public function updatePOItems(stdClass $params)
     {
         $data = get_object_vars($params);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['bb_nama'], $data['id'], $data['satuan_nama'],$data['old_bb_id']);
         $cond = array('co_id' =>$params->co_id, 'po_num' => $params->po_num, 'bb_id' => $params->bb_id);
         $sql = $this -> db -> sqlBind($data, 'po1', 'U', $cond);

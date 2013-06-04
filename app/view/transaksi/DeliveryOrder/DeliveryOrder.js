@@ -148,6 +148,54 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 me.onDeliveryOrderDelete(me.DeliveryOrderStore);
                             },
                             tooltip: 'Hapus Data'
+                        },{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange1',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'datefrom',
+                                    fieldLabel : 'deliverydate from',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },'-',{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'dateto',
+                                    fieldLabel : 'to',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerSearch',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 80,
+                                    margin : '0 0 3 0',
+                                    text : 'Cari',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.ReloadGrid
+                                    }
+                                }]
                         },'->',
                         {
                             xtype:'displayfield',
@@ -871,7 +919,17 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             }
         })
     },
+    ReloadGrid : function(btn)
+    {
+        // Declare some variables
+        var topBarItems = this.DeliveryOrderGrid.getDockedItems('toolbar[dock="top"]')[0],
+            datefrom = topBarItems.getComponent( 'fieldContainerDateRange1' ).getComponent( 'datefrom' ).getValue( ),
+            dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
+        // Load the ExtJs dataStore with the new parameters
+        this.DeliveryOrderStore.load({params:{datefrom : datefrom, dateto : dateto}});
+
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -880,7 +938,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
      */
     onActive: function(callback){
         var me = this;
-        this.DeliveryOrderStore.load({params:{start:0, limit:5}});
+        this.ReloadGrid(); // this.DeliveryOrderStore.load({params:{start:0, limit:5}});
         this.DeliveryOrder1Store.load({params:{start:0, limit:5}});
 
         callback(true);

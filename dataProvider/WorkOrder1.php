@@ -57,7 +57,8 @@ class WorkOrder1
     public function getWorkOrder1(stdClass $params)
     {
         //error_reporting(-1);
-        $this->db->setSQL("SELECT * FROM VIEWDETAILPRODUKSI where status='C' ORDER BY timeedit DESC");
+        $this->db->setSQL("SELECT A.* FROM VIEWDETAILPRODUKSI A where A.timeedit between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
+        and A.status='C' ORDER BY timeedit DESC");
 
         $rows = array();
         //print_r($rows);

@@ -46,7 +46,8 @@ class DeliveryOrder
 
     public function getDeliveryOrder(stdClass $params)
     {
-        $sql = "SELECT * FROM viewdeliveryorder ORDER BY timeedit DESC";
+        $sql = "SELECT * FROM viewdeliveryorder
+         where deliverydate between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'  ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

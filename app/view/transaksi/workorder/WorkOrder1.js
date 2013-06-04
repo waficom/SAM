@@ -203,7 +203,80 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 scope: me,
                 select: me.onProduksiGridClick
             },
-            features:[searching]
+            features:[searching],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange1',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'datefrom',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },'-',{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'dateto',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerSearch',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 80,
+                                    margin : '0 0 3 0',
+                                    text : 'Cari',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.ReloadGrid
+                                    }
+                                }]
+                        },'->',
+                        {
+                            xtype:'displayfield',
+                            itemId:'itemuserinput',
+                            margin : '0 5 0 0'
+                        }
+                    ]
+                },{
+                    xtype: 'pagingtoolbar',
+                    store: me.ProduksiStore,
+                    beforePageText: 'Page',
+                    afterPageText: 'of {0}',
+                    displayMsg: 'Diplay {0} - {1} Of {2}',
+                    emptyMsg: 'No Record Found',
+                    dock: 'bottom',
+                    displayInfo: true,
+                    pageSize: 5
+
+                }
+            ]
 
         });
         /**
@@ -1126,7 +1199,17 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             }
         })
     },
+    ReloadGrid : function(btn)
+    {
+        // Declare some variables
+        var topBarItems = this.Wo1Grid.getDockedItems('toolbar[dock="top"]')[0],
+            datefrom = topBarItems.getComponent( 'fieldContainerDateRange1' ).getComponent( 'datefrom' ).getValue( ),
+            dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
+        // Load the ExtJs dataStore with the new parameters
+        this.Wo1Store.load({params:{datefrom : datefrom, dateto : dateto}});
+
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -1135,7 +1218,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
      */
     onActive: function(callback){
         var me = this;
-        this.Wo1Store.load({params:{start:0, limit:5}});
+        this.ReloadGrid();//this.Wo1Store.load({params:{start:0, limit:5}});
         this.Wo1DStore.load();
         callback(true);
     }

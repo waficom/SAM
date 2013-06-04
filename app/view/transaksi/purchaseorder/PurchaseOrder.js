@@ -102,6 +102,54 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 me.onPBDelete(me.POStore);
                             },
                             tooltip: 'Hapus Data'
+                        },{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange1',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'datefrom',
+                                    fieldLabel : 'date from',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },'-',{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'dateto',
+                                    fieldLabel : 'to',
+                                    labelWidth : 35,
+                                    //padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    //labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        },{
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerSearch',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 80,
+                                    margin : '0 0 3 0',
+                                    text : 'Cari',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.ReloadGrid
+                                    }
+                                }]
                         },'->',
                         {
                             xtype:'displayfield',
@@ -867,7 +915,17 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         Ext.getCmp('pon_brutto_input').setValue(n_brutto);
         Ext.getCmp('pon_netto_input').setValue(n_netto);
     },
+    ReloadGrid : function(btn)
+    {
+        // Declare some variables
+        var topBarItems = this.POGrid.getDockedItems('toolbar[dock="top"]')[0],
+            datefrom = topBarItems.getComponent( 'fieldContainerDateRange1' ).getComponent( 'datefrom' ).getValue( ),
+            dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
+        // Load the ExtJs dataStore with the new parameters
+        this.POStore.load({params:{datefrom : datefrom, dateto : dateto}});
+
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -876,7 +934,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
      */
     onActive: function(callback){
         var me = this;
-        this.POStore.load({params:{start:0, limit:5}});
+
+        this.ReloadGrid();//this.POStore.load({params:{datefrom : datefrom1, dateto : dateto1}});
         this.POItemsStore.load();
 
         callback(true);
