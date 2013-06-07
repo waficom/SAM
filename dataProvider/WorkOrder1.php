@@ -72,7 +72,7 @@ class WorkOrder1
     }
     public function getWorkOrder1Detail(stdClass $params)
     {
-        $this->db->setSQL("SELECT * FROM wo0 where (no_ppd = '$params->no_ppd') ");
+        $this->db->setSQL("SELECT * FROM wo0 where (no_ppd = '$params->no_ppd') and (prod_id = '$params->prod_id') ");
 
         $rows = array();
         //print_r($rows);
@@ -102,7 +102,8 @@ class WorkOrder1
     public function getWorkOrder1DetailBJadi(stdClass $params)
     {
         //error_reporting(-1);
-        $this->db->setSQL("SELECT * FROM wo2 where (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') ");
+        $this->db->setSQL("select a.*, b.gudang_nama from wo2 a
+left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.no_ppd = '$params->no_ppd') and (a.wo_num = '$params->wo_num') ");
 
         $rows = array();
         //print_r($rows);
@@ -153,7 +154,7 @@ class WorkOrder1
         unset($data['id'],$data['sequence_no']);
         $sql = $this -> db -> sqlBind($data, 'wo1', 'I');
         $this -> db -> setSQL($sql);
-        print_r($sql);
+        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -183,6 +184,7 @@ class WorkOrder1
         //error_reporting(-1);
         $data = get_object_vars($params);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['useredit'] = $_SESSION['user']['name'];
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num']);
         $sql = $this -> db -> sqlBind($data, 'wo0', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num));
@@ -196,6 +198,7 @@ class WorkOrder1
         //error_reporting(-1);
         $data = get_object_vars($params);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['useredit'] = $_SESSION['user']['name'];
         unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['sequence_no']);
         $sql = $this -> db -> sqlBind($data, 'wo1', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num,'sequence_no' => $params-> sequence_no));
         $this -> db -> setSQL($sql);
@@ -208,6 +211,7 @@ class WorkOrder1
         //error_reporting(-1);
         $data = get_object_vars($params);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['useredit'] = $_SESSION['user']['name'];
         unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['sequence_no'],$data['gudang_nama']);
         $sql = $this -> db -> sqlBind($data, 'wo2', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num,'sequence_no' => $params-> sequence_no));
         $this -> db -> setSQL($sql);

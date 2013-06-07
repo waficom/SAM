@@ -281,17 +281,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             handler: function() {
                                 me.deleteProduksi1(me.Produksi1Store);
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'View Detail',
-                            scope: me,
-
-                            handler: function(){
-                                var form1 = me.winform1.down('form');
-                                me.onviewdetail(form1, 'ProduksiModel', 'View Detail');
-
-                            }
                         }
                     ]
                 },{
@@ -722,14 +711,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         store.sync({
             success:function(){
                 me.win.close();
-                store.load();
-                me.Produksi1Store.load();
+
             },
             failure:function(){
-                store.load();
+                //store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
+        store.load();
+        me.Produksi1Store.load();
     },
 
     onProduksi1Save: function(form, store){

@@ -45,7 +45,7 @@ class Produksi
 
     public function getProduksi(stdClass $params)
     {
-        $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.secuence_no, A.pabrik_sequence
+        $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.pabrik_sequence
 , A.userinput, A.useredit, case A.status when '0' then 'new' else 'Release' end as statusdesc, B.description as factory
 from pp_produksi A
 left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence

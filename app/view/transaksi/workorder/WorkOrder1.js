@@ -8,6 +8,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         var me = this;
         me.currProduksi = null;
         me.currSo_num = null;
+        me.currProd_id = null;
         me.currWo_num = null;
         me.curr_coid = null;
         me.userinput =null;
@@ -23,6 +24,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 ,{name: 'cust_nama',type: 'string'}
                 ,{name: 'formula_nama',type: 'string'}
                 ,{name: 'formula_id',type: 'string'}
+                ,{name: 'prod_id',type: 'string'}
                 ,{name: 'prod_nama',type: 'string'}
                 ,{name: 'kemasan_nama',type: 'string'}
                 ,{name: 'spesifikasi_nama',type: 'string'}
@@ -69,7 +71,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 { name : 'useredit', type : 'string'},
                 { name : 'timeinput', type : 'date'},
                 { name : 'timeedit', type : 'date'},
-                { name : 'keterangan', type : 'string'}
+                { name : 'keterangan', type : 'string'},
+                { name : 'prod_id', type : 'string'}
             ],
             proxy: {
                 type: 'direct',
@@ -181,6 +184,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {text: 'Customer', width:150, sortable: false,dataIndex: 'cust_nama'},
                 {text: 'Formula', width:100, sortable: false,dataIndex: 'formula_nama'},
                 {text: 'Formula id', width:100, sortable: false,dataIndex: 'formula_id', hidden: true},
+                {text: 'Produk id', width:100, sortable: false,dataIndex: 'prod_id', hidden:true},
                 {text: 'Produk', width:100, sortable: false,dataIndex: 'prod_nama'},
                 {text: 'Kemasan', width:100, sortable: false,dataIndex: 'kemasan_nama'},
                 {text: 'Spesifikasi', width:100, sortable: false,dataIndex: 'spesifikasi_nama'},
@@ -289,6 +293,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
+                {header : 'prod_id', dataIndex : 'prod_id',width : 200, hidden: true},
                 {header : 'Work Order #', dataIndex : 'wo_num',width : 200},
                 {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Shift#',dataIndex : 'shift',width : 100},
@@ -329,8 +334,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         },
                         {
                             xtype: 'button',
-                            text: 'addBahanBaku',
-                            itemId:'addBahanBaku',
+                            text: 'BahanBaku',
+                            itemId:'BahanBaku',
+                            id:'addBahanBaku',
                             scope: me,
                             handler: function(){
 
@@ -340,7 +346,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         },
                         {
                             xtype: 'button',
-                            text: 'addBarangJadi',
+                            text: 'BarangJadi',
+                            id:'addBarangJadi',
                             scope: me,
                             handler: function(){
                                 me.ShowGridPopup(me.Wo1DBahanJadiStore, 'Barang Jadi',me.Wo1DBahanJadiGrid);
@@ -350,7 +357,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Produksi1Grid,
+                    store: me.Wo1DGrid,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -374,10 +381,10 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {header : 'WO', dataIndex : 'wo_num',width : 50},
                 {header : 'bb_id',dataIndex : 'bb_id',width : 200},
                 {header : 'sat_id',dataIndex : 'sat_id', width : 200 },
-                {header : 'qty_stock',dataIndex : 'qty_stock', width : 200},
-                {header : 'qty_in',dataIndex : 'qty_in', width : 200},
-                {header : 'qty_out',dataIndex : 'qty_out', width : 200},
-                {header : 'qty_last',dataIndex : 'qty_last', width : 200},
+                {header : 'qty_stock',dataIndex : 'qty_stock', width : 50},
+                {header : 'qty_in',dataIndex : 'qty_in', width : 50},
+                {header : 'qty_out',dataIndex : 'qty_out', width : 50},
+                {header : 'qty_last',dataIndex : 'qty_last', width : 50},
                 {header : 'Keterangan',dataIndex : 'keterangan', width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
@@ -413,7 +420,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Produksi1Grid,
+                    store: me.Wo1DBahanBakuGrid,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -435,8 +442,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 200, hidden: true},
                 {header : 'WO', dataIndex : 'wo_num',width : 50},
-                {header : 'qty',dataIndex : 'qty', width : 200},
-                {header : 'qty_pcs',dataIndex : 'qty_pcs', width : 200},
+                {header : 'qty',dataIndex : 'qty', width : 50},
+                {header : 'qty_pcs',dataIndex : 'qty_pcs', width : 50},
                 {header : 'Gudang',dataIndex : 'gudang_nama',flex : 1, width : 200},
                 {header : 'Gudang',dataIndex : 'gudang_id',flex : 1, width : 200, hidden:true},
                 {header : 'Keterangan',dataIndex : 'keterangan',flex : 1, width : 200},
@@ -474,7 +481,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Produksi1Grid,
+                    store: me.Wo1DBahanJadiGrid,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -519,6 +526,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                             xtype: 'textfield',
                             hidden: true,
                             name: 'no_ppd'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'prod_id'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -819,7 +831,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     handler: function(){
                         var form = me.winformBahanBaku.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksi2Save(form, me.Wo1DBahanBakuStore, me.Wo1DGrid);
+                            me.onProduksi2Save(form, me.Wo1DBahanBakuStore, me.winformBahanBaku);
                         }
                     }
                 },{
@@ -967,7 +979,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     handler: function(){
                         var form = me.winformBahanJadi.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksi3Save(form, me.Wo1DBahanJadiStore, me.Wo1DGrid);
+                            me.onProduksi3Save(form, me.Wo1DBahanJadiStore, me.winformBahanJadi);
                         }
                     }
                 },{
@@ -1048,18 +1060,21 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
     onProduksiGridClick: function(grid, selected){
         var me = this;
         me.currProduksi = selected.data.no_ppd;
+        me.currProd_id = selected.data.prod_id;
        /* var TopBarItems = this.ProduksiGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);*/
-        me.Wo1DStore.load({params:{no_ppd: me.currProduksi}});
+        me.Wo1DStore.load({params:{no_ppd: me.currProduksi, prod_id: me.currProd_id}});
 
     },
     onProduksiGridClick2: function(grid, selected){
         var me = this;
         me.currWo_num = selected.data.wo_num;
         me.currProduksi = selected.data.no_ppd;
+        Ext.getCmp('addBahanBaku').setDisabled(false);
+        Ext.getCmp('addBarangJadi').setDisabled(false);
 
     },
     onItemdblclick1: function(store, record, title, window, form){
@@ -1079,6 +1094,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         f = me.winform1.down('form').getForm(), rec = f.getRecord();
 
         form.findField('no_ppd').setValue(me.currProduksi);
+        form.findField('prod_id').setValue(me.currProd_id);
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -1095,14 +1111,14 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{no_ppd: me.currProduksi}});
+        store.load({params:{no_ppd: me.currProduksi, prod_id: me.currProd_id}});
     },
 
-    onProduksi2Save: function(form, store, grid){
+    onProduksi2Save: function(form, store, window){
         var me = this;
-        me.saveProduksi2(form, store, grid);
+        me.saveProduksi2(form, store, window);
     },
-    saveProduksi2: function(form, store, grid){
+    saveProduksi2: function(form, store, window){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
 
         f = me.winformBahanBaku.down('form').getForm(), rec = f.getRecord();
@@ -1117,7 +1133,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         }
         store.sync({
             success:function(){
-                window.close();
+                me.winformBahanBaku.close();
                 //store.load();
             },
             failure:function(){
@@ -1127,11 +1143,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         });
         store.load({params:{no_ppd: me.currProduksi,wo_num: me.currWo_num}});
     },
-    onProduksi3Save: function(form, store, grid){
+    onProduksi3Save: function(form, store, window){
         var me = this;
-        me.saveProduksi3(form, store, grid);
+        me.saveProduksi3(form, store, window);
     },
-    saveProduksi3: function(form, store, grid){
+    saveProduksi3: function(form, store, window){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
 
             f = me.winformBahanJadi.down('form').getForm(), rec = f.getRecord();
@@ -1146,7 +1162,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         }
         store.sync({
             success:function(){
-                window.close();
+                me.winformBahanJadi.close();
                 //store.load();
             },
             failure:function(){
@@ -1221,5 +1237,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         this.ReloadGrid();//this.Wo1Store.load({params:{start:0, limit:5}});
         this.Wo1DStore.load();
         callback(true);
+
+            Ext.getCmp('addBahanBaku').setDisabled(true);
+            Ext.getCmp('addBarangJadi').setDisabled(true);
+
     }
 });

@@ -139,6 +139,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.master.Wilayah'));
         me.MainPanel.add(Ext.create('App.view.master.Route'));
         me.MainPanel.add(Ext.create('App.view.master.Factory_location'));
+        me.MainPanel.add(Ext.create('App.view.master.Tax'));
+        me.MainPanel.add(Ext.create('App.view.master.Bank'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));

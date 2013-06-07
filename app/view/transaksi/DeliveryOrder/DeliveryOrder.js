@@ -105,7 +105,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'Do_num', sortable: false, dataIndex: 'do_num'},
+                {text: 'Do_num', sortable: false, dataIndex: 'do_num',width:200},
                 {text: 'So_num', sortable: false, dataIndex: 'so_num'},
                 {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
                 {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
@@ -157,14 +157,14 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     xtype : 'datefield',
                                     itemId : 'datefrom',
                                     fieldLabel : 'deliverydate from',
-                                    labelWidth : 35,
+                                    labelWidth : 100,
                                     //padding : '0 10 0 0',
-                                    width : 150,
+                                    width : 200,
                                     format : 'd-m-Y',
                                     //labelAlign : 'right',
                                     value : new Date()
                                 }]
-                        },'-',{
+                        },{
                             xtype : 'fieldcontainer',
                             itemId : 'fieldContainerDateRange',
                             items : [
@@ -173,9 +173,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     xtype : 'datefield',
                                     itemId : 'dateto',
                                     fieldLabel : 'to',
-                                    labelWidth : 35,
+                                    labelWidth : 10,
                                     //padding : '0 10 0 0',
-                                    width : 150,
+                                    width : 110,
                                     format : 'd-m-Y',
                                     //labelAlign : 'right',
                                     value : new Date()
@@ -838,6 +838,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         store.sync({
             success:function(){
                 me.win.close();
+                //this.DeliveryOrderStore.load({params:{datefrom : datefrom, dateto : dateto}});
                 store.load();
             },
             failure:function(){

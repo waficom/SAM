@@ -46,4 +46,18 @@ class Logistics_Rpt extends Reports
         );
     }
 
+    public function FormPurchaseOrder(stdClass $params)
+    {
+
+
+//        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/Form_PurchaseOrder.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+
 }

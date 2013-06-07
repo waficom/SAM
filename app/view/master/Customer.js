@@ -99,6 +99,14 @@ Ext.define('App.view.master.Customer', {
                 {
                     name: 'aktif',
                     type: 'bool'
+                },
+                {
+                    name: 'coa_ar',
+                    type: 'string'
+                },
+                {
+                    name: 'coa_arp',
+                    type: 'string'
                 }
             ]
 
@@ -282,6 +290,18 @@ Ext.define('App.view.master.Customer', {
                     renderer: renderRupiah,
                     align:'right',
                     style: 'text-align:center'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR',
+                    sortable: true,
+                    dataIndex: 'coa_ar'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR-Piutang',
+                    sortable: true,
+                    dataIndex: 'coa_arp'
                 },
                 {
                     flex: 1,
@@ -658,6 +678,35 @@ Ext.define('App.view.master.Customer', {
                                     name: 'credit_limit',
                                     hideTrigger: true
                                 }                                
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa AR :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'coa_ar'
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'displayfield',
+                                    value: 'Coa (AR-Piutang) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'coa_arp'
+                                }
                             ]
                         },
                         {

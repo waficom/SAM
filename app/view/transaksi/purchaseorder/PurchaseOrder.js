@@ -53,6 +53,11 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     width : 200
                 },
                 {
+                    header : 'Pengadaan Barang',
+                    dataIndex : 'pb_num',
+                    width : 200
+                },
+                {
                     header : 'JT Kirim',
                     dataIndex : 'tgl_jt',
                     renderer:Ext.util.Format.dateRenderer('d-m-Y'),
@@ -390,6 +395,25 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width: 200,
                                     xtype: 'mitos.UpperCaseTextField',
                                     name : 'inv_num'
+                                }
+                            ]
+                        },{
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'PB Num'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'xtPBPopup',
+                                    name : 'pb_num'
                                 }
                             ]
                         },{

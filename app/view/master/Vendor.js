@@ -91,6 +91,14 @@ Ext.define('App.view.master.Vendor', {
                     type: 'string'
                 },
                 {
+                    name: 'coa_ap',
+                    type: 'string'
+                },
+                {
+                    name: 'coa_advance',
+                    type: 'string'
+                },
+                {
                     name: 'old_vend_id',
                     type: 'string'
                 },
@@ -226,6 +234,18 @@ Ext.define('App.view.master.Vendor', {
                     text: 'Keterangan',
                     sortable: true,
                     dataIndex: 'keterangan'
+                },
+                {
+                    flex: 1,
+                    text: 'Coa AP',
+                    sortable: true,
+                    dataIndex: 'coa_ap'
+                },
+                {
+                    flex: 1,
+                    text: 'Coa Advance',
+                    sortable: true,
+                    dataIndex: 'coa_advance'
                 },
                 {
                     text: 'Aktif',
@@ -531,6 +551,35 @@ Ext.define('App.view.master.Vendor', {
                                     xtype: 'textfield',
                                     name: 'negara'
                                 }                                
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa AP :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'coa_ap'
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'displayfield',
+                                    value: 'Coa Advance :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'coa_advance'
+                                }
                             ]
                         },
                         {

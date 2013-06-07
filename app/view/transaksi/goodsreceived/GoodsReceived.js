@@ -348,7 +348,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                         hideLabel : true,
                                                         items : [
                                                             {
-                                                                xtype: 'mitos.UpperCaseTextField',
+                                                                xtype: 'xtPOPopup',
                                                                 name : 'po_num',
                                                                 fieldLabel: 'PO #',
                                                                 labelAlign: 'right',

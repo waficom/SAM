@@ -178,6 +178,7 @@ requires = [
     'App.ux.DeliveryOrderPopup',
     'App.ux.ProduksiPopup',
     'App.ux.PBPopup',
+    'App.ux.POPopup',
 
 
     'App.ux.ManagedIframe',
@@ -330,6 +331,8 @@ requires = [
     'App.view.master.Wilayah',
     'App.view.master.Route',
     'App.view.master.Factory_location',
+    'App.view.master.Tax',
+    'App.view.master.Bank',
 
     /*
      * Load the root related panels

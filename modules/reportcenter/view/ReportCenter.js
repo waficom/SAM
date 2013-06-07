@@ -66,13 +66,33 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
                     items : [
-                            {
-                            xtype          : 'xtSalesOrderPopup',
-                            fieldLabel     : 'So Num :',
-                            hideLabel      : false,
-                            name           : 'report_sonum',
-                            width          : 350
-                            }
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
 
                     ],
                     fn:SalesOrder_Rpt.SalesOrder
@@ -153,7 +173,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     format : 'm/d/Y',
                                     labelAlign : 'right',
                                     value : new Date(),
-                                    name : 'report_date_daritgl'
+                                    name : 'report_date_fromdate'
 
                                 },
                                 {
@@ -165,7 +185,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     format : 'm/d/Y',
                                     labelAlign : 'right',
                                     value : new Date(),
-                                    name : 'report_date_sampaitgl'
+                                    name : 'report_date_todate'
                                 }]
                         }
 
@@ -337,6 +357,43 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                     ],
                     fn:Logistics_Rpt.PengadaanBarang
+                });
+            });
+            me.FormPurchaseOrder = me.addReportByCategory(me.LogisticsCategory, 'Form Purchase Order', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Logistics_Rpt.FormPurchaseOrder
                 });
             });
 

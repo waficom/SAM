@@ -970,7 +970,10 @@ $API = array(
         ),
         'ProduksiPopup' => array(
     'len' => 1
-            )
+            ),
+        'POPopup' => array(
+            'len' => 1
+        )
 
     )
 
@@ -1000,6 +1003,38 @@ $API = array(
                 'len' => 1
             ),
             'deletePB0' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Tax' => array(
+        'methods' => array(
+            'getTax' => array(
+                'len' => 1
+            ),
+            'addTax' => array(
+                'len' => 1
+            ),
+            'updateTax' => array(
+                'len' => 1
+            ),
+            'deleteTax' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Bank' => array(
+        'methods' => array(
+            'getBank' => array(
+                'len' => 1
+            ),
+            'addBank' => array(
+                'len' => 1
+            ),
+            'updateBank' => array(
+                'len' => 1
+            ),
+            'deleteBank' => array(
                 'len' => 1
             )
         )

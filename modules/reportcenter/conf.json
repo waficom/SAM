@@ -74,6 +74,10 @@
                 "PengadaanBarang":
                 {
                     "len":1
+                },
+                "FormPurchaseOrder":
+                {
+                    "len":1
                 }
             }
         }

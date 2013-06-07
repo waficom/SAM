@@ -65,6 +65,7 @@ Ext.define('App.view.master.Factory_location', {
                 {name: 'gudang_nama',type: 'string'},
                 {name: 'location',type: 'string'},
                 {name: 'remarks',type: 'string'},
+                {name: 'coa',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'useredit',type: 'string'},
                 {name: 'timeinput',type: 'date'},
@@ -184,6 +185,7 @@ Ext.define('App.view.master.Factory_location', {
                 {text: 'Gudang',width: 100,sortable: true,flex:1,dataIndex: 'gudang_nama'},
                 {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
+                {text: 'Coa',width: 100,sortable: true,flex:1,dataIndex: 'coa'},
                 {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
@@ -472,6 +474,24 @@ Ext.define('App.view.master.Factory_location', {
                                     width: 450,
                                     xtype: 'textfield',
                                     name: 'remarks'
+                                }
+                            ]
+                        }, {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'coa'
                                 }
                             ]
                         },

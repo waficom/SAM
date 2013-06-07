@@ -149,6 +149,27 @@ class Popup
 
     }
 
+    public function POPopup(stdClass $params)
+    {
+
+        $sql = "SELECT po0.*, vendor.vend_nama
+				FROM
+					po0
+				LEFT JOIN
+					vendor
+				ON vendor.vend_id = po0.vend_id ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+
     /**
      *
      * @param stdClass $params

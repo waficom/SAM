@@ -118,5 +118,7 @@ $LANG = array(
     'report_center'                         => 'Pusat Laporan',
     'modules'                               => 'Modul',
     'back'                                  => 'Kembali',
-    'pengadaanbarang'                                  => 'Pengadaan Barang'
+    'pengadaanbarang'                       => 'Pengadaan Barang',
+    'tax'                                   => 'Pajak',
+    'bank'                                  => 'Bank'
 );

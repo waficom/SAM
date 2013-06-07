@@ -127,6 +127,10 @@ class Navigation
                     'text' => $this->i18n['route'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelRoute'
                 ),array(
                     'text' => $this->i18n['factory'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelFactlocation'
+                ),array(
+                    'text' => $this->i18n['tax'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelTax'
+                ),array(
+                    'text' => $this->i18n['bank'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelBank'
                 )
             )
         ));
