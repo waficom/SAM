@@ -443,7 +443,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 {text: 'ID', width:70, sortable: false, dataIndex: 'bb_id', hidden: true},
                                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
                                 {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                                {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
+                                {text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_nama'},
                                 {text: 'Qty PCS/SAK', width: 100, sortable: false, dataIndex: 'qty_pcs'},
                                 {text: 'Qty Muatan', width: 100, sortable: false, dataIndex: 'qty_brutto'},
                                 {text: 'Qty Diterima', width: 100, sortable: false, dataIndex: 'qty_netto'},
@@ -498,7 +498,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 { text: 'id', dataIndex: 'bb_id', hidden: true},
                                 { text: 'urut', dataIndex: 'urut', hidden: true},
                                 { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                                { text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
+                                { text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_nama', hidden : true},
                                 { text: 'Nopol', width:100, sortable: true, dataIndex: 'nopol'},
                                 { text: 'Jml PCS/SAK', width: 100, sortable: true, dataIndex: 'qty_pcs'},
                                 { text: 'Jml Muatan', width: 100, sortable: true, dataIndex: 'qty_brutto'},
@@ -705,7 +705,9 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 items: [
                                     {name: 'co_id', xtype:'textfield', hidden : true},
                                     {name: 'gr_num', xtype: 'textfield', hidden : true},
-                                    {name: 'bb_id', xtype: 'textfield', hidden : true}
+                                    {name: 'bb_id', xtype: 'textfield', hidden : true},
+                                    {name: 'sat_id', xtype: 'textfield', hidden : true},
+                                    {name: 'urut', xtype: 'textfield', hidden : true}
                                 ]
                             },
                             {
@@ -724,7 +726,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 200,
                                         name: 'nopol',
-                                        xtype: 'textfield'
+                                        xtype: 'mitos.UpperCaseTextField'
                                     }
                                 ]
                             },
@@ -789,7 +791,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         width: 200,
                                         xtype: 'mitos.currency',
                                         name: 'qty_brutto',
-                                        id : 'idqty_brutto',
+                                        id : 'idgrqty_brutto',
                                         hideTrigger: true,
                                         listeners : {
                                             scope : me,
@@ -814,7 +816,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         width: 200,
                                         xtype: 'mitos.currency',
                                         name: 'qty_netto',
-                                        id : 'idqty_netto',
+                                        id : 'idgrqty_netto',
                                         hideTrigger: true,
                                         listeners : {
                                             scope : me,
@@ -839,7 +841,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         width: 200,
                                         xtype: 'mitos.currency',
                                         name: 'qty_selisih',
-                                        id : 'idqty_selisih',
+                                        id : 'idgrqty_selisih',
                                         hideTrigger: true,
                                         readonly: true
                                     }
@@ -961,6 +963,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             form.loadRecord(record);
             me.curr_gr_num = form.getForm().findField('gr_num').getValue();
             me.curr_co_id = form.getForm().findField('co_id').getValue();
+            me.curr_bb_id = null;
+            me.curr_sat_id = null;
             this.goToSODetail();
             Ext.getCmp('gr-move-next').setDisabled(false);
             Ext.getCmp('gr_num_input').setDisabled(true);
@@ -1011,7 +1015,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, coid = globals.site;
             me.curr_co_id = coid;
             this.getPageBody().getLayout().setActiveItem( 2 );
-            me.GRItemsStore.load({params:{co_id: coid, gr_num: me.curr_gr_num}});
+            me.curr_bb_id = null;
+            me.curr_sat_id = null;
+            me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+            me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
         },
 
         /**
@@ -1083,6 +1090,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             form.getForm().reset();
             var newModel = Ext.ModelManager.create({co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id,
             sat_id: me.curr_sat_id}, model);
+//            console.log(me.curr_sat_id);
             form.getForm().loadRecord(newModel);
             this.action(this.winDtl, 'new');
             this.winDtl.show();
@@ -1105,7 +1113,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_co_id = selected.data.co_id;
             me.curr_gr_num = selected.data.gr_num;
             me.curr_sat_id = selected.data.sat_id;
-            me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id}});
+            me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
         },
         onItemsdblclick: function(store, record, title){
             var form = this.win.down('form');
@@ -1140,6 +1148,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             store.sync({
                 success:function(){
 //                    SalesOrder.updateSOnetto(params);
+                    me.curr_bb_id = form.findField('bb_id').getValue();
+                    me.curr_sat_id = form.findField('sat_id').getValue();
                     me.win.close();
                 },
                 failure:function(){
@@ -1163,7 +1173,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     me.msg('Opps!', 'Error!!', true);
                 }
             });
-            store.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id}});
+            me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+            store.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
         },
         onItemsDelete: function(store){
             var me = this, grid = me.ItemsGrid;
@@ -1203,6 +1214,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         store.sync();
                         if (store.getCount() > 0) {
                             sm.select(0);
+                            me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
                         }
                     }
                 }
@@ -1210,16 +1222,18 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
         onEnter : function(field, e)
         {
-            var qty_brutto = 0,
-                qty_netto = 0,
-                qty_selisih = 0;
+            var qty_selisih = 0;
             if (e.getKey() == e.ENTER)
             {
-                qty_brutto = Ext.getCmp('idqty_brutto').getValue();
-                qty_netto = Ext.getCmp('idqty_netto').getValue();
+                qty_brutto = Ext.getCmp('idgrqty_brutto').getValue();
+                qty_netto = Ext.getCmp('idgrqty_netto').getValue();
                 qty_selisih = qty_netto - qty_brutto;
+                Ext.getCmp('idgrqty_selisih').setValue(qty_selisih);
+                console.log( qty_netto );
+                console.log( qty_brutto);
+                console.log( qty_selisih);
             }
-            Ext.getCmp('idqty_selisih').setValue(qty_selisih);
+
         },
 
 

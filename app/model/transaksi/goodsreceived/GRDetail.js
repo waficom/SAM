@@ -15,8 +15,7 @@ Ext.define( 'App.model.transaksi.goodsreceived.GRDetail',
             { name : 'qty_netto', type : 'float'},
             { name : 'qty_pcs', type : 'float'},
             { name : 'qty_selisih', type : 'float'},
-            { name : 'keterangan', type : 'string'},
-            { name : 'old_urut', type : 'int'}
+            { name : 'keterangan', type : 'string'}
         ],
         proxy :
         {

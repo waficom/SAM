@@ -230,7 +230,7 @@ class GoodsReceived
                     gr10.qty_selisih,
                     gr10.keterangan,
                     bahanbaku.bb_nama,
-                    satuan.satuan_nama
+                    satuan.satuan_nama as sat_nama
                 from gr10
                    left outer join bahanbaku on (gr10.co_id = bahanbaku.co_id) and (gr10.bb_id = bahanbaku.bb_id)
                    left outer join satuan on (gr10.co_id = satuan.co_id) and (gr10.sat_id = satuan.satuan_id)
@@ -261,7 +261,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gr10', 'I');
         $this -> db -> setSQL($sql);
@@ -276,7 +276,7 @@ class GoodsReceived
     public function updateGRItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id);
         $sql = $this -> db -> sqlBind($data, 'gr10', 'U', $cond);
         $this -> db -> setSQL($sql);
@@ -313,6 +313,7 @@ class GoodsReceived
         $whereClause .= chr(13) . " AND gr11.co_id = '$params->co_id' ";
         $whereClause .= chr(13) . " AND gr11.gr_num = '$params->gr_num' ";
         $whereClause .= chr(13) . " AND gr11.bb_id = '$params->bb_id' ";
+        $whereClause .= chr(13) . " AND gr11.sat_id = '$params->sat_id' ";
 
 
         // Eliminate the first 6 characters of the where clause
@@ -337,7 +338,7 @@ class GoodsReceived
                     gr11.qty_selisih,
                     gr11.keterangan,
                     bahanbaku.bb_nama,
-                    satuan.satuan_nama
+                    satuan.satuan_nama as sat_nama
                 from gr11
                    left outer join bahanbaku on (gr11.co_id = bahanbaku.co_id) and (gr11.bb_id = bahanbaku.bb_id)
                    left outer join satuan on (gr11.co_id = satuan.co_id) and (gr11.sat_id = satuan.satuan_id)
@@ -355,7 +356,7 @@ class GoodsReceived
         $total = count($grdtl);
         return array(
             'totals' => $total,
-            'grdtl' => $grdtl
+            'grdetail' => $grdtl
         );
 
     }
@@ -368,7 +369,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gr11', 'I');
         $this -> db -> setSQL($sql);
@@ -383,9 +384,10 @@ class GoodsReceived
     public function updateGRDetail(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama']);
-        $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['urut']);
+        $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id, 'urut' => $params->urut);
         $sql = $this -> db -> sqlBind($data, 'gr11', 'U', $cond);
+
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         $params->old_co_id = $params->co_id;
@@ -402,7 +404,7 @@ class GoodsReceived
     {
         $data = get_object_vars($params);
         $sql = "DELETE FROM GR11 WHERE gr_num = '$params->gr_num' and co_id = '$params->co_id'
-                and bb_id = '$params->bb_id' and urut = $params->urut";
+                and bb_id = '$params->bb_id' and sat_id = '$params->sat_id' and urut = " . $params->urut;
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
