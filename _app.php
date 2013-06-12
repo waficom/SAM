@@ -179,6 +179,8 @@ requires = [
     'App.ux.ProduksiPopup',
     'App.ux.PBPopup',
     'App.ux.POPopup',
+    'App.ux.GRPopup',
+    'App.ux.TaxPopup',
 
 
     'App.ux.ManagedIframe',
@@ -349,6 +351,7 @@ requires = [
     'App.view.transaksi.DeliveryOrder.DeliveryOrder',
     'App.view.transaksi.OrderMonitoring.OrderMonitoring',
     'App.view.transaksi.Produksi.PengadaanBarang',
+    'App.view.transaksi.AP-Invoice.AP_Invoice',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

@@ -94,6 +94,17 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             header : 'Type',
                             dataIndex : 'gr_type_desc',
                             width : 200
+                        },
+                        {
+                            header : 'Gudang',
+                            dataIndex : 'gudang_id',
+                            width : 200,
+                            hidden: true
+                        },
+                        {
+                            header : 'Gudang',
+                            dataIndex : 'gudang_nama',
+                            width : 200
                         }],
                     // ToolBar for Encounter DataGrid.
                     tbar : [
@@ -351,6 +362,26 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 xtype: 'xtPOPopup',
                                                                 name : 'po_num',
                                                                 fieldLabel: 'PO #',
+                                                                labelAlign: 'right',
+                                                                width : 400
+                                                            }]
+                                                    },
+                                                    {
+                                                        xtype : 'fieldcontainer',
+                                                        layout :
+                                                        {
+                                                            type : 'hbox'
+                                                        },
+                                                        defaults :
+                                                        {
+                                                            margin : '0 10 0 10'
+                                                        },
+                                                        hideLabel : true,
+                                                        items : [
+                                                            {
+                                                                xtype: 'xtGudangPopup',
+                                                                name : 'gudang_id',
+                                                                fieldLabel: 'Gudang',
                                                                 labelAlign: 'right',
                                                                 width : 400
                                                             }]
@@ -822,6 +853,26 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             scope : me,
                                             specialkey : me.onEnter
                                         }
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'fieldcontainer',
+                                defaults: {
+                                    hideLabel: true
+                                },
+                                msgTarget: 'under',
+                                items: [
+
+                                    {
+                                        width: 100,
+                                        xtype: 'displayfield',
+                                        value: 'Satuan :'
+                                    },
+                                    {
+                                        width: 200,
+                                        xtype: 'xtSatuanPopup',
+                                        name:'sat_id'
                                     }
                                 ]
                             },

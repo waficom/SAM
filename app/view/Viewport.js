@@ -154,6 +154,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.DeliveryOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.OrderMonitoring.OrderMonitoring'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.PengadaanBarang'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.Report.Report'));
 
 

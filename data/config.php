@@ -973,7 +973,11 @@ $API = array(
             ),
         'POPopup' => array(
             'len' => 1
+        ),
+        'getGRPopup' => array(
+            'len' => 1
         )
+
 
     )
 
@@ -1035,6 +1039,46 @@ $API = array(
                 'len' => 1
             ),
             'deleteBank' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'AP_Invoice' => array(
+        'methods' => array(
+            'getAP_Inv' => array(
+                'len' => 1
+            ),
+            'addAP_Inv' => array(
+                'len' => 1
+            ),
+            'updateAP_Inv' => array(
+                'len' => 1
+            ),
+            'deleteAP_Inv' => array(
+                'len' => 1
+            ),
+            'getAP_Inv_Detail' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Detail' => array(
+                'len' => 1
+            ),
+            'updateAP_Inv_Detail' => array(
+                'len' => 1
+            ),
+            'deleteAP_Inv_Detail' => array(
+                'len' => 1
+            ),
+            'getAP_Inv_Jurnal' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Jurnal' => array(
+                'len' => 1
+            ),
+            'updateAP_Inv_Jurnal' => array(
+                'len' => 1
+            ),
+            'deleteAP_Inv_Jurnal' => array(
                 'len' => 1
             )
         )
