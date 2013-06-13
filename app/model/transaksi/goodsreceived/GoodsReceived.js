@@ -12,7 +12,9 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
             { name : 'vend_id_trans', type : 'string'},
             { name : 'gr_type', type : 'string'},
             { name : 'gr_type_desc', type : 'string'},
-            { name : 'keterangan', type : 'string'}
+            { name : 'keterangan', type : 'string'},
+            { name : 'gudang_id', type : 'string'},
+            { name : 'gudang_nama', type : 'string'}
         ],
         proxy :
         {

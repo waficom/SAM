@@ -122,6 +122,7 @@ $LANG = array(
     'back'                                  => 'Back',
     'pengadaanbarang'                                  => 'Pengadaan Barang',
     'tax'                                  => 'Tax',
-    'bank'                                  => 'Bank'
+    'bank'                                  => 'Bank',
+    'apinvoice'                                  => 'AP Invoice'
 
 );
