@@ -23,12 +23,13 @@ class Test extends Reports
 
 
 //        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
-        $this->reportfile = '/var/www/modules/reportcenter/report/marketing/bs.jasper';
+        $this->reportfile = '/var/www/sam-new/modules/reportcenter/report/marketing/bs.jasper';
 
 //        $this->reportfile = '/var/www/sam-new/bs.jasper';
 
        // print_r($this->reportfile);
         $url = $this->report_execute($params->params);
+
         return array(
             'success' => true,
             'url' => $url

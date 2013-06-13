@@ -38,7 +38,7 @@ Ext.define('App.ux.PilihProductSearch',
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Items.getitems},//ProductListSearch},
+                        api : {read : Items.ProductListSearch},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -49,7 +49,6 @@ Ext.define('App.ux.PilihProductSearch',
             me.store = Ext.create('Ext.data.Store',
                 {
                     model : 'prodSearchModel',
-                    pageSize : 50,
                     autoLoad : false
                 });
 

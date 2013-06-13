@@ -40,7 +40,6 @@ Ext.define('App.ux.SearchBoxBS',
             me.store = Ext.create('Ext.data.Store',
                 {
                     model : 'bsSearchModel',
-                    pageSize : 10,
                     autoLoad : false
                 });
 

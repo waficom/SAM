@@ -43,8 +43,8 @@ if (!isset($_SESSION))
 	session_cache_limiter('private');
 }
 
-ini_set('max_input_time', '1500');
-ini_set('max_execution_time', '1500');
+ini_set('max_input_time', '2500');
+ini_set('max_execution_time', '2500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 include_once ($_SESSION['root'] . '/classes/Time.php');
