@@ -80,6 +80,17 @@
                     "len":1
                 }
             }
+        },
+        "Finance_Rpt":{
+            "methods":{
+                "AP_Invoice":
+                {
+                    "len":1
+                },"Laporan_Ap_Invoice":
+                {
+                    "len":1
+                }
+            }
         }
     },
     "extjs":[

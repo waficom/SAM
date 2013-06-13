@@ -164,6 +164,17 @@ class Navigation
                 ),
                 array(
                     'text' => $this->i18n['apinvoice'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice'
+                ),
+                array(
+                    'text' => $this->i18n['apinvoicerevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Revisi'
+                ),
+                array(
+                    'text' => $this->i18n['apinvoicepembayaran'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Pembayaran'
+                ),     array(
+                    'text' => $this->i18n['apinvoicepaymentrevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Payment_Revision'
+                ),
+                array(
+                    'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
                 )
             )
         ));

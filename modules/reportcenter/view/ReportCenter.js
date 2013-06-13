@@ -491,6 +491,61 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
+            me.FinanceCategory = me.addCategory('Report Finance', 260);
+            me.AP_Invoice= me.addReportByCategory(me.FinanceCategory, 'AP Invoice', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtDOPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 350
+                        }
+
+                    ],
+                    fn:Finance_Rpt.AP_Invoice
+                });
+            });
+            me.Laporan_Ap_Invoice = me.addReportByCategory(me.FinanceCategory, 'Laporan AP Invoice', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Finance_Rpt.Laporan_Ap_Invoice
+                });
+            });
             me.callParent(arguments);
 
         },

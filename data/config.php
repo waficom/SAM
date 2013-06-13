@@ -1080,6 +1080,45 @@ $API = array(
             ),
             'deleteAP_Inv_Jurnal' => array(
                 'len' => 1
+            ),
+            'addAP_Inv_Revisi' => array(
+                'len' => 1
+            ),
+            'getAP_Inv_Revisi' => array(
+                'len' => 1
+            ),
+            'getAP_Inv_Payment' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Payment' => array(
+                'len' => 1
+            ),
+            'updateAP_Inv_Payment' => array(
+                'len' => 1
+            ),
+            'deleteAP_Inv_Payment' => array(
+                'len' => 1
+            ),
+            'getAP_Inv_Payment_Revisi' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Payment_Revisi' => array(
+                'len' => 1
+            ),/* Invoice Manufaktur*/
+            'getAP_Inv_Manufaktur' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Manufaktur' => array(
+                'len' => 1
+            ),
+            'updateAP_Inv_Manufaktur' => array(
+                'len' => 1
+            ),
+            'deleteAP_Inv_Manufaktur' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Detail_Manufaktur' => array(
+                'len' => 1
             )
         )
     ),

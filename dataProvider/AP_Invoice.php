@@ -56,7 +56,97 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv ORDER BY $orderx DESC";
+        $sql = "SELECT * FROM ap_inv where inv_type ='N'  ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAP_Inv_Manufaktur(stdClass $params)
+    {
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'timeedit';
+        }
+        $sql = "SELECT A.*, B.nilaidasar FROM inv_manufaktur A
+        left join (select sum(qty*harga) as nilaidasar, inv_code from ap_inv_detail group by inv_code) B on A.inv_code=B.inv_code
+        where A.inv_type ='N'  ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAP_Inv_Payment(stdClass $params)
+    {
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'timeedit';
+        }
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='N'  ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAP_Inv_Payment_Revisi(stdClass $params)
+    {
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'timeedit';
+        }
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='R'  ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAP_Inv_Revisi(stdClass $params)
+    {
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'timeedit';
+        }
+        $sql = "SELECT * FROM ap_inv where inv_type ='R' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -127,6 +217,7 @@ class AP_Invoice
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='N';
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -138,6 +229,120 @@ class AP_Invoice
         //print_r($sql);
         $this -> db -> execLog();
 //		$params -> co_id = $this -> db -> lastInsertId;
+        return $params;
+    }
+
+    public function addAP_Inv_Manufaktur(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='N';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'],$data['inv_code']);
+        $sql = $this -> db -> sqlBind($data, 'inv_manufaktur', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+
+    public function addAP_Inv_Payment(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='N';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'],$data['ap_inv_payment']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function addAP_Inv_Payment_Revisi(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='R';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'],$data['ap_inv_payment']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+
+    public function addAP_Inv_Revisi(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='R';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'],$data['inv_code']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv', 'I');
+        $this -> db -> setSQL($sql);
+        //print_r($sql);
+        $this -> db -> execLog();
+//		$params -> co_id = $this -> db -> lastInsertId;
+        return $params;
+    }
+    public function addAP_Inv_Detail_Manufaktur(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['type_desc'] = 'M';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'], $data['sequence_no']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         return $params;
     }
     public function addAP_Inv_Detail(stdClass $params)
@@ -203,10 +408,34 @@ class AP_Invoice
         $sql = $this -> db -> sqlBind($data, 'ap_inv', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "EXECUTE PROCEDURE ap_inv_u '$params->co_id','$params->inv_code','$params->vend_id', '$params->tax_code', '$params->gr_num','$params->discon'
-        '$params->userinput','$params->useredit','$params->timeinput','$params->timeedit'";
-        print_r($sql);
-        $this -> db -> execOnly($sql);
+        //$sql = "EXECUTE PROCEDURE ap_inv_u '$params->co_id','$params->inv_code','$params->vend_id', '$params->tax_code', '$params->gr_num','$params->discon'
+        //'$params->userinput','$params->useredit','$params->timeinput','$params->timeedit'";
+       // print_r($sql);
+        //$this -> db -> execOnly($sql);
+        return $params;
+    }
+    public function updateAP_Inv_Manufaktur(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id'],$data['inv_code'], $data['nilaidasar']);
+        $sql = $this -> db -> sqlBind($data, 'inv_manufaktur', 'U', array('inv_code' => $params -> inv_code));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function updateAP_Inv_Payment(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id'],$data['ap_inv_payment']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'U', array('ap_inv_payment' => $params -> ap_inv_payment));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         return $params;
     }
     public function updateAP_Inv_Detail(stdClass $params)
@@ -245,41 +474,61 @@ class AP_Invoice
      */
     public function deleteAP_Inv(stdClass $params)
     {
-//        $data = get_object_vars($params);
-
-//        unset($data['id_kota'], $data['old_id_kota']);
-//        $sql = $this -> db -> sqlBind($data, 'Kota', 'U', array('id_kota' => $params -> old_co_id));
         $sql = "DELETE FROM ap_inv WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
-        print_r($sql);
+        $this -> db -> execLog();
+
+        $sql = "DELETE FROM ap_inv_detail WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        return $params;
+    }
+    public function deleteAP_Inv_Manufaktur(stdClass $params)
+    {
+        $sql = "DELETE FROM inv_manufaktur WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        $sql = "DELETE FROM ap_inv_detail WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        return $params;
+    }
+    public function deleteAP_Inv_Payment(stdClass $params)
+    {
+        $sql = "DELETE FROM ap_inv_pembayaran WHERE ap_inv_payment = '$params->ap_inv_payment'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->ap_inv_payment'";
+        $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
         return $params;
     }
     public function deleteAP_Inv_Detail(stdClass $params)
     {
-//        $data = get_object_vars($params);
-
-//        unset($data['id_kota'], $data['old_id_kota']);
-//        $sql = $this -> db -> sqlBind($data, 'Kota', 'U', array('id_kota' => $params -> old_co_id));
         $sql = "DELETE FROM ap_inv_detail WHERE inv_code = '$params->inv_code' and sequence_no ='$params->sequence_no' ";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
-
         return $params;
     }
     public function deleteAP_Inv_Jurnal(stdClass $params)
     {
-//        $data = get_object_vars($params);
 
-//        unset($data['id_kota'], $data['old_id_kota']);
-//        $sql = $this -> db -> sqlBind($data, 'Kota', 'U', array('id_kota' => $params -> old_co_id));
         $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and coa ='$params->coa' ";
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
-
         return $params;
     }
 

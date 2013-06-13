@@ -181,6 +181,7 @@ requires = [
     'App.ux.POPopup',
     'App.ux.GRPopup',
     'App.ux.TaxPopup',
+    'App.ux.BankPopup',
 
 
     'App.ux.ManagedIframe',
@@ -352,6 +353,10 @@ requires = [
     'App.view.transaksi.OrderMonitoring.OrderMonitoring',
     'App.view.transaksi.Produksi.PengadaanBarang',
     'App.view.transaksi.AP-Invoice.AP_Invoice',
+    'App.view.transaksi.AP-Invoice.AP_Invoice_Revisi',
+    'App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran',
+    'App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi',
+    'App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

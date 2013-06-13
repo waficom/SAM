@@ -121,5 +121,9 @@ $LANG = array(
     'pengadaanbarang'                       => 'Pengadaan Barang',
     'tax'                                   => 'Pajak',
     'bank'                                  => 'Bank',
-    'apinvoice'                                  => 'AP Invoice'
+    'apinvoice'                                  => 'AP Invoice',
+    'apinvoicerevisi'                                  => 'AP Invoice Revisi',
+    'apinvoicepembayaran'                                  => 'AP Invoice Pembayaran',
+    'apinvoicepaymentrevisi'                                  => 'AP Invoice Pembayaran Revisi',
+    'apinvoicemanufaktur'                                  => 'AP Invoice Manufaktur'
 );
