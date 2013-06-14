@@ -54,7 +54,9 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         me.renderContainer = Ext.create('Ext.panel.Panel',{
             flex : 1,
 //            anchor : '100%',
-            border : true
+            border : true,
+            autoScroll: true,
+            autoHeight: true
         });
 
         // END PDF Panel
@@ -65,6 +67,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             bodyPadding: 10,
             margin: '0 0 3 0',
             collapsible: true,
+            floatable : false,
             buttonAlign: 'left',
             title: i18n('filter'),
             // Draw the buttons to render and clear the report panel view.
@@ -90,7 +93,17 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
                     scope: me,
                     handler : me.generateReport
                 }
-            ]
+            ],
+            listeners: {
+            collapse : function(){
+                this.updateLayout();
+                console.log('collapse');
+            },
+            expand : function(){
+                    this.updateLayout();
+                    console.log('expand');
+                }
+            }
         });
         me.pageBody = [me.formPanel, me.renderContainer];
         me.callParent(arguments);
