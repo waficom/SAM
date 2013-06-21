@@ -128,7 +128,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                         fieldLabel : 'Customer'
                     },
                     {
-                        xtype : 'textfield',
+                        xtype : 'xtCustomerPopup',
                         itemId : 'cust_search',
                         width : 235,
                         margin : '0 5 0 0'
@@ -303,7 +303,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     hideLabel : true,
                                     items : [
                                     {
-                                        xtype : 'customerlivetsearch',
+                                        xtype : 'xtCustomerPopup',
                                         fieldLabel : 'Customer',
                                         hideLabel : false,
                                         width: 300,

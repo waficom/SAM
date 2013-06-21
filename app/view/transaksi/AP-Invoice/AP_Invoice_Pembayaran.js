@@ -18,14 +18,18 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'ap_inv_payment',type: 'string'},
+                {name: 'ap_inv_payment_revisi',type: 'string'},
                 {name: 'inv_date',type: 'date'},
+                {name: 'inv_code',type: 'string'},
                 {name: 'bank_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'nilaidasar',type: 'string'},
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'}
+                {name: 'userinput',type: 'string'},
+                {name: 'status',type: 'string'},
+                {name: 'inv_type',type: 'string'}
             ]
 
         });
@@ -58,6 +62,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
+                {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'}
             ]
 
@@ -67,10 +72,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AP_Invoice.getAP_Inv_Jurnal,
-                    create: AP_Invoice.addAP_Inv_Jurnal,
-                    update: AP_Invoice.updateAP_Inv_Jurnal,
-                    destroy : AP_Invoice.deleteAP_Inv_Jurnal
+                    read: Jurnal.getJurnal,
+                    create: Jurnal.addJurnal,
+                    update: Jurnal.updateJurnal,
+                    destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -98,12 +103,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'ap_inv_payment'},
+                {width: 150,text: 'Inv. Number',sortable: true,dataIndex: 'ap_inv_payment'},
+                {width: 150,text: 'Inv. Revisi',sortable: true,dataIndex: 'ap_inv_payment_revisi'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 200,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
-                {width: 200,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar'},
+                {width: 150,text: 'Inv. code',sortable: true,dataIndex: 'inv_code'},
+                {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
+                {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
+                {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
+                {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -112,6 +120,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
                     me.onItemdblclick(me.AP_Inv_PaymentStore, record, 'Edit AP Inv. Pembayaran');
+                    Ext.getCmp('cancel_py').enable();
                 }
             },
             features:[searching],
@@ -127,6 +136,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_Inv_PaymentModel', 'Tambah Data');
+                                Ext.getCmp('cancel_py').disable();
+                                Ext.getCmp('inv_code_rev_ap_pay').disable();
                             }
                         },
                         {
@@ -167,9 +178,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
                 {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
                 {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Harga', dataIndex : 'harga',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 200},
-                {header : 'Credit', dataIndex : 'credit',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 200, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 200, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             listeners: {
@@ -177,6 +188,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 itemdblclick: function(view, record){
                     var form = this.winformAP_Inv_Jurnal.down('form');
                     me.onItemdblclick1(me.AP_Inv_JurnalStore, record, 'Edit AP Inv. Jurnal', me.winformAP_Inv_Jurnal, form);
+
                 }
             },
             features:[searching],
@@ -191,6 +203,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                         handler: function(){
                             var form1 = me.winformAP_Inv_Jurnal.down('form');
                             me.onNewProduksi1(form1, 'AP_Inv_JurnalModel', 'Tambah Data', me.winformAP_Inv_Jurnal);
+
                         }
                     },
                         {
@@ -253,6 +266,57 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                             hidden:true
                         },
                         {
+                            xtype: "radiogroup",
+                            fieldLabel: "type ",
+                            defaults: {xtype: "radio", name:'inv_type'
+                            },
+                            items: [
+                                {
+                                    boxLabel: "Normal",
+                                    checked: true,
+                                    inputValue:'N',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_rev_ap_pay').disable();
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "Revisi",
+                                    inputValue:'R',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_rev_ap_pay').enable();
+                                        }
+                                    }
+
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            id:'inv_code_rev_ap_pay',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Revisi : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'ap_inv_payment_revisi'
+
+                                }
+                            ]
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -271,6 +335,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Code : '
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'inv_code'
                                 }
                             ]
                         },
@@ -335,7 +419,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 }
                             ]
                         },
-
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -353,6 +436,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     width: 300,
                                     xtype: 'textfield',
                                     name: 'keterangan'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Cancel',
+                                    id:'cancel_py',
+                                    name: 'status'
                                 }
                             ]
                         }
@@ -418,6 +514,13 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                         },
                         {
                             xtype: 'fieldcontainer',
+                            defaults: {hideLabel: true},
+                            msgTarget: 'under',
+                            name:'sequence_no',
+                            hidden:true
+                        },
+                        {
+                            xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
                             },
@@ -432,27 +535,34 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'coa'
+                                    name: 'coa',
+                                    allowBlank: false
                                 }
                             ]
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'vend_id'
 
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Vendor : '
+                                    value: 'Debit :'
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtVendorSuplierPopup',
-                                    name: 'vend_id'
+                                    fieldLabel : 'Debit',
+                                    labelAlign : 'right',
+                                    name: 'debit',
+                                    xtype: 'textfield'
                                 }
                             ]
                         },
@@ -466,12 +576,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Harga :'
+                                    value: 'Credit :'
                                 },
                                 {
-                                    fieldLabel : 'Harga',
+                                    fieldLabel : 'Credit',
                                     labelAlign : 'right',
-                                    name: 'harga',
+                                    name: 'credit',
                                     xtype: 'textfield'
                                 }
                             ]

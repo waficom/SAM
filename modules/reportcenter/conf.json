@@ -89,6 +89,12 @@
                 },"Laporan_Ap_Invoice":
                 {
                     "len":1
+                },"Laporan_AR":
+                {
+                    "len":1
+                },"Laporan_Kas_Harian":
+                {
+                    "len":1
                 }
             }
         }

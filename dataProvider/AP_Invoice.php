@@ -56,7 +56,7 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv where inv_type ='N'  ORDER BY $orderx DESC";
+        $sql = "select * from VIEW_AP_INVOICE ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -102,7 +102,7 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='N'  ORDER BY $orderx DESC";
+        $sql = "SELECT * FROM ap_inv_pembayaran ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -146,7 +146,7 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv where inv_type ='R' ORDER BY $orderx DESC";
+        $sql = "SELECT * FROM VIEW_AP_INVOICE where inv_type ='R' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -180,28 +180,7 @@ class AP_Invoice
         return $rows;
 
     }
-    public function getAP_Inv_Jurnal(stdClass $params)
-    {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
-        $sql = "SELECT * FROM jurnal where inv_code ='$params->inv_code' ORDER BY $orderx DESC";
-        $this -> db -> setSQL($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
 
-        return $rows;
-
-    }
 
     /**
      * @param stdClass $params
@@ -217,7 +196,6 @@ class AP_Invoice
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['inv_type'] ='N';
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -265,7 +243,6 @@ class AP_Invoice
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['inv_type'] ='N';
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -354,6 +331,7 @@ class AP_Invoice
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['type_desc'] = 'A';
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -370,28 +348,6 @@ class AP_Invoice
 //		$params -> co_id = $this -> db -> lastInsertId;
         return $params;
     }
-    public function addAP_Inv_Jurnal(stdClass $params)
-    {
-
-        $data = get_object_vars($params);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-        unset($data['id']);
-        $sql = $this -> db -> sqlBind($data, 'jurnal', 'I');
-        $this -> db -> setSQL($sql);
-        //print_r($sql);
-        $this -> db -> execLog();
-//		$params -> co_id = $this -> db -> lastInsertId;
-        return $params;
-    }
 
     /**
      * @param stdClass $params
@@ -403,15 +359,11 @@ class AP_Invoice
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'],$data['nilaidasar'],$data['ppn_%'],$data['ppn_nilai'],$data['pph_%'],$data['pph_nilai']
-        ,$data['total']);
+        unset($data['id'],$data['inv_code'],$data['nilaidasarx'],$data['ppn_%'],$data['ppn_nilaix'],$data['pph_%'],$data['pph_nilaix']
+        ,$data['totalx'],$data['nd_setelah_discx']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        //$sql = "EXECUTE PROCEDURE ap_inv_u '$params->co_id','$params->inv_code','$params->vend_id', '$params->tax_code', '$params->gr_num','$params->discon'
-        //'$params->userinput','$params->useredit','$params->timeinput','$params->timeedit'";
-       // print_r($sql);
-        //$this -> db -> execOnly($sql);
         return $params;
     }
     public function updateAP_Inv_Manufaktur(stdClass $params)
@@ -453,18 +405,7 @@ class AP_Invoice
 
         return $params;
     }
-    public function updateAP_Inv_Jurnal(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'jurnal', 'U', array('inv_code' => $params -> inv_code));
-        $this -> db -> setSQL($sql);
-        //print_r($sql);
-        $this -> db -> execLog();
-        return $params;
-    }
+
 
     /**
      * Not in used. For Now you can only set the Company "inactive"
@@ -523,14 +464,77 @@ class AP_Invoice
         $this -> db -> execLog();
         return $params;
     }
-    public function deleteAP_Inv_Jurnal(stdClass $params)
+
+    // Manufaktur Revisis
+
+    public function getAP_Inv_Manufaktur_Revisi(stdClass $params)
+    {
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'timeedit';
+        }
+        $sql = "SELECT A.*, B.nilaidasar FROM inv_manufaktur A
+        left join (select sum(qty*harga) as nilaidasar, inv_code from ap_inv_detail group by inv_code) B on A.inv_code=B.inv_code
+        where A.inv_type ='R'  ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function addAP_Inv_Manufaktur_Revisi(stdClass $params)
     {
 
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and coa ='$params->coa' ";
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] ='R';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'],$data['inv_code']);
+        $sql = $this -> db -> sqlBind($data, 'inv_manufaktur', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }
+    public function addAP_Inv_Detail_Manufaktur_Revisi(stdClass $params)
+    {
+
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['type_desc'] = 'M';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id'], $data['sequence_no']);
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+
 
 
 

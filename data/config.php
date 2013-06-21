@@ -240,12 +240,12 @@ $API = array(
      */
     'BahanBaku' => array(
         'methods' => array(
-            'getbbLiveSearch' => array(
-                'len' => 1
-            ),
-            'getbsLiveSearch' => array(
-                'len' => 1
-            ),
+            /* 'getbbLiveSearch' => array(
+                 'len' => 1
+             ),
+             'getbsLiveSearch' => array(
+                 'len' => 1
+             ),*/
             'getbb' => array(
                 'len' => 1
             ),
@@ -265,9 +265,9 @@ $API = array(
      */
     'Kemasan' => array(
         'methods' => array(
-            'getKemasanLiveSearch' => array(
+            /*'getKemasanLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getkemasan' => array(
                 'len' => 1
             ),
@@ -287,9 +287,9 @@ $API = array(
      */
     'Jenis' => array(
         'methods' => array(
-            'getJenisLiveSearch' => array(
+            /*'getJenisLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getjenis' => array(
                 'len' => 1
             ),
@@ -309,9 +309,9 @@ $API = array(
      */
     'Satuan' => array(
         'methods' => array(
-            'getSatuanLiveSearch' => array(
+            /*'getSatuanLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getsatuan' => array(
                 'len' => 1
             ),
@@ -331,9 +331,9 @@ $API = array(
      */
     'Items' => array(
         'methods' => array(
-            'getItemsLiveSearch' => array(
-                'len' => 1
-            ),
+            /* 'getItemsLiveSearch' => array(
+                 'len' => 1
+             ),*/
             'getitems' => array(
                 'len' => 1
             ),
@@ -365,9 +365,9 @@ $API = array(
      */
     'Customer' => array(
         'methods' => array(
-            'getCustLiveSearch' => array(
+            /*'getCustLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getcustomer' => array(
                 'len' => 1
             ),
@@ -399,9 +399,9 @@ $API = array(
      */
     'Spesifikasi' => array(
         'methods' => array(
-            'getSpesifikasiLiveSearch' => array(
+            /*'getSpesifikasiLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getspesifikasi' => array(
                 'len' => 1
             ),
@@ -421,9 +421,9 @@ $API = array(
      */
     'Vendor' => array(
         'methods' => array(
-            'getVendorLiveSearch' => array(
+            /*'getVendorLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getvendor' => array(
                 'len' => 1
             ),
@@ -443,9 +443,9 @@ $API = array(
      */
     'Bentuk' => array(
         'methods' => array(
-            'getBentukLiveSearch' => array(
+            /*'getBentukLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getBentuk' => array(
                 'len' => 1
             ),
@@ -465,9 +465,9 @@ $API = array(
      */
     'Formula' => array(
         'methods' => array(
-            'getFormulaLiveSearch' => array(
-                'len' => 1
-            ),
+            /* 'getFormulaLiveSearch' => array(
+                 'len' => 1
+             ),*/
             'getformula' => array(
                 'len' => 1
             ),
@@ -500,9 +500,9 @@ $API = array(
      */
     'Salesman' => array(
         'methods' => array(
-            'getSalesmanLiveSearch' => array(
+            /*'getSalesmanLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getsalesman' => array(
                 'len' => 1
             ),
@@ -522,9 +522,9 @@ $API = array(
      */
     'Wilayah' => array(
         'methods' => array(
-            'getWilayahLiveSearch' => array(
+            /*'getWilayahLiveSearch' => array(
                 'len' => 1
-            ),
+            ),*/
             'getwilayah' => array(
                 'len' => 1
             ),
@@ -684,7 +684,7 @@ $API = array(
     /**
      * Goods Issued Functions
      */
-    'GoodsIssued' => array(
+    /*'GoodsIssued' => array(
         'methods' => array(
             'getFilterGIData' => array(
                 'len' => 1
@@ -726,11 +726,11 @@ $API = array(
                 'len' => 1
             )
         )
-    ),
+    ),*/
     /**
      * Goods Issued Functions
      */
-    'WorkOrder' => array(
+    /*'WorkOrder' => array(
         'methods' => array(
             'getFilterWOData' => array(
                 'len' => 1
@@ -772,7 +772,7 @@ $API = array(
                 'len' => 1
             )
         )
-    ),
+    ),*/
     'Route' => array(
         'methods' => array(
             'getRoute' => array(
@@ -945,41 +945,41 @@ $API = array(
         )
     ),
     'OrderMonitoring' => array(
-    'methods' => array(
-        'getOrderMonitoring' => array(
-            'len' => 1
+        'methods' => array(
+            'getOrderMonitoring' => array(
+                'len' => 1
+            )
         )
-    )
-),
+    ),
     'Popup' => array(
-    'methods' => array(
-        'SalesOrderPopup' => array(
-            'len' => 1
+        'methods' => array(
+            'SalesOrderPopup' => array(
+                'len' => 1
             ),
-        'FormulaPopup' => array(
-            'len' => 1
-        ),
-        'GudangPopup' => array(
-            'len' => 1
-        ),
-        'VendorSuplierPopup' => array(
-            'len' => 1
-        ),
-        'VendorTransporterPopup' => array(
-            'len' => 1
-        ),
-        'ProduksiPopup' => array(
-    'len' => 1
+            'FormulaPopup' => array(
+                'len' => 1
             ),
-        'POPopup' => array(
-            'len' => 1
-        ),
-        'getGRPopup' => array(
-            'len' => 1
+            'GudangPopup' => array(
+                'len' => 1
+            ),
+            'VendorSuplierPopup' => array(
+                'len' => 1
+            ),
+            'VendorTransporterPopup' => array(
+                'len' => 1
+            ),
+            'ProduksiPopup' => array(
+                'len' => 1
+            ),
+            'POPopup' => array(
+                'len' => 1
+            ),
+            'getGRPopup' => array(
+                'len' => 1
+            )
+
+
         )
-
-
-    )
 
 
     ),
@@ -1069,18 +1069,6 @@ $API = array(
             'deleteAP_Inv_Detail' => array(
                 'len' => 1
             ),
-            'getAP_Inv_Jurnal' => array(
-                'len' => 1
-            ),
-            'addAP_Inv_Jurnal' => array(
-                'len' => 1
-            ),
-            'updateAP_Inv_Jurnal' => array(
-                'len' => 1
-            ),
-            'deleteAP_Inv_Jurnal' => array(
-                'len' => 1
-            ),
             'addAP_Inv_Revisi' => array(
                 'len' => 1
             ),
@@ -1119,17 +1107,189 @@ $API = array(
             ),
             'addAP_Inv_Detail_Manufaktur' => array(
                 'len' => 1
-            )
-        )
-    ),
-    /*'Report' => array(
-        'methods' => array(
-            'getReportSO' => array(
+            ),/*Manufaktur Revisi*/
+            'getAP_Inv_Manufaktur_Revisi' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Manufaktur_Revisi' => array(
+                'len' => 1
+            ),
+            'addAP_Inv_Detail_Manufaktur_Revisi'=> array(
                 'len' => 1
             )
         )
-    )*/
-
-
+    ),
+    'AR_Sale' => array(
+        'methods' => array(
+            'getAR_Sale' => array(
+                'len' => 1
+            ),
+            'getAR_Sale_Detail' => array(
+                'len' => 1
+            ),
+            'addAR_Sale' => array(
+                'len' => 1
+            ),
+            'addAR_Sale_Detail' => array(
+                'len' => 1
+            ),
+            'updateAR_Sale' => array(
+                'len' => 1
+            ),
+            'updateAR_Sale_Detail' => array(
+                'len' => 1
+            ),
+            'deleteAR_Sale' => array(
+                'len' => 1
+            ),
+            'deleteAR_Sale_Detail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'AR_Sale_Payment' => array(
+        'methods' => array(
+            'getAR_Sale_Payment' => array(
+                'len' => 1
+            ),
+            'addAR_Sale_Payment' => array(
+                'len' => 1
+            ),
+            'updateAR_Sale_Payment' => array(
+                'len' => 1
+            ),
+            'deleteAR_Sale_Payment' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'AR_Giro' => array(
+        'methods' => array(
+            'getAR_Giro' => array(
+                'len' => 1
+            ),
+            'addAR_Giro' => array(
+                'len' => 1
+            ),
+            'updateAR_Giro' => array(
+                'len' => 1
+            ),
+            'deleteAR_Giro' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbook_In' => array(
+    'methods' => array(
+        'getCashbook_In' => array(
+            'len' => 1
+        ),
+        'addCashbook_In' => array(
+            'len' => 1
+        ),
+        'updateCashbook_In' => array(
+            'len' => 1
+        ),
+        'deleteCashbook_In' => array(
+            'len' => 1
+        )
+    )
+),
+    'Jurnal' => array(
+        'methods' => array(
+            'getJurnal' => array(
+                'len' => 1
+            ),
+            'addJurnal' => array(
+                'len' => 1
+            ),
+            'updateJurnal' => array(
+                'len' => 1
+            ),
+            'deleteJurnal' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbook_Out' => array(
+        'methods' => array(
+            'getCashbook_Out' => array(
+                'len' => 1
+            ),
+            'addCashbook_Out' => array(
+                'len' => 1
+            ),
+            'updateCashbook_Out' => array(
+                'len' => 1
+            ),
+            'deleteCashbook_Out' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbon_Lebih' => array(
+        'methods' => array(
+            'getCashbon_Lebih' => array(
+                'len' => 1
+            ),
+            'addCashbon_Lebih' => array(
+                'len' => 1
+            ),
+            'updateCashbon_Lebih' => array(
+                'len' => 1
+            ),
+            'deleteCashbon_Lebih' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbon_Kurang' => array(
+        'methods' => array(
+            'getCashbon_Kurang' => array(
+                'len' => 1
+            ),
+            'addCashbon_Kurang' => array(
+                'len' => 1
+            ),
+            'updateCashbon_Kurang' => array(
+                'len' => 1
+            ),
+            'deleteCashbon_Kurang' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbook_Bank_In' => array(
+        'methods' => array(
+            'getCashbook_Bank_In' => array(
+                'len' => 1
+            ),
+            'addCashbook_Bank_In' => array(
+                'len' => 1
+            ),
+            'updateCashbook_Bank_In' => array(
+                'len' => 1
+            ),
+            'deleteCashbook_Bank_In' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashbook_Bank_Out' => array(
+        'methods' => array(
+            'getCashbook_Bank_Out' => array(
+                'len' => 1
+            ),
+            'addCashbook_Bank_Out' => array(
+                'len' => 1
+            ),
+            'updateCashbook_Bank_Out' => array(
+                'len' => 1
+            ),
+            'deleteCashbook_Bank_Out' => array(
+                'len' => 1
+            )
+        )
+    ),
 
 );

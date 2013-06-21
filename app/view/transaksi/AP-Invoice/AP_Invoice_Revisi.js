@@ -13,6 +13,21 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi', {
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
+        function renderRupiah(val)
+        {
+            var neg = null;
+            val = ( neg = val < 0) ? val * -1 : val;
+            val = val.toString();
+            var ps = val.split('.');
+            ps[1] = ps[1] ? ps[1] : null;
+            var whole = ps[0];
+            var r = /(\d+)(\d{3})/;
+            var ts = '.';
+            while (r.test(whole))
+                whole = whole.replace(r, '$1' + ts + '$2');
+            val = whole + (ps[1] ? ',' + ps[1] : '');
+            return Ext.String.format('{0}{1}{2}', ( neg ? '-' : ''), 'Rp ', val);
+        }
         Ext.define('AP_InvModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -23,15 +38,16 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi', {
                 {name: 'gr_num',type: 'string'},
                 {name: 'tax_code',type: 'string'},
                 {name: 'gudang_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
+                {name: 'nilaidasarx',type: 'string'},
+                {name: 'nd_setelah_discx',type: 'string'},
                 {name: 'discon',type: 'string'},
                 {name: 'remaks',type: 'string'},
                 {name: 'vend_id',type: 'string'},
-                {name: 'ppn_%',type: 'string'},
-                {name: 'ppn_nilai',type: 'string'},
-                {name: 'pph_%',type: 'string'},
-                {name: 'pph_nilai',type: 'string'},
-                {name: 'total',type: 'string'},
+                {name: 'ppn_prs',type: 'string'},
+                {name: 'ppn_nilaix',type: 'string'},
+                {name: 'pph_prs',type: 'string'},
+                {name: 'pph_nilaix',type: 'string'},
+                {name: 'totalx',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'}
@@ -145,13 +161,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi', {
                 {width: 200,text: 'Tax',sortable: true,dataIndex: 'tax_code'},
                 {width: 200,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
                 {width: 200,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
-                {width: 200,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar'},
+                {width: 200,text: 'Nilai',sortable: true,dataIndex: 'nilaidasarx', renderer: renderRupiah},
                 {width: 50,text: 'Discon',sortable: true,dataIndex: 'discon'},
-                {width: 50,text: 'Ppn %',sortable: true,dataIndex: 'ppn_%'},
-                {width: 100,text: 'ppn',sortable: true,dataIndex: 'ppn_nilai'},
-                {width: 50,text: 'Pph %',sortable: true,dataIndex: 'pph_%'},
-                {width: 100,text: 'Pph',sortable: true,dataIndex: 'pph_nilai'},
-                {width: 200,text: 'Total',sortable: true,dataIndex: 'total'},
+                {width: 100,text: 'Setelah Disc',sortable: true,dataIndex: 'nd_setelah_discx',  renderer: renderRupiah},
+                {width: 50,text: 'Ppn %',sortable: true,dataIndex: 'ppn_prs'},
+                {width: 100,text: 'ppn',sortable: true,dataIndex: 'ppn_nilaix'},
+                {width: 50,text: 'Pph %',sortable: true,dataIndex: 'pph_prs'},
+                {width: 100,text: 'Pph',sortable: true,dataIndex: 'pph_nilaix'},
+                {width: 200,text: 'Total',sortable: true,dataIndex: 'totalx', renderer: renderRupiah},
                 {width: 200,text: 'Remaks',sortable: true,dataIndex: 'remaks'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -227,7 +244,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi', {
                 {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
                 {width: 200,text: 'qty',sortable: true,dataIndex: 'qty'},
                 {width: 100,text: 'satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga'},
+                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga', renderer: renderRupiah},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -286,7 +303,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi', {
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
                 {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
                 {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Harga', dataIndex : 'harga',width : 200},
+                {header : 'Harga', dataIndex : 'harga',width : 200, renderer: renderRupiah},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             listeners: {

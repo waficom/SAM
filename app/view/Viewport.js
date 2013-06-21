@@ -146,8 +146,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.purchaseorder.PurchaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GoodsReceived'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
+       // me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
+       // me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder1'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
@@ -159,6 +159,17 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi'));
+
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale_Payment'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Giro'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_In'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Out'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbon_Lebih'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbon_Kurang'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_In'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_Out'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.Report.Report'));
 
 

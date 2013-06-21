@@ -147,11 +147,11 @@ class Navigation
                     'text' => $this->i18n['purchaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPO'
                 ), array(
                     'text' => $this->i18n['goodsreceived'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGR'
-                ), array(
+                ), /*array(
                     'text' => $this->i18n['goodsissued'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGI'
                 ), array(
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
-                ), array(
+                ),*/ array(
                     'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
                 ), array(
                     'text' => $this->i18n['stock'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelStock'
@@ -175,7 +175,37 @@ class Navigation
                 ),
                 array(
                     'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
-                )
+                ),
+                array(
+                    'text' => $this->i18n['apinvoicemanufakturrevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur_Revisi'
+                ),
+                array(
+                    'text' => $this->i18n['arsale'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale'
+                ),
+                array(
+                    'text' => $this->i18n['arsalepayment'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale_Payment'
+                ),
+                array(
+                    'text' => $this->i18n['argiro'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Giro'
+                ),
+                array(
+                    'text' => $this->i18n['cbin'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_In'
+                ),
+                array(
+                    'text' => $this->i18n['cbout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Out'
+                ),
+                array(
+                    'text' => $this->i18n['cblebih'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbon_Lebih'
+                ),
+                array(
+                    'text' => $this->i18n['cbkurang'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbon_Kurang'
+                ),
+                array(
+                    'text' => $this->i18n['bankin'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Bank_In'
+                ),
+                array(
+                    'text' => $this->i18n['bankout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Bank_Out'
+                ),
             )
         ));
 

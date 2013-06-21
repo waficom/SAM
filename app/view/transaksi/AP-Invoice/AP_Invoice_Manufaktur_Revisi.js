@@ -1,7 +1,7 @@
-Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
+Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelAP_Invoice_Manufaktur',
-    pageTitle: 'AP Invoice Manufaktur',
+    id: 'panelAP_Invoice_Manufaktur_Revisi',
+    pageTitle: 'AP Invoice Manufaktur_Revisi',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -13,13 +13,28 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
-
+        function renderRupiah(val)
+        {
+            var neg = null;
+            val = ( neg = val < 0) ? val * -1 : val;
+            val = val.toString();
+            var ps = val.split('.');
+            ps[1] = ps[1] ? ps[1] : null;
+            var whole = ps[0];
+            var r = /(\d+)(\d{3})/;
+            var ts = '.';
+            while (r.test(whole))
+                whole = whole.replace(r, '$1' + ts + '$2');
+            val = whole + (ps[1] ? ',' + ps[1] : '');
+            return Ext.String.format('{0}{1}{2}', ( neg ? '-' : ''), 'Rp ', val);
+        }
         Ext.define('AP_InvModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_choose',type: 'string'},
                 {name: 'inv_code',type: 'string'},
+                {name: 'inv_code_revisi',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'from_gudang_id',type: 'string'},
                 {name: 'to_gudang_id',type: 'string'},
@@ -36,8 +51,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AP_Invoice.getAP_Inv_Manufaktur,
-                    create: AP_Invoice.addAP_Inv_Manufaktur,
+                    read: AP_Invoice.getAP_Inv_Manufaktur_Revisi,
+                    create: AP_Invoice.addAP_Inv_Manufaktur_Revisi,
                     update: AP_Invoice.updateAP_Inv_Manufaktur,
                     destroy : AP_Invoice.deleteAP_Inv_Manufaktur
                 },
@@ -70,7 +85,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 type: 'direct',
                 api: {
                     read: AP_Invoice.getAP_Inv_Detail,
-                    create: AP_Invoice.addAP_Inv_Detail_Manufaktur,
+                    create: AP_Invoice.addAP_Inv_Detail_Manufaktur_Revisi,
                     update: AP_Invoice.updateAP_Inv_Detail,
                     destroy : AP_Invoice.deleteAP_Inv_Detail
                 },
@@ -90,9 +105,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
-                {name: 'sequence_no',type: 'string'},
+                {name: 'harga',type: 'string'},
                 {name: 'timeedit',type: 'date'}
             ]
 
@@ -134,10 +147,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             region: 'north',
             columns: [
                 {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 200,text: 'Inv. Revisi',sortable: true,dataIndex: 'inv_code_revisi'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 200,text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
-                {width: 200,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
-                {width: 200,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 100,text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
+                {width: 100,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
+                {width: 100,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: renderRupiah},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -146,7 +160,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.AP_InvStore, record, 'Edit AP Inv Manufaktur');
+                    me.onItemdblclick(me.AP_InvStore, record, 'Edit AP Inv Manufaktur_Revisi');
                 }
             },
             features:[searching],
@@ -213,7 +227,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
                 {width: 200,text: 'qty',sortable: true,dataIndex: 'qty'},
                 {width: 100,text: 'satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga', renderer: renderRupiah},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -272,9 +286,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
                 {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
                 {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                {header : 'Harga', dataIndex : 'harga',width : 200, renderer: renderRupiah},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             listeners: {
@@ -356,7 +368,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                             msgTarget: 'under',
                             name:'inv_code',
                             hidden:true
-                        },
+                        },,
                         {
                             xtype: "radiogroup",
                             fieldLabel: "Type ",
@@ -364,12 +376,31 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                             items: [
                                 {
                                     boxLabel: "WP",
-                                    checked: true,
                                     inputValue: "W"
                                 },
                                 {
                                     boxLabel: "FG",
                                     inputValue: "F"
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Revisi : '
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'inv_code_revisi'
                                 }
                             ]
                         },
@@ -661,13 +692,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                         },
                         {
                             xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
                             },
@@ -682,34 +706,27 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'coa',
-                                    allowBlank: false
+                                    name: 'coa'
                                 }
                             ]
                         },
                         {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'vend_id'
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
 
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Debit :'
+                                    value: 'Vendor : '
                                 },
                                 {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
+                                    width: 200,
+                                    xtype: 'xtVendorSuplierPopup',
+                                    name: 'vend_id'
                                 }
                             ]
                         },
@@ -723,12 +740,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Credit :'
+                                    value: 'Harga :'
                                 },
                                 {
-                                    fieldLabel : 'Credit',
+                                    fieldLabel : 'Harga',
                                     labelAlign : 'right',
-                                    name: 'credit',
+                                    name: 'harga',
                                     xtype: 'textfield'
                                 }
                             ]

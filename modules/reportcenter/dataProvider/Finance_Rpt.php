@@ -35,10 +35,27 @@ class Finance_Rpt extends Reports
     public function Laporan_Ap_Invoice(stdClass $params)
     {
 
-
-//        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
         $this->reportfile = '/var/www/modules/reportcenter/report/AP/Laporan_AP_Invoice.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Laporan_AR(stdClass $params)
+    {
 
+        $this->reportfile = '/var/www/modules/reportcenter/report/AR/Laporan_AR.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Laporan_Kas_Harian(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/CB/Laporan_Kas_Harian.jasper';
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,
