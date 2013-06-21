@@ -68,7 +68,7 @@ $_SESSION['cron']['delay'] = 60; // in seconds
 $_SESSION['cron']['time']  = time(); // store the last cron time stamp
 
 // directories
-$_SESSION['dir']['ext']         = 'extjs-4.1.1';
+$_SESSION['dir']['ext']         = 'extjs-4.1.1a';
 $_SESSION['dir']['touch']       = 'sencha-touch-2.0.1';
 $_SESSION['dir']['ext_cal']     = 'extensible-1.5.1';
 $_SESSION['dir']['AES']         = 'phpAES';

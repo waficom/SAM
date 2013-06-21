@@ -45,17 +45,19 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype          : 'datefield',
                             fieldLabel     : 'from',
                             hideLabel      : false,
-
                             name           : 'report_date_datefrom',
-                            width          : 350
+                            format         : 'd-m-Y',
+                            value          : new Date(),
+                            width          : 250
                         },
                         {
                             xtype          : 'datefield',
                             fieldLabel     : 'to',
                             hideLabel      : false,
+                            format         : 'd-m-Y',
+                            value          : new Date(),
                             name           : 'report_date_dateto',
-                            name           : 'report_sonum',
-                            width          : 350
+                            width          : 250
                         }
                     ],
                     fn:Test.TestList

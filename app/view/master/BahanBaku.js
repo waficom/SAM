@@ -235,6 +235,25 @@ Ext.define('App.view.master.BahanBaku', {
                         },
                         {
                             xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'TEST Nama :'
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'srchadd',
+                                    name: 'bb_nama'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
                             msgTarget: 'under',
                             items: [
                                 {

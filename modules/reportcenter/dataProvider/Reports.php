@@ -13,10 +13,7 @@ if (!isset($_SESSION))
     session_cache_limiter('private');
 }
 include_once($_SESSION['root'] . '/classes/FileManager.php');
-//include_once ('/var/www/sam-new/classes/FileManager.php');
 require_once($_SESSION['root'] . '/lib/JavaBridge/java/Java.inc');
-
-//require_once('/var/www/sam-new/lib/JavaBridge/java/Java.inc');
 
 class Reports
 {
@@ -199,7 +196,7 @@ class Reports
 
 
         $conn = null;
-        $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.pdf';
+        $formatType = 'PDF';
 
         try {
 
@@ -220,17 +217,168 @@ class Reports
             $fm = java('net.sf.jasperreports.engine.JasperFillManager');
             $pm = $fm->fillReport($report, $params, $conn);
 
-            try {
-                $exporter = new java("net.sf.jasperreports.engine.export.JRPdfExporter");
-                $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
-                $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
-                                        $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+            switch ($formatType) {
+                case 'XLS':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.xls';
 
-            } catch (JavaException $ex) {
-                echo $ex;
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRXlsExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRXlsExporterParameter")->IS_ONE_PAGE_PER_SHEET, java("java.lang.Boolean")->TRUE);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRXlsExporterParameter")->IS_WHITE_PAGE_BACKGROUND, java("java.lang.Boolean")->FALSE);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRXlsExporterParameter")->IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, java("java.lang.Boolean")->TRUE);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/vnd.ms-excel");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'CSV':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.csv';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRCsvExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRCsvExporterParameter")->FIELD_DELIMITER, ",");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRCsvExporterParameter")->RECORD_DELIMITER, "\n");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRCsvExporterParameter")->CHARACTER_ENCODING, "UTF-8");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/csv");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'DOC':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.doc';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.ooxml.JRDocxExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+
+
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/vnd.ms-word");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'HTML':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.html';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRHtmlExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+
+
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+                    break;
+                case 'PDF':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.pdf';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRPdfExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/pdf");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+
+                    break;
+                case 'ODS':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.ods';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.oasis.JROdsExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/vnd.oasis.opendocument.spreadsheet");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'ODT':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.odt';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.oasis.JROdtExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/vnd.oasis.opendocument.text");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'TXT':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.txt';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRTextExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRTextExporterParameter")->PAGE_WIDTH, 120);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.export.JRTextExporterParameter")->PAGE_HEIGHT, 60);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: text/plain");
+                    break;
+                case 'RTF':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.rtf';
+
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.JRRtfExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: application/rtf");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
+                case 'PPT':
+                    $this->filename = $this -> fileManager -> getTempDirAvailableName() . '.pptx';
+                    try {
+                        $exporter = new java("net.sf.jasperreports.engine.export.ooxml.JRPptxExporter");
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $pm);
+                        $exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME,
+                            $_SESSION['site']['temp']['path'] . '/' .$this->filename);
+                    } catch (JavaException $ex) {
+                        echo $ex;
+                    }
+
+                    header("Content-type: aapplication/vnd.ms-powerpoint");
+                    header("Content-Disposition: attachment; filename=$this->filename");
+                    break;
             }
-            header("Content-type: application/pdf");
-            header("Content-Disposition: attachment; filename=$this->filename");
 
             $exporter->exportReport();
 
