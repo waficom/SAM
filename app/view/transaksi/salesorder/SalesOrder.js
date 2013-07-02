@@ -33,6 +33,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_prod_id = null;
         me.curr_co_id = null;
         me.curr_so_num = null;
+        me.userinput =null;
+        me.useredit=null;
         var searching={
             ftype : 'searching',
             mode: 'local'
@@ -61,7 +63,10 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 			store : me.SOStore,
 			viewConfig :
 			{
-				stripeRows : true
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                  return record.get('status') == 'B' ? 'child-row' : (record.get('status') == 'C' ? 'yellow-row':'');
+                }
 			},
 			columns : [
 			{
@@ -101,7 +106,17 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 				dataIndex : 'n_netto',
 				renderer: Ext.util.Format.numberRenderer('0,000.00'),
 				width : 300
-			}],
+			},
+            {
+                    header : 'status',
+                    dataIndex : 'released',
+                    width : 200, hidden: true
+            },
+            {
+                    header : 'status',
+                    dataIndex : 'status',
+                    width : 200, hidden: true
+            }],
 			// ToolBar for Encounter DataGrid.
 			tbar : [
 			{
@@ -115,7 +130,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 				{
 					xtype : 'textfield',
 					itemId : 'so_numsearch',
-					width : 235,
+					width : 150,
 					margin : '0 5 0 0'
 				}]
 			},
@@ -130,7 +145,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                     {
                         xtype : 'xtCustomerPopup',
                         itemId : 'cust_search',
-                        width : 235,
+                        width : 150,
                         margin : '0 5 0 0'
                     }]
             },
@@ -211,10 +226,16 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                         click : me.onDelete
                     }
                 }]
-			}],
+			},'->',
+                {
+                    xtype:'displayfield',
+                    itemId:'itemuserinput',
+                    margin : '0 5 0 0'
+                }],
 			listeners :
 			{
 				scope : me,
+                select: me.onGridClick,
                 itemdblclick: function(view, record){
                     me.rowDblClicked(me.SOStore, record);
                 }
@@ -660,7 +681,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         },
                                         tooltip : 'Tambah Data'
                                     },
-                                    '->',
                                     {
                                         text: 'Delete',
                                         iconCls: 'icoDeleteBlack',
@@ -681,14 +701,14 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                         columns: [
                             { text: 'company', dataIndex: 'co_id', hidden: true},
                             { text: 'so_num', dataIndex: 'so_num', hidden: true},
-                            { text: 'id', dataIndex: 'prod_id', hidden: true},
+                            { text: 'Prod_id', dataIndex: 'prod_id', hidden: true},
                             { text: 'urut', dataIndex: 'urut', hidden: true},
                             { text: 'Lokasi', flex:1, sortable: true, dataIndex: 'lokasi_nama'},
                             { text: 'Kecamatan', width: 100, sortable: true, dataIndex: 'lokasi_kec'},
                             { text: 'Kabupaten', width: 100, sortable: true, dataIndex: 'lokasi_kab'},
                             { text: 'Qty', width: 50, sortable: false, dataIndex: 'qty'},
                             { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                            { text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
+                            { text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_id'},
                             { text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                         ],
                         listeners: {
@@ -709,7 +729,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         var form = me.winLoc.down('form');
                                         me.onNewLoc(form, 'App.model.transaksi.salesorder.SOLocation', 'Tambah Data');
                                     }
-                                },'->',
+                                },
                                     {
                                         xtype: 'button',
                                         text: 'Hapus Data',
@@ -1331,7 +1351,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         var me = this, coid = globals.site;
         me.curr_co_id = coid;
         this.getPageBody().getLayout().setActiveItem( 2 );
-        me.SOItemsStore.load({params:{co_id: coid, so_num: me.curr_so_num}});
+        me.SOItemsStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});
 
     },
 
@@ -1421,7 +1441,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_prod_id = selected.data.prod_id;
         me.curr_co_id = selected.data.co_id;
         me.curr_so_num = selected.data.so_num;
-        me.SOLocationStore.load({params:{prod_id: me.curr_prod_id}});
+        me.SOLocationStore.load({params:{so_num: me.curr_so_num,prod_id: me.curr_prod_id}});
     },
     onItemsdblclick: function(store, record, title){
         var form = this.win.down('form');
@@ -1442,10 +1462,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         var me = this;
         me.saveitem(form, store);
     },
-    onlocSave: function(form, store){
-        var me = this;
-        me.saveloc(form, store);
-    },
+
     saveitem: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
@@ -1455,19 +1472,25 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         }
         store.sync({
             success:function(){
-//                SalesOrder.updateSOnetto(params);
                 me.win.close();
             },
             failure:function(){
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{co_id: coid, so_num: me.curr_so_num}});
+        store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});
+    },
+    onlocSave: function(form, store){
+        var me = this;
+        me.saveloc(form, store);
     },
     saveloc: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
 
-       // form.findField('prod_id').setValue(me.curr_prod_id);
+        form.findField('so_num').setValue(me.curr_so_num);
+        form.findField('prod_id').setValue(me.curr_prod_id);
+        values = form.getValues();
+
         if(storeIndex == -1){
             store.add(values);
         }else{
@@ -1481,7 +1504,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{prod_id: me.curr_prod_id}});
+        store.load({params:{co_id: me.curr_co_id, prod_id: me.curr_prod_id}});
     },
     onItemsDelete: function(store){
         var me = this, grid = me.ItemsGrid;
@@ -1500,6 +1523,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.SOLocationStore.load({params:{co_id: me.curr_co_id, prod_id: me.curr_prod_id}});
                 }
             }
         });
@@ -1610,6 +1634,15 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
     okToGoNext:function(ok){
         var me = this, layout = me.mainPanel.getLayout();
         if(me.GeneralForm.getLayout().getActiveItem().action != 2) Ext.getCmp('move-next').setDisabled(!ok);
+    },
+    onGridClick: function(grid, selected){
+        var me = this;
+        var TopBarItems = this.SOGrid.getDockedItems('toolbar[dock="top"]')[0];
+        me.userinput = selected.data.userinput;
+        me.useredit = selected.data.useredit;
+        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
+        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+
     },
 
 	/**

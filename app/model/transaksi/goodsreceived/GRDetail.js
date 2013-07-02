@@ -7,7 +7,6 @@ Ext.define( 'App.model.transaksi.goodsreceived.GRDetail',
             { name : 'gr_num', type : 'string'},
             { name : 'bb_id', type : 'string'},
             { name : 'sat_id', type : 'string'},
-            { name : 'sat_nama', type : 'string'},
             { name : 'urut', type : 'int'},
             { name : 'nopol', type : 'string'},
             { name : 'do_num', type : 'string'},
@@ -26,11 +25,6 @@ Ext.define( 'App.model.transaksi.goodsreceived.GRDetail',
                 create: GoodsReceived.addGRDetail,
                 update: GoodsReceived.updateGRDetail,
                 destroy: GoodsReceived.deleteGRDetail
-            },
-            reader :
-            {
-                root : 'grdetail',
-                totalProperty : 'totals'
             }
         }
 

@@ -278,7 +278,7 @@ Ext.define('App.view.master.Tax', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'xtCoaPopup',
                                     name: 'coa_ppn'
                                 }
                             ]
@@ -298,7 +298,8 @@ Ext.define('App.view.master.Tax', {
                                 {
                                     width: 50,
                                     xtype: 'textfield',
-                                    name: 'rate_pph'
+                                    name: 'rate_pph',
+                                    allowBlank:true
                                 },
                                 {
                                     width: 80,
@@ -307,8 +308,9 @@ Ext.define('App.view.master.Tax', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa_pph'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_pph',
+                                    allowBlank:true
                                 }
                             ]
                         },

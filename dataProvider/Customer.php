@@ -94,13 +94,8 @@ class Customer
 		}
 		$data['co_id'] = $_SESSION['user']['site'];		
 		$sql = $this->db->sqlBind($data, 'customer', 'I');
-        error_reporting(-1);
 		$this->db->setSQL($sql);
 		$this->db->execLog();
-        print_r($sql);
-
-//		$params->id = $this->id = $this->db->lastInsertId;
-        error_reporting(0);
         return $params;
 	}
 

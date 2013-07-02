@@ -27,7 +27,7 @@ if (!isset($_SESSION))
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
-class Jurnal
+class Voucher
 {
     /**
      * @var dbHelper
@@ -42,7 +42,7 @@ class Jurnal
         return;
     }
 
-    public function getJurnal(stdClass $params)
+    public function getVoucher(stdClass $params)
     {
         if (isset($params -> sort))
         {
@@ -52,9 +52,7 @@ class Jurnal
         {
             $orderx = 'timeedit';
         }
-        $sql = "select jurnal.*, coa. coa_nama from jurnal
-        left join coa on jurnal.coa=coa.coa_id
-        where inv_code='$params->inv_code' ORDER BY $orderx DESC";
+        $sql = "select * from gl ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -71,13 +69,14 @@ class Jurnal
      * @param stdClass $params
      * @return stdClass
      */
-    public function addJurnal(stdClass $params)
+    public function addVoucher(stdClass $params)
     {
 
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         foreach ($data AS $key => $val)
@@ -85,8 +84,8 @@ class Jurnal
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id']);
-        $sql = $this -> db -> sqlBind($data, 'jurnal', 'I');
+        unset($data['id'],$data['inv_code']);
+        $sql = $this -> db -> sqlBind($data, 'gl', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -97,24 +96,29 @@ class Jurnal
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateJurnal(stdClass $params)
+    public function updateVoucher(stdClass $params)
     {
         $data = get_object_vars($params);
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'],$data['sequence_no']);
-        $sql = $this -> db -> sqlBind($data, 'jurnal', 'U', array('inv_code' => $params -> inv_code, 'sequence_no' => $params -> sequence_no));
+        unset($data['id'],$data['inv_code']);
+        $sql = $this -> db -> sqlBind($data, 'gl', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function deleteJurnal(stdClass $params)
+    public function deleteVoucher(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and sequence_no='$params->sequence_no'";
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
+
+        $sql = "DELETE FROM gl WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+
         return $params;
     }
 

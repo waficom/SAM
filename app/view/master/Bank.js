@@ -136,7 +136,7 @@ Ext.define('App.view.master.Bank', {
                 },
                 {
                     width: 200,
-                    text: 'Coa cash bon',
+                    text: 'Coa Cashbon',
                     sortable: true,
                     dataIndex: 'coa_cashbon'
                 },
@@ -306,8 +306,9 @@ Ext.define('App.view.master.Bank', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa',
+                                    allowBlank:true
                                 }
                             ]
                         },
@@ -325,8 +326,9 @@ Ext.define('App.view.master.Bank', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa_cashbon'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_cashbon',
+                                    allowBlank:true
                                 }
                             ]
                         },

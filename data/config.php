@@ -813,6 +813,9 @@ $API = array(
         'methods' => array(
             'getWorkOrder1' => array(
                 'len' => 1
+            ),
+            'updateWorkOrder1' => array(
+                'len' => 1
             ),'getWorkOrder1Detail' => array(
                 'len' => 1
             ),'addWorkOrder1Detail' => array(
@@ -976,6 +979,9 @@ $API = array(
             ),
             'getGRPopup' => array(
                 'len' => 1
+            ),
+            'getCoaPopup' => array(
+                'len' => 1
             )
 
 
@@ -1069,12 +1075,6 @@ $API = array(
             'deleteAP_Inv_Detail' => array(
                 'len' => 1
             ),
-            'addAP_Inv_Revisi' => array(
-                'len' => 1
-            ),
-            'getAP_Inv_Revisi' => array(
-                'len' => 1
-            ),
             'getAP_Inv_Payment' => array(
                 'len' => 1
             ),
@@ -1087,12 +1087,9 @@ $API = array(
             'deleteAP_Inv_Payment' => array(
                 'len' => 1
             ),
-            'getAP_Inv_Payment_Revisi' => array(
+            'getAP_Payment_Alocation' => array(
                 'len' => 1
             ),
-            'addAP_Inv_Payment_Revisi' => array(
-                'len' => 1
-            ),/* Invoice Manufaktur*/
             'getAP_Inv_Manufaktur' => array(
                 'len' => 1
             ),
@@ -1107,7 +1104,7 @@ $API = array(
             ),
             'addAP_Inv_Detail_Manufaktur' => array(
                 'len' => 1
-            ),/*Manufaktur Revisi*/
+            )/*
             'getAP_Inv_Manufaktur_Revisi' => array(
                 'len' => 1
             ),
@@ -1116,7 +1113,7 @@ $API = array(
             ),
             'addAP_Inv_Detail_Manufaktur_Revisi'=> array(
                 'len' => 1
-            )
+            )*/
         )
     ),
     'AR_Sale' => array(
@@ -1287,6 +1284,22 @@ $API = array(
                 'len' => 1
             ),
             'deleteCashbook_Bank_Out' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Voucher' => array(
+        'methods' => array(
+            'getVoucher' => array(
+                'len' => 1
+            ),
+            'addVoucher' => array(
+                'len' => 1
+            ),
+            'updateVoucher' => array(
+                'len' => 1
+            ),
+            'deleteVoucher' => array(
                 'len' => 1
             )
         )

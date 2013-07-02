@@ -7,6 +7,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
     initComponent: function(){
         var me = this;
         me.currProduksi = null;
+        me.currReleased = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
@@ -105,7 +106,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'No. Produksi', sortable: false, dataIndex: 'no_pp'},
+                {text: 'No. Produksi',width:150, sortable: false, dataIndex: 'no_pp'},
                 {text: 'Deskripsi', width:200, sortable: false,dataIndex: 'description'},
                 {text: 'sequence_no', width:200, sortable: false,dataIndex: 'pabrik_sequence', hidden: true},
                 {text: 'Factory', width:200, sortable: false,dataIndex: 'factory'},
@@ -121,7 +122,20 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 itemdblclick: function(view, record){
                     oldName = record.get('no_pp');
                     record.set("old_no_pp",oldName);
-                    me.onItemdblclick(me.ProduksiStore, record, 'Edit Produksi');
+                    if(record.get('status')=='0'){
+                        me.onItemdblclick(me.ProduksiStore, record, 'Edit Produksi');
+                        Ext.getCmp('released_pp').enable();
+                    }else{
+                        Ext.getCmp('released_pp').disable();
+                    }
+
+                }
+            },
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == 1 ? 'child-row' : '';
                 }
             },
             features:[searching],
@@ -137,12 +151,13 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewProduksi(form, 'ProduksiModel', 'Tambah Data');
+                                Ext.getCmp('released_pp').disable();
                             },
                             tooltip : 'Tambah Data'
                         },
                         {
                             text: 'Delete',
-                            iconCls: 'icoDeleteBlack',
+                            iconCls: 'delete',
                             itemId: 'listDeleteBtn',
                             scope: me,
                             handler:function() {
@@ -159,10 +174,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     itemId : 'datefrom',
                                     fieldLabel : 'ppdate from',
                                     labelWidth : 35,
-                                    //padding : '0 10 0 0',
                                     width : 150,
                                     format : 'd-m-Y',
-                                    //labelAlign : 'right',
                                     value : new Date()
                                 }]
                         },'-',{
@@ -227,7 +240,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             enablePaging: true,
             columns: [
                 {text: 'NO PP', sortable: false, dataIndex: 'no_pp',  hidden : true},
-                {text: 'NO PPD', sortable: false, dataIndex: 'no_ppd'},
+                {text: 'No. Detail', sortable: false, dataIndex: 'no_ppd'},
                 {text: 'Sales Number', width:100, sortable: false,dataIndex: 'so_num'},
                 {text: 'Customer', width:150, sortable: false,dataIndex: 'cust_nama'},
                 {text: 'Formula', width:100, sortable: false,dataIndex: 'formula_nama'},
@@ -246,8 +259,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
                 {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
                 {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-                {text: 'tgl selesai', sortable : false, dataIndex: 'finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'est tgl selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+               // {text: 'tgl selesai', sortable : false, dataIndex: 'finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 //flex: 1
             ],
@@ -257,7 +270,13 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 itemdblclick: function(view, record){
                     oldName = record.get('no_ppd');
                     record.set("old_no_ppd",oldName);
-                    me.onItemdblclick1(me.Produksi1Store, record, 'Edit Detail Produksi');
+                    if( me.currReleased =='0'){
+                        me.onItemdblclick1(me.Produksi1Store, record, 'Edit Detail Produksi');
+                        Ext.getCmp('released_pp').enable();
+                    }else{
+                        Ext.getCmp('released_pp').disable();
+                    }
+
                 }
             },
             features:[searching],
@@ -276,7 +295,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
                             handler: function() {
                                 me.deleteProduksi1(me.Produksi1Store);
@@ -404,9 +423,11 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Release',
+                                    fieldLabel: 'Released',
+                                    id:'released_pp',
                                     name: 'status'
-                                }]
+                                }
+                            ]
                         }
                     ]
                 }
@@ -491,7 +512,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     value: 'So Number :'
                                 },
                                 {
-                                    width: 250,
+                                    width: 150,
                                     xtype: 'xtSalesOrderPopup',
                                     name :'so_num'
                                 }
@@ -515,7 +536,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     name:'formula_id'
                                 }
                             ]
-                        },
+                        },/*
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -537,7 +558,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     submitFormat : 'Y-m-d H:i:s'
                                 }
                             ]
-                        },
+                        },*/
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -548,7 +569,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'est. tgl selesai :'
+                                    value: 'Est. Selesai :'
                                 },
                                 {
                                     fieldLabel : 'Tanggal',
@@ -672,6 +693,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
     onProduksiGridClick: function(grid, selected){
         var me = this;
        me.currProduksi = selected.data.no_pp;
+        me.currReleased = selected.data.status;
        var TopBarItems = this.ProduksiGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
@@ -762,12 +784,12 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    Produksi.deleteProduksi(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.Produksi1Store.load({params:{no_pp: me.currProduksi}});
                 }
             }
         });

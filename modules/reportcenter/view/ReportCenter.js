@@ -622,6 +622,88 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Laporan_Kas_Harian
                 });
             });
+            me.General_Jurnal = me.addReportByCategory(me.FinanceCategory, 'General Jurnal', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Finance_Rpt.General_Jurnal
+                });
+            });
+            me.Trial_Balance = me.addReportByCategory(me.FinanceCategory, 'Trial Balance', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'fieldcontainer',
+                                    itemId : 'fieldContainerDateRange',
+                                    items : [
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'dari',
+                                            labelWidth : 35,
+                                            width : 150,
+                                            format : 'm/d/Y',
+                                            labelAlign : 'right',
+                                            value : new Date(),
+                                            name : 'report_date_fromdate'
+
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'sampai',
+                                            labelWidth : 35,
+                                            padding : '0 10 0 0',
+                                            width : 150,
+                                            format : 'm/d/Y',
+                                            labelAlign : 'right',
+                                            value : new Date(),
+                                            name : 'report_date_todate'
+                                        }]
+                                }
+
+                            ]
+
+                        }
+
+                    ],
+                    fn:Finance_Rpt.Trial_Balance
+                });
+            });
             me.callParent(arguments);
 
         },

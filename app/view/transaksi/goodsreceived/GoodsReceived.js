@@ -35,7 +35,9 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_gr_num = null;
             me.curr_bb_id = null;
             me.curr_sat_id = null;
-
+            me.currInv_Code = null;
+            me.userinput =null;
+            me.useredit=null;
             me.step = [];
             var searching={
                 ftype : 'searching',
@@ -48,64 +50,248 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.GRStore = Ext.create( 'App.store.transaksi.goodsreceived.GoodsReceived' );
             me.GRItemsStore = Ext.create('App.store.transaksi.goodsreceived.GRItems');
             me.GRDetailStore = Ext.create('App.store.transaksi.goodsreceived.GRDetail');
+
+            Ext.define('AP_Inv_JurnalModel', {
+                extend: 'Ext.data.Model',
+                fields: [
+                    {name: 'co_id',type: 'string'},
+                    {name: 'inv_code',type: 'string'},
+                    {name: 'vend_id',type: 'string'},
+                    {name: 'coa',type: 'string'},
+                    {name: 'coa_nama',type: 'string'},
+                    {name: 'debit',type: 'string'},
+                    {name: 'credit',type: 'string'},
+                    {name: 'sequence_no',type: 'string'},
+                    {name: 'timeedit',type: 'date'}
+                ]
+
+            });
+            me.GRN_JurnalStore = Ext.create('Ext.data.Store', {
+                model: 'AP_Inv_JurnalModel',
+                proxy: {
+                    type: 'direct',
+                    api: {
+                        read: Jurnal.getJurnal///,
+                        //create: Jurnal.addJurnal,
+                        //update: Jurnal.updateJurnal,
+                        //destroy : Jurnal.deleteJurnal
+                    },
+                    reader : {
+                        totalProperty : 'totals',
+                        root : 'rows'
+                    }
+                },
+                pageSize : 10,
+                autoLoad: false
+            });
+
             /**
              *  Sales Order Search data grid.
              * Gives a list of encounter based on the search
              *
              */
+            me.GRGridMaster = Ext.create( 'Ext.panel.Panel',
+                {
+                    defaultTitle : 'Goods Received',
+                    title : 'Goods Received Items',
+                    layout : 'border',
+                    bodyStyle : 'background-color:#fff',
+                    items : [
+                        me.GRGrid = Ext.create('App.ux.GridPanel', {
+                            store: me.GRStore,
+                            height: 250,
+                            margin: '0 0 3 0',
+                            region: 'north',
+                            columns: [
+                                {header : 'Goods Recv #',dataIndex : 'gr_num',width : 200},
+                                {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                                {header : 'PO#',dataIndex : 'po_num', width : 200},
+                                {header : 'Supplier',dataIndex : 'vend_nama', width : 200},
+                                {header : 'Transporter',dataIndex : 'vend_tr_nama', flex:1, width : 200 },
+                                {header : 'Type', dataIndex : 'gr_type_desc', width : 200},
+                                { header : 'Gudang',dataIndex : 'gudang_id', width : 200,hidden: true},
+                                {header : 'Gudang', dataIndex : 'gudang_nama',width : 200},
+                                {header : 'status',dataIndex : 'status',hidden: true},
+                                { header : 'canceled', dataIndex : 'canceled',hidden: true}
+                            ],
+                            viewConfig :
+                            {
+                                stripeRows: false,
+                                getRowClass: function(record, index) {
+                                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                                }
+                            },
+                            listeners: {
+                                scope : me,
+                                select: me.onGridClick,
+                                itemdblclick: function(view, record){
+                                    me.rowDblClicked(me.GRStore, record);
+                                }
+                            }
+                        }),
+                        me.GRN_JurnalGrid = Ext.create('App.ux.GridPanel', {
+                            store: me.GRN_JurnalStore,
+                            region: 'center',
+                            enablePaging: true,
+                            columns: [
+                                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                                {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
+                                {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
+                                {header : 'Coa', dataIndex : 'coa',width : 100},
+                                {header : 'Description', dataIndex : 'coa_nama',width : 200},
+                                {header : 'Debit', dataIndex : 'debit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'Credit', dataIndex : 'credit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
+                            ],
+                            viewConfig: {
+                                stripeRows: false,
+                                getRowClass: function(record, index) {
+                                    return me.currPosted == '1'? 'child-row' : '';
+                                }
+                            }
+                        })
+                    ],
 
-            me.GRGrid = Ext.create( 'Ext.grid.Panel',
+                    tbar : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldcontainergr_numsearch',
+                            items : [
+                                {
+                                    xtype : 'displayfield',
+                                    fieldLabel : 'Goods Received #'
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    itemId : 'gr_numsearch',
+                                    width : 150,
+                                    margin : '0 5 0 0'
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldcontainervend_search',
+                            items : [
+                                {
+                                    xtype : 'displayfield',
+                                    fieldLabel : 'Supplier'
+                                },
+                                {
+                                    xtype : 'xtVendorSuplierPopup',
+                                    itemId : 'vend_search',
+                                    width : 150,
+                                    margin : '0 5 0 0'
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'datefrom',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    labelAlign : 'right',
+                                    value : new Date()
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'dateto',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'd-m-Y',
+                                    labelAlign : 'right',
+                                    value : new Date()
+                                }]
+                        }, '-',
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerSearch',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 80,
+                                    margin : '0 0 3 0',
+                                    text : 'Cari',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.ReloadGrid
+                                    }
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerAdd',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 100,
+                                    margin : '0 0 3 0',
+                                    text : 'Tambah Data',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.onNew
+
+                                    }
+
+
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDelete',
+                            layout : 'vbox',
+                            items : [
+                                {
+                                    xtype : 'button',
+                                    width : 100,
+                                    margin : '0 0 3 0',
+                                    text : 'Hapus Data',
+                                    listeners :
+                                    {
+                                        scope : me,
+                                        click : me.onDelete
+                                    }
+                                }]
+                        },'->',
+                        {
+                            xtype:'displayfield',
+                            itemId:'itemuserinput',
+                            margin : '0 5 0 0'
+                        }]
+                });
+           /* me.GRGrid = Ext.create( 'Ext.grid.Panel',
                 {
                     store : me.GRStore,
+                    columns : [
+                        {header : 'Goods Recv #',dataIndex : 'gr_num',width : 200},
+                        {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                        {header : 'PO#',dataIndex : 'po_num', width : 200},
+                        {header : 'Supplier',dataIndex : 'vend_nama', width : 200},
+                        {header : 'Transporter',dataIndex : 'vend_tr_nama', flex:1, width : 200 },
+                        {header : 'Type', dataIndex : 'gr_type_desc', width : 200},
+                        { header : 'Gudang',dataIndex : 'gudang_id', width : 200,hidden: true},
+                        {header : 'Gudang', dataIndex : 'gudang_nama',width : 200},
+                        {header : 'status',dataIndex : 'status',hidden: true},
+                        { header : 'canceled', dataIndex : 'canceled',hidden: true}
+                    ],
                     viewConfig :
                     {
-                        stripeRows : true
-                    },
-                    columns : [
-                        {
-                            header : 'Goods Recv #',
-                            dataIndex : 'gr_num',
-                            width : 200
-                        },
-                        {
-                            header : 'Tanggal',
-                            dataIndex : 'tgl',
-                            renderer:Ext.util.Format.dateRenderer('d-m-Y'),
-                            width : 100
-                        },
-                        {
-                            header : 'PO#',
-                            dataIndex : 'po_num',
-                            width : 200
-                        },
-                        {
-                            header : 'Supplier',
-                            dataIndex : 'vend_nama',
-                            width : 200
-                        },
-                        {
-                            header : 'Transporter',
-                            dataIndex : 'vend_tr_nama',
-                            flex:1,
-                            width : 200
+                        stripeRows: false,
+                        getRowClass: function(record, index) {
+                            return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
                         }
-                        ,
-                        {
-                            header : 'Type',
-                            dataIndex : 'gr_type_desc',
-                            width : 200
-                        },
-                        {
-                            header : 'Gudang',
-                            dataIndex : 'gudang_id',
-                            width : 200,
-                            hidden: true
-                        },
-                        {
-                            header : 'Gudang',
-                            dataIndex : 'gudang_nama',
-                            width : 200
-                        }],
+                    },
                     // ToolBar for Encounter DataGrid.
                     tbar : [
                         {
@@ -196,6 +382,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         scope : me,
                                         click : me.onNew
                                     }
+
                                 }]
                         },
                         {
@@ -224,7 +411,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
 
                     }
 
-                });
+                });*/
 
             /**
              * Panel:
@@ -247,9 +434,24 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         border : false,
                                         items : [
                                             {
-                                                xtype : 'fieldset',
-                                                title : 'General Info',
-                                                margin : '0 10 0 10',
+                                                xtype : 'mitos.form',
+                                                fieldDefaults: {
+                                                    msgTarget: 'side',
+                                                    labelWidth: 100
+                                                },
+                                                defaults: {
+                                                labelWidth: 89,
+                                                anchor: '100%',
+                                                layout: {
+                                                    type: 'hbox',
+                                                    defaultMargins: {
+                                                        top: 0,
+                                                        right: 5,
+                                                        bottom: 0,
+                                                        left: 0
+                                                    }
+                                                }
+                                            },
                                                 items : [
                                                     {
                                                         xtype: 'fieldcontainer',
@@ -263,150 +465,212 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                     },
                                                     {
                                                         xtype: 'fieldcontainer',
-                                                        hidden: false,
-                                                        layout: {type: 'hbox'},
-                                                        defaults :{margin : '0 10 0 10'},
-                                                        hideLabel: true,
-                                                        items : [
+                                                        defaults: {
+                                                            hideLabel: true
+                                                        },
+                                                        msgTarget: 'under',
+                                                        items: [
                                                             {
-                                                                xtype: 'mitos.UpperCaseTextField',
-                                                                name : 'gr_num',
-                                                                id : 'gr_num_input',
-                                                                width: 400,
-                                                                fieldLabel: 'Goods Recv #',
-                                                                labelAlign: 'right',
-                                                                allowBlank: false,
-                                                                stripCharsRe: /(^\s+|\s+$)/g
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Goods Recv #'
+                                                            },
+                                                            {
+                                                                width: 150,
+                                                                xtype: 'textfield',
+                                                                name: 'gr_num',
+                                                                allowBlank: true,
+                                                                id : 'gr_num_input'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         xtype: 'fieldcontainer',
-                                                        hidden: false,
-                                                        layout: {
-                                                            type: 'hbox'
+                                                        defaults: {
+                                                            hideLabel: true
                                                         },
-                                                        defaults :
-                                                        {
-                                                            margin : '0 10 0 10'
-                                                        },
-                                                        hideLabel: true,
-                                                        items : [
+                                                        msgTarget: 'under',
+                                                        items: [
                                                             {
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Recv Date'
+                                                            },
+                                                            {
+                                                                width: 100,
                                                                 xtype: 'datefield',
-                                                                name : 'tgl',
-                                                                width: 270,
-                                                                fieldLabel: 'Tanggal',
-                                                                labelAlign: 'right',
+                                                                name: 'tgl',
+                                                                allowBlank: true,
                                                                 submitFormat: 'Y-m-d',
                                                                 format : globals['date_display_format']
-                                                            }]
+                                                            }
+                                                        ]
                                                     },
                                                     {
-                                                        xtype : 'fieldcontainer',
-                                                        layout :
-                                                        {
-                                                            type : 'hbox'
+                                                        xtype: 'fieldcontainer',
+                                                        defaults: {
+                                                            hideLabel: true
                                                         },
-                                                        defaults :
-                                                        {
-                                                            margin : '0 10 0 10'
-                                                        },
-                                                        hideLabel : true,
-                                                        items : [
+                                                        msgTarget: 'under',
+                                                        items: [
                                                             {
-                                                                xtype : 'xtVendorSuplierPopup',
-                                                                fieldLabel : 'Supplier',
-                                                                hideLabel : false,
-                                                                width: 400,
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Supplier :'
+                                                            },
+                                                            {
+                                                                width: 150,
+                                                                xtype: 'xtVendorSuplierPopup',
+                                                                name: 'vend_id',
                                                                 itemId : 'vend_id',
-                                                                name : 'vend_id',
-                                                                labelAlign : 'right'
-                                                            }]
+                                                                allowBlank: true
+                                                            }
+                                                        ]
                                                     },
                                                     {
-                                                        xtype : 'fieldcontainer',
-                                                        layout :
-                                                        {
-                                                            type : 'hbox'
+                                                        xtype: 'fieldcontainer',
+                                                        defaults: {
+                                                            hideLabel: true
                                                         },
-                                                        defaults :
-                                                        {
-                                                            margin : '0 10 0 10'
-                                                        },
-                                                        hideLabel : true,
-                                                        items : [
+                                                        msgTarget: 'under',
+                                                        items: [
                                                             {
-                                                                xtype : 'xtVendorTransporterPopup',
-                                                                fieldLabel : 'Transporter',
-                                                                hideLabel : false,
-                                                                width: 400,
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Transporter :'
+                                                            },
+                                                            {
+                                                                width: 150,
+                                                                xtype: 'xtVendorTransporterPopup',
+                                                                name: 'vend_id_trans',
                                                                 itemId : 'vend_id_trans',
-                                                                name : 'vend_id_trans',
-                                                                labelAlign : 'right'
-                                                            }]
+                                                                allowBlank: true
+                                                            }
+                                                        ]
                                                     },
                                                     {
-                                                        xtype : 'fieldcontainer',
-                                                        layout :
-                                                        {
-                                                            type : 'hbox'
+                                                        xtype: 'fieldcontainer',
+                                                        defaults: {
+                                                            hideLabel: true
                                                         },
-                                                        defaults :
-                                                        {
-                                                            margin : '0 10 0 10'
-                                                        },
-                                                        hideLabel : true,
-                                                        items : [
+                                                        msgTarget: 'under',
+                                                        items: [
                                                             {
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' PO Number# :'
+                                                            },
+                                                            {
+                                                                width: 150,
                                                                 xtype: 'xtPOPopup',
-                                                                name : 'po_num',
-                                                                fieldLabel: 'PO #',
-                                                                labelAlign: 'right',
-                                                                width : 400
-                                                            }]
+                                                                name: 'po_num',
+                                                                allowBlank: true
+                                                            }
+                                                        ]
                                                     },
                                                     {
-                                                        xtype : 'fieldcontainer',
-                                                        layout :
-                                                        {
-                                                            type : 'hbox'
+                                                        xtype: "radiogroup",
+                                                        fieldLabel: "Diterima Di ",
+                                                        defaults: {xtype: "radio", name:'xxxx'
                                                         },
-                                                        defaults :
-                                                        {
-                                                            margin : '0 10 0 10'
-                                                        },
-                                                        hideLabel : true,
-                                                        items : [
+                                                        items: [
                                                             {
-                                                                xtype: 'xtGudangPopup',
-                                                                name : 'gudang_id',
-                                                                fieldLabel: 'Gudang',
-                                                                labelAlign: 'right',
-                                                                width : 400
-                                                            }]
+                                                                boxLabel: "Gudang",
+                                                                checked: true,
+                                                                handler: function(field, value) {
+                                                                if (value) {
+                                                                    Ext.getCmp('account_grn').disable();
+                                                                    Ext.getCmp('gudang_id_grn').enable();
+                                                                }
+                                                            }
+
+                                                            },
+                                                            {
+                                                                boxLabel: "Account",
+                                                                handler: function(field, value) {
+                                                                    if (value) {
+                                                                        Ext.getCmp('gudang_id_grn').disable();
+                                                                        Ext.getCmp('account_grn').enable();
+                                                                    }
+                                                                }
+                                                            }
+                                                        ],  width : 400
                                                     },
                                                     {
-                                                        xtype : 'radiogroup',
+                                                        xtype: 'fieldcontainer',
+                                                        defaults: {
+                                                            hideLabel: true
+                                                        },
+                                                        msgTarget: 'under',
+                                                        items: [
+                                                            {
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Gudang :'
+                                                            },
+                                                            {
+                                                                width: 100,
+                                                                xtype: 'xtGudangPopup',
+                                                                name: 'gudang_id',
+                                                                allowBlank: true,
+                                                                id:'gudang_id_grn'
+                                                            },
+                                                            {
+                                                                width: 100,
+                                                                xtype: 'displayfield',
+                                                                value: ' Account :'
+                                                            },
+                                                            {
+                                                                width: 100,
+                                                                xtype: 'xtCoaPopup',
+                                                                name: 'coa',
+                                                                allowBlank: true,
+                                                                id:'account_grn'
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        xtype: "radiogroup",
                                                         fieldLabel: "Type ",
-                                                        layout :
-                                                        {
-                                                            type : 'hbox'
+                                                        defaults: {xtype: "radio", name:'gr_type'
                                                         },
-                                                        defaults :
-                                                        {
-                                                           // margin : '0 0 0 10',
-                                                            xtype: "radio",name: "gr_type"
-                                                        },
-                                                        hideLabel : false,
-                                                        items : [
+                                                        items: [
                                                             {
                                                                 boxLabel: "Received",
-                                                                inputValue: "R"
+                                                                checked: true,
+                                                                inputValue:'R'
+
                                                             },
                                                             {
                                                                 boxLabel: "Return",
-                                                                inputValue: "B"
+                                                                inputValue:'B'
+                                                            }
+                                                        ],  width : 400
+                                                    },
+                                                    {
+                                                        xtype : 'fieldcontainer',
+                                                        layout :
+                                                        {
+                                                            type : 'hbox'
+                                                        },
+                                                        defaults :
+                                                        {
+                                                            margin : '0 10 0 10'
+                                                        },
+                                                        hideLabel : true,
+                                                        items : [
+                                                            {
+                                                                width: 150,
+                                                                xtype: 'mitos.checkbox',
+                                                                fieldLabel: 'Posted',
+                                                                id:'post_gr',
+                                                                name: 'status'
+                                                            },{
+                                                                width: 100,
+                                                                xtype: 'mitos.checkbox',
+                                                                fieldLabel: 'Canceled',
+                                                                id:'canceled_gr',
+                                                                name: 'canceled'
                                                             }]
                                                     }
 
@@ -473,6 +737,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 {text: 'gr_num', width:70, sortable: false, dataIndex: 'gr_num', hidden: true},
                                 {text: 'ID', width:70, sortable: false, dataIndex: 'bb_id', hidden: true},
                                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
+                                {text: 'Qty PO#', width:70, sortable: false, dataIndex: 'qty_po'},
                                 {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
                                 {text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_nama'},
                                 {text: 'Qty PCS/SAK', width: 100, sortable: false, dataIndex: 'qty_pcs'},
@@ -481,6 +746,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 {text: 'Qty Selisih', width: 100, sortable: false, dataIndex: 'qty_selisih'},
                                 {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                             ],
+                            viewConfig :
+                            {
+                                stripeRows: false,
+                                getRowClass: function(record, index) {
+                                    return record.get('qty_po') < record.get('qty_netto') ? 'adult-row' : '';
+                                }
+                            },
                             listeners: {
                                 scope: me,
                                 select: me.onItemsGridClick,
@@ -505,7 +777,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             },
                                             tooltip : 'Tambah Data'
                                         },
-                                        '->',
                                         {
                                             text: 'Delete',
                                             iconCls: 'icoDeleteBlack',
@@ -526,10 +797,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             columns: [
                                 { text: 'company', dataIndex: 'co_id', hidden: true},
                                 { text: 'gr_num', dataIndex: 'gr_num', hidden: true},
-                                { text: 'id', dataIndex: 'bb_id', hidden: true},
+                                { text: 'bb_id', dataIndex: 'bb_id', hidden: true},
                                 { text: 'urut', dataIndex: 'urut', hidden: true},
                                 { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                                { text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_nama', hidden : true},
+                                { text: 'DO #', width:100, sortable: true, dataIndex: 'do_num'},
                                 { text: 'Nopol', width:100, sortable: true, dataIndex: 'nopol'},
                                 { text: 'Jml PCS/SAK', width: 100, sortable: true, dataIndex: 'qty_pcs'},
                                 { text: 'Jml Muatan', width: 100, sortable: true, dataIndex: 'qty_brutto'},
@@ -555,7 +826,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             var form = me.winDtl.down('form');
                                             me.onNewLoc(form, 'App.model.transaksi.goodsreceived.GRDetail', 'Tambah Data');
                                         }
-                                    },'->',
+                                    },
                                         {
                                             xtype: 'button',
                                             text: 'Hapus Data',
@@ -737,7 +1008,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {name: 'co_id', xtype:'textfield', hidden : true},
                                     {name: 'gr_num', xtype: 'textfield', hidden : true},
                                     {name: 'bb_id', xtype: 'textfield', hidden : true},
-                                    {name: 'sat_id', xtype: 'textfield', hidden : true},
                                     {name: 'urut', xtype: 'textfield', hidden : true}
                                 ]
                             },
@@ -949,7 +1219,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                 }
             });
 
-            me.pageBody = [me.GRGrid, me.grpnl, me.GRItemspnl];
+            me.pageBody = [me.GRGridMaster, me.grpnl, me.GRItemspnl];
             me.callParent( arguments );
         },
 
@@ -974,8 +1244,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, form = me.GeneralForm.getForm();
             form.reset();
             this.goToSODetail();
-            Ext.getCmp('gr-move-next').setDisabled(true);
-            Ext.getCmp('gr_num_input').setDisabled(false);
+            Ext.getCmp('gr-move-next').enable();
+            Ext.getCmp('gr_num_input').disable();
         },
         onDelete: function(){
             var me = this,
@@ -1017,8 +1287,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_bb_id = null;
             me.curr_sat_id = null;
             this.goToSODetail();
-            Ext.getCmp('gr-move-next').setDisabled(false);
-            Ext.getCmp('gr_num_input').setDisabled(true);
+            Ext.getCmp('gr-move-next').enable();
+            Ext.getCmp('gr_num_input').disable();
         },
 
         /**
@@ -1090,13 +1360,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             store.sync({
                 success:function(){
                     me.curr_gr_num = Ext.getCmp('gr_num_input').getValue();
-                    Ext.getCmp('gr-move-next').setDisabled(false);
+                    Ext.getCmp('gr-move-next').enable();
                 },
                 failure:function(){
                     me.msg('Opps!', 'Error!!', true);
                 }
             });
-//            store.load();
+            store.load();
         },
 
         /**
@@ -1108,7 +1378,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         ReloadGrid : function(btn)
         {
             // Declare some variables
-            var topBarItems = this.GRGrid.getDockedItems('toolbar[dock="top"]')[0],
+            var topBarItems = this.GRGridMaster.getDockedItems('toolbar[dock="top"]')[0],
                 datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
                 dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
@@ -1164,7 +1434,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_co_id = selected.data.co_id;
             me.curr_gr_num = selected.data.gr_num;
             me.curr_sat_id = selected.data.sat_id;
-            me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
+            me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id:me.curr_sat_id}});
         },
         onItemsdblclick: function(store, record, title){
             var form = this.win.down('form');
@@ -1198,7 +1468,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             }
             store.sync({
                 success:function(){
-//                    SalesOrder.updateSOnetto(params);
                     me.curr_bb_id = form.findField('bb_id').getValue();
                     me.curr_sat_id = form.findField('sat_id').getValue();
                     me.win.close();
@@ -1321,7 +1590,17 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, layout = me.mainPanel.getLayout();
             if(me.GeneralForm.getLayout().getActiveItem().action != 2) Ext.getCmp('move-next').setDisabled(!ok);
         },
+        onGridClick: function(grid, selected){
+            var me = this;
+            me.currInv_Code = selected.data.gr_num;
+            var TopBarItems =  this.GRGridMaster.getDockedItems('toolbar[dock="top"]')[0];
+            me.userinput = selected.data.userinput;
+            me.useredit = selected.data.useredit;
+            me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
+            TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+            me.GRN_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
+        },
         /**
          * This function is called from Viewport.js when
          * this panel is selected in the navigation panel.

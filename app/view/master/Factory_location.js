@@ -33,6 +33,7 @@ Ext.define('App.view.master.Factory_location', {
                 {name: 'co_id',type: 'string'},
                 {name: 'pabrik_sequence',type: 'string'},
                 {name: 'description',type: 'string'},
+                {name: 'factory_id',type: 'string'},
                 {name: 'location',type: 'string'},
                 {name: 'remarks',type: 'string'},
                 {name: 'userinput',type: 'string'},
@@ -66,6 +67,7 @@ Ext.define('App.view.master.Factory_location', {
                 {name: 'location',type: 'string'},
                 {name: 'remarks',type: 'string'},
                 {name: 'coa',type: 'string'},
+                {name: 'coa_grn',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'useredit',type: 'string'},
                 {name: 'timeinput',type: 'date'},
@@ -114,6 +116,7 @@ Ext.define('App.view.master.Factory_location', {
             columns: [
                 {text: 'co_id',width: 100,sortable: true,dataIndex: 'co_id', hidden:true},
                 {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
+                {text: 'ID',width: 100,sortable: true,flex:1,dataIndex: 'factory_id'},
                 {text: 'Description',width: 100,sortable: true,flex:1, dataIndex: 'description'},
                 {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
@@ -154,15 +157,6 @@ Ext.define('App.view.master.Factory_location', {
                             handler: function() {
                                 me.hapusFactlocation(me.FactlocationStore)
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'getPrint',
-                            iconCls: 'iconReport',
-                           // scope: me,
-                            handler: function(){
-                                print();
-                            }
                         },'->',
                         {
                             xtype:'displayfield',
@@ -186,6 +180,7 @@ Ext.define('App.view.master.Factory_location', {
                 {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
                 {text: 'Coa',width: 100,sortable: true,flex:1,dataIndex: 'coa'},
+                {text: 'Coa GRN',width: 100,sortable: true,flex:1,dataIndex: 'coa_grn'},
                 {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
@@ -275,12 +270,33 @@ Ext.define('App.view.master.Factory_location', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
+                                    value: 'ID :'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'factory_id',
+                                    allowBlank:true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
                                     value: 'Description :'
                                 },
                                 {
                                     width: 150,
                                     xtype: 'textfield',
-                                    name: 'description'
+                                    name: 'description',
+                                    allowBlank:true
                                 }
                             ]
                         },
@@ -416,7 +432,8 @@ Ext.define('App.view.master.Factory_location', {
                                 {
                                     width: 150,
                                     xtype: 'textfield',
-                                    name: 'gudang_id'
+                                    name: 'gudang_id',
+                                    allowBlank: true
                                 }
                             ]
                         },
@@ -435,7 +452,8 @@ Ext.define('App.view.master.Factory_location', {
                                 {
                                     width: 150,
                                     xtype: 'textfield',
-                                    name: 'gudang_nama'
+                                    name: 'gudang_nama',
+                                    allowBlank: true
                                 }
                             ]
                         },
@@ -476,7 +494,8 @@ Ext.define('App.view.master.Factory_location', {
                                     name: 'remarks'
                                 }
                             ]
-                        }, {
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -490,8 +509,20 @@ Ext.define('App.view.master.Factory_location', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa',
+                                    allowBlank: true
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa GRN:'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_grn',
+                                    allowBlank: true
                                 }
                             ]
                         },
@@ -679,40 +710,6 @@ Ext.define('App.view.master.Factory_location', {
             }
         });
 //        store.load();
-    },
-
-   print: function(){
-        var grid3= new Ext.grid.panel({
-            id:'print',
-            title:'print factory',
-            store: 'FactlocationStore',
-            cm: 'FactorylocationModel',
-            height:400,
-            width:1100
-
-        })
-       var printWindow = window.open ('','SyslogMessages','status=1,toolbar=1,menubar=1,resizable=1,scrollbars=1,height=600,width=800');
-       printWindow.document.writeln( '<html><head><title>Syslog Print Window</title>' );
-       printWindow.document.writeln( '<script>');
-       printWindow.document.writeln( 'var ss = document.createElement("link"); ss.setAttribute("rel", "stylesheet");ss.setAttribute("type", "text/css"); ss.setAttribute("href", "/thirdpartyjs/ext/resources/css/ext-all.css");document.getElementsByTagName("head")[0].appendChild(ss);');
-       printWindow.document.writeln( 'var ss = document.createElement("link"); ss.setAttribute("rel", "stylesheet");ss.setAttribute("type", "text/css"); ss.setAttribute("href", "/thirdpartyjs/ext/examples/grid-filtering/grid/summary.css");document.getElementsByTagName("head")[0].appendChild(ss);');
-       printWindow.document.writeln( '</script>');
-       printWindow.document.writeln( '</head><body><div id="print" style="margin: 10px;"></div></body></html>' );
-       grid3.render( printWindow.document.body );
-       printWindow.document.close();
-
-   },
-    getReport: function(grid, title){
-       this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-           layout: 'fit',
-           title: title,
-           width: 400,
-           height: 300,
-           items:grid,
-           modal:true
-
-       });
-       this.myWinChooseItem.show();
     },
 
     /**

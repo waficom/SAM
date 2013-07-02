@@ -1,46 +1,49 @@
-Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
+Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelCashbon_Lebih',
-    pageTitle: 'Penyelesaian CashBon Lebih',
+    id: 'panelAP_Payment_Alocation',
+    pageTitle: 'AP Payment Alocation',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
         me.currInv_Code = null;
         me.currCoa = null;
-        me.currDebtor = null;
+        me.currBB = null;
         me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
-        Ext.define('Cashbon_LebihModel', {
+        Ext.define('AP_Inv_PaymentModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
-                {name: 'inv_code',type: 'string'},
+                {name: 'ap_inv_payment',type: 'string'},
                 {name: 'inv_date',type: 'date'},
+                {name: 'inv_code',type: 'string'},
+                {name: 'giro_num',type: 'string'},
                 {name: 'bank_code',type: 'string'},
-                {name: 'paid_to',type: 'string'},
-                {name: 'nominal_1',type: 'string'},
-                {name: 'nominal_2',type: 'string'},
-                {name: 'remaks',type: 'string'},
+                {name: 'vend_id',type: 'string'},
+                {name: 'nilaidasar',type: 'string'},
+                {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
-                {name: 'status',type: 'string'}
+                {name: 'status',type: 'string'},
+                {name: 'inv_type',type: 'string'},
+                {name: 'canceled',type: 'string'}
             ]
 
         });
-        me.Cashbon_LebihStore = Ext.create('Ext.data.Store', {
-            model: 'Cashbon_LebihModel',
+        me.AP_Inv_PaymentStore = Ext.create('Ext.data.Store', {
+            model: 'AP_Inv_PaymentModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Cashbon_Lebih.getCashbon_Lebih,
-                    create: Cashbon_Lebih.addCashbon_Lebih,
-                    update: Cashbon_Lebih.updateCashbon_Lebih,
-                    destroy : Cashbon_Lebih.deleteCashbon_Lebih
+                    read: AP_Invoice.getAP_Payment_Alocation,
+                    create: AP_Invoice.addAP_Inv_Payment,
+                    update: AP_Invoice.updateAP_Inv_Payment,
+                    destroy : AP_Invoice.deleteAP_Inv_Payment
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -51,13 +54,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             autoLoad: false
         });
 
-        Ext.define('Cb_Lebih_JurnalModel', {
+        Ext.define('AP_Inv_JurnalModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
+                {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
@@ -65,15 +70,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             ]
 
         });
-        me.Cashbon_Lebih_JurnalStore = Ext.create('Ext.data.Store', {
-            model: 'Cb_Lebih_JurnalModel',
+        me.AP_Inv_JurnalStore = Ext.create('Ext.data.Store', {
+            model: 'AP_Inv_JurnalModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Jurnal.getJurnal,
-                    create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
-                    destroy : Jurnal.deleteJurnal
+                    read: Jurnal.getJurnal
+                    //create: Jurnal.addJurnal,
+                   // update: Jurnal.updateJurnal,
+                   // destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -95,20 +100,23 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
         /**
          * Lists Grid
          */
-        me.Cashbon_LebihGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbon_LebihStore,
+        me.AP_Inv_PaymentGrid = Ext.create('App.ux.GridPanel', {
+            store: me.AP_Inv_PaymentStore,
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 150,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 150,text: 'Giro Num',sortable: true,dataIndex: 'giro_num'},
+                {width: 150,text: 'Inv. code',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 100,text: 'DiBayar Ke',sortable: true,dataIndex: 'paid_to'},
-                {width: 150,text: 'Nominal 1',sortable: true,dataIndex: 'nominal_1', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 150,text: 'Nominal 2',sortable: true,dataIndex: 'nominal_2', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'remaks',sortable: true,dataIndex: 'remaks'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
+                {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
+                {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {width: 100,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
+                {width: 100,text: 'canceled',sortable: true,dataIndex: 'canceled', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -116,19 +124,17 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : '';
+                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
                 }
             },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    if(record.get('status')!=1){
-                        me.onItemdblclick(me.Cashbon_LebihStore, record, 'Edit CashBon Lebih');
-                        Ext.getCmp('post_cb_l').enable();
-                        Ext.getCmp('total_cb_lbh').setValue(record.get('nominal_1')-record.get('nominal_2'));
+                    if(record.get('canceled')!='1'){
+                        me.onItemdblclick(me.AP_Inv_PaymentStore, record, 'Edit AP Payment Alocation');
+                        Ext.getCmp('post_ap_pay_al').enable();   Ext.getCmp('canceled_ap_pay_al').enable();
                     }
-
                 }
             },
             features:[searching],
@@ -143,8 +149,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                             scope: me,
                             handler: function(){
                                 var form = me.win.down('form');
-                                me.onNewPB(form, 'Cashbon_LebihModel', 'Tambah Data');
-                                Ext.getCmp('post_cb_l').disable();
+                                me.onNewPB(form, 'AP_Inv_PaymentModel', 'Tambah Data');
+                                Ext.getCmp('post_ap_pay_al').disable();  Ext.getCmp('canceled_ap_pay_al').disable();
                             }
                         },
                         {
@@ -152,7 +158,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                             text: 'Hapus Data',
                             iconCls: 'delete',
                             handler:function() {
-                                me.onPBDelete(me.Cashbon_LebihStore);
+                                me.onPBDelete(me.AP_Inv_PaymentStore);
                             }
                         },'->',
                         {
@@ -163,7 +169,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Cashbon_LebihStore,
+                    store: me.AP_Inv_PaymentStore,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -176,17 +182,18 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             ]
         });
 
-        me.Cb_Lebih_JurnalGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbon_Lebih_JurnalStore,
+        me.AP_Inv_JurnalGrid = Ext.create('App.ux.GridPanel', {
+            store: me.AP_Inv_JurnalStore,
             region: 'center',
             enablePaging: true,
             columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 150, hidden: true},
+                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
+                {header : 'Vendor Id', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
@@ -196,54 +203,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                     return me.currPosted == '1'? 'child-row' : '';
                 }
             },
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    if(me.currPosted !='1'){
-                        var form = this.winformCb_Lebih_Jurnal.down('form');
-                        me.onItemdblclick1(me.Cashbon_Lebih_JurnalStore, record, 'Edit CashBon Lebih Jurnal', me.winformCb_Lebih_Jurnal, form);
+            features:[searching]
 
-                    }
-
-                }
-            },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformCb_Lebih_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'Cb_Lebih_JurnalModel', 'Tambah Data', me.winformCb_Lebih_Jurnal);
-
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi1(me.Cashbon_Lebih_JurnalStore, me.Cb_Lebih_JurnalGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.Cb_Lebih_JurnalGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
         });
 
         // *************************************************************************************
@@ -278,8 +239,24 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                             xtype: 'fieldcontainer',
                             defaults: {hideLabel: true},
                             msgTarget: 'under',
-                            name:'inv_code',
+                            name:'ap_inv_payment',
                             hidden:true
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Type ",
+                            defaults: {xtype: "radio", name:'inv_type'
+                            },
+                            hidden: true,
+                            items: [
+                                {
+                                    boxLabel: "Alocation",
+                                    checked: true,
+                                    inputValue:'A',
+                                    hidden: true
+
+                                }
+                            ]
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -294,12 +271,52 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                                     value: 'inv_date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
+                                    submitFormat : 'Y-m-d H:i:s'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Giro : '
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'giro_num'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Code : '
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'xtAPPopup',
+                                    name: 'inv_code',
                                     allowBlank: false
                                 }
                             ]
@@ -318,9 +335,29 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                                     value: 'Bank Code : '
                                 },
                                 {
-                                    width: 100,
+                                    width: 200,
                                     xtype: 'xtBankPopup',
-                                    name: 'bank_code',
+                                    name: 'bank_code'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Vendor : '
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'xtVendorSuplierPopup',
+                                    name: 'vend_id',
                                     allowBlank: false
                                 }
                             ]
@@ -336,62 +373,12 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'DiBayar ke : '
+                                    value: 'Cost : '
                                 },
                                 {
-                                    width: 100,
+                                    width: 200,
                                     xtype: 'textfield',
-                                    name: 'paid_to',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'nominal_1',
-                                    id:'nominal_1_cb_lbh',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-
-                                },
-                                {
-                                    width: 10,
-                                    xtype: 'displayfield',
-                                    value: ' - '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'nominal_2',
-                                    id:'nominal_2_cb_lbh',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                },{
-                                    width: 10,
-                                    xtype: 'displayfield',
-                                    value: ' = '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    id:'total_cb_lbh'
+                                    name: 'nilaidasar'
                                 }
                             ]
                         },
@@ -406,12 +393,12 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Remaks : '
+                                    value: 'Keterangan : '
                                 },
                                 {
                                     width: 300,
                                     xtype: 'textfield',
-                                    name: 'remaks'
+                                    name: 'keterangan'
                                 }
                             ]
                         },
@@ -423,8 +410,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
-                                    id:'post_cb_l',
+                                    id:'post_ap_pay_al',
                                     name: 'status'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Canceled',
+                                    id:'canceled_ap_pay_al',
+                                    name: 'canceled'
                                 }
                             ]
                         }
@@ -438,7 +432,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                     handler: function(){
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
-                            me.onPBSave(form, me.Cashbon_LebihStore);
+                            me.onPBSave(form, me.AP_Inv_PaymentStore);
                         }
                     }
                 },
@@ -458,145 +452,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                 }
             }
         });
-        me.winformCb_Lebih_Jurnal = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
 
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Coa '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'coa',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'vend_id'
-
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debit :'
-                                },
-                                {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Credit :'
-                                },
-                                {
-                                    fieldLabel : 'Credit',
-                                    labelAlign : 'right',
-                                    name: 'credit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        }
-
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winformCb_Lebih_Jurnal.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi3Save(form, me.Cashbon_Lebih_JurnalStore, me.winformCb_Lebih_Jurnal);
-                        }
-                    }
-                },{
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winformCb_Lebih_Jurnal);
-                }
-            }
-        });
-
-
-
-
-        me.pageBody = [me.Cashbon_LebihGrid, me.Cb_Lebih_JurnalGrid];
+        me.pageBody = [me.AP_Inv_PaymentGrid, me.AP_Inv_JurnalGrid];
         me.callParent(arguments);
     },
     setForm: function(form, title){
@@ -643,16 +500,6 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
         this.win.show();
 
     },
-    onNewProduksi1: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new',window);
-        window.show();
-    },
 
     /**
      *
@@ -661,15 +508,14 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
      */
     onPBGridClick: function(grid, selected){
         var me = this;
-        me.currInv_Code = selected.data.inv_code;
-        me.currDebtor=selected.data.from_bank_code;
+        me.currInv_Code = selected.data.ap_inv_payment;
         me.currPosted = selected.data.status;
-        var TopBarItems = this.Cashbon_LebihGrid.getDockedItems('toolbar[dock="top"]')[0];
+        var TopBarItems = this.AP_Inv_PaymentGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.Cashbon_Lebih_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
     },
 
@@ -696,7 +542,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             success:function(){
                 me.win.close();
                 store.load();
-               me.Cashbon_Lebih_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+               me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
             failure:function(){
                 store.load();
@@ -705,41 +551,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
         });
     },
 
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-        f = me.winformCb_Lebih_Jurnal.down('form').getForm(), rec = f.getRecord();
-
-        form.findField('inv_code').setValue(me.currInv_Code);
-        form.findField('vend_id').setValue(me.currDebtor);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformCb_Lebih_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
-    },
-
     onPBDelete: function(store){
-        var me = this, grid = me.Cashbon_LebihGrid;
+        var me = this, grid = me.AP_Inv_PaymentGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
+        bid = sr[0].get('ap_inv_payment');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -757,33 +573,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
             }
         });
     },
-    deleteProduksi1: function(store, grid){
-        var me = this,
-            sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        })
-    },
-    onEnter : function(field, e)
-    {
-       var nominal_1 = Ext.getCmp('nominal_1_cb_lbh').getValue();
-        var nominal_2 = Ext.getCmp('nominal_2_cb_lbh').getValue();
-        Ext.getCmp('total_cb_lbh').setValue(nominal_1 - nominal_2);
-    },
+
 
     /**
      * This function is called from Viewport.js when
@@ -793,8 +583,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
      */
     onActive: function(callback){
         var me = this;
-        this.Cashbon_LebihStore.load({params:{start:0, limit:5}});
-        this.Cashbon_Lebih_JurnalStore.load();
+        this.AP_Inv_PaymentStore.load({params:{start:0, limit:5}});
+        this.AP_Inv_JurnalStore.load();
 
         callback(true);
     }

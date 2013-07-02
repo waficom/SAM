@@ -9,10 +9,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         me.currProduksi = null;
         me.currSo_num = null;
         me.currProd_id = null;
+        me.currFormula = null;
         me.currWo_num = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
+        me.currStatus = null;
         //me.myWinChooseItem=null;
 
         Ext.define('Wo1Model', {
@@ -22,6 +24,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 ,{name: 'no_ppd',type: 'string'}
                 ,{name: 'so_num',type: 'string'}
                 ,{name: 'cust_nama',type: 'string'}
+                ,{name: 'qty_produksi',type: 'string'}
+                ,{name: 'qty',type: 'string'}
                 ,{name: 'formula_nama',type: 'string'}
                 ,{name: 'formula_id',type: 'string'}
                 ,{name: 'prod_id',type: 'string'}
@@ -44,11 +48,14 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 ,{name: 'timeedit',type: 'date'}
                 ,{name: 'useredit',type: 'string'}
                 ,{name: 'userinput',type: 'string'}
+                ,{name: 'status',type: 'string'}
+
             ],
             proxy: {
                 type: 'direct',
                 api: {
-                    read: WorkOrder1.getWorkOrder1
+                    read: WorkOrder1.getWorkOrder1,
+                    update: WorkOrder1.updateWorkOrder1
                 }
             }
         });
@@ -72,7 +79,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 { name : 'timeinput', type : 'date'},
                 { name : 'timeedit', type : 'date'},
                 { name : 'keterangan', type : 'string'},
-                { name : 'prod_id', type : 'string'}
+                { name : 'prod_id', type : 'string'},
+                { name : 'so_num', type : 'string'}
             ],
             proxy: {
                 type: 'direct',
@@ -95,8 +103,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             fields: [
                 { name : 'co_id', type : 'string'},
                 { name : 'wo_num', type : 'string'},
-                { name : 'no_ppd', type : 'string'},
-                { name : 'sequence_no', type : 'string'},
+                { name : 'so_num', type : 'string'},
+                { name : 'prod_id', type : 'string'},
                 { name : 'qty', type : 'string'},
                 { name : 'qty_pcs', type : 'string'},
                 { name : 'gudang_id', type : 'string'},
@@ -105,7 +113,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 { name : 'userinput', type : 'string'},
                 { name : 'useredit', type : 'string'},
                 { name : 'timeinput', type : 'date'},
-                { name : 'timeedit', type : 'date'}
+                { name : 'timeedit', type : 'date'},
+                { name : 'kegudang', type : 'string'}
             ],
             proxy: {
                 type: 'direct',
@@ -128,19 +137,20 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             fields: [
                 { name : 'co_id', type : 'string'},
                 { name : 'wo_num', type : 'string'},
+                { name : 'so_num', type : 'string'},
+                { name : 'prod_id', type : 'string'},
+                { name : 'formula_id', type : 'string'},
+                { name : 'no_pp', type : 'string'},
                 { name : 'no_ppd', type : 'string'},
-                { name : 'sequence_no', type : 'string'},
-                { name : 'bb_id', type : 'string'},
+                { name : 'bb_nama', type : 'string'},
+                { name : 'qty_total', type : 'string'},
+                { name : 'qty_in', type : 'string'},
                 { name : 'sat_id', type : 'string'},
-                { name : 'qty_stock', type : 'float'},
-                { name : 'qty_in', type : 'float'},
-                { name : 'qty_out', type : 'float'},
-                { name : 'qty_last', type : 'float'},
-                { name : 'keterangan', type : 'string'},
-                { name : 'userinput', type : 'string'},
-                { name : 'useredit', type : 'string'},
-                { name : 'timeinput', type : 'date'},
-                { name : 'timeedit', type : 'date'}
+                { name : 'jml_paket', type : 'string'},
+                { name : 'darigudang', type : 'string'},
+                { name : 'kegudang', type : 'string'}
+
+
             ],
             proxy: {
                 type: 'direct',
@@ -178,16 +188,18 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'NO PP', sortable: false, dataIndex: 'no_pp',  hidden : true},
-                {text: 'NO PPD', sortable: false, dataIndex: 'no_ppd'},
+                {text: 'No. Produksi',width:150, sortable: false, dataIndex: 'no_pp'},
+                {text: 'No. Detail',width:50, sortable: false, dataIndex: 'no_ppd'},
                 {text: 'Sales Number', width:100, sortable: false,dataIndex: 'so_num'},
-                {text: 'Customer', width:150, sortable: false,dataIndex: 'cust_nama'},
-                {text: 'Formula', width:100, sortable: false,dataIndex: 'formula_nama'},
+                {text: 'Customer', width:200, sortable: false,dataIndex: 'cust_nama'},
+                {text: 'Qty', width:100, sortable: false,dataIndex: 'qty'},
+                {text: 'Qty Produksi', width:100, sortable: false,dataIndex: 'qty_produksi'},
+                {text: 'Formula', width:200, sortable: false,dataIndex: 'formula_nama'},
                 {text: 'Formula id', width:100, sortable: false,dataIndex: 'formula_id', hidden: true},
                 {text: 'Produk id', width:100, sortable: false,dataIndex: 'prod_id', hidden:true},
-                {text: 'Produk', width:100, sortable: false,dataIndex: 'prod_nama'},
+                {text: 'Produk', width:200, sortable: false,dataIndex: 'prod_nama'},
                 {text: 'Kemasan', width:100, sortable: false,dataIndex: 'kemasan_nama'},
-                {text: 'Spesifikasi', width:100, sortable: false,dataIndex: 'spesifikasi_nama'},
+                {text: 'Spesifikasi', width:150, sortable: false,dataIndex: 'spesifikasi_nama'},
                 {text: 'N', width:50, sortable: false,dataIndex: 'n'},
                 {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
                 {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
@@ -199,13 +211,27 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
                 {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
                 {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-                {text: 'tgl selesai', sortable : false, dataIndex: 'finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'est tgl selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'status', width:100, sortable: false,dataIndex: 'status', hidden: true},
+                {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            viewConfig :
+                {
+                    stripeRows: false,
+                    getRowClass: function(record, index) {
+                        return record.get('status') == '1' ? 'child-row' : '';
+                    }
+                },
             listeners: {
                 scope: me,
-                select: me.onProduksiGridClick
+                select: me.onProduksiGridClick,
+                itemdblclick: function(view, record){
+                    var form = this.winposted.down('form');
+                    if(me.currStatus != 1){
+                        me.onItemdblclick1(me.Wo1DStore, record, 'Posting', me.winposted, form);
+                    }
+
+                }
             },
             features:[searching],
             dockedItems: [
@@ -223,10 +249,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     itemId : 'datefrom',
                                     fieldLabel : 'dari',
                                     labelWidth : 35,
-                                    //padding : '0 10 0 0',
                                     width : 150,
                                     format : 'd-m-Y',
-                                    //labelAlign : 'right',
                                     value : new Date()
                                 }]
                         },'-',{
@@ -239,10 +263,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     itemId : 'dateto',
                                     fieldLabel : 'sampai',
                                     labelWidth : 35,
-                                    //padding : '0 10 0 0',
                                     width : 150,
                                     format : 'd-m-Y',
-                                    //labelAlign : 'right',
                                     value : new Date()
                                 }]
                         },{
@@ -293,8 +315,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
+                {header : 'so_num', dataIndex : 'so_num',width : 200, hidden: true},
                 {header : 'prod_id', dataIndex : 'prod_id',width : 200, hidden: true},
-                {header : 'Work Order #', dataIndex : 'wo_num',width : 200},
+                {header : 'Work Order', dataIndex : 'wo_num',width : 100},
                 {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Shift#',dataIndex : 'shift',width : 100},
                 {header : 'Kepala Shift',dataIndex : 'ka_shift',flex : 1, width : 200 },
@@ -307,7 +330,10 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 select: me.onProduksiGridClick2,
                 itemdblclick: function(view, record){
                     var form = this.winform1.down('form');
-                    me.onItemdblclick1(me.Wo1DStore, record, 'Edit Detail Produksi', me.winform1, form);
+                    if(me.currStatus != 1){
+                        me.onItemdblclick1(me.Wo1DStore, record, 'Edit Detail Produksi', me.winform1, form);
+                    }
+
                 }
             },
             features:[searching],
@@ -335,6 +361,18 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         {
                             xtype: 'button',
                             text: 'BahanBaku',
+                            itemId:'BahanBaku',
+                            id:'addBahanBaku',
+                            scope: me,
+                            handler: function(){
+
+                                me.ShowGridPopup(me.Wo1DBahanBakuStore, 'Bahan Baku',me.Wo1DBahanBakuGrid);
+
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'BB dalam Proses',
                             itemId:'BahanBaku',
                             id:'addBahanBaku',
                             scope: me,
@@ -376,47 +414,74 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
-                {header : 'sequence_no', dataIndex : 'sequence_no',width : 200, hidden: true},
-                {header : 'WO', dataIndex : 'wo_num',width : 50},
-                {header : 'bb_id',dataIndex : 'bb_id',width : 200},
-                {header : 'sat_id',dataIndex : 'sat_id', width : 200 },
-                {header : 'qty_stock',dataIndex : 'qty_stock', width : 50},
-                {header : 'qty_in',dataIndex : 'qty_in', width : 50},
-                {header : 'qty_out',dataIndex : 'qty_out', width : 50},
-                {header : 'qty_last',dataIndex : 'qty_last', width : 50},
-                {header : 'Keterangan',dataIndex : 'keterangan', width : 200},
-                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
+                {header : 'so_num', dataIndex : 'so_num',width : 150},
+                {header : 'prod_id', dataIndex : 'prod_id',width : 150},
+                {header : 'Bahan Baku', dataIndex : 'bb_nama',width : 200},
+                {header : 'satuan', dataIndex : 'sat_id',width : 50},
+                {header : 'qty_in', dataIndex : 'qty_in',width : 100},
+                {header : 'qty_total', dataIndex : 'qty_total',width : 100}
             ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    var form = this.winformBahanBaku.down('form');
-                    me.onItemdblclick1(me.Wo1DBahanBakuStore, record, 'Edit Detail Produksi', me.winformBahanBaku, form);
-                }
-            },
             features:[searching],
             dockedItems: [
                 {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
+                        xtype : 'fieldcontainer',
+                        items : [
+                            {
+                                xtype : 'displayfield',
+                                fieldLabel : 'Jml Paket #'
+                            },
+                            {
+                                xtype : 'textfield',
+                                width : 150,
+                                margin : '0 5 0 0',
+                                name:'jml_paket',
+                                id:'jml_paket_wo',
+                                allowBlank:true
+                            }]
+                    },{
+                        xtype : 'fieldcontainer',
+                        items : [
+                            {
+                                xtype : 'displayfield',
+                                fieldLabel : 'Dari Gudang #'
+                            },
+                            {
+                                xtype : 'xtGudangPopup',
+                                width : 150,
+                                margin : '0 5 0 0',
+                                name:'darigudang',
+                                id:'darigudang_wo',
+                                allowBlank:true
+                            }]
+                    },{
+                        xtype : 'fieldcontainer',
+                        items : [
+                            {
+                                xtype : 'displayfield',
+                                fieldLabel : 'Ke #'
+                            },
+                            {
+                                xtype : 'xtGudangPopup',
+                                width : 150,
+                                margin : '0 5 0 0',
+                                name:'kegudang',
+                                id:'kegudang_wo',
+                                allowBlank:true
+                            }]
+                    },{
+                        text: 'Generate',
+                        iconCls: 'icoArrowRightSmall',
                         scope: me,
                         handler: function(){
-                            var form1 = me.winformBahanBaku.down('form');
-                            me.onNewProduksi1(form1, 'Wo1DBahanBakuModel', 'Tambah Data', me.winformBahanBaku);
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi2(me.Wo1DBahanBakuStore, me.Wo1DBahanBakuGrid);
+                            var form = me.winformBahanBaku.down('form').getForm();
+                            if(form.isValid()){
+                                me.onProduksi2Save(form, me.Wo1DBahanBakuStore);
                             }
                         }
+                    }
                     ]
                 },{
                     xtype: 'pagingtoolbar',
@@ -439,13 +504,14 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
-                {header : 'sequence_no', dataIndex : 'sequence_no',width : 200, hidden: true},
+                {header : 'so_num', dataIndex : 'so_num',width : 200, hidden: true},
+                {header : 'prod_id', dataIndex : 'prod_id',width : 200, hidden: true},
                 {header : 'WO', dataIndex : 'wo_num',width : 50},
                 {header : 'qty',dataIndex : 'qty', width : 50},
                 {header : 'qty_pcs',dataIndex : 'qty_pcs', width : 50},
-                {header : 'Gudang',dataIndex : 'gudang_nama',flex : 1, width : 200},
+                {header : 'Dari Gudang',dataIndex : 'gudang_nama',flex : 1, width : 200},
                 {header : 'Gudang',dataIndex : 'gudang_id',flex : 1, width : 200, hidden:true},
+                {header : 'Ke',dataIndex : 'kegudang',flex : 1, width : 200},
                 {header : 'Keterangan',dataIndex : 'keterangan',flex : 1, width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
@@ -497,6 +563,89 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
+        me.winposted = Ext.create('App.ux.window.Window', {
+            width: 400,
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    fieldDefaults: {
+                        msgTarget: 'side',
+                        labelWidth: 100
+                    },
+                    defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'no_ppd'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'prod_id'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'so_num'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Posted',
+                                    name: 'status'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: i18n('save'),
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.winposted.down('form').getForm();
+                        if(form.isValid()){
+                            me.saveProduksi4(form, me.Wo1DStore, me.winposted);
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: i18n('cancel'),
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            features:[searching],
+            listeners: {
+                scope: me,
+                close: function(){
+                    me.action1('close', me.winposted);
+                }
+            }
+        });
         me.winform1 = Ext.create('App.ux.window.Window', {
             width: 400,
             items: [
@@ -531,6 +680,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                             xtype: 'textfield',
                             hidden: true,
                             name: 'prod_id'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'so_num'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -670,6 +824,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         }
                     },
                     items: [
+
                         {
                             xtype: 'textfield',
                             hidden: true,
@@ -677,148 +832,40 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         },
                         {
                             xtype: 'textfield',
+                            hidden: true,
+                            name: 'formula_id'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'prod_id'
+                        },
+                        {
+                            xtype: 'textfield',
                            hidden: true,
                             name: 'wo_num'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Bahan Baku :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtBahanBakuPopup',
-                                    name:'bb_id'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'so_num'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Satuan :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtSatuanPopup',
-                                    name:'sat_id'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'jml_paket'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'qty_stock:'
-                                },
-                                {
-                                    fieldLabel : 'qty_stock',
-                                    labelAlign : 'right',
-                                    name: 'qty_stock',
-                                    xtype: 'textfield'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'darigudang'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'qty_in:'
-                                },
-                                {
-                                    fieldLabel : 'qty_in',
-                                    labelAlign : 'right',
-                                    name: 'qty_in',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'qty_out:'
-                                },
-                                {
-                                    fieldLabel : 'qty_out',
-                                    labelAlign : 'right',
-                                    name: 'qty_out',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'qty_last:'
-                                },
-                                {
-                                    fieldLabel : 'qty_last',
-                                    labelAlign : 'right',
-                                    name: 'qty_last',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'keterangan:'
-                                },
-                                {
-                                    fieldLabel : 'Ketarangan',
-                                    labelAlign : 'right',
-                                    name: 'keterangan',
-                                    xtype: 'textfield'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'kegudang'
                         }
+
 
 
                     ]
@@ -831,7 +878,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                     handler: function(){
                         var form = me.winformBahanBaku.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksi2Save(form, me.Wo1DBahanBakuStore, me.winformBahanBaku);
+                            me.onProduksi2Save(form, me.Wo1DBahanBakuStore);
                         }
                     }
                 },{
@@ -879,7 +926,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'no_ppd'
+                            name: 'so_num'
+                        },
+                        {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'prod_id'
                         },
                         {
                             xtype: 'textfield',
@@ -904,6 +956,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     labelAlign : 'right',
                                     name: 'qty',
                                     xtype: 'textfield'
+                                },
+                                {
+                                    width: 20,
+                                    xtype: 'displayfield',
+                                    value: 'KG'
                                 }
                             ]
                         },
@@ -940,13 +997,31 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Gudang :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtGudangPopup',
                                     name:'gudang_id'
                                 }
                             ]
                         },
-
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Ke :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtGudangPopup',
+                                    name:'kegudang'
+                                }
+                            ]
+                        },
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -1015,7 +1090,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             modal:true
 
         });
-        store.load({params:{no_ppd: me.currProduksi, wo_num:me.currWo_num}});
+        store.load({params:{so_num: me.currSo_num, wo_num:me.currWo_num, prod_id:me.currProd_id}});
         this.myWinChooseItem.show();
     },
 
@@ -1060,19 +1135,19 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
     onProduksiGridClick: function(grid, selected){
         var me = this;
         me.currProduksi = selected.data.no_ppd;
+        me.currFormula = selected.data.formula_id;
         me.currProd_id = selected.data.prod_id;
-       /* var TopBarItems = this.ProduksiGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);*/
-        me.Wo1DStore.load({params:{no_ppd: me.currProduksi, prod_id: me.currProd_id}});
+        me.currSo_num = selected.data.so_num;
+        me.currStatus = selected.data.status;
+
+        me.Wo1DStore.load({params:{so_num: me.currSo_num, no_ppd: me.currProduksi, prod_id: me.currProd_id}});
 
     },
     onProduksiGridClick2: function(grid, selected){
         var me = this;
         me.currWo_num = selected.data.wo_num;
-        me.currProduksi = selected.data.no_ppd;
+        me.currSo_num = selected.data.so_num;
+        me.currProd_id = selected.data.prod_id;
         Ext.getCmp('addBahanBaku').setDisabled(false);
         Ext.getCmp('addBarangJadi').setDisabled(false);
 
@@ -1095,6 +1170,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
 
         form.findField('no_ppd').setValue(me.currProduksi);
         form.findField('prod_id').setValue(me.currProd_id);
+        form.findField('so_num').setValue(me.currSo_num);
+
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -1111,20 +1188,27 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{no_ppd: me.currProduksi, prod_id: me.currProd_id}});
+        store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
     },
 
-    onProduksi2Save: function(form, store, window){
+    onProduksi2Save: function(form, store){
         var me = this;
-        me.saveProduksi2(form, store, window);
+        me.saveProduksi2(form, store);
     },
-    saveProduksi2: function(form, store, window){
+    saveProduksi2: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
 
         f = me.winformBahanBaku.down('form').getForm(), rec = f.getRecord();
 
-        form.findField('no_ppd').setValue(me.currProduksi);
         form.findField('wo_num').setValue(me.currWo_num);
+        form.findField('no_ppd').setValue(me.currProduksi);
+        form.findField('prod_id').setValue(me.currProd_id);
+        form.findField('formula_id').setValue(me.currFormula);
+        form.findField('so_num').setValue(me.currSo_num);
+        form.findField('jml_paket').setValue(Ext.getCmp('jml_paket_wo').getValue());
+        form.findField('darigudang').setValue(Ext.getCmp('darigudang_wo').getValue());
+        form.findField('kegudang').setValue(Ext.getCmp('kegudang_wo').getValue());
+
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -1133,15 +1217,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         }
         store.sync({
             success:function(){
-                me.winformBahanBaku.close();
-                //store.load();
             },
             failure:function(){
-                // store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{no_ppd: me.currProduksi,wo_num: me.currWo_num}});
+        store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
     },
     onProduksi3Save: function(form, store, window){
         var me = this;
@@ -1152,8 +1233,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
 
             f = me.winformBahanJadi.down('form').getForm(), rec = f.getRecord();
 
-        form.findField('no_ppd').setValue(me.currProduksi);
         form.findField('wo_num').setValue(me.currWo_num);
+        form.findField('prod_id').setValue(me.currProd_id);
+        form.findField('so_num').setValue(me.currSo_num);
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -1170,7 +1252,29 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{no_ppd: me.currProduksi,wo_num: me.currWo_num}});
+        store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+    },
+    saveProduksi4: function(form, store, window){
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
+
+            f = me.winposted.down('form').getForm(), rec = f.getRecord();
+
+        values = form.getValues();
+        if(storeIndex == -1){
+            store.add(values);
+        }else{
+            record.set(values);
+        }
+        store.sync({
+            success:function(){
+                window.close();
+            },
+            failure:function(){
+                // store.load();
+                me.msg('Opps!', 'Error!!', true);
+            }
+        });
+        store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
     },
     deleteProduksi1: function(store, grid){
         var me = this,

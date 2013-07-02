@@ -126,7 +126,7 @@ $LANG = array(
     'apinvoice'                                  => 'AP Invoice',
     'apinvoicerevisi'                                  => 'AP Invoice Revision',
     'apinvoicepembayaran'                                  => 'AP Invoice Payment',
-    'apinvoicepaymentrevisi'                                  => 'AP Invoice Payment Revision',
+    'appaymentalocation'                                  => 'AP Payment Alocation',
     'apinvoicemanufaktur'                                  => 'AP Invoice Manufacture',
     'apinvoicemanufakturrevisi'                                  => 'AP Invoice Manufacture Revision',
     'arsale'                                  => 'AR Sale',
@@ -137,6 +137,7 @@ $LANG = array(
     'cblebih'                                  => 'CashBon Plus',
     'cbkurang'                                  => 'CashBon Minus',
     'bankin'                                  => 'CashBook Bank In',
-    'bankout'                                  => 'CashBook Bank Out'
+    'bankout'                                  => 'CashBook Bank Out',
+    'gl'                                  => 'General Ledger'
 
 );

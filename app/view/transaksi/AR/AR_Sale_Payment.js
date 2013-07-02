@@ -9,6 +9,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         me.currInv_Code = null;
         me.currCoa = null;
         me.currBB = null;
+        me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
@@ -19,6 +20,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
+                {name: 'giro_num',type: 'string'},
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'bank_code',type: 'string'},
                 {name: 'cust_id',type: 'string'},
@@ -28,6 +30,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
+                {name: 'canceled',type: 'string'},
                 {name: 'inv_type',type: 'string'}
             ]
 
@@ -58,6 +61,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
@@ -70,10 +74,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Jurnal.getJurnal,
-                    create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
-                    destroy : Jurnal.deleteJurnal
+                    read: Jurnal.getJurnal
+                   // create: Jurnal.addJurnal,
+                   // update: Jurnal.updateJurnal,
+                    //destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -101,25 +105,36 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
                 {width: 200,text: 'Untuk Inv.',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
                 {width: 200,text: 'Customer ID',sortable: true,dataIndex: 'cust_id'},
-                {width: 200,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar'},
+                {width: 200,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {width: 200,text: 'canceled',sortable: true,dataIndex: 'canceled', hidden: true},
                 {width: 50,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.AR_Sale_PaymentStore, record, 'Edit AR Sale Payment');
-                    Ext.getCmp('cancel_arsp').enable();
-                    Ext.getCmp('inv_code_rev_ar_pay').disable();
+                    if(record.get('canceled')!='1'){
+                        me.onItemdblclick(me.AR_Sale_PaymentStore, record, 'Edit AR Sale Payment');
+                    }
+                    Ext.getCmp('post_arsp').enable();
+                    Ext.getCmp('canceled_arsp').enable();
                 }
             },
             features:[searching],
@@ -135,8 +150,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_Sale_PaymentModel', 'Tambah Data');
-                                Ext.getCmp('cancel_arsp').disable();
-                                Ext.getCmp('inv_code_rev_ar_pay').disable();
+                                Ext.getCmp('post_arsp').disable();
+                                Ext.getCmp('canceled_arsp').disable();
                             }
                         },
                         {
@@ -177,56 +192,19 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
                 {header : 'Vendor Id', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200},
                 {header : 'Debit', dataIndex : 'debit',width : 100, renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Credit', dataIndex : 'credit',width : 100, renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    var form = this.winformAR_Sale_Jurnal.down('form');
-                    me.onItemdblclick1(me.AR_Sale_JurnalStore, record, 'Edit AR Sales Jurnal', me.winformAR_Sale_Jurnal, form);
-
+            viewConfig: {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : '';
                 }
             },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformAR_Sale_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'AR_Sale_JurnalModel', 'Tambah Data', me.winformAR_Sale_Jurnal);
-
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi1(me.AR_Sale_JurnalStore, me.AR_Sale_JurnalGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.AR_Sale_JurnalGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
+            features:[searching]
         });
 
         // *************************************************************************************
@@ -281,35 +259,23 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
 
                                 },
                                 {
-                                    boxLabel: "Revisi",
-                                    inputValue:'R',
+                                    boxLabel: "Uang Muka",
+                                    inputValue:'U',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('inv_code_rev_ar_pay').enable();
+                                            Ext.getCmp('inv_code_rev_ar_pay').disable();
                                         }
                                     }
 
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            id:'inv_code_rev_ar_pay',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Inv. Revisi : '
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'inv_code_revisi'
+                                    boxLabel: "Alokasi",
+                                    inputValue:'A',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_rev_ar_pay').disable();
+                                        }
+                                    }
 
                                 }
                             ]
@@ -332,7 +298,28 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    allowBlank: false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: ' Giro Number : '
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'giro_num'
                                 }
                             ]
                         },
@@ -351,8 +338,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'for_inv_code'
+                                    xtype: 'xtARPopup',
+                                    name: 'for_inv_code',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -372,7 +360,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 200,
                                     xtype: 'xtBankPopup',
-                                    name: 'bank_code'
+                                    name: 'bank_code',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -413,7 +402,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'nilaidasar'
+                                    name: 'nilaidasar',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -444,9 +434,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Cancel/Return',
-                                    id:'cancel_arsp',
+                                    fieldLabel: 'Posted',
+                                    id:'post_arsp',
                                     name: 'status'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Canceled',
+                                    id:'canceled_arsp',
+                                    name: 'canceled'
                                 }
                             ]
                         }
@@ -477,139 +474,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 scope: me,
                 close: function(){
                     me.action('close');
-                }
-            }
-        });
-        me.winformAR_Sale_Jurnal = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Coa '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'coa'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'vend_id'
-
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debit :'
-                                },
-                                {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Credit :'
-                                },
-                                {
-                                    fieldLabel : 'Credit',
-                                    labelAlign : 'right',
-                                    name: 'credit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        }
-
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winformAR_Sale_Jurnal.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi3Save(form, me.AR_Sale_JurnalStore, me.winformAR_Sale_Jurnal);
-                        }
-                    }
-                },{
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winformAR_Sale_Jurnal);
                 }
             }
         });
@@ -664,16 +528,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         this.win.show();
 
     },
-    onNewProduksi1: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new',window);
-        window.show();
-    },
 
     /**
      *
@@ -683,6 +537,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.inv_code;
+        me.currPosted = selected.data.status;
         var TopBarItems = this.AR_Sale_PaymentGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
@@ -775,27 +630,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             }
         });
     },
-    deleteProduksi1: function(store, grid){
-        var me = this,
-            sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        })
-    },
+
 
     /**
      * This function is called from Viewport.js when

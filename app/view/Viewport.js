@@ -155,11 +155,11 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.OrderMonitoring.OrderMonitoring'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.PengadaanBarang'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi'));
+       // me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Revisi'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi'));
+       me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Payment_Alocation'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi'));
+       // me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale_Payment'));
@@ -170,6 +170,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbon_Kurang'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_In'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_Out'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.GL.Voucher'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.Report.Report'));
 
 

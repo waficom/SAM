@@ -169,6 +169,7 @@ class AR_Sale
         unset($data['id'],$data['inv_code'], $data['sequence_no']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_detail', 'U', array('inv_code' => $params -> inv_code,'sequence_no' => $params -> sequence_no ));
         $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         return $params;
     }
 

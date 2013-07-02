@@ -9,6 +9,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
         me.currInv_Code = null;
         me.currCoa = null;
         me.currBB = null;
+        me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
@@ -18,7 +19,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
-                {name: 'inv_choose',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'from_gudang_id',type: 'string'},
@@ -27,7 +27,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'}
+                {name: 'userinput',type: 'string'},
+                {name: 'status',type: 'string'},
+                {name: 'inv_type',type: 'string'}
             ]
 
         });
@@ -102,10 +104,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AP_Invoice.getAP_Inv_Jurnal,
-                    create: AP_Invoice.addAP_Inv_Jurnal,
-                    update: AP_Invoice.updateAP_Inv_Jurnal,
-                    destroy : AP_Invoice.deleteAP_Inv_Jurnal
+                    read: Jurnal.getJurnal,
+                    create: Jurnal.addJurnal,
+                    update: Jurnal.updateJurnal,
+                    destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -139,14 +141,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {width: 200,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
                 {width: 200,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
+                {width: 200,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden:true},
+                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1' ? 'child-row' :'';
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.AP_InvStore, record, 'Edit AP Inv Manufaktur');
+                    if(record.get('status')!=1){
+                        me.onItemdblclick(me.AP_InvStore, record, 'Edit AP Inv Manufaktur');
+                        Ext.getCmp('post_ap_mf').enable();
+                    }
                 }
             },
             features:[searching],
@@ -162,6 +176,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_InvModel', 'Tambah Data');
+                                Ext.getCmp('post_ap_mf').disable();
+                                Ext.getCmp('inv_code_ap_mn').disable();
                             }
                         },
                         {
@@ -175,9 +191,20 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                         {
                             xtype: 'button',
                             text: 'Detail',
+                            iconCls: 'document',
                             scope: me,
                             handler: function(){
                                 me.ShowGridPopup(me.AP_Inv_DetailStore, 'Detail Item',me.AP_Inv_DetailGrid);
+
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'cancel->>',
+                            iconCls: 'cancel',
+                            scope: me,
+                            handler: function(){
+                                me.onCanceled(me.AP_InvStore);
 
                             }
                         },'->',
@@ -217,12 +244,20 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
+            viewConfig: {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
-                    me.currBB = record.get('sequence_no');
-                    var form = this.winformAP_Inv_Detail.down('form');
-                    me.onItemdblclick1(me.AP_Inv_DetailStore, record, 'Edit Detail Item', me.winformAP_Inv_Detail, form);
+                    if(me.currPosted !='1'){
+                        me.currBB = record.get('sequence_no');
+                        var form = this.winformAP_Inv_Detail.down('form');
+                        me.onItemdblclick1(me.AP_Inv_DetailStore, record, 'Edit Detail Item', me.winformAP_Inv_Detail, form);
+                    }
                 }
             },
             features:[searching],
@@ -277,11 +312,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
+            viewConfig: {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
-                    var form = this.winformAP_Inv_Jurnal.down('form');
-                    me.onItemdblclick1(me.AP_Inv_JurnalStore, record, 'Edit AP Inv. Jurnal', me.winformAP_Inv_Jurnal, form);
+                    if(me.currPosted !='1'){
+                        var form = this.winformAP_Inv_Jurnal.down('form');
+                        me.onItemdblclick1(me.AP_Inv_JurnalStore, record, 'Edit AP Inv. Jurnal', me.winformAP_Inv_Jurnal, form);
+                    }
                 }
             },
             features:[searching],
@@ -360,16 +403,65 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                         {
                             xtype: "radiogroup",
                             fieldLabel: "Type ",
-                            defaults: {xtype: "radio",name: "inv_choose"},
+                            defaults: {xtype: "radio",name: "inv_type"},
                             items: [
                                 {
                                     boxLabel: "WP",
                                     checked: true,
-                                    inputValue: "W"
+                                    inputValue: "W",
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_ap_mn').disable();
+                                        }
+                                    }
+                                },
+                                {
+                                    boxLabel: "Revisi WP",
+                                    inputValue: "P",
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_ap_mn').enable();
+                                        }
+                                    }
                                 },
                                 {
                                     boxLabel: "FG",
-                                    inputValue: "F"
+                                    inputValue: "F",
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_ap_mn').disable();
+                                        }
+                                    }
+                                },
+                                {
+                                    boxLabel: "Revisi FG",
+                                    inputValue: "G",
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_ap_mn').enable();
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Revisi : '
+                                },
+                                {
+                                    width: 300,
+                                    xtype: 'textfield',
+                                    name: 'inv_code_revisi',
+                                    id:'inv_code_ap_mn'
                                 }
                             ]
                         },
@@ -411,7 +503,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 {
                                     width: 200,
                                     xtype: 'xtGudangPopup',
-                                    name: 'from_gudang_id'
+                                    name: 'from_gudang_id',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -431,7 +524,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 {
                                     width: 200,
                                     xtype: 'xtGudangPopup',
-                                    name: 'to_gudang_id'
+                                    name: 'to_gudang_id',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -452,6 +546,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                     width: 300,
                                     xtype: 'textfield',
                                     name: 'keterangan'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Posted',
+                                    id:'post_ap_mf',
+                                    name: 'status'
                                 }
                             ]
                         }
@@ -681,7 +788,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
+                                    xtype: 'xtCoaPopup',
                                     name: 'coa',
                                     allowBlank: false
                                 }
@@ -833,6 +940,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.inv_code;
+        me.currPosted = selected.data.status;
         var TopBarItems = this.AP_InvGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
@@ -964,6 +1072,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }
         });
@@ -1018,6 +1127,27 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
+    onCanceled: function(store){
+        var me = this, grid = me.AP_InvGrid;
+        sm = grid.getSelectionModel();
+        sr = sm.getSelection();
+        bid = sr[0].get('inv_code');
+        Ext.Msg.show({
+            title: 'Please Confirm' + '...',
+            msg: 'Are you sure want to cancel' + ' ?',
+            icon: Ext.MessageBox.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            fn: function(btn){
+                if(btn == 'yes'){
+                    // store.remove(sm.getSelection());
+                    store.sync();
+                    if (store.getCount() > 0) {
+                        sm.select(0);
+                    }
+                }
+            }
+        });
+    },
     onActive: function(callback){
         var me = this;
         this.AP_InvStore.load({params:{start:0, limit:5}});

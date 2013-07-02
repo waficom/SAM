@@ -567,7 +567,7 @@ Ext.define('App.view.master.Vendor', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'xtCoaPopup',
                                     name: 'coa_ap'
                                 },
                                 {
@@ -577,7 +577,7 @@ Ext.define('App.view.master.Vendor', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'xtCoaPopup',
                                     name: 'coa_advance'
                                 }
                             ]

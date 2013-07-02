@@ -105,15 +105,22 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'Do_num', sortable: false, dataIndex: 'do_num',width:200},
-                {text: 'So_num', sortable: false, dataIndex: 'so_num'},
-                {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
+                {text: 'Do_num', sortable: false, dataIndex: 'do_num',width:150},
+                {text: 'So_num',width:150, sortable: false, dataIndex: 'so_num'},
+                {text: 'Route', width:200, sortable: false, dataIndex: 'route'},
                 {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'Customer', width:200, sortable: false,flex: 1,dataIndex: 'cust_nama'},
-                {text: 'Qty', width:200, sortable: false,dataIndex: 'qty'},
-                {text: 'Qty Delivery', width:200, sortable: false,dataIndex: 'qty_delivery'},
+                {text: 'Customer', width:200, sortable: false,dataIndex: 'cust_nama'},
+                {text: 'Qty', width:150, sortable: false,dataIndex: 'qty'},
+                {text: 'Qty Delivery', width:150, sortable: false,dataIndex: 'qty_delivery'},
                 {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('qty') == record.get('qty_delivery') ? 'child-row' : (record.get('qty') < record.get('qty_delivery') ? 'adult-row':'');
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onDeliveryOrderGridClick,
@@ -471,22 +478,17 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             ]
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
+                            xtype: "radiogroup",
+                            fieldLabel: "OrderSource",
+                            defaults: {xtype: "radio",name: "ordersource"},
                             items: [
                                 {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Source :'
+                                    boxLabel: "Land",
+                                    inputValue: "Land"
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'ordersource'
-                                    // disabled: true
+                                    boxLabel: "Sea",
+                                    inputValue: "Sea"
                                 }
                             ]
                         },
@@ -874,7 +876,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             }
         });
         store.load({params:{do_num: me.currDeliveryOrder}});
-        me.DeliveryOrderStore.load();
+        me.DeliveryOrderStore.load({params:{do_num: me.currDeliveryOrder}});
     },
     onDeliveryOrderDelete: function(store){
         var me = this, grid = me.DeliveryOrderGrid;
@@ -910,12 +912,12 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    DeliveryOrder.deleteDeliveryOrder1(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.DeliveryOrderStore.load({params:{do_num: me.currDeliveryOrder}});
                 }
             }
         })

@@ -107,6 +107,27 @@ Ext.define('App.view.master.Customer', {
                 {
                     name: 'coa_arp',
                     type: 'string'
+                },
+                {
+                    name: 'coa_ar_disc',
+                    type: 'string'
+                },
+                {
+                    name: 'coa_ar_return',
+                    type: 'string'
+                },
+                {
+                    name: 'coa_ar_distribusi',
+                    type: 'string'
+                },
+                {
+                    name: 'coa_ar_um',
+                    type: 'string'
+                }
+                ,
+                {
+                    name: 'coa_ar_pot',
+                    type: 'string'
                 }
             ]
 
@@ -221,77 +242,6 @@ Ext.define('App.view.master.Customer', {
                     dataIndex: 'alamat'
                 },
                 {
-                    width : 100,
-                    text: 'Contact',
-                    sortable: true,
-                    dataIndex: 'contact',
-                    hidden : true
-                },
-                {
-                    width : 100,
-                    text: 'NPWP',
-                    sortable: true,
-                    dataIndex: 'npwp',
-                    hidden : true
-                },
-                {
-                    width : 100,
-                    text: 'Kota',
-                    sortable: true,
-                    dataIndex: 'kota'
-                },
-                {
-                    width: 100,
-                    text: 'Telepon',
-                    sortable: true,
-                    dataIndex: 'telepon1',
-                    hidden : true
-                },
-                {
-                    width: 100,
-                    text: 'Telepon',
-                    sortable: true,
-                    dataIndex: 'telepon2',
-                    hidden : true
-                },
-                {
-                    width: 100,
-                    text: 'Fax',
-                    sortable: true,
-                    dataIndex: 'fax',
-                    hidden : true
-                },
-                {
-                    width: 100,
-                    text: 'Propinsi',
-                    sortable: true,
-                    dataIndex: 'propinsi',
-                    hidden : true
-                },
-                {
-                    width: 100,
-                    text: 'Kode Pos',
-                    sortable: true,
-                    dataIndex: 'kodepos',
-                    hidden : true
-                },
-                {
-                    width: 100,
-                    text: 'Negara',
-                    sortable: true,
-                    dataIndex: 'negara',
-                    hidden : true
-                },
-                {
-                    width: 200,
-                    text: 'Kredit Limit',
-                    sortable: true,
-                    dataIndex: 'credit_limit',
-                    renderer: renderRupiah,
-                    align:'right',
-                    style: 'text-align:center'
-                },
-                {
                     width: 100,
                     text: 'Coa AR',
                     sortable: true,
@@ -302,6 +252,30 @@ Ext.define('App.view.master.Customer', {
                     text: 'Coa AR-Piutang',
                     sortable: true,
                     dataIndex: 'coa_arp'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR-Discon',
+                    sortable: true,
+                    dataIndex: 'coa_ar_disc'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR-Distribusi',
+                    sortable: true,
+                    dataIndex: 'coa_ar_distribusi'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR-UM',
+                    sortable: true,
+                    dataIndex: 'coa_ar_um'
+                },
+                {
+                    width: 100,
+                    text: 'Coa AR-Pot',
+                    sortable: true,
+                    dataIndex: 'coa_ar_pot'
                 },
                 {
                     flex: 1,
@@ -694,18 +668,93 @@ Ext.define('App.view.master.Customer', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa_ar'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar',
+                                    allowBlank:true
                                 },
                                 {
                                     width: 80,
                                     xtype: 'displayfield',
-                                    value: 'Coa (AR-Piutang) :'
+                                    value: 'Coa(Piutang) :'
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'coa_arp'
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_arp',
+                                    allowBlank:true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa(Siscon) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar_disc',
+                                    allowBlank:true
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'displayfield',
+                                    value: 'Coa(Return) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar_return',
+                                    allowBlank:true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa(Distribusi) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar_distribusi',
+                                    allowBlank:true
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'displayfield',
+                                    value: 'Coa(UM) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar_um',
+                                    allowBlank:true
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'displayfield',
+                                    value: 'Coa(Pot) :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_ar_pot',
+                                    allowBlank:true
                                 }
                             ]
                         },

@@ -66,6 +66,9 @@
 .delete, .close {
 	background-image: url(../images/icons/delete.png) !important;
 }
+.cancel, .close {
+    background-image: url(../images/icons/delete_black.png) !important;
+}
 
 .save {
 	background-image: url(../images/icons/save.png) !important;
@@ -73,6 +76,9 @@
 
 .edit {
 	background-image: url(../images/icons/edit.png) !important;
+}
+.detail {
+    background-image: url(../images/icons/icoLog.png) !important;
 }
 
 .icoPatientInfo {

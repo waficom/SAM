@@ -89,7 +89,7 @@ class SalesOrder
 				ON customer.cust_id = so0.cust_id
 				$whereClause
 				ORDER BY
-				     so_num";
+				     timeedit";
 		$this->db->setSQL($sql);
 
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -120,6 +120,10 @@ class SalesOrder
         $data['cust_po_tgl'] = $this->db->Date_Converter($data['cust_po_tgl']);
         $data['tgl_jt_kirim'] = $this->db->Date_Converter($data['tgl_jt_kirim']);
         $data['released_date'] = $this->db->Date_Converter($data['released_date']);
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         if (is_null($data['ppn_so']) || ($data['ppn_so'] == '')) {
             $data['ppn_so'] = '0';
         }
@@ -155,6 +159,8 @@ class SalesOrder
         $data['cust_po_tgl'] = $this->db->Date_Converter($data['cust_po_tgl']);
         $data['tgl_jt_kirim'] = $this->db->Date_Converter($data['tgl_jt_kirim']);
         $data['released_date'] = $this->db->Date_Converter($data['released_date']);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         if (is_null($data['ppn_so']) || ($data['ppn_so'] == '')) {
             $data['ppn_so'] = '0';
         }
@@ -327,27 +333,7 @@ class SalesOrder
 
     public function getSOLocation(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$soitems = '';
-        (int)$total = 0;
-        (string)$sql = '';
-
-        // Look between service date
-
-        $whereClause .= chr(13) . " AND so10.co_id = '" . $params->co_id . "'";
-        $whereClause .= chr(13) . " AND so10.so_num = '" . $params->so_num . "'";
-
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
-        $sql = "select
+        $this->db->setSQL("select
                     so11.co_id,
                     so11.so_num,
                     so11.prod_id,
@@ -359,27 +345,19 @@ class SalesOrder
                     so11.sat_id,
                     so11.keterangan,
                     items.prod_nama,
-                    satuan.satuan_nama
+                    satuan.satuan_nama as sat_nama
                 from so11
                    left outer join items on (so11.co_id = items.co_id) and (so11.prod_id = items.prod_id)
                    left outer join satuan on (so11.co_id = satuan.co_id) and (so11.sat_id = satuan.satuan_id)
-                   $whereClause
-				ORDER BY
-				     lokasi_nama";
-        $this->db->setSQL($sql);
+                    WHERE so11.so_num = '$params->so_num' and so11.prod_id = '$params->prod_id' ORDER BY so11.urut asc");
 
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $soitems[] = $row;
+            array_push($rows, $row);
         }
-
-        $total = count($soitems);
-        return array(
-            'totals' => $total,
-            'soitems' => $soitems
-        );
-
+        return $rows;
     }
     public function addSOLocation(stdClass $params)
     {
@@ -390,7 +368,7 @@ class SalesOrder
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['prod_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['id']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'so11', 'I');
         $this -> db -> setSQL($sql);
@@ -405,7 +383,7 @@ class SalesOrder
     public function updateSOLocation(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['prod_nama'], $data['id'], $data['satuan_nama']);
+        unset($data['prod_id'], $data['sat_nama'], $data['so_num'],  $data['old_urut'], $data['id']);
         $cond = array('co_id' =>$params->co_id, 'so_num' => $params->so_num, 'prod_id' => $params->prod_id);
         $sql = $this -> db -> sqlBind($data, 'so11', 'U', $cond);
         $this -> db -> setSQL($sql);

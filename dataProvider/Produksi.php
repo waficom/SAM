@@ -46,10 +46,10 @@ class Produksi
     public function getProduksi(stdClass $params)
     {
         $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.pabrik_sequence
-, A.userinput, A.useredit, case A.status when '0' then 'new' else 'Release' end as statusdesc, B.description as factory
+, A.userinput, A.useredit, case A.status when '0' then 'new' else 'Released To Factory' end as statusdesc, B.description as factory
 from pp_produksi A
 left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence
-where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "' and A.status='0' ORDER BY A.timeedit DESC";
+where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "' ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -62,22 +62,6 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
 
     }
 
-    public function getViewDetailProduksi(stdClass $params)
-    {
-        $this->db->setSQL("SELECT *
-                         FROM PP_DETAILPRODUKSI
-                    WHERE no_ppd = '" . $params->no_ppd ."'ORDER BY timeedit DESC");
-//        $this -> db -> setSQL($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
     /**
      * @param stdClass $params
      * @return stdClass
@@ -101,9 +85,7 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
 
         $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'I');
         $this -> db -> setSQL($sql);
-//           print_r($sql);
         $this -> db -> execLog();
-//        error_reporting(0);
         return $params;
     }
 
@@ -113,16 +95,13 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
      */
     public function updateProduksi(stdClass $params)
     {
-        //error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        //$data['status'] = 'C';
         unset($data['id'], $data['old_no_pp'],$data['factory'],$data['statusdesc']);
         $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'U', array('no_pp' => $params-> old_no_pp));
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -140,25 +119,21 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
 
     public function getProduksi1(stdClass $params)
     {
-         //error_reporting(-1);
         $this->db->setSQL("SELECT *
                          FROM VIEWDETAILPRODUKSI
                     WHERE no_pp = '" . $params->no_pp ."'ORDER BY timeedit DESC");
 
         $rows = array();
-        //print_r($rows);
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
             array_push($rows, $row);
         }
-        //print_r($row);
         return $rows;
     }
 
     public function addProduksi1(stdClass $params)
     {
-        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['finishdate'] = $this->db->Date_Converter($data['finishdate']);
@@ -176,7 +151,6 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
 
         $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'I');
         $this -> db -> setSQL($sql);
-            //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -186,13 +160,11 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
      */
     public function updateProduksi1(stdClass $params)
     {
-       // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['finishdate'] = $this->db->Date_Converter($data['finishdate']);
         $data['est_finishdate'] = $this->db->Date_Converter($data['est_finishdate']);
-        //$data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['no_pp'], $data['old_no_ppd'], $data['cust_nama'], $data['formula_nama'], $data['prod_nama'], $data['spesifikasi_nama'],$data['kemasan_nama'],
         $data['n'], $data['p2o5'], $data['k2o'], $data['cao'], $data['mgo'], $data['so4'], $data['b'], $data['cu'], $data['zn']
@@ -211,36 +183,7 @@ where A.pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . subs
         $this -> db -> execLog();
         return $params;
     }
-    public function getSOpopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM so0 where status='B' ORDER BY so_num ASC";
-        $this -> db -> setSQL($sql);
-       // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
 
-        return $rows;
-
-    }
-    public function getFormulapopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM formula0 ORDER BY formula_id ASC";
-        $this -> db -> setSQL($sql);
-        // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
 
 
 }

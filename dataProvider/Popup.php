@@ -184,6 +184,21 @@ class Popup
         return $rows;
 
     }
+    public function getCoaPopup(stdClass $params)
+    {
+
+        $sql = "SELECT * from coa ORDER BY coa_id";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
 
     /**
      *

@@ -726,3 +726,16 @@ body#login {
 .welcome p {
 	margin: 5px 0 !important;
 }
+.child-row .x-grid-cell {
+    background-color:#e2ffe2;
+}
+
+.adult-row .x-grid-cell {
+    background-color: #ffe2e2;
+}
+.yellow-row .x-grid-cell {
+    background-color: #ffa;
+}
+.grown-row .x-grid-cell {
+    background-color: #FFB0C4;
+}

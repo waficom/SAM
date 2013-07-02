@@ -81,16 +81,9 @@ class GoodsReceived
             $whereClause = 'WHERE ' . $whereClause;
 
         $sql = "SELECT
-                    gr0.co_id,
-                    gr0.gr_num,
-                    gr0.po_num,
-                    gr0.tgl,
-                    gr0.vend_id,
-                    gr0.vend_id_trans,
-                    gr0.keterangan,
+                    gr0.*,
                     vendor.vend_nama,
-                    transportir.vend_nama as vend_tr_nama,
-                    gr0.gr_type, gr0.gudang_id, gudang.gudang_nama,
+                    transportir.vend_nama as vend_tr_nama, gudang.gudang_nama,
                     case gr0.gr_type when 'R' then 'Received' else 'Return' end as gr_type_desc
                 FROM gr0
                    left outer join vendor on (gr0.co_id = vendor.co_id) and (gr0.vend_id = vendor.vend_id)
@@ -133,6 +126,10 @@ class GoodsReceived
         }
         unset($data['vend_nama'],$data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $sql = $this -> db -> sqlBind($data, 'gr0', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -148,6 +145,8 @@ class GoodsReceived
         $data = get_object_vars($params);
         unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama']);
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num);
         $sql = $this -> db -> sqlBind($data, 'gr0', 'U', $cond);
         $this -> db -> setSQL($sql);
@@ -231,10 +230,13 @@ class GoodsReceived
                     gr10.qty_selisih,
                     gr10.keterangan,
                     bahanbaku.bb_nama,
-                    satuan.satuan_nama as sat_nama
+                    satuan.satuan_nama as sat_nama,
+                    A.qty_po
                 from gr10
                    left outer join bahanbaku on (gr10.co_id = bahanbaku.co_id) and (gr10.bb_id = bahanbaku.bb_id)
                    left outer join satuan on (gr10.co_id = satuan.co_id) and (gr10.sat_id = satuan.satuan_id)
+                   left join gr0 on gr10.gr_num=gr0.gr_num and gr10.co_id=gr0.co_id
+                   left join (select co_id, po_num, bb_id, sum(qty) as qty_po from po1 group by po_num, co_id, bb_id) A on gr0.po_num=A.po_num and gr0.co_id=A.co_id and gr10.bb_id=A.bb_id
                    $whereClause
 				ORDER BY
 				     bb_nama";
@@ -277,7 +279,7 @@ class GoodsReceived
     public function updateGRItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['qty_po']);
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id);
         $sql = $this -> db -> sqlBind($data, 'gr10', 'U', $cond);
         $this -> db -> setSQL($sql);
@@ -303,63 +305,25 @@ class GoodsReceived
 
     public function getGRDetail(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$grdtl = '';
-        (int)$total = 0;
-        (string)$sql = '';
-
-        // Look between service date
-
-        $whereClause .= chr(13) . " AND gr11.co_id = '$params->co_id' ";
-        $whereClause .= chr(13) . " AND gr11.gr_num = '$params->gr_num' ";
-        $whereClause .= chr(13) . " AND gr11.bb_id = '$params->bb_id' ";
-        $whereClause .= chr(13) . " AND gr11.sat_id = '$params->sat_id' ";
-
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
-        $sql = "select
-                    gr11.co_id,
-                    gr11.gr_num,
-                    gr11.bb_id,
-                    gr11.sat_id,
-                    gr11.urut,
-                    gr11.nopol,
-                    gr11.do_num,
-                    gr11.qty_brutto,
-                    gr11.qty_netto,
-                    gr11.qty_pcs,
-                    gr11.qty_selisih,
-                    gr11.keterangan,
-                    bahanbaku.bb_nama,
-                    satuan.satuan_nama as sat_nama
-                from gr11
-                   left outer join bahanbaku on (gr11.co_id = bahanbaku.co_id) and (gr11.bb_id = bahanbaku.bb_id)
-                   left outer join satuan on (gr11.co_id = satuan.co_id) and (gr11.sat_id = satuan.satuan_id)
-                   $whereClause
-				ORDER BY
-				     urut";
-        $this->db->setSQL($sql);
-
+        if (isset($params -> sort))
+        {
+            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
+        }
+        else
+        {
+            $orderx = 'urut';
+        }
+        $sql = "select * from gr11 WHERE gr_num = '$params->gr_num' AND co_id = '$params->co_id' and  bb_id = '$params->bb_id' and  sat_id = '$params->sat_id'
+				ORDER BY $orderx DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $grdtl[] = $row;
+            array_push($rows, $row);
         }
 
-        $total = count($grdtl);
-        return array(
-            'totals' => $total,
-            'grdetail' => $grdtl
-        );
-
+        return $rows;
     }
     public function addGRDetail(stdClass $params)
     {
@@ -370,7 +334,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
+        unset($data['id']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gr11', 'I');
         $this -> db -> setSQL($sql);
@@ -385,7 +349,7 @@ class GoodsReceived
     public function updateGRDetail(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['urut']);
+        unset($data['id'], $data['bb_id'], $data['urut'], $data['gr_num']);
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id, 'urut' => $params->urut);
         $sql = $this -> db -> sqlBind($data, 'gr11', 'U', $cond);
 

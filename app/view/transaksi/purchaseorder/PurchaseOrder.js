@@ -70,7 +70,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                 },
                 {
                     header : 'Total',
-                    dataIndex : 'n_netto',
+                    dataIndex : 'netto_total',
                     renderer: Ext.util.Format.numberRenderer('0,0'),
                     width : 300
                 }
@@ -453,7 +453,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 200,
                                     xtype: 'mitos.checkbox',
-                                    name : 'ppn_so'
+                                    name : 'ppn_po'
                                 },
                                 {
                                     width: 100,

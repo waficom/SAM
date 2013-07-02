@@ -24,7 +24,11 @@ Ext.define( 'App.model.transaksi.salesorder.SalesOrder',
 	{ name : 'n_netto', type : 'float'},
 	{ name : 'keterangan', type : 'string'},
     { name : 'released', type: 'bool'},
-    { name : 'released_date', type: 'date'}
+    { name : 'released_date', type: 'date'},
+        {name: 'timeedit',type: 'date'},
+        {name: 'useredit',type: 'string'},
+        {name: 'userinput',type: 'string'},
+        { name : 'status', type: 'string'}
     ],
 	proxy :
 	{

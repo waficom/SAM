@@ -62,4 +62,24 @@ class Finance_Rpt extends Reports
             'url' => $url
         );
     }
+    public function General_Jurnal(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/GL.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Trial_Balance(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/TB.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
 }

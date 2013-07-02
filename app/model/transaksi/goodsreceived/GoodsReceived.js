@@ -14,7 +14,13 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
             { name : 'gr_type_desc', type : 'string'},
             { name : 'keterangan', type : 'string'},
             { name : 'gudang_id', type : 'string'},
-            { name : 'gudang_nama', type : 'string'}
+            { name : 'gudang_nama', type : 'string'},
+            { name : 'status', type : 'string'},
+            { name : 'canceled', type : 'string'},
+            { name : 'userinput', type : 'string'},
+            { name : 'useredit', type : 'string'},
+            { name : 'timeinput', type : 'date'},
+            { name : 'timeedit', type : 'date'}
         ],
         proxy :
         {

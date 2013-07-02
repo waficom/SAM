@@ -56,9 +56,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
-                {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
+                {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'}
             ]
 
@@ -68,10 +68,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AP_Invoice.getAP_Inv_Jurnal,
-                    create: AP_Invoice.addAP_Inv_Jurnal,
-                    update: AP_Invoice.updateAP_Inv_Jurnal,
-                    destroy : AP_Invoice.deleteAP_Inv_Jurnal
+                    read: Jurnal.getJurnal,
+                    create: Jurnal.addJurnal,
+                    update: Jurnal.updateJurnal,
+                    destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -169,9 +169,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
                 {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
                 {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Harga', dataIndex : 'harga',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 200},
-                {header : 'Credit', dataIndex : 'credit',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             listeners: {
@@ -440,6 +440,13 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
                         },
                         {
                             xtype: 'fieldcontainer',
+                            defaults: {hideLabel: true},
+                            msgTarget: 'under',
+                            name:'sequence_no',
+                            hidden:true
+                        },
+                        {
+                            xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
                             },
@@ -454,27 +461,34 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'coa'
+                                    name: 'coa',
+                                    allowBlank: false
                                 }
                             ]
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'vend_id'
 
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Vendor : '
+                                    value: 'Debit :'
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtVendorSuplierPopup',
-                                    name: 'vend_id'
+                                    fieldLabel : 'Debit',
+                                    labelAlign : 'right',
+                                    name: 'debit',
+                                    xtype: 'textfield'
                                 }
                             ]
                         },
@@ -488,16 +502,17 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Harga :'
+                                    value: 'Credit :'
                                 },
                                 {
-                                    fieldLabel : 'Harga',
+                                    fieldLabel : 'Credit',
                                     labelAlign : 'right',
-                                    name: 'harga',
+                                    name: 'credit',
                                     xtype: 'textfield'
                                 }
                             ]
                         }
+
 
                     ]
                 }

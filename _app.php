@@ -147,7 +147,7 @@ requires = [
     'App.ux.SearchAdd',
     'App.ux.PilihProductSearch',
 
-    'App.ux.LiveJenisSearch',
+   /* 'App.ux.LiveJenisSearch',
     'App.ux.LivebbSearch',
     'App.ux.LiveBentukSearch',
     'App.ux.LiveKemasanSearch',
@@ -157,7 +157,7 @@ requires = [
     'App.ux.LiveCustomerSearch',
     'App.ux.LiveVendorSearch',
     'App.ux.LiveFormulaSearch',
-   'App.ux.LiveWilayahSearch',
+   'App.ux.LiveWilayahSearch',*/
    'App.ux.LiveSalesmanSearch',
 
     'App.ux.SalesOrderPopup',
@@ -182,7 +182,9 @@ requires = [
     'App.ux.GRPopup',
     'App.ux.TaxPopup',
     'App.ux.BankPopup',
-
+    'App.ux.CoaPopup',
+    'App.ux.APPopup',
+    'App.ux.ARPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -223,100 +225,19 @@ requires = [
      * remember this are all reusable combo boxes.
      */
     /*
-     'App.ux.combo.ActiveFacilities',
-     'App.ux.combo.ActiveInsurances',
-     'App.ux.combo.Allergies',
-     'App.ux.combo.AllergiesAbdominal',
-     'App.ux.combo.AllergiesLocal',
-     'App.ux.combo.AllergiesLocation',
-     'App.ux.combo.AllergiesSeverity',
-     'App.ux.combo.AllergiesSkin',
-     'App.ux.combo.AllergiesSystemic',
-     'App.ux.combo.AllergiesTypes',
-     */
-//				'App.ux.combo.Authorizations',
+
     /*
-     'App.ux.combo.BillingFacilities',
-     */
-//				'App.ux.combo.CalendarCategories',
-//				'App.ux.combo.CalendarStatus',
-//				'App.ux.combo.CodesTypes',
-    /*
-     'App.ux.combo.CVXManufacturers',
-     'App.ux.combo.CVXManufacturersForCvx',
-     'App.ux.combo.EncounterICDS',
-     'App.ux.combo.EncounterPriority',
-     'App.ux.combo.Ethnicity',
-     'App.ux.combo.Facilities',
-     'App.ux.combo.FloorPlanAreas',
-     'App.ux.combo.FollowUp',
-     'App.ux.combo.InsurancePayerType',
-     'App.ux.combo.LabObservations',
-     'App.ux.combo.LabsTypes',
+
      */
     'App.ux.combo.Languages',
     /*
-     'App.ux.combo.Lists',
-     'App.ux.combo.MedicalIssues',
-     'App.ux.combo.Medications',
-     'App.ux.combo.MsgNoteType',
-     'App.ux.combo.MsgStatus',
-     'App.ux.combo.Occurrence',
-     'App.ux.combo.Outcome',
-     'App.ux.combo.Outcome2',
-     'App.ux.combo.PayingEntity',
-     'App.ux.combo.PaymentCategory',
-     'App.ux.combo.PaymentMethod',
-     'App.ux.combo.Pharmacies',
-     'App.ux.combo.posCodes',
-     'App.ux.combo.PrescriptionHowTo',
-     'App.ux.combo.PrescriptionOften',
-     'App.ux.combo.PrescriptionTypes',
-     'App.ux.combo.PrescriptionWhen',
-     'App.ux.combo.PreventiveCareTypes',
-     'App.ux.combo.ProceduresBodySites',
-     'App.ux.combo.Providers',
-     'App.ux.combo.Race',
-     'App.ux.combo.Roles',
-     'App.ux.combo.Sex',
-     'App.ux.combo.SmokingStatus',
-     'App.ux.combo.Surgery',
-     'App.ux.combo.TaxId',
-     'App.ux.combo.Templates',
-     'App.ux.combo.Themes',
-     'App.ux.combo.Time',
-     'App.ux.combo.Titles',
-     'App.ux.combo.TransmitMethod',
-     'App.ux.combo.Types',
-     'App.ux.combo.Units',
-     'App.ux.combo.Users',
-     'App.ux.combo.YesNoNa',
-     'App.ux.combo.YesNo',
-     */
+
     'App.ux.window.Window',
     'App.ux.NodeDisabled',
     /*
      * Load the patient window related panels
      */
-    /*
-     'App.view.patient.windows.Medical',
-     'App.view.patient.windows.Charts',
-     'App.view.patient.windows.PreventiveCare',
-     'App.view.patient.windows.NewDocuments',
-     'App.view.patient.windows.DocumentViewer',
-     'App.view.patient.windows.NewEncounter',
-     'App.view.patient.windows.ArrivalLog',
-     */
-    /*
-     * Load the patient related panels
-     */
-    /*
-     'App.view.dashboard.panel.PortalColumn',
-     'App.view.dashboard.panel.PortalDropZone',
-     'App.view.dashboard.panel.PortalPanel',
-     'App.view.dashboard.panel.OnotesPortlet',
-     'App.view.dashboard.panel.VisitsPortlet',
-     */
+
     'App.view.dashboard.Dashboard',
 
     'App.view.master.Companies',
@@ -353,11 +274,11 @@ requires = [
     'App.view.transaksi.OrderMonitoring.OrderMonitoring',
     'App.view.transaksi.Produksi.PengadaanBarang',
     'App.view.transaksi.AP-Invoice.AP_Invoice',
-    'App.view.transaksi.AP-Invoice.AP_Invoice_Revisi',
+    'App.view.transaksi.AP-Invoice.AP_Payment_Alocation',
     'App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran',
-    'App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi',
+   // 'App.view.transaksi.AP-Invoice.AP_Invoice_Payment_Revisi',
     'App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur',
-    'App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi',
+    //'App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur_Revisi',
     'App.view.transaksi.AR.AR_Sale',
     'App.view.transaksi.AR.AR_Sale_Payment',
     'App.view.transaksi.AR.AR_Giro',
@@ -367,6 +288,7 @@ requires = [
     'App.view.transaksi.CashBook.Cashbon_Kurang',
     'App.view.transaksi.CashBook.Cashbook_Bank_In',
     'App.view.transaksi.CashBook.Cashbook_Bank_Out',
+    'App.view.transaksi.GL.Voucher',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

@@ -9,6 +9,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
         me.currInv_Code = null;
         me.currCoa = null;
         me.currBB = null;
+        me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
@@ -18,9 +19,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'ap_inv_payment',type: 'string'},
-                {name: 'ap_inv_payment_revisi',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
+                {name: 'giro_num',type: 'string'},
                 {name: 'bank_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'nilaidasar',type: 'string'},
@@ -29,7 +30,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'canceled',type: 'string'}
             ]
 
         });
@@ -59,6 +61,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
                 {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
@@ -72,10 +75,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Jurnal.getJurnal,
-                    create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
-                    destroy : Jurnal.deleteJurnal
+                    read: Jurnal.getJurnal
+                    //create: Jurnal.addJurnal,
+                   // update: Jurnal.updateJurnal,
+                   // destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -103,24 +106,35 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 150,text: 'Inv. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                {width: 150,text: 'Inv. Revisi',sortable: true,dataIndex: 'ap_inv_payment_revisi'},
+                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 150,text: 'Giro Num',sortable: true,dataIndex: 'giro_num'},
                 {width: 150,text: 'Inv. code',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
                 {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
                 {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {width: 100,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
+                {width: 100,text: 'canceled',sortable: true,dataIndex: 'canceled', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.AP_Inv_PaymentStore, record, 'Edit AP Inv. Pembayaran');
-                    Ext.getCmp('cancel_py').enable();
+                    if(record.get('canceled')!='1'){
+                        me.onItemdblclick(me.AP_Inv_PaymentStore, record, 'Edit AP Inv. Pembayaran');
+                        Ext.getCmp('post_ap_pay').enable();   Ext.getCmp('canceled_ap_pay').enable();
+                    }
                 }
             },
             features:[searching],
@@ -136,7 +150,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_Inv_PaymentModel', 'Tambah Data');
-                                Ext.getCmp('cancel_py').disable();
+                                Ext.getCmp('post_ap_pay').disable();  Ext.getCmp('canceled_ap_pay').disable();
                                 Ext.getCmp('inv_code_rev_ap_pay').disable();
                             }
                         },
@@ -144,6 +158,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'delete_pay',
                             handler:function() {
                                 me.onPBDelete(me.AP_Inv_PaymentStore);
                             }
@@ -175,59 +190,23 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
-                {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
-                {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 200, renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 200, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
+                {header : 'Vendor Id', dataIndex : 'vend_id',width : 100},
+                {header : 'Coa', dataIndex : 'coa',width : 100},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    var form = this.winformAP_Inv_Jurnal.down('form');
-                    me.onItemdblclick1(me.AP_Inv_JurnalStore, record, 'Edit AP Inv. Jurnal', me.winformAP_Inv_Jurnal, form);
-
+            viewConfig: {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : '';
                 }
             },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformAP_Inv_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'AP_Inv_JurnalModel', 'Tambah Data', me.winformAP_Inv_Jurnal);
+            features:[searching]
 
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi1(me.AP_Inv_JurnalStore, me.AP_Inv_JurnalGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.AP_Inv_JurnalGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
         });
 
         // *************************************************************************************
@@ -267,7 +246,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                         },
                         {
                             xtype: "radiogroup",
-                            fieldLabel: "type ",
+                            fieldLabel: "Type ",
                             defaults: {xtype: "radio", name:'inv_type'
                             },
                             items: [
@@ -283,36 +262,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
 
                                 },
                                 {
-                                    boxLabel: "Revisi",
-                                    inputValue:'R',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_rev_ap_pay').enable();
-                                        }
-                                    }
-
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            id:'inv_code_rev_ap_pay',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Inv. Revisi : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'ap_inv_payment_revisi'
-
+                                    boxLabel: "UM",
+                                    inputValue:'U'
                                 }
                             ]
                         },
@@ -329,7 +280,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     value: 'inv_date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
@@ -349,12 +300,33 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Inv. Code : '
+                                    value: 'Giro : '
                                 },
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'inv_code'
+                                    name: 'giro_num'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Inv. Code : '
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'xtAPPopup',
+                                    name: 'inv_code',
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -446,9 +418,16 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Cancel',
-                                    id:'cancel_py',
+                                    fieldLabel: 'Posted',
+                                    id:'post_ap_pay',
                                     name: 'status'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Canceled',
+                                    id:'canceled_ap_pay',
+                                    name: 'canceled'
                                 }
                             ]
                         }
@@ -482,143 +461,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 }
             }
         });
-        me.winformAP_Inv_Jurnal = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Coa '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'coa',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'vend_id'
-
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debit :'
-                                },
-                                {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Credit :'
-                                },
-                                {
-                                    fieldLabel : 'Credit',
-                                    labelAlign : 'right',
-                                    name: 'credit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        }
-
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winformAP_Inv_Jurnal.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi3Save(form, me.AP_Inv_JurnalStore, me.winformAP_Inv_Jurnal);
-                        }
-                    }
-                },{
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winformAP_Inv_Jurnal);
-                }
-            }
-        });
-
-
-
 
         me.pageBody = [me.AP_Inv_PaymentGrid, me.AP_Inv_JurnalGrid];
         me.callParent(arguments);
@@ -667,16 +509,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
         this.win.show();
 
     },
-    onNewProduksi1: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new',window);
-        window.show();
-    },
 
     /**
      *
@@ -686,6 +518,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.ap_inv_payment;
+        me.currPosted = selected.data.status;
         var TopBarItems = this.AP_Inv_PaymentGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
@@ -727,35 +560,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
         });
     },
 
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-            f = me.winformAP_Inv_Jurnal.down('form').getForm(), rec = f.getRecord();
-
-        form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformAP_Inv_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
-    },
-
     onPBDelete: function(store){
         var me = this, grid = me.AP_Inv_PaymentGrid;
         sm = grid.getSelectionModel();
@@ -778,27 +582,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             }
         });
     },
-    deleteProduksi1: function(store, grid){
-        var me = this,
-            sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        })
-    },
+
 
     /**
      * This function is called from Viewport.js when
