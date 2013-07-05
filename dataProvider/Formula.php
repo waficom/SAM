@@ -188,7 +188,6 @@ class Formula
 		unset($data['id'], $data['bb_id'], $data['old_bb_id'], $data['bb_nama'], $data['satuan_nama'],$data['sequence_no']);
 		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('sequence_no' => trim($params->sequence_no)));
 		$this->db->setSQL($sql);
-        //print_r($sql);
 		$this->db->execLog();
 		return $params;
 	}

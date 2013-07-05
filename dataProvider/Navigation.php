@@ -175,15 +175,18 @@ class Navigation
                 ),*/
                 array(
                     'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
-                ),/*
+                ),
                 array(
-                    'text' => $this->i18n['apinvoicemanufakturrevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur_Revisi'
-                ),*/
+                    'text' => $this->i18n['rc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReclass'
+                ),
                 array(
                     'text' => $this->i18n['arsale'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale'
                 ),
                 array(
                     'text' => $this->i18n['arsalepayment'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale_Payment'
+                ),
+                array(
+                    'text' => $this->i18n['ar_pay_alocation'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Payment_Alocation'
                 ),
                 array(
                     'text' => $this->i18n['argiro'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Giro'
@@ -208,6 +211,9 @@ class Navigation
                 ),
                 array(
                     'text' => $this->i18n['gl'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVoucher'
+                ),
+                array(
+                    'text' => $this->i18n['cr'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCancelReturn'
                 ),
             )
         ));

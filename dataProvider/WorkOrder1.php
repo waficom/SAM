@@ -57,7 +57,7 @@ class WorkOrder1
     public function getWorkOrder1(stdClass $params)
     {
         $this->db->setSQL("SELECT * FROM viewdetailproduksi where pp_date between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
-        and status='C' ORDER BY timeedit DESC");
+        and statusOrder='C' ORDER BY timeedit DESC");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -70,7 +70,7 @@ class WorkOrder1
     }
     public function getWorkOrder1Detail(stdClass $params)
     {
-        $this->db->setSQL("SELECT * FROM wo0 where (so_num = '$params->so_num') and (no_ppd = '$params->no_ppd') and (prod_id = '$params->prod_id') ");
+        $this->db->setSQL("SELECT wo0.*, (qty_bb-qty_bj) as qty_susut FROM wo0 where (so_num = '$params->so_num') and (no_ppd = '$params->no_ppd') and (prod_id = '$params->prod_id') ");
 
         $rows = array();
         //print_r($rows);
@@ -88,7 +88,7 @@ class WorkOrder1
 from wobahanbaku B
 left join wo1 A on A.co_id=B.co_id and A.wo_num=B.wo_num and A.so_num=B.so_num and A.prod_id=B.prod_id and A.no_ppd=B.no_ppd
 left join bahanbaku C on A.bb_id=C.bb_id
-where (B.prod_id = '$params->prod_id') and (B.so_num = '$params->so_num') and (B.wo_num = '$params->wo_num') ");
+where (B.prod_id = '$params->prod_id') and (B.so_num = '$params->so_num') and (B.wo_num = '$params->wo_num') and B.bb_type='B' ");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -99,6 +99,25 @@ where (B.prod_id = '$params->prod_id') and (B.so_num = '$params->so_num') and (B
 
         return $rows;
     }
+
+    public function getWODetailBBdalamproses(stdClass $params)
+    {
+        $this->db->setSQL("select A.*, (A.qty * B.jml_paket) as qty_total, bb_nama, B.jml_paket
+from wobahanbaku B
+left join wodalamproses A on A.co_id=B.co_id and A.wo_num=B.wo_num and A.so_num=B.so_num and A.prod_id=B.prod_id and A.no_ppd=B.no_ppd
+left join bahanbaku C on A.bb_id=C.bb_id
+where (B.prod_id = '$params->prod_id') and (B.so_num = '$params->so_num') and (B.wo_num = '$params->wo_num') and B.bb_type='D' ");
+
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+
     public function getWorkOrder1DetailBJadi(stdClass $params)
     {
         //error_reporting(-1);
@@ -119,7 +138,7 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
     {
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -127,9 +146,9 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         }
         unset($data['id'],$data['no_ppd'],$data['no_pp'],$data['so_num'],$data['cust_nama'],$data['qty'],$data['qty_produksi'],$data['formula_nama'],
         $data['formula_id'],$data['prod_id']
-        ,$data['prod_nama'],$data['kemasan'],$data['spesifikasi_nama'],$data['n'],$data['p2o5'],$data['k2o'],$data['cao'],$data['mgo'],$data['so4']
+        ,$data['prod_nama'],$data['kemasan_nama'],$data['spesifikasi_nama'],$data['n'],$data['p2o5'],$data['k2o'],$data['cao'],$data['mgo'],$data['so4']
         ,$data['b'],$data['cu'],$data['zn'],$data['ah'],$data['af'],$data['est_finishdate'],$data['timeedit']);
-        $sql = $this -> db -> sqlBind($data, 'wo0', 'U');
+        $sql = $this -> db -> sqlBind($data, 'pp_detailproduksi', 'U');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -160,6 +179,23 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
     {
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
+        $data['bb_type'] = 'B';
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id']);
+        $sql = $this -> db -> sqlBind($data, 'wobahanbaku', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function addWODetailBBdalamproses(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['bb_type'] = 'D';
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -187,7 +223,6 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         unset($data['id']);
         $sql = $this -> db -> sqlBind($data, 'wo2', 'I');
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -198,7 +233,7 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
-        unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num']);
+        unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['qty_susut']);
         $sql = $this -> db -> sqlBind($data, 'wo0', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -242,13 +277,19 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
     }
     public function deleteWorkOrder1Detail(stdClass $params)
     {
-        $sql = "DELETE FROM wo2 WHERE (so_num = '$params->so_num') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $sql = "DELETE FROM wobahanbaku WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM wo1 WHERE (so_num = '$params->so_num') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $sql = "DELETE FROM wodalamproses WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM wo0 WHERE (so_num = '$params->so_num') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $sql = "DELETE FROM wo2 WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        $sql = "DELETE FROM wo1 WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        $sql = "DELETE FROM wo0 WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

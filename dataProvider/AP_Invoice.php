@@ -348,18 +348,15 @@ class AP_Invoice
      */
     public function deleteAP_Inv(stdClass $params)
     {
-        $sql = "DELETE FROM ap_inv WHERE inv_code = '$params->inv_code'";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-
-        $sql = "DELETE FROM ap_inv_detail WHERE inv_code = '$params->inv_code'";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-
         $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-
+        $sql = "DELETE FROM ap_inv_detail WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        $sql = "DELETE FROM ap_inv WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         return $params;
     }
     public function deleteAP_Inv_Manufaktur(stdClass $params)

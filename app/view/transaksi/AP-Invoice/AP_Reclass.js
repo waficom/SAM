@@ -1,48 +1,45 @@
-Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
+Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelAR_Sale_Payment',
-    pageTitle: 'AR Sale Payment',
+    id: 'panelReclass',
+    pageTitle: 'AP Reclass',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
         me.currInv_Code = null;
         me.currCoa = null;
-        me.currBB = null;
+        me.currDebtor = null;
         me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
-        Ext.define('AR_Sale_PaymentModel', {
+        Ext.define('ReclassModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
-                {name: 'giro_num',type: 'string'},
-                {name: 'for_inv_code',type: 'string'},
-                {name: 'bank_code',type: 'string'},
-                {name: 'cust_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
-                {name: 'keterangan',type: 'string'},
+                {name: 'gudang_id',type: 'string'},
+                {name: 'account',type: 'string'},
+                {name: 'nominal',type: 'string'},
+                {name: 'remaks',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
-                {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'status',type: 'string'}
             ]
 
         });
-        me.AR_Sale_PaymentStore = Ext.create('Ext.data.Store', {
-            model: 'AR_Sale_PaymentModel',
+        me.ReclassStore = Ext.create('Ext.data.Store', {
+            model: 'ReclassModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AR_Sale_Payment.getAR_Sale_Payment,
-                    create: AR_Sale_Payment.addAR_Sale_Payment,
-                    update: AR_Sale_Payment.updateAR_Sale_Payment,
-                    destroy : AR_Sale_Payment.deleteAR_Sale_Payment
+                    read: AP_Reclass.getReclass,
+                    create: AP_Reclass.addReclass,
+                    update: AP_Reclass.updateReclass,
+                    destroy : AP_Reclass.deleteReclass
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -53,7 +50,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             autoLoad: false
         });
 
-        Ext.define('AR_Sale_JurnalModel', {
+        Ext.define('Reclass_JurnalModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
@@ -69,12 +66,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             ]
 
         });
-        me.AR_Sale_JurnalStore = Ext.create('Ext.data.Store', {
-            model: 'AR_Sale_JurnalModel',
+        me.Reclass_JurnalStore = Ext.create('Ext.data.Store', {
+            model: 'Reclass_JurnalModel',
             proxy: {
                 type: 'direct',
                 api: {
                     read: Jurnal.getJurnal
+
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -96,22 +94,19 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         /**
          * Lists Grid
          */
-        me.AR_Sale_PaymentGrid = Ext.create('App.ux.GridPanel', {
-            store: me.AR_Sale_PaymentStore,
+        me.ReclassGrid = Ext.create('App.ux.GridPanel', {
+            store: me.ReclassStore,
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
-                {width: 200,text: 'Doc. Inv.',sortable: true,dataIndex: 'for_inv_code'},
-                {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 200,text: 'Debtor',sortable: true,dataIndex: 'cust_id'},
-                {width: 200,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'keterangan'},
+                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
+                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
+                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 200,text: 'remaks',sortable: true,dataIndex: 'remaks'},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {width: 50,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -119,17 +114,18 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'  ? 'child-row' :'';
+                    return record.get('status') == '1'? 'child-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    if(record.get('status')!='1'){
-                        me.onItemdblclick(me.AR_Sale_PaymentStore, record, 'Edit AR Sale Payment');
+                    if(record.get('status')!=1){
+                        me.onItemdblclick(me.ReclassStore, record, 'Edit CashBook IN');
+                        Ext.getCmp('post_rc').enable();
                     }
-                    Ext.getCmp('post_arsp').enable();
+
                 }
             },
             features:[searching],
@@ -144,8 +140,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             scope: me,
                             handler: function(){
                                 var form = me.win.down('form');
-                                me.onNewPB(form, 'AR_Sale_PaymentModel', 'Tambah Data');
-                                Ext.getCmp('post_arsp').disable();
+                                me.onNewPB(form, 'ReclassModel', 'Tambah Data');
+                                Ext.getCmp('post_rc').disable();
                             }
                         },
                         {
@@ -153,7 +149,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             text: 'Delete',
                             iconCls: 'delete',
                             handler:function() {
-                                me.onPBDelete(me.AR_Sale_PaymentStore);
+                                me.onPBDelete(me.ReclassStore);
                             }
                         },'->',
                         {
@@ -164,7 +160,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.AR_Sale_PaymentStore,
+                    store: me.ReclassStore,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -177,14 +173,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             ]
         });
 
-        me.AR_Sale_JurnalGrid = Ext.create('App.ux.GridPanel', {
-            store: me.AR_Sale_JurnalStore,
+        me.Reclass_JurnalGrid = Ext.create('App.ux.GridPanel', {
+            store: me.Reclass_JurnalStore,
             region: 'center',
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Debtor', dataIndex : 'vend_id',width : 100},
+                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
                 {header : 'Description', dataIndex : 'coa_nama',width : 200},
                 {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -197,6 +193,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 stripeRows: false,
                 getRowClass: function(record, index) {
                     return me.currPosted == '1'? 'child-row' : '';
+                }
+            },
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    if(me.currPosted !='1'){
+                        var form = this.winformReclass_Jurnal.down('form');
+                        me.onItemdblclick1(me.Reclass_JurnalStore, record, 'Edit CashBook IN Jurnal', me.winformReclass_Jurnal, form);
+                    }
+
                 }
             },
             features:[searching]
@@ -236,34 +242,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             msgTarget: 'under',
                             name:'inv_code',
                             hidden:true
-                        },{
-                            xtype: "radiogroup",
-                            fieldLabel: "Type ",
-                            defaults: {xtype: "radio", name:'inv_type'
-                            },
-                            items: [
-                                {
-                                    boxLabel: "Normal",
-                                    checked: true,
-                                    inputValue:'N',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('for_inv_pay').enable();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "Uang Muka",
-                                    inputValue:'U',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('for_inv_pay').disable();
-                                        }
-                                    }
-
-                                }
-                            ]
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -275,10 +253,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Doc. Date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
@@ -295,36 +273,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             },
                             msgTarget: 'under',
                             items: [
+
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: ' Giro Number : '
+                                    value: 'Gudang : '
                                 },
                                 {
                                     width: 150,
-                                    xtype: 'textfield',
-                                    name: 'giro_num'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: ' For Doc. AR : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtARPopup',
-                                    name: 'for_inv_code',
-                                    id:'for_inv_pay',
+                                    xtype: 'xtGudangPopup',
+                                    name: 'gudang_id',
                                     allowBlank: false
                                 }
                             ]
@@ -340,33 +298,12 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bank Code : '
+                                    value: 'Account : '
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtBankPopup',
-                                    name: 'bank_code',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debtor : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtCustomerPopup',
-                                    name: 'cust_id',
+                                    width: 150,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'account',
                                     allowBlank: false
                                 }
                             ]
@@ -387,7 +324,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 200,
                                     xtype: 'textfield',
-                                    name: 'nilaidasar',
+                                    name: 'nominal',
                                     allowBlank: false
                                 }
                             ]
@@ -403,12 +340,12 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Remarks : '
+                                    value: 'Remaks : '
                                 },
                                 {
                                     width: 300,
                                     xtype: 'textfield',
-                                    name: 'keterangan'
+                                    name: 'remaks'
                                 }
                             ]
                         },
@@ -420,7 +357,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
-                                    id:'post_arsp',
+                                    id:'post_rc',
                                     name: 'status'
                                 }
                             ]
@@ -435,7 +372,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     handler: function(){
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
-                            me.onPBSave(form, me.AR_Sale_PaymentStore);
+                            me.onPBSave(form, me.ReclassStore);
                         }
                     }
                 },
@@ -455,11 +392,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 }
             }
         });
-
-
-
-
-        me.pageBody = [me.AR_Sale_PaymentGrid, me.AR_Sale_JurnalGrid];
+        me.pageBody = [me.ReclassGrid, me.Reclass_JurnalGrid];
         me.callParent(arguments);
     },
     setForm: function(form, title){
@@ -515,13 +448,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.inv_code;
+        me.currDebtor=selected.data.received_from;
         me.currPosted = selected.data.status;
-        var TopBarItems = this.AR_Sale_PaymentGrid.getDockedItems('toolbar[dock="top"]')[0];
+        var TopBarItems = this.ReclassGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
     },
 
@@ -548,7 +482,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             success:function(){
                 me.win.close();
                 store.load();
-               me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+               me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
             failure:function(){
                 store.load();
@@ -556,41 +490,11 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             }
         });
     },
-
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-            f = me.winformAR_Sale_Jurnal.down('form').getForm(), rec = f.getRecord();
-
-        form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformAR_Sale_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
-    },
-
     onPBDelete: function(store){
-        var me = this, grid = me.AR_Sale_PaymentGrid;
+        var me = this, grid = me.ReclassGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('AR_Sale_Payment');
+        bid = sr[0].get('inv_code');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -604,7 +508,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
-                    me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }
         });
@@ -619,8 +523,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
      */
     onActive: function(callback){
         var me = this;
-        this.AR_Sale_PaymentStore.load({params:{start:0, limit:5}});
-        this.AR_Sale_JurnalStore.load();
+        this.ReclassStore.load({params:{start:0, limit:5}});
+        this.Reclass_JurnalStore.load();
 
         callback(true);
     }

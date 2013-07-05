@@ -27,7 +27,7 @@ if (!isset($_SESSION))
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
-class AR_Sale_Payment
+class AP_Reclass
 {
     /**
      * @var dbHelper
@@ -42,7 +42,7 @@ class AR_Sale_Payment
         return;
     }
 
-    public function getAR_Sale_Payment(stdClass $params)
+    public function getReclass(stdClass $params)
     {
         if (isset($params -> sort))
         {
@@ -52,29 +52,7 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from ar_sale_payment where inv_type <>'A' ORDER BY $orderx DESC";
-        $this -> db -> setSQL($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
-    public function getAR_Payment_Alocation(stdClass $params)
-    {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
-        $sql = "select * from ar_sale_payment where inv_type ='A' ORDER BY $orderx DESC";
+        $sql = "select * from ap_reclass ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -91,7 +69,7 @@ class AR_Sale_Payment
      * @param stdClass $params
      * @return stdClass
      */
-    public function addAR_Sale_Payment(stdClass $params)
+    public function addReclass(stdClass $params)
     {
 
         $data = get_object_vars($params);
@@ -107,7 +85,7 @@ class AR_Sale_Payment
                 unset($data[$key]);
         }
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'I');
+        $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -118,26 +96,26 @@ class AR_Sale_Payment
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateAR_Sale_Payment(stdClass $params)
+    public function updateReclass(stdClass $params)
     {
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'U', array('inv_code' => $params -> inv_code));
+        $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function deleteAR_Sale_Payment(stdClass $params)
+    public function deleteReclass(stdClass $params)
     {
         $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
-        $sql = "DELETE FROM ar_sale_payment WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM ap_reclass WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

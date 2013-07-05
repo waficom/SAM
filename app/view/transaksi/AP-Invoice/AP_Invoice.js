@@ -41,8 +41,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
                 {name: 'inv_type',type: 'string'},
-                {name: 'account',type: 'string'},
-                {name: 'canceled',type: 'string'}
+                {name: 'account',type: 'string'}
             ]
 
         });
@@ -109,7 +108,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
             ]
 
         });
@@ -149,12 +149,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 100,text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
                 {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
                 {width: 50,text: 'Tax',sortable: true,dataIndex: 'tax_code'},
-                {width: 50,text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
+                {width: 50,text: 'Creditor',sortable: true,dataIndex: 'vend_id'},
                 {width: 50,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
                 {width: 50,text: 'Account',sortable: true,dataIndex: 'account'},
                 {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasarx', renderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -167,7 +167,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                 {width: 100,text: 'Total',sortable: true,dataIndex: 'totalx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Remaks',sortable: true,dataIndex: 'remaks'},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {width: 200,text: 'canceled',sortable: true,dataIndex: 'canceled', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -175,7 +174,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                    return record.get('status') == '1'? 'child-row' : '';
                 }
             },
             listeners: {
@@ -185,7 +184,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                     if(record.get('canceled')!='1'){
                         me.onItemdblclick(me.AP_InvStore, record, 'Edit PB');
                     }
-                    Ext.getCmp('post_ap').enable(); Ext.getCmp('canceled_ap').enable();
+                    Ext.getCmp('post_ap').enable();
                 }
             },
             features:[searching],
@@ -201,14 +200,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_InvModel', 'Tambah Data');
-                                Ext.getCmp('post_ap').disable(); Ext.getCmp('canceled_ap').disable();
+                                Ext.getCmp('post_ap').disable();
                                 Ext.getCmp('PO_AP').disable();
-                                Ext.getCmp('inv_code_rev_ap').disable();
+
                             }
                         },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
                             handler:function() {
                                 me.onPBDelete(me.AP_InvStore);
@@ -221,16 +220,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                             scope: me,
                             handler: function(){
                                 me.ShowGridPopup(me.AP_Inv_DetailStore, 'Detail Item',me.AP_Inv_DetailGrid);
-
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'cancel->>',
-                            iconCls: 'cancel',
-                            scope: me,
-                            handler: function(){
-                                me.onCanceled(me.AP_InvStore);
 
                             }
                         },'->',
@@ -261,7 +250,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 200,text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
                 {width: 200,text: 'qty',sortable: true,dataIndex: 'qty', renderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -302,7 +291,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                     },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
                             handler: function() {
                                 me.deleteProduksi2(me.AP_Inv_DetailStore, me.AP_Inv_DetailGrid);
@@ -330,13 +319,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
-                {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 200},
+                {header : 'Creditor', dataIndex : 'vend_id',width : 200},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
                 {header : 'Description', dataIndex : 'coa_nama',width : 200},
                 {header : 'Debit', dataIndex : 'debit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Credit', dataIndex : 'credit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
@@ -393,10 +383,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Doc. Date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
@@ -419,6 +409,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                         if (value) {
                                             Ext.getCmp('PO_AP').disable();
                                             Ext.getCmp('GR_AP').enable();
+                                            Ext.getCmp('gudang_id_ap').enable();
                                         }
                                     }
 
@@ -430,6 +421,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                         if (value) {
                                             Ext.getCmp('PO_AP').enable();
                                             Ext.getCmp('GR_AP').disable();
+                                            Ext.getCmp('gudang_id_ap').enable();
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "Other",
+                                    inputValue:'O',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('PO_AP').disable();
+                                            Ext.getCmp('GR_AP').disable();
+                                            Ext.getCmp('gudang_id_ap').disable();
                                         }
                                     }
 
@@ -479,7 +483,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
 
                                 }
                             ]
-                        },{
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -511,12 +516,13 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Vendor : '
+                                    value: 'Creditor : '
                                 },
                                 {
                                     width: 200,
                                     xtype: 'xtVendorSuplierPopup',
                                     name: 'vend_id',
+                                    id:'vend_id_ap',
                                     allowBlank: false
                                 }
                             ]
@@ -605,13 +611,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                     fieldLabel: 'Posted',
                                     id:'post_ap',
                                     name: 'status'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Canceled',
-                                    id:'canceled_ap',
-                                    name: 'canceled'
                                 }
                             ]
                         }
@@ -845,7 +844,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
         var newModel = Ext.ModelManager.create({
         }, model);
         form.getForm().loadRecord(newModel);
-        record = form.getRecord()
         this.action1('new',window);
         window.show();
     },
@@ -956,12 +954,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    PB.deletePB(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }
         });
@@ -989,12 +987,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             }
         })
     },
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
 
     onActive: function(callback){
         var me = this;

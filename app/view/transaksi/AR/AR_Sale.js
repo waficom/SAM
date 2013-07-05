@@ -20,7 +20,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'so_num',type: 'string'},
-                {name: 'po_num',type: 'string'},
+                {name: 'account',type: 'string'},
                 {name: 'tax_code',type: 'string'},
                 {name: 'gudang_id',type: 'string'},
                 {name: 'nilaidasarx',type: 'string'},
@@ -37,8 +37,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'},
-                {name: 'canceled',type: 'string'}
+                {name: 'inv_type',type: 'string'}
             ]
 
         });
@@ -105,7 +104,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
             ]
 
         });
@@ -115,9 +115,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 type: 'direct',
                 api: {
                     read: Jurnal.getJurnal
-                   // create: Jurnal.addJurnal,
-                   // update: Jurnal.updateJurnal,
-                    //destroy : Jurnal.deleteJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -146,14 +143,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             region: 'north',
             readOnly: true,
             columns: [
-                {width: 100,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 100,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
-                {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
-                {width: 50,text: 'Tax',sortable: true,dataIndex: 'tax_code'},
-                {width: 50,text: 'Customer',sortable: true,dataIndex: 'customer'},
-                {width: 50,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
-                {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasarx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 150,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
+                {width: 150,text: 'Acc. Number',sortable: true,dataIndex: 'account'},
+                {width: 100,text: 'Tax Code',sortable: true,dataIndex: 'tax_code'},
+                {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id'},
+                {width: 100,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
+                {width: 100,text: 'Nominal',sortable: true,dataIndex: 'nilaidasarx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 50,text: 'Discon',sortable: true,dataIndex: 'discon'},
                 {width: 100,text: 'Setelah Disc',sortable: true,dataIndex: 'nd_setelah_discx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 50,text: 'Ppn %',sortable: true,dataIndex: 'ppn_prs'},
@@ -164,14 +161,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {width: 200,text: 'Remaks',sortable: true,dataIndex: 'remaks'},
                 {width: 50,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
                 {width: 50,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
-                {width: 50,text: 'canceled',sortable: true,dataIndex: 'canceled', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                        return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                        return record.get('status') == '1' ? 'child-row' :'';
                 }
             },
             listeners: {
@@ -180,11 +176,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 itemdblclick: function(view, record){
                     var form = this.win.down('form');
                     form.getForm().loadRecord(record);
-                    if(record.get('canceled')!='1'){
+                    if(record.get('status')!='1'){
                         me.onItemdblclick(form, me.AR_SaleStore, record, 'Edit AR Sale');
                     }
                     Ext.getCmp('post_ar').enable();
-                    Ext.getCmp('canceled_ar').enable();
                 }
             },
             features:[searching],
@@ -200,15 +195,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
-                                //Ext.getCmp('cancel_ar').disable();
                                 Ext.getCmp('post_ar').disable();
-                                Ext.getCmp('canceled_ar').disable();
                                 Ext.getCmp('po_ar').disable();
                             }
                         },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
                             handler:function() {
                                 me.onPBDelete(me.AR_SaleStore);
@@ -251,12 +244,12 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code', hidden: true},
                 {width: 200,text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
-                {width: 200,text: 'qty',sortable: true,dataIndex: 'qty'},
-                {width: 100,text: 'satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 200,text: 'Qty',sortable: true,dataIndex: 'qty'},
+                {width: 100,text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
+                {width: 200,text: 'Nominal',sortable: true,dataIndex: 'harga',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -320,14 +313,15 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
-                {header : 'Customer', dataIndex : 'vend_id',width : 200},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
+                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description ', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
                 stripeRows: false,
@@ -342,7 +336,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         // Window User Form
         // *************************************************************************************
         me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
+            width: 650,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -425,10 +419,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Doc. Date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
@@ -450,19 +444,23 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     inputValue:'S',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('po_ar').disable();
+                                            Ext.getCmp('account_ar').disable();
                                             Ext.getCmp('so_num_ar').enable();
+                                            Ext.getCmp('gudang_id_ar').enable();
+                                            Ext.getCmp('discon_ar').enable();
                                         }
                                     }
 
                                 },
                                 {
-                                    boxLabel: "PO",
-                                    inputValue:'P',
+                                    boxLabel: "Other",
+                                    inputValue:'O',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('po_ar').enable();
+                                            Ext.getCmp('account_ar').enable();
                                             Ext.getCmp('so_num_ar').disable();
+                                            Ext.getCmp('gudang_id_ar').disable();
+                                            Ext.getCmp('discon_ar').disable();
                                         }
                                     }
 
@@ -471,7 +469,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                         },
                         {
                             xtype: 'fieldcontainer',
-                            id:'so_num_ar',
                             defaults: {
                                 hideLabel: true
                             },
@@ -484,33 +481,24 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     value: 'SO Num : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 180,
                                     xtype: 'xtSalesOrderPopup',
                                     name: 'so_num',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    id:'so_num_ar'
 
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            id:'po_ar',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
+                                },
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'PO  Num : '
+                                    value: 'No. Account : '
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtPOPopup',
-                                    name: 'po_num',
-                                    allowBlank: false
+                                    width: 180,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'account',
+                                    allowBlank: false,
+                                    id:'account_ar'
 
                                 }
                             ]
@@ -547,7 +535,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Customer : '
+                                    value: 'Debtor : '
                                 },
                                 {
                                     width: 200,
@@ -595,7 +583,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 50,
                                     xtype: 'textfield',
-                                    name: 'discon'
+                                    name: 'discon',
+                                    id:'discon_ar'
                                 }
                             ]
                         },
@@ -629,13 +618,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     fieldLabel: 'Post',
                                     id:'post_ar',
                                     name: 'status'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'checkboxfield',
-                                    fieldLabel: 'Canceled',
-                                    id:'canceled_ar',
-                                    name: 'canceled'
                                 }
                             ]
                         }
@@ -773,7 +755,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Harga :'
+                                    value: 'Nominal :'
                                 },
                                 {
                                     fieldLabel : 'Harga',
@@ -865,7 +847,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
 
     },
 
-
+    onNewProduksi1: function(form, model, title, window){
+        this.setForm(form, title);
+        form.getForm().reset();
+        var newModel = Ext.ModelManager.create({
+        }, model);
+        form.getForm().loadRecord(newModel);
+        record = form.getRecord()
+        this.action1('new',window);
+        window.show();
+    },
     /**
      *
      * @param grid

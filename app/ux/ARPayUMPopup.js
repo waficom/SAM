@@ -1,7 +1,7 @@
-Ext.define('App.ux.APPopup',
+Ext.define('App.ux.ARPayUMPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtAPPopup',
+        alias : 'widget.xtARPayUMPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,21 +17,20 @@ Ext.define('App.ux.APPopup',
                 },
                 prod_id = null;
 
-            Ext.define('TaxSearchModel',
+            Ext.define('JenisSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
                         {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
-                        {name: 'gr_num',type: 'string'},
-                        {name: 'po_num',type: 'string'},
-                        {name: 'hutangsuplier',type: 'string'},
+                        {name: 'nilaidasar',type: 'string'},
                         {name: 'timeedit',type: 'date'}
+
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read :Popup.getAP_Invpopup},
+                        api : {read : Popup.getARPayUMpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -41,7 +40,7 @@ Ext.define('App.ux.APPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'TaxSearchModel',
+                    model : 'JenisSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -52,18 +51,15 @@ Ext.define('App.ux.APPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
-                    {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
-                    {width: 100,text: 'Hutang Suplier',sortable: true,dataIndex: 'hutangsuplier', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AP Invoice',
+                title: 'AR Payment UM',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({

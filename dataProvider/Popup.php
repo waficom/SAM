@@ -199,6 +199,67 @@ class Popup
         return $rows;
 
     }
+    public function getAPPayUMpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='U' ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAP_Invpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ap_inv where status=1 ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAR_Salepopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ar_sale where status=1 ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getARPayUMpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ar_sale_payment where inv_type ='U' ORDER BY timeedit";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+
 
     /**
      *

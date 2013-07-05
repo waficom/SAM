@@ -294,7 +294,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width: 200,
                                     xtype: 'mitos.UpperCaseTextField',
                                     name : 'po_num',
-                                    id : 'po_num_input'
+                                    id : 'po_num_input',
+                                    disabled:true
                                 }
                             ]
                         },
@@ -451,17 +452,18 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     value: 'PPN'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'mitos.checkbox',
                                     name : 'ppn_po'
+
                                 },
                                 {
-                                    width: 100,
+                                    width: 80,
                                     xtype: 'displayfield',
                                     value: 'Exclude PPN'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'mitos.checkbox',
                                     name : 'ppn_exc'
                                 }

@@ -24,13 +24,13 @@ Ext.define('App.ux.ARPopup',
                         {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
                         {name: 'so_num',type: 'string'},
-                        {name: 'po_num',type: 'string'},
+                        {name: 'piutangdebtor',type: 'string'},
                         {name: 'timeedit',type: 'date'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read :AR_Sale.getAR_Sale},
+                        api : {read :Popup.getAR_Salepopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -54,14 +54,14 @@ Ext.define('App.ux.ARPopup',
                     {width: 100,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {width: 100,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
-                    {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
+                    {width: 100,text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AP Invoice',
+                title: 'AR Sale',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({

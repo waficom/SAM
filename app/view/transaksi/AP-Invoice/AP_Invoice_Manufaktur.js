@@ -29,7 +29,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'no_ppd',type: 'string'}
             ]
 
         });
@@ -92,10 +93,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
                 {name: 'debit',type: 'string'},
                 {name: 'credit',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
             ]
 
         });
@@ -137,9 +140,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             columns: [
                 {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 200,text: 'No. PPD',sortable: true,dataIndex: 'no_ppd'},
                 {width: 200,text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
                 {width: 200,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
-                {width: 200,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {width: 200,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden:true},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
@@ -169,7 +172,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [
-                        {
+                        /*{
                             text: 'Add',
                             iconCls: 'icoAddRecord',
                             scope: me,
@@ -207,7 +210,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                                 me.onCanceled(me.AP_InvStore);
 
                             }
-                        },'->',
+                        },'->',*/
                         {
                             xtype:'displayfield',
                             itemId:'itemuserinput',
@@ -260,42 +263,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                     }
                 }
             },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformAP_Inv_Detail.down('form');
-                            me.onNewProduksi1(form1, 'AP_Inv_DetailModel', 'Tambah Data', me.winformAP_Inv_Detail);
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi2(me.AP_Inv_DetailStore, me.AP_Inv_DetailGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.AP_Inv_DetailGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
+            features:[searching]
         });
 
         me.AP_Inv_JurnalGrid = Ext.create('App.ux.GridPanel', {
@@ -304,12 +272,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 200},
-                {header : 'Vendor Id', dataIndex : 'vend_id',width : 200},
-                {header : 'Coa', dataIndex : 'coa',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
+                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
+                {header : 'Coa', dataIndex : 'coa',width : 100},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200},
+                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
@@ -327,42 +297,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                     }
                 }
             },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformAP_Inv_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'AP_Inv_JurnalModel', 'Tambah Data', me.winformAP_Inv_Jurnal);
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi1(me.AP_Inv_JurnalStore, me.AP_Inv_JurnalGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.AP_Inv_JurnalGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
+            features:[searching]
         });
 
         // *************************************************************************************
@@ -1127,27 +1062,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onCanceled: function(store){
-        var me = this, grid = me.AP_InvGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to cancel' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    // store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        });
-    },
+
     onActive: function(callback){
         var me = this;
         this.AP_InvStore.load({params:{start:0, limit:5}});

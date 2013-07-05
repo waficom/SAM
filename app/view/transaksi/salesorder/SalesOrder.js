@@ -33,6 +33,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_prod_id = null;
         me.curr_co_id = null;
         me.curr_so_num = null;
+        me.curr_Qty = null;
         me.userinput =null;
         me.useredit=null;
         var searching={
@@ -294,9 +295,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             id : 'so_num_input',
                                             width: 300,
                                             fieldLabel: 'Sales Order #',
-                                            labelAlign: 'right',
-                                            allowBlank: false,
-                                            stripCharsRe: /(^\s+|\s+$)/g
+                                            disabled:true
                                         },
                                         {
                                             xtype: 'datefield',
@@ -305,7 +304,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             fieldLabel: 'Tanggal',
                                             labelAlign: 'right',
                                             submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format']
+                                            format : globals['date_display_format'],
+                                            allowBlank:true
 
                                         }
                                     ]
@@ -397,7 +397,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             fieldLabel: 'Tgl JT Kirim',
                                             labelAlign: 'right',
                                             submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format']
+                                            format : globals['date_display_format'],
+                                            allowBlank:true
                                         }
                                     ]
                                 },
@@ -452,7 +453,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             hideLabel : false,
                                             width: 300,
                                             fieldLabel: 'Wilayah',
-                                            labelAlign: 'right'
+                                            labelAlign: 'right',
+                                            allowBlank:true
                                         },
                                         {
                                             width: 400,
@@ -482,7 +484,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             width: 300,
                                             fieldLabel: 'Sales',
                                             hideLabel : false,
-                                            labelAlign: 'right'
+                                            labelAlign: 'right',
+                                            allowBlank:true
                                         }
                                     ]
                                 },
@@ -728,6 +731,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     handler: function(){
                                         var form = me.winLoc.down('form');
                                         me.onNewLoc(form, 'App.model.transaksi.salesorder.SOLocation', 'Tambah Data');
+                                        Ext.getCmp('qty_loc_so').setValue(me.curr_Qty);
                                     }
                                 },
                                     {
@@ -1154,6 +1158,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     xtype: 'mitos.currency',
                                     name: 'qty',
                                     hideTrigger: true,
+                                    id:'qty_loc_so',
                                     listeners : {
                                         scope : me,
                                         specialkey : me.onEnter
@@ -1261,7 +1266,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         form.reset();
         this.goToSODetail();
         Ext.getCmp('move-next').setDisabled(true);
-        Ext.getCmp('so_num_input').setDisabled(false);
     },
     onDelete: function(){
         var me = this,
@@ -1303,7 +1307,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_co_id = form.getForm().findField('co_id').getValue();
 		this.goToSODetail();
         Ext.getCmp('move-next').setDisabled(false);
-        Ext.getCmp('so_num_input').setDisabled(true);
 	},
 
 	/**
@@ -1371,6 +1374,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
             success:function(){
                 me.curr_so_num = Ext.getCmp('so_num_input').getValue();
                 Ext.getCmp('move-next').setDisabled(false);
+                me.getPageBody().getLayout().setActiveItem( 0 );
             },
             failure:function(){
                 me.msg('Opps!', 'Error!!', true);
@@ -1422,6 +1426,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         }, model);
         form.getForm().loadRecord(newModel);
         this.action(this.winLoc, 'new');
+
         this.winLoc.show();
     },
     setForm: function(form, title){
@@ -1441,6 +1446,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_prod_id = selected.data.prod_id;
         me.curr_co_id = selected.data.co_id;
         me.curr_so_num = selected.data.so_num;
+        me.curr_Qty = selected.data.qty;
         me.SOLocationStore.load({params:{so_num: me.curr_so_num,prod_id: me.curr_prod_id}});
     },
     onItemsdblclick: function(store, record, title){

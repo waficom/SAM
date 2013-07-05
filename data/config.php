@@ -842,6 +842,10 @@ $API = array(
                 'len' => 1
             ),'getGudanglocation' => array(
                 'len' => 1
+            ),'getWODetailBBdalamproses' => array(
+            'len' => 1
+            ),'addWODetailBBdalamproses' => array(
+                'len' => 1
             )
         )
     ),
@@ -981,6 +985,18 @@ $API = array(
                 'len' => 1
             ),
             'getCoaPopup' => array(
+                'len' => 1
+            ),
+            'getAPPayUMpopup' => array(
+                'len' => 1
+            ),
+            'getAP_Invpopup' => array(
+                'len' => 1
+            ),
+            'getAR_Salepopup' => array(
+                'len' => 1
+            ),
+            'getARPayUMpopup' => array(
                 'len' => 1
             )
 
@@ -1149,6 +1165,9 @@ $API = array(
             'getAR_Sale_Payment' => array(
                 'len' => 1
             ),
+            'getAR_Payment_Alocation' => array(
+                'len' => 1
+            ),
             'addAR_Sale_Payment' => array(
                 'len' => 1
             ),
@@ -1304,5 +1323,36 @@ $API = array(
             )
         )
     ),
-
+    'AP_Reclass' => array(
+        'methods' => array(
+            'getReclass' => array(
+                'len' => 1
+            ),
+            'addReclass' => array(
+                'len' => 1
+            ),
+            'updateReclass' => array(
+                'len' => 1
+            ),
+            'deleteReclass' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'CancelReturn' => array(
+        'methods' => array(
+            'getCancelReturn' => array(
+                'len' => 1
+            ),
+            'addCancelReturn' => array(
+                'len' => 1
+            ),
+            'updateCancelReturn' => array(
+                'len' => 1
+            ),
+            'deleteCancelReturn' => array(
+                'len' => 1
+            )
+        )
+    ),
 );

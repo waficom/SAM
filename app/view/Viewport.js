@@ -163,6 +163,7 @@ Ext.define('App.view.Viewport', {
 
         me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Sale_Payment'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Payment_Alocation'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Giro'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_In'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Out'));
@@ -171,7 +172,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_In'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_Out'));
         me.MainPanel.add(Ext.create('App.view.transaksi.GL.Voucher'));
-       // me.MainPanel.add(Ext.create('App.view.transaksi.Report.Report'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Reclass'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.cancel-return.CancelReturn'));
 
 
 

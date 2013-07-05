@@ -91,7 +91,7 @@ class GoodsReceived
                    left join gudang on gr0.gudang_id=gudang.gudang_id and gr0.co_id=gudang.co_id
 				$whereClause
 				ORDER BY
-				     gr_num";
+				     gr0.timeedit DESC";
         $this->db->setSQL($sql);
 
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

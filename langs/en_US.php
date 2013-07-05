@@ -138,6 +138,9 @@ $LANG = array(
     'cbkurang'                                  => 'CashBon Minus',
     'bankin'                                  => 'CashBook Bank In',
     'bankout'                                  => 'CashBook Bank Out',
-    'gl'                                  => 'General Ledger'
+    'gl'                                  => 'General Ledger',
+    'rc'                                  => 'AP Reclass',
+    'ar_pay_alocation'                                  => 'AP Payment Alocation',
+    'cr'                                  => 'Cancel/Return Transaksi',
 
 );

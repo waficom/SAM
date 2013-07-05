@@ -30,6 +30,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this;
             me.gr_numsearch = null;
             me.vend_search = null;
+            me.currStatus = null;
             me.curr_bb_id = null;
             me.curr_co_id = null;
             me.curr_gr_num = null;
@@ -71,10 +72,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                 proxy: {
                     type: 'direct',
                     api: {
-                        read: Jurnal.getJurnal///,
-                        //create: Jurnal.addJurnal,
-                        //update: Jurnal.updateJurnal,
-                        //destroy : Jurnal.deleteJurnal
+                        read: Jurnal.getJurnal
                     },
                     reader : {
                         totalProperty : 'totals',
@@ -111,8 +109,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 {header : 'Type', dataIndex : 'gr_type_desc', width : 200},
                                 { header : 'Gudang',dataIndex : 'gudang_id', width : 200,hidden: true},
                                 {header : 'Gudang', dataIndex : 'gudang_nama',width : 200},
-                                {header : 'status',dataIndex : 'status',hidden: true},
-                                { header : 'canceled', dataIndex : 'canceled',hidden: true}
+                                {header : 'status',dataIndex : 'status',hidden: true}
                             ],
                             viewConfig :
                             {
@@ -270,148 +267,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             margin : '0 5 0 0'
                         }]
                 });
-           /* me.GRGrid = Ext.create( 'Ext.grid.Panel',
-                {
-                    store : me.GRStore,
-                    columns : [
-                        {header : 'Goods Recv #',dataIndex : 'gr_num',width : 200},
-                        {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                        {header : 'PO#',dataIndex : 'po_num', width : 200},
-                        {header : 'Supplier',dataIndex : 'vend_nama', width : 200},
-                        {header : 'Transporter',dataIndex : 'vend_tr_nama', flex:1, width : 200 },
-                        {header : 'Type', dataIndex : 'gr_type_desc', width : 200},
-                        { header : 'Gudang',dataIndex : 'gudang_id', width : 200,hidden: true},
-                        {header : 'Gudang', dataIndex : 'gudang_nama',width : 200},
-                        {header : 'status',dataIndex : 'status',hidden: true},
-                        { header : 'canceled', dataIndex : 'canceled',hidden: true}
-                    ],
-                    viewConfig :
-                    {
-                        stripeRows: false,
-                        getRowClass: function(record, index) {
-                            return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
-                        }
-                    },
-                    // ToolBar for Encounter DataGrid.
-                    tbar : [
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldcontainergr_numsearch',
-                            items : [
-                                {
-                                    xtype : 'displayfield',
-                                    fieldLabel : 'Goods Received #'
-                                },
-                                {
-                                    xtype : 'textfield',
-                                    itemId : 'gr_numsearch',
-                                    width : 235,
-                                    margin : '0 5 0 0'
-                                }]
-                        },
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldcontainervend_search',
-                            items : [
-                                {
-                                    xtype : 'displayfield',
-                                    fieldLabel : 'Supplier'
-                                },
-                                {
-                                    xtype : 'xtVendorSuplierPopup',
-                                    itemId : 'vend_search',
-                                    width : 235,
-                                    margin : '0 5 0 0'
-                                }]
-                        },
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange',
-                            items : [
-                                {
-                                    xtype : 'datefield',
-                                    itemId : 'datefrom',
-                                    fieldLabel : 'dari',
-                                    labelWidth : 35,
-                                    width : 150,
-                                    format : 'd-m-Y',
-                                    labelAlign : 'right',
-                                    value : new Date()
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    itemId : 'dateto',
-                                    fieldLabel : 'sampai',
-                                    labelWidth : 35,
-                                    padding : '0 10 0 0',
-                                    width : 150,
-                                    format : 'd-m-Y',
-                                    labelAlign : 'right',
-                                    value : new Date()
-                                }]
-                        }, '-',
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerSearch',
-                            layout : 'vbox',
-                            items : [
-                                {
-                                    xtype : 'button',
-                                    width : 80,
-                                    margin : '0 0 3 0',
-                                    text : 'Cari',
-                                    listeners :
-                                    {
-                                        scope : me,
-                                        click : me.ReloadGrid
-                                    }
-                                }]
-                        },
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerAdd',
-                            layout : 'vbox',
-                            items : [
-                                {
-                                    xtype : 'button',
-                                    width : 100,
-                                    margin : '0 0 3 0',
-                                    text : 'Tambah Data',
-                                    listeners :
-                                    {
-                                        scope : me,
-                                        click : me.onNew
-                                    }
-
-                                }]
-                        },
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDelete',
-                            layout : 'vbox',
-                            items : [
-                                {
-                                    xtype : 'button',
-                                    width : 100,
-                                    margin : '0 0 3 0',
-                                    text : 'Hapus Data',
-                                    listeners :
-                                    {
-                                        scope : me,
-                                        click : me.onDelete
-                                    }
-                                }]
-                        }],
-                    listeners :
-                    {
-                        scope : me,
-                        itemdblclick: function(view, record){
-                            me.rowDblClicked(me.GRStore, record);
-                        }
-
-                    }
-
-                });*/
 
             /**
              * Panel:
@@ -479,7 +334,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 width: 150,
                                                                 xtype: 'textfield',
                                                                 name: 'gr_num',
-                                                                allowBlank: true,
+                                                                disabled:true,
                                                                 id : 'gr_num_input'
                                                             }
                                                         ]
@@ -665,12 +520,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 fieldLabel: 'Posted',
                                                                 id:'post_gr',
                                                                 name: 'status'
-                                                            },{
-                                                                width: 100,
-                                                                xtype: 'mitos.checkbox',
-                                                                fieldLabel: 'Canceled',
-                                                                id:'canceled_gr',
-                                                                name: 'canceled'
                                                             }]
                                                     }
 
@@ -759,7 +608,9 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 itemdblclick: function(view, record){
                                     oldName = record.get('bb_id');
                                     record.set("old_bb_id",oldName);
-                                    me.onItemsdblclick(me.GRItemsStore, record, 'Edit Bahan Baku');
+                                    if(me.currStatus!=1){
+                                        me.onItemsdblclick(me.GRItemsStore, record, 'Edit Bahan Baku');
+                                    }
                                 }
                             },
                             dockedItems: [
@@ -779,7 +630,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         },
                                         {
                                             text: 'Delete',
-                                            iconCls: 'icoDeleteBlack',
+                                            iconCls: 'delete',
                                             itemId: 'listDeleteBtn',
                                             scope: me,
                                             handler: function () {
@@ -811,7 +662,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             listeners: {
                                 scope: me,
                                 itemdblclick: function(view, record){
-                                    me.onLocdblclick(me.GRDetailStore, record, 'Edit Detail Qty');
+                                    if(me.currStatus!=1){
+                                        me.onLocdblclick(me.GRDetailStore, record, 'Edit Detail Qty');
+                                    }
+
                                 }
                             },
                             dockedItems: [
@@ -829,7 +683,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     },
                                         {
                                             xtype: 'button',
-                                            text: 'Hapus Data',
+                                            text: 'Delete',
                                             iconCls: 'delete',
                                             handler: function() {
                                                 me.onLocDelete(me.GRDetailStore);
@@ -1244,8 +1098,9 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, form = me.GeneralForm.getForm();
             form.reset();
             this.goToSODetail();
-            Ext.getCmp('gr-move-next').enable();
-            Ext.getCmp('gr_num_input').disable();
+            Ext.getCmp('gr-move-next').disable();
+            Ext.getCmp('account_grn').disable();
+            Ext.getCmp('post_gr').disable();
         },
         onDelete: function(){
             var me = this,
@@ -1288,7 +1143,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_sat_id = null;
             this.goToSODetail();
             Ext.getCmp('gr-move-next').enable();
-            Ext.getCmp('gr_num_input').disable();
+            Ext.getCmp('post_gr').enable();
+            if(me.currStatus==1){
+                Ext.getCmp('gr-save-btn').disable();
+            }
         },
 
         /**
@@ -1359,8 +1217,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
              */
             store.sync({
                 success:function(){
-                    me.curr_gr_num = Ext.getCmp('gr_num_input').getValue();
                     Ext.getCmp('gr-move-next').enable();
+                    me.getPageBody().getLayout().setActiveItem( 0 );
                 },
                 failure:function(){
                     me.msg('Opps!', 'Error!!', true);
@@ -1593,6 +1451,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         onGridClick: function(grid, selected){
             var me = this;
             me.currInv_Code = selected.data.gr_num;
+            me.currStatus = selected.data.status;
             var TopBarItems =  this.GRGridMaster.getDockedItems('toolbar[dock="top"]')[0];
             me.userinput = selected.data.userinput;
             me.useredit = selected.data.useredit;

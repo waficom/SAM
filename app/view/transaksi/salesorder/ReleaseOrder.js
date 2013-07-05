@@ -220,7 +220,6 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                     cls: 'winSave',
                     handler: function(){
                         var form = me.win.down('form').getForm();
-                        //console.log(Ext.getCmp('cbrelease').value);
                         if(form.isValid()){
                             me.onReleaseOrderSave(form, me.ReleaseOrderStore);
                         }

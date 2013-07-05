@@ -1,7 +1,7 @@
-Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
+Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelAR_Sale_Payment',
-    pageTitle: 'AR Sale Payment',
+    id: 'panelAR_Payment_Alocation',
+    pageTitle: 'AR Sale Payment Alocation',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -14,7 +14,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
-        Ext.define('AR_Sale_PaymentModel', {
+        Ext.define('AR_Payment_AlocationModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
@@ -22,7 +22,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'inv_date',type: 'date'},
                 {name: 'giro_num',type: 'string'},
                 {name: 'for_inv_code',type: 'string'},
-                {name: 'bank_code',type: 'string'},
+                {name: 'inv_um',type: 'string'},
                 {name: 'cust_id',type: 'string'},
                 {name: 'nilaidasar',type: 'string'},
                 {name: 'keterangan',type: 'string'},
@@ -34,12 +34,12 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             ]
 
         });
-        me.AR_Sale_PaymentStore = Ext.create('Ext.data.Store', {
-            model: 'AR_Sale_PaymentModel',
+        me.AR_Payment_AlocationStore = Ext.create('Ext.data.Store', {
+            model: 'AR_Payment_AlocationModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AR_Sale_Payment.getAR_Sale_Payment,
+                    read: AR_Sale_Payment.getAR_Payment_Alocation,
                     create: AR_Sale_Payment.addAR_Sale_Payment,
                     update: AR_Sale_Payment.updateAR_Sale_Payment,
                     destroy : AR_Sale_Payment.deleteAR_Sale_Payment
@@ -96,8 +96,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         /**
          * Lists Grid
          */
-        me.AR_Sale_PaymentGrid = Ext.create('App.ux.GridPanel', {
-            store: me.AR_Sale_PaymentStore,
+        me.AR_Payment_AlocationGrid = Ext.create('App.ux.GridPanel', {
+            store: me.AR_Payment_AlocationStore,
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
@@ -106,7 +106,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
                 {width: 200,text: 'Doc. Inv.',sortable: true,dataIndex: 'for_inv_code'},
-                {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
+                {width: 200,text: 'Doc. Advance.',sortable: true,dataIndex: 'inv_um'},
                 {width: 200,text: 'Debtor',sortable: true,dataIndex: 'cust_id'},
                 {width: 200,text: 'Nominal',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Remarks',sortable: true,dataIndex: 'keterangan'},
@@ -127,9 +127,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
                     if(record.get('status')!='1'){
-                        me.onItemdblclick(me.AR_Sale_PaymentStore, record, 'Edit AR Sale Payment');
+                        me.onItemdblclick(me.AR_Payment_AlocationStore, record, 'Edit AR Sale Payment');
                     }
-                    Ext.getCmp('post_arsp').enable();
+                    Ext.getCmp('post_ar_al').enable();
                 }
             },
             features:[searching],
@@ -144,8 +144,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             scope: me,
                             handler: function(){
                                 var form = me.win.down('form');
-                                me.onNewPB(form, 'AR_Sale_PaymentModel', 'Tambah Data');
-                                Ext.getCmp('post_arsp').disable();
+                                me.onNewPB(form, 'AR_Payment_AlocationModel', 'Tambah Data');
+                                Ext.getCmp('post_ar_al').disable();
                             }
                         },
                         {
@@ -153,7 +153,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             text: 'Delete',
                             iconCls: 'delete',
                             handler:function() {
-                                me.onPBDelete(me.AR_Sale_PaymentStore);
+                                me.onPBDelete(me.AR_Payment_AlocationStore);
                             }
                         },'->',
                         {
@@ -164,7 +164,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.AR_Sale_PaymentStore,
+                    store: me.AR_Payment_AlocationStore,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -241,26 +241,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             fieldLabel: "Type ",
                             defaults: {xtype: "radio", name:'inv_type'
                             },
+                            hidden: true,
                             items: [
                                 {
-                                    boxLabel: "Normal",
+                                    boxLabel: "Alocation",
                                     checked: true,
-                                    inputValue:'N',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('for_inv_pay').enable();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "Uang Muka",
-                                    inputValue:'U',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('for_inv_pay').disable();
-                                        }
-                                    }
+                                    inputValue:'A',
+                                    hidden: true
 
                                 }
                             ]
@@ -321,14 +308,25 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     value: ' For Doc. AR : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 150,
                                     xtype: 'xtARPopup',
                                     name: 'for_inv_code',
-                                    id:'for_inv_pay',
+                                    allowBlank: false
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: ' Doc. AR UM: '
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'xtARPayUMPopup',
+                                    name: 'inv_um',
                                     allowBlank: false
                                 }
                             ]
                         },
+                        ,
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -340,13 +338,27 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bank Code : '
+                                    value: ' Nominal : '
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtBankPopup',
-                                    name: 'bank_code',
-                                    allowBlank: false
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    disabled:true
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    disabled:true
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'nilaidasar'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    disabled:true
                                 }
                             ]
                         },
@@ -382,27 +394,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'nilaidasar',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
                                     value: 'Remarks : '
                                 },
                                 {
@@ -420,7 +411,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
-                                    id:'post_arsp',
+                                    id:'post_ar_al',
                                     name: 'status'
                                 }
                             ]
@@ -435,7 +426,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     handler: function(){
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
-                            me.onPBSave(form, me.AR_Sale_PaymentStore);
+                            me.onPBSave(form, me.AR_Payment_AlocationStore);
                         }
                     }
                 },
@@ -459,7 +450,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
 
 
 
-        me.pageBody = [me.AR_Sale_PaymentGrid, me.AR_Sale_JurnalGrid];
+        me.pageBody = [me.AR_Payment_AlocationGrid, me.AR_Sale_JurnalGrid];
         me.callParent(arguments);
     },
     setForm: function(form, title){
@@ -516,7 +507,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
         var me = this;
         me.currInv_Code = selected.data.inv_code;
         me.currPosted = selected.data.status;
-        var TopBarItems = this.AR_Sale_PaymentGrid.getDockedItems('toolbar[dock="top"]')[0];
+        var TopBarItems = this.AR_Payment_AlocationGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
@@ -587,10 +578,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
     },
 
     onPBDelete: function(store){
-        var me = this, grid = me.AR_Sale_PaymentGrid;
+        var me = this, grid = me.AR_Payment_AlocationGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('AR_Sale_Payment');
+        bid = sr[0].get('AR_Payment_Alocation');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -619,7 +610,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
      */
     onActive: function(callback){
         var me = this;
-        this.AR_Sale_PaymentStore.load({params:{start:0, limit:5}});
+        this.AR_Payment_AlocationStore.load({params:{start:0, limit:5}});
         this.AR_Sale_JurnalStore.load();
 
         callback(true);
