@@ -188,6 +188,12 @@ requires = [
     'App.ux.APPayUMPopup',
     'App.ux.APPopup',
     'App.ux.ARPayUMPopup',
+    'App.ux.APAlPopup',
+    'App.ux.APPayPopup',
+    'App.ux.APRCPopup',
+    'App.ux.APMnfPopup',
+    'App.ux.ARPayPopup',
+    'App.ux.ARAlPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',

@@ -32,14 +32,15 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
             fields: [
                 {name: 'co_id', type: 'string'},
                 {name: 'inv_code', type: 'string'},
-                {name: 'canceled_date', type: 'string'},
+                {name: 'canceled_date', type: 'date'},
                 {name: 'canceled_by', type: 'string'},
                 {name: 'status', type: 'string'},
                 {name: 'reason', type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
-                {name: 'inv_type', type: 'string'}
+                {name: 'inv_type', type: 'string'},
+                {name: 'nominal', type: 'string'}
             ]
 
         });
@@ -67,6 +68,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                 {width: 100,text: 'Date',sortable: true,dataIndex: 'canceled_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 150,text: 'Reason',sortable: true,dataIndex: 'reason'},
                 {width: 150,text: 'Menu',sortable: true,dataIndex: 'inv_type'},
+                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 100,text: 'LastUpdate',sortable: true,dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
@@ -123,7 +125,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
         // Window User Form
         // *************************************************************************************
         me.win = Ext.create('App.ux.window.Window', {
-            width: 500,
+            width: 600,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -160,18 +162,119 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPopup', id:'inv_code_crx'});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPopup',name:'inv_code',value: this.getValue()});
                                         }
                                     }
 
                                 },
                                 {
-                                    boxLabel: "AR",
+                                    boxLabel: "AP PayMent",
                                     inputValue:'2',
                                     handler: function(field, value) {
                                         if (value) {
+                                            var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPopup', id:'inv_code_crx'});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayPopup',name:'inv_code',value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AP UM",
+                                    inputValue:'3',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            var me=this;
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayUMPopup',name:'inv_code',value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AP Alocation",
+                                    inputValue:'4',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            var me=this;
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPAlPopup',name:'inv_code',value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AP Reclass",
+                                    inputValue:'5',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            var me=this;
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPRCPopup',name:'inv_code',value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AP Manufactur",
+                                    inputValue:'6',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            var me=this;
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPMnfPopup',name:'inv_code',value: this.getValue()});
+                                        }
+                                    }
+
+                                }
+                            ]
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "type",
+                            defaults: {xtype: "radio", name:'inv_type', hideLabel:true
+                            },
+                            items: [
+                                {
+                                    boxLabel: "AR Sale",
+                                    inputValue:'7',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPopup',name:'inv_code', value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AR PayMent",
+                                    inputValue:'8',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayPopup',name:'inv_code', value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AR UM",
+                                    inputValue:'9',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayUMPopup',name:'inv_code', value: this.getValue()});
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "AR Alocation",
+                                    inputValue:'10',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARAlPopup',name:'inv_code', value: this.getValue()});
                                         }
                                     }
 
@@ -191,8 +294,8 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                     value: 'No. Doc. :'
                                 },
                                 {
-                                    id:'inv_code_cr',
-                                    name:'inv_code'
+                                    id:'inv_code_cr'
+
                                 }
                             ]
                         },{
@@ -298,9 +401,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
     },
     saveCancelReturn: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        var xxx= Ext.getCmp('inv_code_crx').getValue();
-        xxxform.findField('inv_code').setValue(xxx);
-        values = form.getValues();
+
         if(storeIndex == -1){
             store.add(values);
         }else{
@@ -360,7 +461,9 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
     },
     onGridClick: function(grid, selected){
         var me = this;
-        Ext.getCmp('delete_cr').disable();
+        if(selected.data.status == 1){
+            Ext.getCmp('delete_cr').disable();
+        }
         var TopBarItems = this.CancelReturnGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;

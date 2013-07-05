@@ -998,6 +998,24 @@ $API = array(
             ),
             'getARPayUMpopup' => array(
                 'len' => 1
+            ),
+            'getAPAlpopup' => array(
+                'len' => 1
+            ),
+            'getAPPaypopup' => array(
+                'len' => 1
+            ),
+            'getAPRCpopup' => array(
+                'len' => 1
+            ),
+            'getAPMnfpopup' => array(
+                'len' => 1
+            ),
+            'getARPaypopup' => array(
+                'len' => 1
+            ),
+            'getARAlpopup' => array(
+                'len' => 1
             )
 
 

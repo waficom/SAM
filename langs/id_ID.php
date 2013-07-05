@@ -138,6 +138,6 @@ $LANG = array(
     'bankout'                                  => 'Kas Bank Keluar',
     'gl'                                  => 'General Ledger',
     'rc'                                  => 'AP Reclass',
-    'ar_pay_alocation'                                  => 'AP Alokasi Pembayaran',
+    'ar_pay_alocation'                                  => 'AR Alokasi Pembayaran',
     'cr'                                  => 'Cancel/Return Transaksi',
 );

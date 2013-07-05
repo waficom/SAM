@@ -140,7 +140,7 @@ $LANG = array(
     'bankout'                                  => 'CashBook Bank Out',
     'gl'                                  => 'General Ledger',
     'rc'                                  => 'AP Reclass',
-    'ar_pay_alocation'                                  => 'AP Payment Alocation',
+    'ar_pay_alocation'                                  => 'AR Payment Alocation',
     'cr'                                  => 'Cancel/Return Transaksi',
 
 );
