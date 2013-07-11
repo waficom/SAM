@@ -618,9 +618,6 @@ $API = array(
             'deletePO' => array(
                 'len' => 1
             ),
-            'deletebypo_num' => array(
-                'len' => 1
-            ),
             'getPOItems' => array(
                 'len' => 1
             ),
@@ -1015,6 +1012,9 @@ $API = array(
                 'len' => 1
             ),
             'getARAlpopup' => array(
+                'len' => 1
+            ),
+            'getDeliveryOrderpopup' => array(
                 'len' => 1
             )
 

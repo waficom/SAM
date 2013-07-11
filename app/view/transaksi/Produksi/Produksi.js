@@ -740,8 +740,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
-        me.Produksi1Store.load();
+        this.ReloadGrid();
     },
 
     onProduksi1Save: function(form, store){

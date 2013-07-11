@@ -30,7 +30,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'hutangsuplier',type: 'string'},
+                {name: 'uangmuka',type: 'string'}
             ]
 
         });
@@ -57,6 +59,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
+                {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
@@ -112,6 +115,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {width: 200,text: 'hutangsuplier',sortable: true,dataIndex: 'hutangsuplier', hidden: true},
+                {width: 200,text: 'uangmuka',sortable: true,dataIndex: 'uangmuka', hidden: true},
                 {width: 100,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -120,14 +125,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1' ? 'child-row' :'';
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    if(record.get('status')!='1'){
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
                         me.onItemdblclick(me.AP_Inv_PaymentStore, record, 'Edit AP Payment Alocation');
                         Ext.getCmp('post_ap_pay_al').enable();
                     }
@@ -153,6 +159,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'delete_payloc',
                             handler:function() {
                                 me.onPBDelete(me.AP_Inv_PaymentStore);
                             }
@@ -184,6 +191,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor ', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
@@ -197,7 +205,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
             features:[searching]
@@ -344,23 +352,29 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    disabled:true
+                                    xtype: 'mitos.currency',
+                                    disabled:true,
+                                    name:'hutangsuplier',
+                                    hideTrigger: true
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    disabled:true
+                                    xtype: 'mitos.currency',
+                                    disabled:true,
+                                    name:'uangmuka',
+                                    hideTrigger: true
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'nilaidasar'
+                                    xtype: 'mitos.currency',
+                                    name: 'nilaidasar',
+                                    hideTrigger: true
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    disabled:true
+                                    xtype: 'mitos.currency',
+                                    disabled:true,
+                                    hideTrigger: true
                                 }
                             ]
                         },
@@ -512,6 +526,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        if(selected.data.status == 1 || selected.data.status == 2){
+            Ext.getCmp('delete_payloc').disable();
+        }else{
+            Ext.getCmp('delete_payloc').enable();
+        }
 
     },
 

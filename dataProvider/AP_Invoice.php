@@ -124,7 +124,10 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type='A' ORDER BY $orderx DESC";
+        $sql = "select A.*, B.hutangsuplier, C.nilaidasar as uangmuka from ap_inv_pembayaran A
+                left join ap_inv B on A.inv_code=B.inv_code and A.co_id=B.co_id
+                left join ap_inv_pembayaran C on A.inv_um=C.ap_inv_payment and A.co_id=C.co_id
+                where A.inv_type='A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -227,7 +230,7 @@ class AP_Invoice
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['ap_inv_payment']);
+        unset($data['id'],$data['ap_inv_payment'],$data['hutangsuplier'],$data['hutangsuplier']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -317,7 +320,7 @@ class AP_Invoice
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['ap_inv_payment']);
+        unset($data['id'],$data['ap_inv_payment'],$data['hutangsuplier'],$data['hutangsuplier']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'U', array('ap_inv_payment' => $params -> ap_inv_payment));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

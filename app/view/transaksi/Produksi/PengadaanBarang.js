@@ -759,6 +759,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.PengadaanBarangStore.load({params:{pb_num: me.currPB}});
                 }
             }
         });

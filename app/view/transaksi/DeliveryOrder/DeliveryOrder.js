@@ -10,6 +10,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
+        me.currPosted = null;
         //me.myWinChooseItem=null;
 
         Ext.define('DeliveryOrderModel', {
@@ -26,7 +27,8 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 {name: 'userinput',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'timeinput',type: 'date'},
-                {name: 'old_do_num',type: 'string'}
+                {name: 'old_do_num',type: 'string'},
+                {name: 'status',type: 'string'}
             ],
             proxy: {
                 type: 'direct',
@@ -105,29 +107,35 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'Do_num', sortable: false, dataIndex: 'do_num',width:150},
+                {width: 150,text: 'Do. Number',sortable: true,dataIndex: 'do_num'},
                 {text: 'So_num',width:150, sortable: false, dataIndex: 'so_num'},
                 {text: 'Route', width:200, sortable: false, dataIndex: 'route'},
                 {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'Customer', width:200, sortable: false,dataIndex: 'cust_nama'},
                 {text: 'Qty', width:150, sortable: false,dataIndex: 'qty'},
                 {text: 'Qty Delivery', width:150, sortable: false,dataIndex: 'qty_delivery'},
-                {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'LastUpdate', dataIndex: 'timeedit',width: 100,renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('qty') == record.get('qty_delivery') ? 'child-row' : (record.get('qty') < record.get('qty_delivery') ? 'adult-row':'');
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 select: me.onDeliveryOrderGridClick,
                 itemdblclick: function(view, record){
-                    oldName = record.get('do_num');
-                    record.set("old_do_num",oldName);
-                    me.onItemdblclick(me.DeliveryOrderStore, record, 'Edit DeliveryOrder');
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
+                        oldName = record.get('do_num');
+                        record.set("old_do_num",oldName);
+                        me.onItemdblclick(me.DeliveryOrderStore, record, 'Edit DeliveryOrder');
+                        Ext.getCmp('post_do').enable();
+                    }
+
                 }
             },
             features:[searching],
@@ -143,6 +151,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewDeliveryOrder(form, 'DeliveryOrderModel', 'Tambah Data');
+                                Ext.getCmp('post_do').disable();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -150,6 +159,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             text: 'Delete',
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
+                            id:'delete_do',
                             scope: me,
                             handler:function() {
                                 me.onDeliveryOrderDelete(me.DeliveryOrderStore);
@@ -248,13 +258,23 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 {text: 'status', width:50, sortable: false,dataIndex: 'status'},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 //select: me.onGridClick,
                 itemdblclick: function(view, record){
-                    oldName = record.get('sequence_no');
-                    record.set("old_sequence_no",oldName);
-                    me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
+                        oldName = record.get('sequence_no');
+                        record.set("old_sequence_no",oldName);
+                        me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
+                    }
                 }
             },
             features:[searching],
@@ -273,8 +293,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                     },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
+                            id:'delete_dt_do',
                             handler: function() {
                                 me.deleteDeliveryOrder1(me.DeliveryOrder1Store);
                             }
@@ -390,6 +411,28 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     name : 'deliverydate',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Posting'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.checkbox',
+                                    name : 'status',
+                                    id:'post_do'
+
                                 }
                             ]
                         }
@@ -801,13 +844,20 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
     onDeliveryOrderGridClick: function(grid, selected){
         var me = this;
         me.currDeliveryOrder = selected.data.do_num;
+        me.currPosted = selected.data.status;
         var TopBarItems = this.DeliveryOrderGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
-
+        if(selected.data.status == 1 || selected.data.status == 2){
+            Ext.getCmp('delete_do').disable();
+            Ext.getCmp('delete_dt_do').disable();
+        }else{
+            Ext.getCmp('delete_do').enable();
+            Ext.getCmp('delete_dt_do').enable();
+        }
     },
 
     onItemdblclick: function(store, record, title){
@@ -840,14 +890,12 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         store.sync({
             success:function(){
                 me.win.close();
-                //this.DeliveryOrderStore.load({params:{datefrom : datefrom, dateto : dateto}});
-                store.load();
             },
             failure:function(){
-                store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
+        this.ReloadGrid();
     },
 
     onDeliveryOrder1Save: function(form, store){

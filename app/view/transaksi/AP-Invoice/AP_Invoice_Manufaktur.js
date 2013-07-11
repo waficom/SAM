@@ -90,6 +90,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
+                {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
@@ -107,10 +108,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Jurnal.getJurnal,
-                    create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
-                    destroy : Jurnal.deleteJurnal
+                    read: Jurnal.getJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -153,14 +151,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1' ? 'child-row' :'';
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    if(record.get('status')!=1){
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
                         me.onItemdblclick(me.AP_InvStore, record, 'Edit AP Inv Manufaktur');
                         Ext.getCmp('post_ap_mf').enable();
                     }
@@ -250,13 +249,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
-                    if(me.currPosted !='1'){
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
                         me.currBB = record.get('sequence_no');
                         var form = this.winformAP_Inv_Detail.down('form');
                         me.onItemdblclick1(me.AP_Inv_DetailStore, record, 'Edit Detail Item', me.winformAP_Inv_Detail, form);
@@ -272,6 +272,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
@@ -285,13 +286,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
-                    if(me.currPosted !='1'){
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
                         var form = this.winformAP_Inv_Jurnal.down('form');
                         me.onItemdblclick1(me.AP_Inv_JurnalStore, record, 'Edit AP Inv. Jurnal', me.winformAP_Inv_Jurnal, form);
                     }

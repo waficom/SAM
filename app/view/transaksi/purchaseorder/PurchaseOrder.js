@@ -9,6 +9,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         me.curr_bb_id = null;
         me.curr_co_id = null;
         me.curr_po_num = null;
+        me.currPosted = null;
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
@@ -34,7 +35,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                 {
                     header : 'Purchase Order #',
                     dataIndex : 'po_num',
-                    width : 200
+                    width : 180
                 },
                 {
                     header : 'Tanggal',
@@ -45,17 +46,17 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                 {
                     header : 'Supplier',
                     dataIndex : 'vend_nama',
-                    width : 200
+                    width : 150
                 },
                 {
                     header : '# Penawaran Supplier',
                     dataIndex : 'vend_inq_num',
-                    width : 200
+                    width : 150
                 },
                 {
                     header : 'Pengadaan Barang',
                     dataIndex : 'pb_num',
-                    width : 200
+                    width : 150
                 },
                 {
                     header : 'JT Kirim',
@@ -72,14 +73,30 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     header : 'Total',
                     dataIndex : 'netto_total',
                     renderer: Ext.util.Format.numberRenderer('0,0'),
-                    width : 300
-                }
+                    width : 100
+                },
+                {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
+                }
+            },
+
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.POStore, record, 'Edit PO');
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
+                        me.onItemdblclick(me.POStore, record, 'Edit PO');
+                        Ext.getCmp('post_po').enable();
+                    }
+
+
                 }
             },
             features:[searching],
@@ -95,6 +112,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'App.model.transaksi.purchaseorder.PurchaseOrder', 'Tambah Data');
+                                Ext.getCmp('post_po').disable();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -102,6 +120,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                             text: 'Delete',
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
+                            id:'delete_po',
                             scope: me,
                             handler:function() {
                                 me.onPBDelete(me.POStore);
@@ -185,9 +204,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {text: 'co_id', width:70, sortable: false, dataIndex: 'co_id', hidden: true},
+                {text: 'bb_id', width:70, sortable: false, dataIndex: 'bb_id'},
                 {text: 'po_num', width:70, sortable: false, dataIndex: 'po_num', hidden: true},
-                {text: 'ID', width:70, sortable: false, dataIndex: 'bb_id'},
                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
                 {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
                 {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
@@ -199,11 +217,22 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                 {text: 'Total', width: 150, sortable: false, dataIndex: 'n_netto'},
                 {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 //select: me.onGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick1(me.POItemsStore, record, 'Edit Detail PO Item');
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
+                        me.onItemdblclick1(me.POItemsStore, record, 'Edit Detail PO Item');
+                    }
+
                 }
             },
             features:[searching],
@@ -222,8 +251,9 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     },
                         {
                             xtype: 'button',
-                            text: 'Hapus Data',
+                            text: 'Delete',
                             iconCls: 'delete',
+                            id:'delete_dt_po',
                             handler: function() {
                                 me.deletePB1(me.POItemsStore);
                             }
@@ -466,6 +496,28 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width: 100,
                                     xtype: 'mitos.checkbox',
                                     name : 'ppn_exc'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Posting'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.checkbox',
+                                    name : 'status',
+                                    id:'post_po'
+
                                 }
                             ]
                         }
@@ -796,13 +848,20 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
     onPBGridClick: function(grid, selected){
         var me = this;
         me.curr_po_num = selected.data.po_num;
+        me.currPosted = selected.data.status;
         var TopBarItems = this.POGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.POItemsStore.load({params:{po_num: me.curr_po_num}});
-
+        if(selected.data.status == 1 || selected.data.status == 2){
+            Ext.getCmp('delete_po').disable();
+            Ext.getCmp('delete_dt_po').disable();
+        }else{
+            Ext.getCmp('delete_po').enable();
+            Ext.getCmp('delete_dt_po').enable();
+        }
     },
 
     onItemdblclick: function(store, record, title){
@@ -835,14 +894,12 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         store.sync({
             success:function(){
                 me.win.close();
-                store.load();
-                me.POItemsStore.load();
             },
             failure:function(){
-                store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
+        this.ReloadGrid();
     },
 
     onPB1Save: function(form, store){
@@ -863,7 +920,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         store.sync({
             success:function(){
                 me.winform1.close();
-                // store.load();
             },
             failure:function(){
                 //store.load();
@@ -871,7 +927,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
             }
         });
         store.load({params:{po_num: me.curr_po_num}});
-        //me.DeliveryOrderStore.load();
     },
     onPBDelete: function(store){
         var me = this, grid = me.POGrid;
@@ -891,6 +946,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.POItemsStore.load({params:{po_num:me.curr_po_num}});
                 }
             }
         });
@@ -899,7 +955,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         var me = this, grid = me.POItemGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get(bb_id);
+        bid = sr[0].get('bb_id');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',

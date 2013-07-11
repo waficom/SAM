@@ -163,6 +163,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -175,6 +176,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -187,6 +189,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayUMPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -199,6 +202,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPAlPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -211,6 +215,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPRCPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -223,6 +228,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtAPMnfPopup',name:'inv_code',value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -231,7 +237,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                         },
                         {
                             xtype: "radiogroup",
-                            fieldLabel: "type",
+                            fieldLabel: "Type",
                             defaults: {xtype: "radio", name:'inv_type', hideLabel:true
                             },
                             items: [
@@ -242,6 +248,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtARPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -253,6 +260,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtARPayPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -264,6 +272,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtARPayUMPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -275,6 +284,40 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
                                             Ext.getCmp('inv_code_cr').add({xtype:'xtARAlPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
+                                        }
+                                    }
+
+                                }
+                            ]
+                        },
+                        ,
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Type",
+                            defaults: {xtype: "radio", name:'inv_type',hideLabel:true
+                            },
+                            items: [
+                                {
+                                    boxLabel: "Purchase Order",
+                                    inputValue:'11',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtPOPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "Delivery Order",
+                                    inputValue:'12',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.getCmp('inv_code_cr').remove(0);
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtDOPopup',name:'inv_code', value: this.getValue()});
+                                            //Ext.doLayout();
                                         }
                                     }
 
@@ -316,7 +359,9 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                     name : 'canceled_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    value : new Date(),
+                                    id:'canceled_date'
                                 }
                             ]
                         },
@@ -379,6 +424,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                 close: function(){
                     me.action('close');
                 }
+
             }
         });
         // END WINDOW
@@ -463,6 +509,8 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
         var me = this;
         if(selected.data.status == 1){
             Ext.getCmp('delete_cr').disable();
+        }else{
+            Ext.getCmp('delete_cr').enable();
         }
         var TopBarItems = this.CancelReturnGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;

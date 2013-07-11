@@ -186,15 +186,13 @@ class SalesOrder
      */
     public function deleteSO(stdClass $params)
     {
-        $data = get_object_vars($params);
-//        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
-        $sql = "DELETE FROM SO11 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
+        $sql = "DELETE FROM so11 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM SO10 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
+        $sql = "DELETE FROM so10 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-		$sql = "DELETE FROM SO0 WHERE (co_id = '$params->co_id') and (so_num = '$params-> so_num')";
+		$sql = "DELETE FROM so0 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -206,19 +204,19 @@ class SalesOrder
      * @param stdClass $params
      * @return stdClass
      */
-    public function deletebyso_num($cid, $num)
+   /* public function deletebyso_num($cid, $num)
     {
-        $sql = "DELETE FROM SO11 WHERE (co_id = '$cid') and (so_num = '$num')";
+        $sql = "DELETE FROM so11 WHERE (co_id = '$cid') and (so_num = '$num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM SO10 WHERE (co_id = '$cid') and (so_num = '$num')";
+        $sql = "DELETE FROM so10 WHERE (co_id = '$cid') and (so_num = '$num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM SO0 WHERE (co_id = '$cid') and (so_num = '$num')";
+        $sql = "DELETE FROM so0 WHERE (co_id = '$cid') and (so_num = '$num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $num;
-    }
+    }*/
 
     public function getSOItems(stdClass $params)
     {
@@ -349,7 +347,7 @@ class SalesOrder
                 from so11
                    left outer join items on (so11.co_id = items.co_id) and (so11.prod_id = items.prod_id)
                    left outer join satuan on (so11.co_id = satuan.co_id) and (so11.sat_id = satuan.satuan_id)
-                    WHERE so11.so_num = '$params->so_num' and so11.prod_id = '$params->prod_id' ORDER BY so11.urut asc");
+                    WHERE so11.co_id = '$params->co_id' and so11.so_num = '$params->so_num' and so11.prod_id = '$params->prod_id' ORDER BY so11.urut asc");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

@@ -1447,7 +1447,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_co_id = selected.data.co_id;
         me.curr_so_num = selected.data.so_num;
         me.curr_Qty = selected.data.qty;
-        me.SOLocationStore.load({params:{so_num: me.curr_so_num,prod_id: me.curr_prod_id}});
+        me.SOLocationStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
     },
     onItemsdblclick: function(store, record, title){
         var form = this.win.down('form');
@@ -1510,7 +1510,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{co_id: me.curr_co_id, prod_id: me.curr_prod_id}});
+        store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
     },
     onItemsDelete: function(store){
         var me = this, grid = me.ItemsGrid;
@@ -1529,7 +1529,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
-                    me.SOLocationStore.load({params:{co_id: me.curr_co_id, prod_id: me.curr_prod_id}});
+                    me.SOLocationStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
                 }
             }
         });

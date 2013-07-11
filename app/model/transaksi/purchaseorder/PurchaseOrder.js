@@ -23,7 +23,8 @@ Ext.define( 'App.model.transaksi.purchaseorder.PurchaseOrder',
             {name: 'useredit',type: 'string'},
             {name: 'userinput',type: 'string'},
             {name: 'timeedit',type: 'date'},
-            { name : 'pb_num', type : 'string'}
+            { name : 'pb_num', type : 'string'},
+            { name : 'status', type : 'string'}
         ],
         proxy :
         {

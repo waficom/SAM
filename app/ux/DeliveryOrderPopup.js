@@ -24,14 +24,12 @@ Ext.define('App.ux.DOPopup',
                         {name: 'do_num',type: 'string'},
                         {name: 'so_num',type: 'string'},
                         {name: 'route',type: 'string'},
-                        {name: 'deliverydate',type: 'date'},
-                        {name: 'cust_nama',type: 'string'},
-                        {name: 'qty',type: 'string'}
+                        {name: 'deliverydate',type: 'date'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : DeliveryOrder.getDeliveryOrder},
+                        api : {read : Popup.getDeliveryOrderpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -55,9 +53,7 @@ Ext.define('App.ux.DOPopup',
                     {text: 'Do_num', sortable: false, dataIndex: 'do_num'},
                     {text: 'So_num', sortable: false, dataIndex: 'so_num'},
                     {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
-                    {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {text: 'Customer', width:200, sortable: false,flex: 1,dataIndex: 'cust_nama'},
-                    {text: 'Qty', width:200, sortable: false,dataIndex: 'qty'}
+                    {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
                 height: 200,
 //                selModel : me.smGrid,

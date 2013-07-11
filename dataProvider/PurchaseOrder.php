@@ -63,7 +63,7 @@ class PurchaseOrder
 				left join(select co_id, po_num, sum(n_netto) as netto_total from po1 group by co_id, po_num) C on po0.po_num=C.po_num and po0.co_id=C.co_id
 				where po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
 				ORDER BY
-				     po_num";
+				     po0.timeedit DESC";
         $this->db->setSQL($sql);
 
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -149,12 +149,10 @@ class PurchaseOrder
      */
     public function deletePO(stdClass $params)
     {
-        $data = get_object_vars($params);
-//        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
-        $sql = "DELETE FROM PO1 WHERE (co_id = '$params->co_id') and (po_num = '$params -> po_num')";
+        $sql = "DELETE FROM po1 WHERE (co_id = '$params->co_id') and (po_num = '$params->po_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM PO0 WHERE (co_id = '$params->co_id') and (po_num = '$params -> po_num')";
+        $sql = "DELETE FROM po0 WHERE (co_id = '$params->co_id') and (po_num = '$params->po_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -166,17 +164,6 @@ class PurchaseOrder
      * @param stdClass $params
      * @return stdClass
      */
-    public function deletebypo_num($cid, $num)
-    {
-        $sql = "DELETE FROM PO1 WHERE (co_id = '$cid') and (po_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM PO0 WHERE (co_id = '$cid') and (po_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $num;
-    }
-
     public function getPOItems(stdClass $params)
     {
 
@@ -263,8 +250,7 @@ class PurchaseOrder
      */
     public function deletePOItems(stdClass $params)
     {
-        $data = get_object_vars($params);
-        $sql = "DELETE FROM PO1 WHERE (co_id='$params-co_id') and (po_num = '$params->po_num')";
+        $sql = "DELETE FROM po1 WHERE (po_num = '$params->po_num') and (bb_id = '$params->bb_id')  ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

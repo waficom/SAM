@@ -31,16 +31,9 @@ class Popup
     public function SalesOrderPopup(stdClass $params)
     {
 
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'so_num';
-        }
         $sql = "SELECT A.*, B.cust_nama FROM so0 A
-         left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id ORDER BY $orderx DESC";
+         left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
+         where A.status<>'A' ORDER BY A.so_num DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -136,7 +129,7 @@ class Popup
     public function ProduksiPopup(stdClass $params)
     {
 
-        $sql = "SELECT * from pp_produksi ORDER BY timeedit";
+        $sql = "SELECT * from pp_produksi ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -157,7 +150,7 @@ class Popup
 					po0
 				LEFT JOIN
 					vendor
-				ON vendor.vend_id = po0.vend_id ORDER BY timeedit";
+				ON vendor.vend_id = po0.vend_id where po0.status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -202,7 +195,7 @@ class Popup
     public function getAPPayUMpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='U' ORDER BY timeedit";
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='U' and status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -217,7 +210,7 @@ class Popup
     public function getAP_Invpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv where status=1 ORDER BY timeedit";
+        $sql = "SELECT * FROM ap_inv where status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -232,7 +225,7 @@ class Popup
     public function getAR_Salepopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ar_sale where status=1 ORDER BY timeedit";
+        $sql = "SELECT * FROM ar_sale where status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -247,7 +240,7 @@ class Popup
     public function getARPayUMpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ar_sale_payment where inv_type ='U' ORDER BY timeedit";
+        $sql = "SELECT * FROM ar_sale_payment where inv_type ='U' and status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -262,7 +255,7 @@ class Popup
     public function getAPAlpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='A' ORDER BY timeedit";
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='A' and status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -277,7 +270,7 @@ class Popup
     public function getAPPaypopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='N' ORDER BY timeedit";
+        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='N' and status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -292,7 +285,7 @@ class Popup
     public function getAPRCpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_reclass ORDER BY timeedit";
+        $sql = "SELECT * FROM ap_reclass where status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -307,7 +300,7 @@ class Popup
     public function getAPMnfpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM inv_manufactur ORDER BY timeedit";
+        $sql = "SELECT * FROM inv_manufactur where status=1 ORDER BY timeedit";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -322,7 +315,7 @@ class Popup
     public function getARPaypopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ar_sale_payment where inv_type='N' ORDER BY timeedit";
+        $sql = "SELECT * FROM ar_sale_payment where inv_type='N' and status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -337,7 +330,22 @@ class Popup
     public function getARAlpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ar_sale_payment where inv_type='A' ORDER BY timeedit";
+        $sql = "SELECT * FROM ar_sale_payment where inv_type='A' and status=1 ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getDeliveryOrderpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM deliveryorder where status='1' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

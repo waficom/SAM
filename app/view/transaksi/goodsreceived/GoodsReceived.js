@@ -30,7 +30,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this;
             me.gr_numsearch = null;
             me.vend_search = null;
-            me.currStatus = null;
+            me.currPosted = null;
             me.curr_bb_id = null;
             me.curr_co_id = null;
             me.curr_gr_num = null;
@@ -115,7 +115,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             {
                                 stripeRows: false,
                                 getRowClass: function(record, index) {
-                                    return (record.get('status') == '1' && record.get('canceled') == '1') ? 'adult-row' : (record.get('status') == '1' && record.get('canceled') == '0') ? 'child-row' :'';
+                                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
                                 }
                             },
                             listeners: {
@@ -144,7 +144,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             viewConfig: {
                                 stripeRows: false,
                                 getRowClass: function(record, index) {
-                                    return me.currPosted == '1'? 'child-row' : '';
+                                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                                 }
                             }
                         })
@@ -254,6 +254,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     width : 100,
                                     margin : '0 0 3 0',
                                     text : 'Hapus Data',
+                                    id:'delete_gr',
                                     listeners :
                                     {
                                         scope : me,
@@ -599,7 +600,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             {
                                 stripeRows: false,
                                 getRowClass: function(record, index) {
-                                    return record.get('qty_po') < record.get('qty_netto') ? 'adult-row' : '';
+                                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                                 }
                             },
                             listeners: {
@@ -608,7 +609,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 itemdblclick: function(view, record){
                                     oldName = record.get('bb_id');
                                     record.set("old_bb_id",oldName);
-                                    if(me.currStatus!=1){
+                                    if(me.currPosted =='1' || me.currPosted =='2'){
+                                    }else{
                                         me.onItemsdblclick(me.GRItemsStore, record, 'Edit Bahan Baku');
                                     }
                                 }
@@ -632,6 +634,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             text: 'Delete',
                                             iconCls: 'delete',
                                             itemId: 'listDeleteBtn',
+                                            id:'delete_dt_gr',
                                             scope: me,
                                             handler: function () {
                                                 me.onItemsDelete(me.GRItemsStore);
@@ -662,7 +665,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             listeners: {
                                 scope: me,
                                 itemdblclick: function(view, record){
-                                    if(me.currStatus!=1){
+                                    if(me.currPosted =='1' || me.currPosted =='2'){
+                                    }else{
                                         me.onLocdblclick(me.GRDetailStore, record, 'Edit Detail Qty');
                                     }
 
@@ -685,6 +689,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                             xtype: 'button',
                                             text: 'Delete',
                                             iconCls: 'delete',
+                                            id:'delete_dt2_gr',
                                             handler: function() {
                                                 me.onLocDelete(me.GRDetailStore);
                                             }
@@ -1144,9 +1149,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             this.goToSODetail();
             Ext.getCmp('gr-move-next').enable();
             Ext.getCmp('post_gr').enable();
-            if(me.currStatus==1){
-                Ext.getCmp('gr-save-btn').disable();
-            }
+
         },
 
         /**
@@ -1393,6 +1396,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                         if (store.getCount() > 0) {
                             sm.select(0);
                             me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+                            me.GRN_JurnalStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
                         }
                     }
                 }
@@ -1451,13 +1455,24 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         onGridClick: function(grid, selected){
             var me = this;
             me.currInv_Code = selected.data.gr_num;
-            me.currStatus = selected.data.status;
+            me.currPosted = selected.data.status;
             var TopBarItems =  this.GRGridMaster.getDockedItems('toolbar[dock="top"]')[0];
             me.userinput = selected.data.userinput;
             me.useredit = selected.data.useredit;
             me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
             TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
             me.GRN_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+            if(selected.data.status == 1 || selected.data.status == 2){
+                Ext.getCmp('gr-save-btn').disable();
+                Ext.getCmp('delete_gr').disable();
+                Ext.getCmp('delete_dt_gr').disable();
+                Ext.getCmp('delete_dt2_gr').disable();
+            }else{
+                Ext.getCmp('gr-save-btn').enable();
+                Ext.getCmp('delete_gr').enable();
+                Ext.getCmp('delete_dt_gr').enable();
+                Ext.getCmp('delete_dt2_gr').enable();
+            }
 
         },
         /**
