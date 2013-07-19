@@ -195,7 +195,10 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                                     xtype: 'datefield',
                                     name: 'released_date',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },

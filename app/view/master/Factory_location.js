@@ -64,7 +64,7 @@ Ext.define('App.view.master.Factory_location', {
                 {name: 'pabrik_sequence',type: 'string'},
                 {name: 'gudang_id',type: 'string'},
                 {name: 'gudang_nama',type: 'string'},
-                {name: 'location',type: 'string'},
+                {name: 'gdg_type',type: 'string'},
                 {name: 'remarks',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_grn',type: 'string'},
@@ -117,7 +117,7 @@ Ext.define('App.view.master.Factory_location', {
                 {text: 'co_id',width: 100,sortable: true,dataIndex: 'co_id', hidden:true},
                 {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
                 {text: 'ID',width: 100,sortable: true,flex:1,dataIndex: 'factory_id'},
-                {text: 'Description',width: 100,sortable: true,flex:1, dataIndex: 'description'},
+                {text: 'Description',width: 250,sortable: true,flex:1, dataIndex: 'description'},
                 {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
                 {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
@@ -176,8 +176,8 @@ Ext.define('App.view.master.Factory_location', {
                 {text: 'co_id',width: 100,sortable: true,dataIndex: 'co_id', hidden:true},
                 {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence', hidden:true},
                 {text: 'Gudang ID',width: 100,sortable: true,dataIndex: 'gudang_id'},
-                {text: 'Gudang',width: 100,sortable: true,flex:1,dataIndex: 'gudang_nama'},
-                {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
+                {text: 'Gudang',width: 250,sortable: true,flex:1,dataIndex: 'gudang_nama'},
+                {text: 'Jenis',width: 100,sortable: true,dataIndex: 'gdg_type'},
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
                 {text: 'Coa',width: 100,sortable: true,flex:1,dataIndex: 'coa'},
                 {text: 'Coa GRN',width: 100,sortable: true,flex:1,dataIndex: 'coa_grn'},
@@ -430,7 +430,7 @@ Ext.define('App.view.master.Factory_location', {
                                     value: 'Gudang ID :'
                                 },
                                 {
-                                    width: 150,
+                                    width: 100,
                                     xtype: 'textfield',
                                     name: 'gudang_id',
                                     allowBlank: true
@@ -450,7 +450,7 @@ Ext.define('App.view.master.Factory_location', {
                                     value: ' Gudang Desc :'
                                 },
                                 {
-                                    width: 150,
+                                    width: 250,
                                     xtype: 'textfield',
                                     name: 'gudang_nama',
                                     allowBlank: true
@@ -467,12 +467,12 @@ Ext.define('App.view.master.Factory_location', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Location :'
+                                    value: 'Jenis :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 50,
                                     xtype: 'textfield',
-                                    name: 'location'
+                                    name: 'gdg_type'
                                 }
                             ]
                         },

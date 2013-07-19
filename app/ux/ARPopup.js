@@ -25,7 +25,10 @@ Ext.define('App.ux.ARPopup',
                         {name: 'inv_date',type: 'date'},
                         {name: 'so_num',type: 'string'},
                         {name: 'piutangdebtor',type: 'string'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'timeedit',type: 'date'},
+                        {name: 'account_type',type: 'string'},
+                        {name: 'account',type: 'string'},
+                        {name: 'cust_id',type: 'string'}
                     ],
                     proxy :
                     {
@@ -54,6 +57,9 @@ Ext.define('App.ux.ARPopup',
                     {width: 100,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {width: 100,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
+                    {width: 100,text: 'Account_type',sortable: true,dataIndex: 'account_type', hidden:true},
+                    {width: 100,text: 'Account',sortable: true,dataIndex: 'account', hidden:true},
+                    {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id', hidden:true},
                     {width: 100,text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -120,6 +126,12 @@ Ext.define('App.ux.ARPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            //Ext.getCmp('account_type').setValue(selected.data.account_type);
+            Ext.getCmp('account_ar').setValue(selected.data.account);
+            Ext.getCmp('cust_id_pay').setValue(selected.data.cust_id);
+            Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
+            Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
+            Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

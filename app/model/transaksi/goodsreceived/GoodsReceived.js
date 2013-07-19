@@ -16,11 +16,14 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
             { name : 'gudang_id', type : 'string'},
             { name : 'gudang_nama', type : 'string'},
             { name : 'status', type : 'string'},
-            { name : 'canceled', type : 'string'},
             { name : 'userinput', type : 'string'},
             { name : 'useredit', type : 'string'},
             { name : 'timeinput', type : 'date'},
-            { name : 'timeedit', type : 'date'}
+            { name : 'timeedit', type : 'date'},
+            { name : 'grn_return', type : 'string'},
+            { name : 'rc_type', type : 'string'},
+            { name : 'account', type : 'string'},
+            { name : 'account_nama', type : 'string'}
         ],
         proxy :
         {

@@ -118,6 +118,7 @@ Ext.define('App.ux.ARPayUMPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('uangmuka_ar').setValue(selected.data.nilaidasar);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

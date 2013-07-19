@@ -124,6 +124,7 @@ Ext.define('App.ux.FactoryPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('factory').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

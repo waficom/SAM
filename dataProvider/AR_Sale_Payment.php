@@ -52,7 +52,11 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from ar_sale_payment where inv_type <>'A' ORDER BY $orderx DESC";
+        $sql = "select A.*, B.cust_nama, C.description as bank_nama
+        from ar_sale_payment A
+        left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
+        left join bank_m C on A.bank_code=C.bank_code and A.co_id=C.co_id
+         where A.inv_type <>'A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -106,7 +110,7 @@ class AR_Sale_Payment
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['inv_code']);
+        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -124,7 +128,7 @@ class AR_Sale_Payment
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code']);
+        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

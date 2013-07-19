@@ -251,13 +251,6 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
-            viewConfig :
-                {
-                    stripeRows: false,
-                    getRowClass: function(record, index) {
-                        return record.get('status') == '1' ? 'child-row' : '';
-                    }
-                },
             listeners: {
                 scope: me,
                 select: me.onProduksiGridClick
@@ -280,7 +273,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     labelWidth : 35,
                                     width : 150,
                                     format : 'd-m-Y',
-                                    value : new Date()
+                                    value : new Date(),
+                                    maxValue: new Date()
                                 }]
                         },'-',{
                             xtype : 'fieldcontainer',
@@ -294,7 +288,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     labelWidth : 35,
                                     width : 150,
                                     format : 'd-m-Y',
-                                    value : new Date()
+                                    value : new Date(),
+                                    maxValue: new Date()
                                 }]
                         },{
                             xtype : 'fieldcontainer',
@@ -357,6 +352,13 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {text: 'status', width:100, sortable: false,dataIndex: 'status', hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onProduksiGridClick2,
@@ -449,12 +451,15 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'so_num', dataIndex : 'so_num',width : 150},
-                {header : 'prod_id', dataIndex : 'prod_id',width : 150},
+                {header : 'so_num', dataIndex : 'so_num',width : 150, hidden: true},
+                {header : 'prod_id', dataIndex : 'prod_id',width : 150, hidden: true},
                 {header : 'Bahan Baku', dataIndex : 'bb_nama',width : 200},
                 {header : 'satuan', dataIndex : 'sat_id',width : 50},
                 {header : 'qty_in', dataIndex : 'qty_in',width : 100},
-                {header : 'qty_total', dataIndex : 'qty_total',width : 100}
+                {header : 'jml_paket', dataIndex : 'jml_paket',width : 100},
+                {header : 'qty_total', dataIndex : 'qty_total',width : 100},
+                {header : 'darigudang', dataIndex : 'darigudang',width : 100},
+                {header : 'kegudang', dataIndex : 'kegudang',width : 100}
             ],
             features:[searching],
             dockedItems: [
@@ -474,7 +479,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 margin : '0 5 0 0',
                                 name:'jml_paket',
                                 id:'jml_paket_wo',
-                                allowBlank:true
+                                allowBlank:false
 
                             }]
                     },{
@@ -485,18 +490,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 fieldLabel : 'Dari Gudang #'
                             },
                             {
-                                xtype : 'xtGudangPopup',
+                                xtype : 'xtGudangBMPopup',
                                 width : 150,
                                 margin : '0 5 0 0',
                                 name:'darigudang',
                                 id:'darigudang_wo',
-                                allowBlank:true,
-                                handler: function(field, value) {
-                                    if (value) {
-                                        var me=this;
-                                        Ext.getCmp('darigudang_jd_wo').setValue(value);
-                                    }
-                                }
+                                allowBlank:false
                             }]
                     },{
                         xtype : 'fieldcontainer',
@@ -506,19 +505,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 fieldLabel : 'Ke #'
                             },
                             {
-                                xtype : 'xtGudangPopup',
+                                xtype : 'xtGudangBJPopup',
                                 width : 150,
                                 margin : '0 5 0 0',
                                 name:'kegudang',
                                 id:'kegudang_wo',
-                                allowBlank:true,
-                                handler: function(field, value) {
-                                    if (value) {
-                                        var me=this;
-                                        Ext.getCmp('darigudang_proses_wo').setValue(value);
-                                        Ext.getCmp('kegudang_jd_wo').setValue(value);
-                                    }
-                                }
+                                allowBlank:false
                             }]
                     },{
                         text: 'Generate',
@@ -529,6 +521,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                             if(form.isValid()){
                                 me.onProduksi2Save(form, me.Wo1DBahanBakuStore);
                             }
+                            //Ext.getCmp('darigudang_jd_wo').setValue(Ext.getCmp('darigudang_wo').getValue());
                         }
                     }
                     ]
@@ -552,13 +545,15 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'so_num', dataIndex : 'so_num',width : 150},
-                {header : 'prod_id', dataIndex : 'prod_id',width : 150},
+                {header : 'so_num', dataIndex : 'so_num',width : 150, hidden: true},
+                {header : 'prod_id', dataIndex : 'prod_id',width : 150, hidden: true},
                 {header : 'Bahan Baku', dataIndex : 'bb_nama',width : 200},
                 {header : 'satuan', dataIndex : 'sat_id',width : 50},
-                {header : 'qty_in', dataIndex : 'qty',width : 100},
-                {header : 'Jml Paket', dataIndex : 'jml_paket',width : 100},
-                {header : 'qty_total', dataIndex : 'qty_total',width : 100}
+                {header : 'qty_in', dataIndex : 'qty_in',width : 100},
+                {header : 'jml_paket', dataIndex : 'jml_paket',width : 100},
+                {header : 'qty_total', dataIndex : 'qty_total',width : 100},
+                {header : 'darigudang', dataIndex : 'darigudang',width : 100},
+                {header : 'kegudang', dataIndex : 'kegudang',width : 100}
             ],
             features:[searching],
             dockedItems: [
@@ -578,7 +573,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 margin : '0 5 0 0',
                                 name:'jml_paket',
                                 id:'jml_paket_proses_wo',
-                                allowBlank:true
+                                allowBlank:false
                             }]
                     },{
                         xtype : 'fieldcontainer',
@@ -588,12 +583,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 fieldLabel : 'Dari Gudang #'
                             },
                             {
-                                xtype : 'xtGudangPopup',
+                                xtype : 'xtGudangBMPopup',
                                 width : 150,
                                 margin : '0 5 0 0',
                                 name:'darigudang',
                                 id:'darigudang_proses_wo',
-                                allowBlank:true
+                                allowBlank:false
                             }]
                     },{
                         xtype : 'fieldcontainer',
@@ -603,18 +598,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 fieldLabel : 'Ke #'
                             },
                             {
-                                xtype : 'xtGudangPopup',
+                                xtype : 'xtGudangBDPPopup',
                                 width : 150,
                                 margin : '0 5 0 0',
                                 name:'kegudang',
                                 id:'kegudang_proses_wo',
-                                disabled: true,
-                                handler: function(field, value) {
-                                    if (value) {
-                                        var me=this;
-                                        Ext.getCmp('darigudang_jd_wo').setValue(this.getValue());
-                                    }
-                                }
+                                disabled: true
 
                             }]
                     },{
@@ -768,7 +757,10 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     width : 100,
                                     name : 'tgl',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value: new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -1196,11 +1188,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Gudang :'
+                                    value: 'Dari Gudang :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'xtGudangPopup',
+                                    width: 150,
+                                    xtype: 'xtGudangBMPopup',
                                     name:'gudang_id',
                                     id:'darigudang_jd_wo'
                                 }
@@ -1216,11 +1208,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Ke :'
+                                    value: 'Ke Gudang :'
                                 },
                                 {
-                                    width: 100,
-                                    xtype: 'xtGudangPopup',
+                                    width: 150,
+                                    xtype: 'xtGudangBJPopup',
                                     name:'kegudang',
                                     id:'kegudang_jd_wo'
                                 }
@@ -1366,6 +1358,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         }
         if (globals['site']=='SAM'){
             Ext.getCmp('addbbproses').disable();
+
         }else{
             Ext.getCmp('addbbproses').enable();
         }

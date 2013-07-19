@@ -649,9 +649,6 @@ $API = array(
             'deleteGR' => array(
                 'len' => 1
             ),
-            'deletebygr_num' => array(
-                'len' => 1
-            ),
             'getGRItems' => array(
                 'len' => 1
             ),
@@ -966,6 +963,15 @@ $API = array(
             'GudangPopup' => array(
                 'len' => 1
             ),
+            'GudangBMPopup' => array(
+                'len' => 1
+            ),
+            'GudangBDPPopup' => array(
+                'len' => 1
+            ),
+            'GudangBJPopup' => array(
+                'len' => 1
+            ),
             'VendorSuplierPopup' => array(
                 'len' => 1
             ),
@@ -987,10 +993,19 @@ $API = array(
             'getAPPayUMpopup' => array(
                 'len' => 1
             ),
+            'getAPPayUMCancelpopup' => array(
+                'len' => 1
+            ),
             'getAP_Invpopup' => array(
                 'len' => 1
             ),
+            'getAP_InvCancelpopup' => array(
+                'len' => 1
+            ),
             'getAR_Salepopup' => array(
+                'len' => 1
+            ),
+            'getARCancelpopup' => array(
                 'len' => 1
             ),
             'getARPayUMpopup' => array(
@@ -1015,6 +1030,9 @@ $API = array(
                 'len' => 1
             ),
             'getDeliveryOrderpopup' => array(
+                'len' => 1
+            ),
+            'getPB0' => array(
                 'len' => 1
             )
 

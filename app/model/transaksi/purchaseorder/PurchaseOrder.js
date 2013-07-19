@@ -24,7 +24,9 @@ Ext.define( 'App.model.transaksi.purchaseorder.PurchaseOrder',
             {name: 'userinput',type: 'string'},
             {name: 'timeedit',type: 'date'},
             { name : 'pb_num', type : 'string'},
-            { name : 'status', type : 'string'}
+            { name : 'status', type : 'string'},
+            { name : 'tax_code', type : 'string'},
+            { name : 'tax_nama', type : 'string'}
         ],
         proxy :
         {

@@ -133,6 +133,7 @@ Ext.define('App.ux.PilihProductSearch',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('prod_nama').setValue(selected.data.prod_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

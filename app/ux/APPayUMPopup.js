@@ -23,8 +23,11 @@ Ext.define('App.ux.APPayUMPopup',
                     fields : [
                         {name: 'ap_inv_payment',type: 'string'},
                         {name: 'inv_date',type: 'date'},
-                        {name: 'nilaidasar',type: 'string'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'saldo_akhir',type: 'string'},
+                        {name: 'vend_id',type: 'string'},
+                        {name: 'vend_nama',type: 'string'},
+                        {name: 'timeedit',type: 'date'},
+                        {name: 'posted_date',type: 'date'}
 
                     ],
                     proxy :
@@ -52,8 +55,11 @@ Ext.define('App.ux.APPayUMPopup',
                 store: me.store,
                 columns: [
                     {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                    {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {width: 100,text: 'Saldo Akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {width: 150,text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden: true},
+                    {width: 150,text: 'Vendor',sortable: true,dataIndex: 'vend_nama'},
+                    {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
                 height: 200,
@@ -118,6 +124,9 @@ Ext.define('App.ux.APPayUMPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('uangmuka').setValue(selected.data.saldo_akhir);
+            Ext.getCmp('inv_um_date').setValue(selected.data.posted_date);
+            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

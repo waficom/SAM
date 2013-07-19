@@ -28,7 +28,7 @@ Ext.define('App.ux.PBPopup',
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : PengadaanBarang.getPB0},
+                        api : {read : Popup.getPB0},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'

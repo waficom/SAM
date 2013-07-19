@@ -21,8 +21,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'gudang_id',type: 'string'},
+                {name: 'gudang_nama',type: 'string'},
                 {name: 'account',type: 'string'},
-                {name: 'nominal',type: 'string'},
+                {name: 'account_nama',type: 'string'},
+                {name: 'nominal',type: 'float'},
                 {name: 'remaks',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -256,7 +258,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    value: new Date()
                                 }
                             ]
                         },
@@ -278,6 +281,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                                     xtype: 'xtGudangPopup',
                                     name: 'gudang_id',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'gudang_nama',
+                                    id:'gudang_nama'
                                 }
                             ]
                         },
@@ -299,6 +308,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                                     xtype: 'xtCoaPopup',
                                     name: 'account',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'account_nama',
+                                    id:'account_nama'
                                 }
                             ]
                         },
@@ -317,9 +332,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
                                     name: 'nominal',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    hideTrigger: true
                                 }
                             ]
                         },

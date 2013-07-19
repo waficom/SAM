@@ -1,7 +1,7 @@
-Ext.define('App.ux.APPopup',
+Ext.define('App.ux.APCancelPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtAPPopup',
+        alias : 'widget.xtAPCancelPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -33,7 +33,7 @@ Ext.define('App.ux.APPopup',
                     proxy :
                     {
                         type : 'direct',
-                        api : {read :Popup.getAP_Invpopup},
+                        api : {read :Popup.getAP_InvCancelpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -55,7 +55,7 @@ Ext.define('App.ux.APPopup',
                 store: me.store,
                 columns: [
                     {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {width: 100,text: 'Entry. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {width: 100,text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
                     {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
                     {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden:true},
@@ -126,12 +126,7 @@ Ext.define('App.ux.APPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('vend_id_ap').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_pay').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_al').setValue(selected.data.vend_id);
-            Ext.getCmp('hutangsuplier').setValue(selected.data.hutangsuplier);
-            Ext.getCmp('ap_inv_date').setValue(selected.data.posted_date);
-            Ext.getCmp('ap_inv_date_al').setValue(selected.data.posted_date);
+            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

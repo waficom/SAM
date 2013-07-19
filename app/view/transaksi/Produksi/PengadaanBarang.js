@@ -9,6 +9,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
         me.currPB = null;
         me.curr_coid = null;
         me.userinput =null;
+        me.currStatus =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
         Ext.define('PB0Model', {
@@ -24,6 +25,14 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                 },
                 {
                     name: 'bagian',
+                    type: 'string'
+                },
+                {
+                    name: 'request_by',
+                    type: 'string'
+                },
+                {
+                    name: 'status',
                     type: 'string'
                 },
                 {
@@ -75,10 +84,6 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                     type: 'string'
                 },
                 {
-                    name: 'tanggal',
-                    type: 'date'
-                },
-                {
                     name: 'bb_id',
                     type: 'string'
                 },
@@ -122,8 +127,8 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
 
         var searching={
             ftype : 'searching',
-            mode: 'local'
-            ,           width:  200,
+            mode: 'local',
+            width:  200,
             disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
 
         }
@@ -139,15 +144,29 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             columns: [
                 {width: 200,text: 'PB Num',sortable: true,dataIndex: 'pb_num'},
                 {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 300,text: 'Bagian',sortable: true,dataIndex: 'bagian'},
+                {width: 300,text: 'Departement',sortable: true,dataIndex: 'bagian'},
+                {width: 200,text: 'User Request',sortable: true,dataIndex: 'request_by'},
+                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
-                    me.onItemdblclick(me.PB0Store, record, 'Edit PB');
+                    if(me.currStatus =='1' || me.currStatus =='2'){
+                    }else{
+                        me.onItemdblclick(me.PB0Store, record, 'Edit Pengadaan Barang');
+                        Ext.getCmp('post_pb').enable();
+                    }
+
                 }
             },
             features:[searching],
@@ -163,6 +182,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'PB0Model', 'Tambah Data');
+                                Ext.getCmp('post_pb').disable();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -170,6 +190,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             text: 'Delete',
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
+                            id:'delete_pb',
                             scope: me,
                             handler:function() {
                                 me.onPBDelete(me.PB0Store);
@@ -205,56 +226,28 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {
-                    width: 200,
-                    text: 'bb_id',
-                    hidden:true,
-                    dataIndex: 'bb_id'
-                },
-                {
-                    width: 200,
-                    text: 'PB Num',
-                    sortable: true,
-                    dataIndex: 'pb_num'
-                },
-                {
-                    width: 200,
-                    text: 'Type / Merk',
-                    sortable: true,
-                    dataIndex: 'pb_type'
-                },
-                {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {
-                    width: 300,
-                    text: 'Bahan Baku',
-                    sortable: true,
-                    dataIndex: 'bb_nama'
-                },
-                {
-                    width: 200,
-                    text: 'Qty',
-                    sortable: true,
-                    dataIndex: 'qty'
-                },
-                {
-                    width: 200,
-                    text: 'Satuan',
-                    sortable: true,
-                    dataIndex: 'sat_id'
-                },
-                {
-                    width: 300,
-                    text: 'Keterangan',
-                    sortable: true,
-                    dataIndex: 'keterangan'
-                },
+                {width: 200,text: 'PB Num',sortable: true,dataIndex: 'pb_num', hidden:true},
+                {width: 200,text: 'bb_id',hidden:true,dataIndex: 'bb_id'},
+                {width: 300,text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama' },
+                {width: 200,text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
+                {width: 200, text: 'Qty',sortable: true,dataIndex: 'qty' },
+                {width: 300,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return me.currStatus == '1'? 'child-row' : me.currStatus == '2'? 'adult-row' : '';
+                }
+            },
             listeners: {
                 scope: me,
-                //select: me.onGridClick,
                 itemdblclick: function(view, record){
+                    if(me.currStatus =='1' || me.currStatus =='2'){
+                    }else{
                     me.onItemdblclick1(me.PengadaanBarangStore, record, 'Edit Detail PB');
+                    }
                 }
             },
             features:[searching],
@@ -265,6 +258,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                     items: [{
                         text: 'Add',
                         iconCls: 'icoAddRecord',
+                        id:'add_pb',
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
@@ -275,6 +269,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'delete_dt_pb',
                             handler: function() {
                                 me.deletePB1(me.PengadaanBarangStore);
                             }
@@ -345,9 +340,30 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     value: 'Bagian : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 250,
                                     xtype: 'textfield',
                                     name: 'bagian',
+                                    allowBlank: false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'User Request : '
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'textfield',
+                                    name: 'request_by',
                                     allowBlank: false
                                 }
                             ]
@@ -373,6 +389,26 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     submitFormat : 'Y-m-d H:i:s'
                                 }
                             ]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            layout :
+                            {
+                                type : 'hbox'
+                            },
+                            defaults :
+                            {
+                                margin : '0 10 0 10'
+                            },
+                            hideLabel : true,
+                            items : [
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.checkbox',
+                                    fieldLabel: 'Release',
+                                    id:'post_pb',
+                                    name: 'status'
+                                }]
                         }
                     ]
                 }
@@ -432,7 +468,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'do_num'
+                            name: 'pb_num'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -445,7 +481,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bahan Baku ID ' + ': '
+                                    value: 'BB ID :'
                                 },
                                 {
                                     width: 200,
@@ -465,12 +501,13 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Type /Merk :'
+                                    value: 'Satuan :'
                                 },
                                 {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'pb_type'
+                                    width: 100,
+                                    xtype: 'xtSatuanPopup',
+                                    name: 'sat_id',
+                                    id:'sat_id'
                                 }
                             ]
                         },
@@ -498,25 +535,6 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             defaults: {
                                 hideLabel: true
                             },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Satuan : :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtSatuanPopup',
-                                    name: 'sat_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
                             items: [
                                 {
                                     width: 100,
@@ -527,28 +545,6 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     width: 300,
                                     xtype: 'textfield',
                                     name: 'keterangan'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal :'
-                                },
-                                {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'tanggal',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
                                 }
                             ]
                         }
@@ -664,13 +660,22 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currPB = selected.data.pb_num;
+        me.currStatus = selected.data.status;
         var TopBarItems = this.PB0Grid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.PengadaanBarangStore.load({params:{pb_num: me.currPB}});
-
+        if(selected.data.status == 1 || selected.data.status == 2){
+            Ext.getCmp('add_pb').disable();
+            Ext.getCmp('delete_pb').disable();
+            Ext.getCmp('delete_dt_pb').disable();
+        }else{
+            Ext.getCmp('add_pb').enable();
+            Ext.getCmp('delete_pb').enable();
+            Ext.getCmp('delete_dt_pb').enable();
+        }
     },
 
     onItemdblclick: function(store, record, title){

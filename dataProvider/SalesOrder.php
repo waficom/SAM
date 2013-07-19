@@ -81,15 +81,15 @@ class SalesOrder
 		if ($whereClause)
 			$whereClause = 'WHERE ' . $whereClause;
 
-		$sql = "SELECT so0.*, customer.cust_nama
+		$sql = "SELECT so0.*, customer.cust_nama, wilayah.wilayah_nama, salesman.sales_nama
 				FROM
 					so0
-				LEFT JOIN
-					customer 
-				ON customer.cust_id = so0.cust_id
+				LEFT JOIN customer ON customer.cust_id = so0.cust_id and customer.co_id=so0.co_id
+				left join wilayah on so0.wilayah_id=wilayah.wilayah_id and so0.co_id=wilayah.co_id
+				left join salesman on so0.sales_id=salesman.sales_id and so0.co_id=salesman.co_id
 				$whereClause
 				ORDER BY
-				     timeedit";
+				     timeedit DESC";
 		$this->db->setSQL($sql);
 
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -139,7 +139,7 @@ class SalesOrder
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['cust_nama']);
+        unset($data['cust_nama'],$data['wilayah_nama'],$data['sales_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'so0', 'I');
         $this -> db -> setSQL($sql);
@@ -154,7 +154,7 @@ class SalesOrder
     public function updateSO(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['so_num'], $data['id'], $data['cust_nama'], $data['co_id']);
+        unset($data['so_num'], $data['id'], $data['cust_nama'], $data['co_id'],$data['wilayah_nama'],$data['sales_nama']);
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['cust_po_tgl'] = $this->db->Date_Converter($data['cust_po_tgl']);
         $data['tgl_jt_kirim'] = $this->db->Date_Converter($data['tgl_jt_kirim']);

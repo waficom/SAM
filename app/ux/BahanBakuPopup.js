@@ -30,6 +30,10 @@ Ext.define('App.ux.BahanBakuPopup',
                             type: 'string'
                         },
                         {
+                            name: 'sat_id',
+                            type: 'string'
+                        },
+                        {
                             name: 'keterangan',
                             type: 'string'
                         }
@@ -53,9 +57,6 @@ Ext.define('App.ux.BahanBakuPopup',
                     autoLoad : false
                 });
 
-
-//            me.smGrid = Ext.create('Ext.selection.CheckboxModel');
-            // create the Grid
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
@@ -72,6 +73,12 @@ Ext.define('App.ux.BahanBakuPopup',
                         dataIndex: 'bb_nama'
                     },
                     {
+                        width: 200,
+                        text: 'Sat',
+                        sortable: true,
+                        dataIndex: 'sat_id'
+                    },
+                    {
                         flex: 1,
                         text: 'Keterangan',
                         sortable: true,
@@ -79,7 +86,6 @@ Ext.define('App.ux.BahanBakuPopup',
                     }
                 ],
                 height: 200,
-//                selModel : me.smGrid,
                 width: 600,
                 title: 'Sales Order',
                 features : [searching],
@@ -105,7 +111,6 @@ Ext.define('App.ux.BahanBakuPopup',
                     {
                         text: 'Pilih',
                         cls: 'winSave',
-//                        handler: me.btnSavePressed
                         handler : function(btn){
                             btn.up('window').close();
                         }
@@ -140,6 +145,11 @@ Ext.define('App.ux.BahanBakuPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('sat_id_po').setValue(selected.data.sat_id);
+            Ext.getCmp('sat_id').setValue(selected.data.sat_id);
+            Ext.getCmp('sat_id_gr').setValue(selected.data.sat_id);
+            Ext.getCmp('bb_nama').setValue(selected.data.bb_nama);
+            Ext.getCmp('bb_nama_gr').setValue(selected.data.bb_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

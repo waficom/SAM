@@ -34,6 +34,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_co_id = null;
         me.curr_so_num = null;
         me.curr_Qty = null;
+        me.curr_Sat = null;
         me.userinput =null;
         me.useredit=null;
         var searching={
@@ -91,6 +92,16 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 				dataIndex : 'cust_po_num',
 				width : 200
 			},
+                {
+                    header : 'wilayah',
+                    dataIndex : 'wilayah_nama',
+                    width : 200, hidden: true
+                },
+                {
+                    header : 'sales_nama',
+                    dataIndex : 'sales_nama',
+                    width : 200, hidden: true
+                },
 			{
 				header : 'JT Kirim',
 				dataIndex : 'tgl_jt_kirim',
@@ -162,7 +173,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 					width : 150,
 					format : 'd-m-Y',
 					labelAlign : 'right',
-					value : new Date()
+					value : new Date(),
+                    maxValue: new Date()
 				},
 				{
 					xtype : 'datefield',
@@ -173,7 +185,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 					width : 150,
 					format : 'd-m-Y',
 					labelAlign : 'right',
-					value : new Date()
+					value : new Date(),
+                    maxValue: new Date()
 				}]
 			}, '-',
 			{
@@ -305,7 +318,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             labelAlign: 'right',
                                             submitFormat: 'Y-m-d',
                                             format : globals['date_display_format'],
-                                            allowBlank:true
+                                            allowBlank:false,
+                                            value : new Date(),
+                                            maxValue: new Date()
 
                                         }
                                     ]
@@ -327,12 +342,18 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         xtype : 'xtCustomerPopup',
                                         fieldLabel : 'Customer',
                                         hideLabel : false,
-                                        width: 300,
+                                        width: 200,
                                         itemId : 'cust_id',
                                         name : 'cust_id',
                                         id: 'cust_id_so',
                                         labelAlign : 'right'
-                                    }]
+                                    },
+                                        {
+                                            xtype:'displayfield',
+                                            width: 200,
+                                            name : 'cust_nama',
+                                            id: 'cust_nama_so'
+                                        }]
                                 },
                                 {
                                     xtype : 'fieldcontainer',
@@ -388,7 +409,10 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             fieldLabel: 'Tanggal PO',
                                             labelAlign: 'right',
                                             submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format']
+                                            format : globals['date_display_format'],
+                                            value : new Date(),
+                                            maxValue: new Date(),
+                                            allowBlank:false
                                         },
                                         {
                                             xtype: 'datefield',
@@ -398,10 +422,12 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             labelAlign: 'right',
                                             submitFormat: 'Y-m-d',
                                             format : globals['date_display_format'],
-                                            allowBlank:true
+                                            allowBlank:true,
+                                            value : new Date(),
+                                            allowBlank:false
                                         }
                                     ]
-                                },
+                                },/*
                                 {
                                     xtype : 'fieldcontainer',
                                     layout :
@@ -434,7 +460,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         ]
 
                                     }]
-                                },
+                                },*/
                                 {
                                     xtype : 'fieldcontainer',
                                     layout :
@@ -451,18 +477,29 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             xtype: 'xtWilayahPopup',
                                             name : 'wilayah_id',
                                             hideLabel : false,
-                                            width: 300,
+                                            width: 200,
                                             fieldLabel: 'Wilayah',
                                             labelAlign: 'right',
                                             allowBlank:true
+                                        },{
+                                            xtype:'displayfield',
+                                            width: 100,
+                                            name : 'wilayah_nama',
+                                            id: 'wilayah_nama'
                                         },
                                         {
-                                            width: 400,
-                                            height: 100,
-                                            fieldLabel : 'Pembayaran',
-                                            labelAlign : 'right',
-                                            xtype: 'textareafield',
-                                            name: 'pembayaran'
+                                            xtype: 'xtSalesPopup',
+                                            name : 'sales_id',
+                                            width: 200,
+                                            fieldLabel: 'Sales',
+                                            hideLabel : false,
+                                            labelAlign: 'right',
+                                            allowBlank:true
+                                        },{
+                                            xtype:'displayfield',
+                                            width: 100,
+                                            name : 'sales_nama',
+                                            id: 'sales_nama'
                                         }
                                     ]
                                 },
@@ -479,16 +516,15 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     hideLabel : false,
                                     items : [
                                         {
-                                            xtype: 'xtSalesPopup',
-                                            name : 'sales_id',
-                                            width: 300,
-                                            fieldLabel: 'Sales',
-                                            hideLabel : false,
-                                            labelAlign: 'right',
-                                            allowBlank:true
+                                            width: 400,
+                                            height: 100,
+                                            fieldLabel : 'Pembayaran',
+                                            labelAlign : 'right',
+                                            xtype: 'textareafield',
+                                            name: 'pembayaran'
                                         }
                                     ]
-                                },
+                                }/*,
                                 {
                                     xtype : 'fieldcontainer',
                                     layout :
@@ -585,7 +621,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             readonly: true
                                         }
                                     ]
-                                }]
+                                }*/]
                             }]
                         })
                     ]
@@ -732,6 +768,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                         var form = me.winLoc.down('form');
                                         me.onNewLoc(form, 'App.model.transaksi.salesorder.SOLocation', 'Tambah Data');
                                         Ext.getCmp('qty_loc_so').setValue(me.curr_Qty);
+                                        Ext.getCmp('sat_id_so').setValue(me.curr_Sat);
                                     }
                                 },
                                     {
@@ -900,7 +937,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     fieldLabel : 'Jumlah ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
-                                    readonly : false
+                                    disabled: true
                                 }
                             ]
                         },
@@ -1184,6 +1221,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     name: 'sat_id',
                                     xtype: 'xtSatuanPopup',
                                     itemId : 'sat_id',
+                                    id:'sat_id_so',
                                     margin : '0 0 0 0',
                                     allowBlank: false
                                 }
@@ -1447,7 +1485,9 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         me.curr_co_id = selected.data.co_id;
         me.curr_so_num = selected.data.so_num;
         me.curr_Qty = selected.data.qty;
+        me.curr_Sat = selected.data.sat_id;
         me.SOLocationStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
+
     },
     onItemsdblclick: function(store, record, title){
         var form = this.win.down('form');
@@ -1595,14 +1635,15 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 n_lain = 0;
             }
             n_lain = hrg - n_loco - n_transport - n_promosi - n_sosialisasi;
+            Ext.getCmp('n_netto_input').setValue(n_netto);
         }
-        Ext.getCmp('n_disc_input').setValue(n_disc);
-        Ext.getCmp('n_brutto_input').setValue(n_brutto);
-        Ext.getCmp('n_netto_input').setValue(n_netto);
-        Ext.getCmp('hrg_loco_input').setValue(n_loco);
-        Ext.getCmp('hrg_transport_input').setValue(n_transport);
-        Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
-        Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
+        //Ext.getCmp('n_disc_input').setValue(n_disc);
+        //Ext.getCmp('n_brutto_input').setValue(n_brutto);
+
+        //Ext.getCmp('hrg_loco_input').setValue(n_loco);
+        //Ext.getCmp('hrg_transport_input').setValue(n_transport);
+        //Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
+        //Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
         Ext.getCmp('hrg_lain_input').setValue(n_lain);
 
     },

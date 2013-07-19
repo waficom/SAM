@@ -32,6 +32,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
             fields: [
                 {name: 'co_id', type: 'string'},
                 {name: 'inv_code', type: 'string'},
+                {name: 'inv_date', type: 'date'},
                 {name: 'canceled_date', type: 'date'},
                 {name: 'canceled_by', type: 'string'},
                 {name: 'status', type: 'string'},
@@ -40,7 +41,8 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'inv_type', type: 'string'},
-                {name: 'nominal', type: 'string'}
+                {name: 'nominal', type: 'string'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -65,10 +67,11 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
             store: me.CancelReturnStore,
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Date',sortable: true,dataIndex: 'canceled_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 150,text: 'Reason',sortable: true,dataIndex: 'reason'},
                 {width: 150,text: 'Menu',sortable: true,dataIndex: 'inv_type'},
                 {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'canceled_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 100,text: 'LastUpdate',sortable: true,dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
@@ -86,6 +89,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                         me.onItemdblclick(me.CancelReturnStore, record, 'Edit Cancel Return Transaksi');
                     }
                     Ext.getCmp('cancel_cr').enable();
+
                 }
             },
             dockedItems: [
@@ -101,6 +105,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                 var form = me.win.down('form');
                                 me.onNew(form, 'CancelReturnModel', 'Tambah Data');
                                 Ext.getCmp('cancel_cr').disable();
+                                Ext.getCmp('canceled_date').disable(); Ext.getCmp('inv_date_cl').setValue(new Date());
                             }
                         },
                         {
@@ -162,7 +167,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPopup',name:'inv_code',value: this.getValue()});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPCancelPopup',name:'inv_code',value: this.getValue()});
                                             //Ext.doLayout();
                                         }
                                     }
@@ -188,7 +193,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         if (value) {
                                             var me=this;
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayUMPopup',name:'inv_code',value: this.getValue()});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayUMCancelPopup',name:'inv_code',value: this.getValue()});
                                             //Ext.doLayout();
                                         }
                                     }
@@ -247,7 +252,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPopup',name:'inv_code', value: this.getValue()});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARCancelPopup',name:'inv_code', value: this.getValue()});
                                             //Ext.doLayout();
                                         }
                                     }
@@ -339,6 +344,15 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                 {
                                     id:'inv_code_cr'
 
+                                },,
+                                {
+                                    width: 100,
+                                    xtype: 'datefield',
+                                    id:'posted_date',
+                                    name: 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
                                 }
                             ]
                         },{
@@ -351,17 +365,16 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Date '
+                                    value: 'Entry Date '
                                 },
                                 {
                                     xtype : 'datefield',
                                     width : 100,
-                                    name : 'canceled_date',
+                                    name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     allowBlank: false,
-                                    value : new Date(),
-                                    id:'canceled_date'
+                                    id:'inv_date_cl'
                                 }
                             ]
                         },
@@ -393,8 +406,28 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Canceled ',
                                     id:'cancel_cr',
-                                    name: 'status'
-                                }                            ]
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('canceled_date').enable();
+                                            Ext.getCmp('canceled_date').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('canceled_date').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'canceled_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    allowBlank:false,
+                                    id:'canceled_date'
+                                }
+                            ]
                         }
                     ]
                 }
@@ -447,21 +480,31 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
     },
     saveCancelReturn: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
+        var posting_date = Ext.getCmp('posted_date').getValue();
+        var canceled_date = Ext.getCmp('canceled_date').getValue();
+        if(canceled_date == null){
+            canceled_date = new Date();
         }
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+        if(canceled_date < posting_date ){
+            Ext.MessageBox.alert('Warning', 'Tanggal Posting Dokumen melebihi tanggal Cancel Alokasi');
+        }else{
+            if(storeIndex == -1){
+                store.add(values);
+            }else{
+                record.set(values);
             }
-        });
-        store.load();
+            store.sync({
+                success:function(){
+                    me.win.close();
+                    store.load();
+                },
+                failure:function(){
+                    me.msg('Opps!', 'Error!!', true);
+                    store.load();
+                }
+            });
+        }
+
     },
     onItemdblclick: function(store, record, title){
         var form = this.win.down('form');

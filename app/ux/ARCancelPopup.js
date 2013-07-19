@@ -1,7 +1,7 @@
-Ext.define('App.ux.APPopup',
+Ext.define('App.ux.ARCancelPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtAPPopup',
+        alias : 'widget.xtARCancelPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -23,17 +23,17 @@ Ext.define('App.ux.APPopup',
                     fields : [
                         {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
-                        {name: 'gr_num',type: 'string'},
-                        {name: 'po_num',type: 'string'},
-                        {name: 'hutangsuplier',type: 'string'},
+                        {name: 'so_num',type: 'string'},
+                        {name: 'piutangdebtor',type: 'string'},
                         {name: 'timeedit',type: 'date'},
-                        {name: 'vend_id',type: 'string'},
-                        {name: 'posted_date',type: 'date'}
+                        {name: 'account_type',type: 'string'},
+                        {name: 'account',type: 'string'},
+                        {name: 'cust_id',type: 'string'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read :Popup.getAP_Invpopup},
+                        api : {read :Popup.getARCancelpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -54,20 +54,20 @@ Ext.define('App.ux.APPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
-                    {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
-                    {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden:true},
-                    {width: 100,text: 'Hutang Suplier',sortable: true,dataIndex: 'hutangsuplier', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {width: 100,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                    {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {width: 100,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
+                    {width: 100,text: 'Account_type',sortable: true,dataIndex: 'account_type', hidden:true},
+                    {width: 100,text: 'Account',sortable: true,dataIndex: 'account', hidden:true},
+                    {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id', hidden:true},
+                    {width: 100,text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AP Invoice',
+                title: 'AR Sale',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -126,12 +126,12 @@ Ext.define('App.ux.APPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('vend_id_ap').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_pay').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_al').setValue(selected.data.vend_id);
-            Ext.getCmp('hutangsuplier').setValue(selected.data.hutangsuplier);
-            Ext.getCmp('ap_inv_date').setValue(selected.data.posted_date);
-            Ext.getCmp('ap_inv_date_al').setValue(selected.data.posted_date);
+            //Ext.getCmp('account_type').setValue(selected.data.account_type);
+            Ext.getCmp('account_ar').setValue(selected.data.account);
+            Ext.getCmp('cust_id_pay').setValue(selected.data.cust_id);
+            Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
+            Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
+            Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

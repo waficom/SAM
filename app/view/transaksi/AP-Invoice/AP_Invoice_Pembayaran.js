@@ -23,14 +23,18 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'giro_num',type: 'string'},
                 {name: 'bank_code',type: 'string'},
+                {name: 'bank_nama',type: 'string'},
                 {name: 'vend_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
+                {name: 'vend_nama',type: 'string'},
+                {name: 'nilaidasar',type: 'float'},
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'ap_inv_date',type: 'date'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -105,7 +109,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             region: 'north',
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 150,text: 'Giro Num',sortable: true,dataIndex: 'giro_num'},
                 {width: 150,text: 'Doc. Inv',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
@@ -149,6 +153,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_Inv_PaymentModel', 'Tambah Data');
                                 Ext.getCmp('post_ap_pay').disable();
+                                Ext.getCmp('posted_date_pay').disable(); Ext.getCmp('inv_date_pay').setValue(new Date());
                             }
                         },
                         {
@@ -187,7 +192,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
@@ -271,26 +276,25 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 }
                             ]
                         },
+
                         {
                             xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
                             msgTarget: 'under',
                             items: [
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Doc. Date'
+                                    value: 'Entry Date'
                                 },
                                 {
-                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    id:'inv_date_pay',
+                                    value: new Date()
                                 }
                             ]
                         },
@@ -333,6 +337,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     name: 'inv_code',
                                     id:'inv_code_pay',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'datefield',
+                                    id:'ap_inv_date',
+                                    name: 'ap_inv_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
                                 }
                             ]
                         },
@@ -350,9 +363,16 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     value: 'Bank Code : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtBankPopup',
-                                    name: 'bank_code'
+                                    name: 'bank_code',
+                                    allowBlank:false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'bank_nama',
+                                    id:'bank_nama_pay'
                                 }
                             ]
                         },
@@ -370,10 +390,17 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     value: 'Creditor : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtVendorSuplierPopup',
                                     name: 'vend_id',
+                                    id:'vend_id_pay',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'vend_nama',
+                                    id:'vend_nama_pay'
                                 }
                             ]
                         },
@@ -392,8 +419,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
-                                    name: 'nilaidasar'
+                                    xtype: 'mitos.currency',
+                                    name: 'nilaidasar',
+                                    hideTrigger: true
                                 }
                             ]
                         },
@@ -426,7 +454,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
                                     id:'post_ap_pay',
-                                    name: 'status'
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_pay').enable();
+                                            Ext.getCmp('posted_date_pay').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_pay').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_pay'
                                 }
                             ]
                         }
@@ -546,22 +593,32 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
+        var posted_date_pay = Ext.getCmp('posted_date_pay').getValue();
+        var ap_inv_date = Ext.getCmp('ap_inv_date').getValue();
+        if(posted_date_pay == null){
+            posted_date_pay = new Date();
         }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+        if(posted_date_pay < ap_inv_date){
+            Ext.MessageBox.alert('Warning', 'Tanggal Posting AP lebih kecil dari Tanggal Posting Invoice');
+        }else{
+            if(storeIndex == -1){
+                store.add(values);
+            }else{
+                record.set(values);
             }
-        });
+            store.sync({
+                success:function(){
+                    me.win.close();
+                    store.load();
+                    me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                },
+                failure:function(){
+                    store.load();
+                    me.msg('Opps!', 'Error!!', true);
+                }
+            });
+        }
+
     },
 
     onPBDelete: function(store){

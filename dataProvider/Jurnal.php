@@ -54,7 +54,7 @@ class Jurnal
         }
         $sql = "select jurnal.*, coa. coa_nama from jurnal
         left join coa on jurnal.coa=coa.coa_id
-        where inv_code='$params->inv_code' ORDER BY $orderx DESC";
+        where inv_code_link='$params->inv_code' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

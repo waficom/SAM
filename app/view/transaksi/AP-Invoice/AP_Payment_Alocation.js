@@ -24,7 +24,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {name: 'giro_num',type: 'string'},
                 {name: 'inv_um',type: 'string'},
                 {name: 'vend_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
+                {name: 'vend_nama',type: 'string'},
+                {name: 'nilaidasar',type: 'float'},
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -32,7 +33,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {name: 'status',type: 'string'},
                 {name: 'inv_type',type: 'string'},
                 {name: 'hutangsuplier',type: 'string'},
-                {name: 'uangmuka',type: 'string'}
+                {name: 'uangmuka',type: 'string'},
+                {name: 'inv_date_um',type: 'date'},
+                {name: 'ap_inv_date',type: 'date'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -93,7 +97,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit','inv_date']
+            disableIndexes:[{ xtype: 'datefield'}]
 
         }
 
@@ -107,7 +111,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             region: 'north',
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 150,text: 'Giro Num',sortable: true,dataIndex: 'giro_num'},
                 {width: 150,text: 'Doc. Inv',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Doc. Advance',sortable: true,dataIndex: 'inv_um'},
@@ -153,6 +157,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AP_Inv_PaymentModel', 'Tambah Data');
                                 Ext.getCmp('post_ap_pay_al').disable();
+                                Ext.getCmp('posted_date_al').disable();Ext.getCmp('inv_date_al').setValue(new Date());
                             }
                         },
                         {
@@ -191,7 +196,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor ', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
@@ -265,26 +270,22 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                         },
                         {
                             xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
                             msgTarget: 'under',
                             items: [
                                 {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Doc. Date'
-                                },
-                                {
-                                    fieldLabel : 'Doc. Date',
+                                    fieldLabel: 'Entry Date',
                                     xtype : 'datefield',
-                                    width : 100,
+                                    width : 200,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value: new Date(),
+                                    id:'inv_date_al',
+                                    maxValue: new Date()
+
                                 }
                             ]
-                        },
+                        },/*,
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -302,6 +303,34 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                     width: 200,
                                     xtype: 'textfield',
                                     name: 'giro_num'
+                                }
+                            ]
+                        },*/
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Creditor : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtVendorSuplierPopup',
+                                    name: 'vend_id',
+                                    id:'vend_id_al',
+                                    allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'vend_nama',
+                                    id:'vend_nama'
                                 }
                             ]
                         },
@@ -326,6 +355,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                 },
                                 {
                                     width: 100,
+                                    xtype: 'datefield',
+                                    id:'ap_inv_date_al',
+                                    name: 'ap_inv_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
+                                },
+                                {
+                                    width: 100,
                                     xtype: 'displayfield',
                                     value: 'Doc. Advance: '
                                 },
@@ -334,6 +372,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                     xtype: 'xtAPPayUMPopup',
                                     name: 'inv_um',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'datefield',
+                                    id:'inv_um_date',
+                                    name: 'inv_date_um',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
                                 }
                             ]
                         },
@@ -355,47 +402,34 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                     xtype: 'mitos.currency',
                                     disabled:true,
                                     name:'hutangsuplier',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    id:'hutangsuplier'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'mitos.currency',
                                     disabled:true,
                                     name:'uangmuka',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    id:'uangmuka'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'mitos.currency',
                                     name: 'nilaidasar',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    id:'nilaidasar',
+                                    listeners : {
+                                        scope : me,
+                                        specialkey : me.onEnter
+                                    }
                                 },
                                 {
                                     width: 100,
                                     xtype: 'mitos.currency',
                                     disabled:true,
-                                    hideTrigger: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Vendor : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtVendorSuplierPopup',
-                                    name: 'vend_id',
-                                    allowBlank: false
+                                    hideTrigger: true,
+                                    id:'sisa_um'
                                 }
                             ]
                         },
@@ -428,7 +462,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
                                     id:'post_ap_pay_al',
-                                    name: 'status'
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_al').enable();
+                                            Ext.getCmp('posted_date_al').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_al').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_al'
                                 }
                             ]
                         }
@@ -548,22 +601,40 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
+
+        var hutangsuplier = Ext.getCmp('hutangsuplier').getValue();
+        var uangmuka = Ext.getCmp('uangmuka').getValue();
+        var nilaidasar = Ext.getCmp('nilaidasar').getValue();
+        var posted_date_al = Ext.getCmp('posted_date_al').getValue();
+        var inv_um_date = Ext.getCmp('inv_um_date').getValue();
+        var ap_inv_date_al = Ext.getCmp('ap_inv_date_al').getValue();
+        if(posted_date_al == null){
+            posted_date_al = new Date();
         }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+        if(posted_date_al < inv_um_date || posted_date_al <  ap_inv_date_al){
+            Ext.MessageBox.alert('Warning', 'Tgl Posting Alokasi lebih kecil dari tgl posting UM dan Invoice');
+        }else{
+            if(nilaidasar <= hutangsuplier && nilaidasar <= uangmuka){
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                        store.load();
+                        me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    },
+                    failure:function(){
+                        store.load();
+                        me.msg('Opps!', 'Error!!', true);
+                    }
+                });
+            }else{
+                Ext.MessageBox.alert('Warning', 'Nominal hutang lebih kecil dari alokasi');
             }
-        });
+        }
     },
 
     onPBDelete: function(store){
@@ -584,12 +655,23 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }
         });
     },
 
-
+    onEnter : function(field, e)
+    {
+        var hutangsuplier = Ext.getCmp('hutangsuplier').getValue();
+        var uangmuka = Ext.getCmp('uangmuka').getValue();
+        var nilaidasar = Ext.getCmp('nilaidasar').getValue();
+        if(nilaidasar <= hutangsuplier && nilaidasar <= uangmuka){
+            Ext.getCmp('sisa_um').setValue(uangmuka-nilaidasar);
+        }else{
+            Ext.MessageBox.alert('Warning', 'Nominal hutang lebih kecil dari alokasi');
+        }
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

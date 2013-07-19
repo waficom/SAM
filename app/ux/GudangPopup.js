@@ -23,7 +23,7 @@ Ext.define('App.ux.GudangPopup',
                     fields : [
                         {name: 'gudang_id',type: 'string'},
                         {name: 'gudang_nama',type: 'string'},
-                        {name: 'location',type: 'string'},
+                        {name: 'gdg_type',type: 'string'},
                         {name: 'description',type: 'string' }
 
                     ],
@@ -53,7 +53,7 @@ Ext.define('App.ux.GudangPopup',
                 columns: [
                     {text: 'Gudang ID',width: 100,sortable: true,dataIndex: 'gudang_id'},
                     {text: 'Gudang',width: 100,sortable: true,flex:1,dataIndex: 'gudang_nama'},
-                    {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
+                    {text: 'Jenis',width: 100,sortable: true,flex:1,dataIndex: 'gdg_type'},
                     {flex: 1,text: 'Pabrik', sortable: true,dataIndex: 'description'}
                 ],
                 height: 200,
@@ -118,6 +118,8 @@ Ext.define('App.ux.GudangPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('gudang_nama').setValue(selected.data.gudang_nama);
+            //Ext.getCmp('darigudang_jd_wo').setValue(selected.data.gudang_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

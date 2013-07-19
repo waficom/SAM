@@ -31,8 +31,9 @@ class Popup
     public function SalesOrderPopup(stdClass $params)
     {
 
-        $sql = "SELECT A.*, B.cust_nama FROM so0 A
+        $sql = "SELECT A.*, B.cust_nama, C.prod_id FROM so0 A
          left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
+         left join so11 C on A.so_num=C.so_num and A.co_id=C.co_id
          where A.status<>'A' ORDER BY A.so_num DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -96,6 +97,57 @@ class Popup
         return $rows;
 
     }
+    public function GudangBMPopup(stdClass $params)
+    {
+        $sql = "SELECT A.*, B.description
+		             FROM gudang A
+		             LEFT JOIN pabrik_location B ON A.pabrik_sequence = B.pabrik_sequence and A.co_id = B.co_id
+		             where A.gdg_type='BM' ORDER BY A.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function GudangBDPPopup(stdClass $params)
+    {
+        $sql = "SELECT A.*, B.description
+		             FROM gudang A
+		             LEFT JOIN pabrik_location B ON A.pabrik_sequence = B.pabrik_sequence and A.co_id = B.co_id
+		             where A.gdg_type='BDP' ORDER BY A.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function GudangBJPopup(stdClass $params)
+    {
+        $sql = "SELECT A.*, B.description
+		             FROM gudang A
+		             LEFT JOIN pabrik_location B ON A.pabrik_sequence = B.pabrik_sequence and A.co_id = B.co_id
+		             where A.gdg_type='BJ' ORDER BY A.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
     public function VendorSuplierPopup(stdClass $params)
     {
 
@@ -145,12 +197,22 @@ class Popup
     public function POPopup(stdClass $params)
     {
 
-        $sql = "SELECT po0.*, vendor.vend_nama
+        /*$sql = "SELECT po0.*, vendor.vend_nama
 				FROM
 					po0
 				LEFT JOIN
 					vendor
-				ON vendor.vend_id = po0.vend_id where po0.status=1 ORDER BY timeedit DESC";
+				ON vendor.vend_id = po0.vend_id where po0.status=1 ORDER BY timeedit DESC";*/
+        $sql ="select distinct A.po_num, A.tgl, A.vend_id, C.vend_nama
+        from po0 A
+        left join po1 A1 on A.po_num=A1.po_num and A.co_id=A1.co_id
+        left join (
+            select gr10.bb_id, gr10.co_id, gr0.po_num, sum(gr11.qty_netto) as qty from gr0
+            inner join gr10 on gr0.gr_num=gr10.gr_num and gr0.co_id=gr10.co_id
+            inner join gr11 on gr10.gr_num=gr11.gr_num and gr10.co_id=gr11.co_id and gr10.bb_id=gr11.bb_id
+            group by gr10.bb_id, gr10.co_id, gr0.po_num)B on A.po_num=B.po_num and A.co_id=B.co_id and A1.bb_id=B.bb_id
+        left join vendor C on A.vend_id=C.vend_id and A.co_id=C.co_id
+        where B.qty < A1.qty or B.qty is null and A.status=1 order by A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -165,7 +227,7 @@ class Popup
     public function getGRPopup(stdClass $params)
     {
 
-        $sql = "SELECT * from gr0 ORDER BY gr_num";
+        $sql = "SELECT * from gr0 where status=1 ORDER BY gr_num";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -180,7 +242,7 @@ class Popup
     public function getCoaPopup(stdClass $params)
     {
 
-        $sql = "SELECT * from coa ORDER BY coa_id";
+        $sql = "SELECT * from coa where status='Y' ORDER BY coa_id";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -195,7 +257,28 @@ class Popup
     public function getAPPayUMpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv_pembayaran where inv_type ='U' and status=1 ORDER BY timeedit DESC";
+        $sql = "SELECT A.*, B.vend_nama FROM ap_inv_pembayaran A
+        left join vendor B on A.vend_id=B.vend_id and A.co_id=B.co_id
+        where A.inv_type ='U' and A.status=1 and A.nilaidasar<>'0'
+        ORDER BY A.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getAPPayUMCancelpopup(stdClass $params)
+    {
+
+        $sql = "SELECT A.*, B.vend_nama FROM ap_inv_pembayaran A
+        left join vendor B on A.vend_id=B.vend_id and A.co_id=B.co_id
+        where A.inv_type ='U' and A.status=1 and not exists(select inv_um from ap_inv_pembayaran where inv_um=A.ap_inv_payment and status=1)
+        ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -222,10 +305,44 @@ class Popup
         return $rows;
 
     }
+    public function getAP_InvCancelpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ap_inv
+        where status=1 and not exists(select inv_code from ap_inv_pembayaran where inv_code=ap_inv.inv_code and status=1)
+        ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
     public function getAR_Salepopup(stdClass $params)
     {
 
         $sql = "SELECT * FROM ar_sale where status=1 ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getARCancelpopup(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM ar_sale
+        where ar_sale.status=1 and not exists(select for_inv_code from ar_sale_payment where for_inv_code=ar_sale.inv_code and status=1)
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -300,7 +417,9 @@ class Popup
     public function getAPMnfpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM inv_manufactur where status=1 ORDER BY timeedit";
+        $sql = "SELECT * FROM inv_manufaktur
+        where status=1 and so_num in(select so_num from deliveryorder where status<>1)
+        ORDER BY timeedit";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -346,6 +465,21 @@ class Popup
     {
 
         $sql = "SELECT * FROM deliveryorder where status='1' ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getPB0(stdClass $params)
+    {
+
+        $sql = "SELECT * FROM pb0 where status=1 ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

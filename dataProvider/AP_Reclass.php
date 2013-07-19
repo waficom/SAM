@@ -52,7 +52,10 @@ class AP_Reclass
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from ap_reclass ORDER BY $orderx DESC";
+        $sql = "select A.*, B.gudang_nama, C.coa_nama as account_nama from ap_reclass A
+         left join gudang B on A.gudang_id=B.gudang_id and A.co_id=B.co_id
+         left join coa C on A.account=C.coa_id and A.co_id=C.co_id
+         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -84,7 +87,7 @@ class AP_Reclass
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['inv_code']);
+        unset($data['id'],$data['inv_code'],$data['gudang_nama'],$data['account_nama']);
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -102,7 +105,7 @@ class AP_Reclass
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code']);
+        unset($data['id'],$data['inv_code'],$data['gudang_nama'],$data['account_nama']);
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

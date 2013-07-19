@@ -23,7 +23,9 @@ Ext.define('App.ux.SalesOrderPopup',
                     fields : [
                         { name: 'so_num', type: 'string'},
                         { name: 'tanggal', type: 'date'},
-                        { name: 'cust_nama', type: 'string'}
+                        { name: 'cust_nama', type: 'string'},
+                        { name: 'cust_id', type: 'string'},
+                        { name: 'prod_id', type: 'string'}
 
                     ],
                     proxy :
@@ -52,7 +54,9 @@ Ext.define('App.ux.SalesOrderPopup',
                 columns: [
                     {text: 'So Num', width:70, sortable: false, dataIndex: 'so_num'},
                     {text: 'Tanggal', flex: 1, sortable: true, dataIndex: 'tanggal'},
-                    {text: 'Customer', flex: 1, sortable: true, dataIndex: 'cust_nama'}
+                    {text: 'Cust ID', flex: 1, sortable: true, dataIndex: 'cust_id'},
+                    {text: 'Customer', flex: 1, sortable: true, dataIndex: 'cust_nama'},
+                    {text: 'Produk', flex: 1, sortable: true, dataIndex: 'prod_id'}
                 ],
                 height: 200,
 //                selModel : me.smGrid,
@@ -116,6 +120,10 @@ Ext.define('App.ux.SalesOrderPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+
+            Ext.getCmp('prod_id').setValue(selected.data.prod_id);
+            Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
+
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

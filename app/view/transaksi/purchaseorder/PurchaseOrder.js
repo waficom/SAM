@@ -65,9 +65,15 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     width : 100
                 },
                 {
-                    header : 'PPN',
-                    dataIndex : 'ppn_po',
-                    width : 50
+                    header : 'Tax Code',
+                    dataIndex : 'tax_code',
+                    width : 100
+                },
+                {
+                    header : 'Tax Code',
+                    dataIndex : 'tax_nama',
+                    width : 100,
+                    hidden: true
                 },
                 {
                     header : 'Total',
@@ -136,11 +142,11 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     itemId : 'datefrom',
                                     fieldLabel : 'date from',
                                     labelWidth : 35,
-                                    //padding : '0 10 0 0',
                                     width : 150,
                                     format : 'd-m-Y',
-                                    //labelAlign : 'right',
-                                    value : new Date()
+                                    value : new Date(),
+                                    maxValue: new Date()
+
                                 }]
                         },'-',{
                             xtype : 'fieldcontainer',
@@ -152,11 +158,10 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     itemId : 'dateto',
                                     fieldLabel : 'to',
                                     labelWidth : 35,
-                                    //padding : '0 10 0 0',
                                     width : 150,
                                     format : 'd-m-Y',
-                                    //labelAlign : 'right',
-                                    value : new Date()
+                                    value : new Date(),
+                                    maxValue: new Date()
                                 }]
                         },{
                             xtype : 'fieldcontainer',
@@ -207,8 +212,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                 {text: 'bb_id', width:70, sortable: false, dataIndex: 'bb_id'},
                 {text: 'po_num', width:70, sortable: false, dataIndex: 'po_num', hidden: true},
                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
-                {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
+                {text: 'Sat ID', width:70, sortable: false, dataIndex: 'sat_id'},
+                //{text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
                 {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty'},
                 {text: 'Harga', width: 150, sortable: false, dataIndex: 'hrg'},
                 {text: 'Jumlah', width: 150, sortable: false, dataIndex: 'n_brutto', hidden: true},
@@ -243,6 +248,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     items: [{
                         text: 'Add',
                         iconCls: 'icoAddRecord',
+                        id:'add_dt_po',
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
@@ -288,7 +294,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                         labelWidth: 100
                     },
                     defaultType: 'textfield',
-                    //hideLabels      : true,
                     defaults: {
                         labelWidth: 89,
                         anchor: '100%',
@@ -347,7 +352,10 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width : 100,
                                     name : 'tgl',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },{
@@ -364,10 +372,16 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     value: 'Supplier'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtVendorSuplierPopup',
                                     itemId : 'povend_id',
                                     name : 'vend_id'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'displayfield',
+                                    name:'vend_nama',
+                                    id:'vend_nama_po'
                                 }
                             ]
                         },
@@ -465,7 +479,9 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width : 100,
                                     name : 'tgl_jt',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },{
@@ -479,23 +495,19 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'PPN'
+                                    value: 'Tax Code'
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'mitos.checkbox',
-                                    name : 'ppn_po'
+                                    xtype: 'xtTaxPopup',
+                                    name : 'tax_code'
 
                                 },
                                 {
-                                    width: 80,
+                                    width: 150,
                                     xtype: 'displayfield',
-                                    value: 'Exclude PPN'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.checkbox',
-                                    name : 'ppn_exc'
+                                    name:'tax_nama',
+                                    id:'tax_code_po'
                                 }
                             ]
                         },
@@ -592,13 +604,19 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bahan Baku ID ' + ': '
+                                    value: 'BB ID ' + ': '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtBahanBakuPopup',
                                     name: 'bb_id',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'displayfield',
+                                    name:'bb_nama',
+                                    id:'bb_nama'
                                 }
                             ]
                         },
@@ -612,12 +630,13 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'satuan :'
+                                    value: 'Satuan :'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'xtSatuanPopup',
-                                    name: 'sat_id'
+                                    name: 'sat_id',
+                                    id:'sat_id_po'
                                 }
                             ]
                         },
@@ -858,9 +877,11 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         if(selected.data.status == 1 || selected.data.status == 2){
             Ext.getCmp('delete_po').disable();
             Ext.getCmp('delete_dt_po').disable();
+            Ext.getCmp('add_dt_po').disable();
         }else{
             Ext.getCmp('delete_po').enable();
             Ext.getCmp('delete_dt_po').enable();
+            Ext.getCmp('add_dt_po').enable();
         }
     },
 
@@ -927,6 +948,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
             }
         });
         store.load({params:{po_num: me.curr_po_num}});
+        this.ReloadGrid();
     },
     onPBDelete: function(store){
         var me = this, grid = me.POGrid;
@@ -969,6 +991,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    this.ReloadGrid();
                 }
             }
         })

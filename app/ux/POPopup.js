@@ -23,6 +23,7 @@ Ext.define('App.ux.POPopup',
                     fields : [
                         {name: 'po_num',type: 'string'},
                         {name: 'vend_nama',type: 'string'},
+                        {name: 'vend_id',type: 'string'},
                         {name: 'tgl',type: 'date'}
                     ],
                     proxy :
@@ -59,6 +60,11 @@ Ext.define('App.ux.POPopup',
                         dataIndex : 'tgl',
                         renderer:Ext.util.Format.dateRenderer('d-m-Y'),
                         width : 100
+                    },
+                    {
+                        header : 'Supplier ID',
+                        dataIndex : 'vend_id',
+                        width : 200
                     },
                     {
                         header : 'Supplier',
@@ -128,6 +134,8 @@ Ext.define('App.ux.POPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('vend_id').setValue(selected.data.vend_id);
+            Ext.getCmp('vend_id_ap').setValue(selected.data.vend_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

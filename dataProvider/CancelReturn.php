@@ -51,7 +51,7 @@ class CancelReturn
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM canceltransaksi ORDER BY $orderx";
+        $sql = "SELECT * FROM canceltransaksi ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();
@@ -78,7 +78,9 @@ class CancelReturn
             }
         }
         $data['co_id'] = $_SESSION['user']['site'];
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['canceled_date'] = $this->db->Date_Converter($data['canceled_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
@@ -97,7 +99,9 @@ class CancelReturn
     {
         $data       = get_object_vars($params);
         unset($data['id']);
+        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['canceled_date'] = $this->db->Date_Converter($data['canceled_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
         $sql = $this->db->sqlBind($data, 'canceltransaksi', 'U', array('inv_code' => $params->inv_code));

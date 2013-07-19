@@ -21,18 +21,9 @@ Ext.define('App.ux.SalesPopup',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {
-                            name: 'sales_id',
-                            type: 'string'
-                        },
-                        {
-                            name: 'sales_nama',
-                            type: 'string'
-                        },
-                        {
-                            name: 'keterangan',
-                            type: 'string'
-                        }
+                        {name: 'sales_id',type: 'string'},
+                        {name: 'sales_nama',type: 'string' },
+                        {name: 'keterangan', type: 'string'}
                     ],
                     proxy :
                     {
@@ -139,6 +130,7 @@ Ext.define('App.ux.SalesPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('sales_nama').setValue(selected.data.sales_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

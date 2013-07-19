@@ -84,7 +84,7 @@ class WorkOrder1
     }
     public function getWorkOrder1DetailBBaku(stdClass $params)
     {
-        $this->db->setSQL("select A.*, (A.qty_in * B.jml_paket) as qty_total, bb_nama, B.jml_paket
+        $this->db->setSQL("select A.*, (A.qty_in * B.jml_paket) as qty_total, bb_nama, B.jml_paket, B.darigudang, B.kegudang
 from wobahanbaku B
 left join wo1 A on A.co_id=B.co_id and A.wo_num=B.wo_num and A.so_num=B.so_num and A.prod_id=B.prod_id and A.no_ppd=B.no_ppd
 left join bahanbaku C on A.bb_id=C.bb_id

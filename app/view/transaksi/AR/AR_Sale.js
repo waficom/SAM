@@ -22,11 +22,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'inv_type',type: 'string'},
                 {name: 'so_num',type: 'string'},
                 {name: 'account',type: 'string'},
+                {name: 'account_nama',type: 'string'},
                 {name: 'tax_code',type: 'string'},
+                {name: 'tax_nama',type: 'string'},
                 {name: 'gudang_id',type: 'string'},
+                {name: 'gudang_nama',type: 'string'},
                 {name: 'nilaidasarx',type: 'string'},
                 {name: 'nd_setelah_discx',type: 'string'},
-                {name: 'discon',type: 'string'},
+                {name: 'discon',type: 'float'},
                 {name: 'remaks',type: 'string'},
                 {name: 'cust_id',type: 'string'},
                 {name: 'ppn_prs',type: 'string'},
@@ -207,8 +210,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
                                 Ext.getCmp('for_inv_ar').disable();
                                 Ext.getCmp('post_ar').disable();
-                                Ext.getCmp('po_ar').disable();
-                                Ext.getCmp('account_ar').disable();
+                                Ext.getCmp('account_ar').enable();
 
                             }
                         },
@@ -510,12 +512,17 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     }
                                 },
                                 {
-                                    width: 180,
+                                    width: 100,
                                     xtype: 'xtCoaPopup',
                                     name: 'account',
                                     allowBlank: false,
                                     id:'account_ar'
-
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'account_nama',
+                                    id:'account_nama_ar'
                                 }
                             ]
                         },
@@ -533,11 +540,17 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     value: 'Tax : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtTaxPopup',
                                     name: 'tax_code',
                                     allowBlank: false,
                                     id:'tax_ar'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'tax_nama',
+                                    id:'tax_code'
                                 }
                             ]
                         },
@@ -555,10 +568,17 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     value: 'Debtor : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtCustomerPopup',
                                     name: 'cust_id',
+                                    id:'cust_id_ar',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'cust_nama',
+                                    id:'cust_nama_ar'
                                 }
                             ]
                         },
@@ -576,11 +596,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     value: 'Ambil dari Gudang : '
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'xtGudangPopup',
+                                    width: 100,
+                                    xtype: 'xtGudangBJPopup',
                                     name: 'gudang_id',
                                     id:'gudang_id_ar'
-
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'gudang_nama',
+                                    id:'gudang_nama_ar'
                                 }
                             ]
                         },
@@ -599,8 +624,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 },
                                 {
                                     width: 50,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
                                     name: 'discon',
+                                    hideTrigger: true,
                                     id:'discon_ar'
                                 }
                             ]
@@ -632,7 +658,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 150,
                                     xtype: 'checkboxfield',
-                                    fieldLabel: 'Post',
+                                    fieldLabel: 'Posting',
                                     id:'post_ar',
                                     name: 'status'
                                 }

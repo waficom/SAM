@@ -24,7 +24,8 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'inv_um',type: 'string'},
                 {name: 'cust_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
+                {name: 'cust_nama',type: 'string'},
+                {name: 'nilaidasar',type: 'float'},
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -347,23 +348,35 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    disabled:true
+                                    xtype: 'mitos.currency',
+                                    disabled:true,
+                                    hideTrigger: true,
+                                    id:'piutang'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    disabled:true,
+                                    hideTrigger: true,
+                                    id:'uangmuka_ar'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    name: 'nilaidasar',
+                                    id:'nilaidasar_ar',
+                                    hideTrigger: true,
+                                    listeners : {
+                                        scope : me,
+                                        specialkey : me.onEnter
+                                    }
                                 },
                                 {
                                     width: 100,
                                     xtype: 'textfield',
-                                    disabled:true
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'nilaidasar'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    disabled:true
+                                    disabled:true,
+                                    hideTrigger: true,
+                                    id:'sisa_um_ar'
                                 }
                             ]
                         },
@@ -381,10 +394,17 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                     value: 'Debtor : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtCustomerPopup',
                                     name: 'cust_id',
+                                    id:'cust_id_al',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'cust_nama',
+                                    id:'cust_nama'
                                 }
                             ]
                         },
@@ -610,7 +630,17 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
         });
     },
 
-
+    onEnter : function(field, e)
+    {
+        var piutang = Ext.getCmp('piutang').getValue();
+        var uangmuka = Ext.getCmp('uangmuka_ar').getValue();
+        var nilaidasar = Ext.getCmp('nilaidasar_ar').getValue();
+        if(nilaidasar <= piutang && nilaidasar <= uangmuka ){
+            Ext.getCmp('sisa_um_ar').setValue(uangmuka-nilaidasar);
+        }else{
+            Ext.MessageBox.alert('Warning', 'Nominal piutang lebih kecil dari alokasi');
+        }
+    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

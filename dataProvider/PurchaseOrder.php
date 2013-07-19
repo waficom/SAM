@@ -54,13 +54,14 @@ class PurchaseOrder
     public function getFilterPOData(stdClass $params)
     {
         // Declare all the variables that we are going to use.
-        $sql = "SELECT po0.*, vendor.vend_nama, C.netto_total
+        $sql = "SELECT po0.*, vendor.vend_nama, C.netto_total, tax_m.description as tax_nama
 				FROM
 					po0
 				LEFT JOIN
 					vendor
 				ON vendor.vend_id = po0.vend_id
 				left join(select co_id, po_num, sum(n_netto) as netto_total from po1 group by co_id, po_num) C on po0.po_num=C.po_num and po0.co_id=C.co_id
+				left join tax_m on po0.tax_code=tax_m.tax_code and po0.co_id=tax_m.co_id
 				where po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
 				ORDER BY
 				     po0.timeedit DESC";
@@ -107,7 +108,7 @@ class PurchaseOrder
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['vend_nama']);
+        unset($data['vend_nama'], $data['tax_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'po0', 'I');
         $this -> db -> setSQL($sql);
@@ -122,7 +123,7 @@ class PurchaseOrder
     public function updatePO(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['po_num'], $data['id'], $data['cust_nama'], $data['co_id'], $data['vend_nama'], $data['netto_total']);
+        unset($data['po_num'], $data['id'], $data['cust_nama'], $data['co_id'], $data['vend_nama'], $data['netto_total'],  $data['tax_nama']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);

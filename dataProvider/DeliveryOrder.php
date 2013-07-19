@@ -74,7 +74,7 @@ class DeliveryOrder
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['do_num']);
+        unset($data['id'],$data['do_num'],$data['prod_nama']);
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -101,7 +101,7 @@ class DeliveryOrder
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
-        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery']);
+        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery'],$data['prod_nama']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> old_do_num));
         $this -> db -> setSQL($sql);
         //print_r($sql);
@@ -123,8 +123,9 @@ class DeliveryOrder
     public function getDeliveryOrder1(stdClass $params)
     {
         //error_reporting(-1);
-        $this->db->setSQL("SELECT A.*, B.prod_nama FROM deliveryorderdetai A
+        $this->db->setSQL("SELECT A.*, B.prod_nama, C.vend_nama as vend_tr_nama FROM deliveryorderdetai A
         left join items B on A.co_id=B.co_id and A.prod_id=B.prod_id
+        left join vendor C on A.vend_id=C.vend_id and A.co_id=C.co_id
          WHERE do_num = '" . $params->do_num ."'ORDER BY timeedit DESC");
 
         $rows = array();

@@ -44,6 +44,10 @@ Ext.define('App.view.master.BahanBaku', {
                     type: 'string'
                 },
                 {
+                    name: 'sat_id',
+                    type: 'string'
+                },
+                {
                     name: 'keterangan',
                     type: 'string'
                 },
@@ -109,6 +113,12 @@ Ext.define('App.view.master.BahanBaku', {
                     text: 'Bahan Baku',
                     sortable: true,
                     dataIndex: 'bb_nama'
+                },
+                {
+                    width: 50,
+                    text: 'Satuan',
+                    sortable: true,
+                    dataIndex: 'sat_id'
                 },
                 {
                     flex: 1,
@@ -231,6 +241,25 @@ Ext.define('App.view.master.BahanBaku', {
                                     xtype: 'textfield',
                                     name: 'bb_nama'
                                 }                                
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Satuan :'
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'xtSatuanPopup',
+                                    name: 'sat_id'
+                                }
                             ]
                         },
                         {

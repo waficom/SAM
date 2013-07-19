@@ -23,8 +23,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'giro_num',type: 'string'},
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'bank_code',type: 'string'},
+                {name: 'bank_nama',type: 'string'},
                 {name: 'cust_id',type: 'string'},
-                {name: 'nilaidasar',type: 'string'},
+                {name: 'cust_nama',type: 'string'},
+                {name: 'nilaidasar',type: 'float'},
                 {name: 'keterangan',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -289,6 +291,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
                                     allowBlank: false
                                 }
                             ]
@@ -348,10 +351,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     value: 'Bank Code : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtBankPopup',
                                     name: 'bank_code',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'bank_nama',
+                                    id:'bank_nama'
                                 }
                             ]
                         },
@@ -369,10 +378,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     value: 'Debtor : '
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtCustomerPopup',
                                     name: 'cust_id',
-                                    allowBlank: false
+                                    id:'cust_id_pay'
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'cust_nama',
+                                    id:'cust_nama_pay'
                                 }
                             ]
                         },
@@ -391,8 +406,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
                                     name: 'nilaidasar',
+                                    hideTrigger: true,
                                     allowBlank: false
                                 }
                             ]

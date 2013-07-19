@@ -83,12 +83,13 @@ class GoodsReceived
         $sql = "SELECT
                     gr0.*,
                     vendor.vend_nama,
-                    transportir.vend_nama as vend_tr_nama, gudang.gudang_nama,
+                    transportir.vend_nama as vend_tr_nama, gudang.gudang_nama, --coa.coa_nama as account_nama,
                     case gr0.gr_type when 'R' then 'Received' else 'Return' end as gr_type_desc
                 FROM gr0
                    left outer join vendor on (gr0.co_id = vendor.co_id) and (gr0.vend_id = vendor.vend_id)
                    left outer join vendor transportir on (gr0.co_id = transportir.co_id) and (gr0.vend_id_trans = transportir.vend_id)
                    left join gudang on gr0.gudang_id=gudang.gudang_id and gr0.co_id=gudang.co_id
+                    --left join coa on gr0.account.coa.coa_id and gr0.co_id=coa.co_id
 				$whereClause
 				ORDER BY
 				     gr0.timeedit DESC";
@@ -124,7 +125,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['vend_nama'],$data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama']);
+        unset($data['vend_nama'],$data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama'], $data['account_nama']);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
@@ -143,7 +144,7 @@ class GoodsReceived
     public function updateGR(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama']);
+        unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama'], $data['account_nama']);
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
@@ -163,15 +164,16 @@ class GoodsReceived
      */
     public function deleteGR(stdClass $params)
     {
-        $data = get_object_vars($params);
-//        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
-        $sql = "DELETE FROM GR11 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM jurnal WHERE (co_id = '$params->co_id') and (inv_code = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM GR10 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM gr11 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM GR0 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM gr10 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        $sql = "DELETE FROM gr0 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -183,19 +185,6 @@ class GoodsReceived
      * @param stdClass $params
      * @return stdClass
      */
-    public function deletebygr_num($cid, $num)
-    {
-        $sql = "DELETE FROM GR11 WHERE (co_id = '$cid') and (gr_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM GR10 WHERE (co_id = '$cid') and (gr_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM GR0 WHERE (co_id = '$cid') and (gr_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $num;
-    }
 
     public function getGRItems(stdClass $params)
     {
@@ -264,7 +253,7 @@ class GoodsReceived
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['bb_nama'], $data['id'], $data['sat_nama']);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['old_bb_id']);
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'gr10', 'I');
         $this -> db -> setSQL($sql);
@@ -279,8 +268,8 @@ class GoodsReceived
     public function updateGRItems(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['qty_po']);
-        $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->bb_id);
+        unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['qty_po'], $data['old_bb_id']);
+        $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num, 'bb_id' => $params->old_bb_id);
         $sql = $this -> db -> sqlBind($data, 'gr10', 'U', $cond);
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

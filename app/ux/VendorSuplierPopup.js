@@ -140,6 +140,11 @@ Ext.define('App.ux.VendorSuplierPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('vend_nama').setValue(selected.data.vend_nama);
+            Ext.getCmp('vend_nama_po').setValue(selected.data.vend_nama);
+            Ext.getCmp('vend_nama_gr').setValue(selected.data.vend_nama);
+            Ext.getCmp('vend_nama_ap').setValue(selected.data.vend_nama);
+            Ext.getCmp('vend_nama_pay').setValue(selected.data.vend_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

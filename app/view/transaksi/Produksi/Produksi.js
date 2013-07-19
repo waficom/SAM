@@ -159,6 +159,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             text: 'Delete',
                             iconCls: 'delete',
                             itemId: 'listDeleteBtn',
+                            id:'delete_pp',
                             scope: me,
                             handler:function() {
                                 me.onProduksiDelete(me.ProduksiStore);
@@ -287,6 +288,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     items: [{
                         text: 'Add',
                         iconCls: 'icoAddRecord',
+                        id:'add_dt_pp',
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
@@ -297,6 +299,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             xtype: 'button',
                             text: 'Delete',
                             iconCls: 'delete',
+                            id:'delete_dt_pp',
                             handler: function() {
                                 me.deleteProduksi1(me.Produksi1Store);
                             }
@@ -322,7 +325,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         // Window User Form
         // *************************************************************************************
         me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
+            width: 450,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -388,12 +391,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     value: 'Tanggal :'
                                 },
                                 {
-                                    fieldLabel : 'Tanggal',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'pp_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    fieldLabel : 'Tanggal',
+                                    submitFormat: 'Y-m-d',
+                                    format : globals['date_display_format'],
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -413,6 +419,12 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     width: 100,
                                     xtype: 'xtFactoryPopup',
                                     name:'pabrik_sequence'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'displayfield',
+                                    name:'factory',
+                                    id:'factory'
                                 }
                             ]
                         },
@@ -460,7 +472,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             }
         });
         me.winform1 = Ext.create('App.ux.window.Window', {
-            width: 400,
+            width: 350,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -531,7 +543,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     value: 'Formula ID:'
                                 },
                                 {
-                                    width: 250,
+                                    width: 200,
                                     xtype: 'xtFormulaPopup',
                                     name:'formula_id'
                                 }
@@ -576,8 +588,11 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'est_finishdate',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    submitFormat: 'Y-m-d',
+                                    format : globals['date_display_format'],
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         }
@@ -700,6 +715,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.Produksi1Store.load({params:{no_pp: me.currProduksi}});
+        if( me.currReleased == 1){
+            Ext.getCmp('delete_pp').disable();
+            Ext.getCmp('delete_dt_pp').disable();
+            Ext.getCmp('add_dt_pp').disable();
+        }else{
+            Ext.getCmp('delete_pp').enable();
+            Ext.getCmp('delete_dt_pp').enable();
+            Ext.getCmp('add_dt_pp').enable();
+        }
 
     },
 
