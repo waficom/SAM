@@ -68,9 +68,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'harga',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -200,9 +199,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor ', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -213,7 +214,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
 
         });
 
@@ -480,6 +483,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     value : new Date(),
+                                    maxValue: new Date(),
                                     allowBlank:false,
                                     id:'posted_date_al'
                                 }

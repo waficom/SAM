@@ -35,6 +35,10 @@ Ext.define('App.view.master.Tax', {
                     type: 'string'
                 },
                 {
+                    name: 'type_tax',
+                    type: 'string'
+                },
+                {
                     name: 'description',
                     type: 'string'
                 },
@@ -97,19 +101,9 @@ Ext.define('App.view.master.Tax', {
         me.TaxGrid = Ext.create('App.ux.GridPanel', {
             store: me.TaxStore,
             columns: [
-                {
-                    width: 100,
-                    text: 'Company',
-                    sortable: true,
-                    dataIndex: 'co_id',
-                    hidden: true
-                },
-                {
-                    width: 200,
-                    text: 'Tax Code',
-                    sortable: true,
-                    dataIndex: 'tax_code'
-                },
+                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                {header : 'Tax Code', dataIndex : 'tax_code',width : 100},
+                {header : 'Type', dataIndex : 'type_tax',width : 25},
                 {
                     width: 300,
                     text: 'Description',
@@ -117,32 +111,32 @@ Ext.define('App.view.master.Tax', {
                     dataIndex: 'description'
                 },
                 {
-                    width: 100,
+                    width: 75,
                     text: 'Rate Ppn',
                     sortable: true,
                     dataIndex: 'rate_ppn'
                 },
                 {
-                    width: 200,
+                    width: 100,
                     text: 'Coa Ppn',
                     sortable: true,
                     dataIndex: 'coa_ppn'
                 },
                 {
-                    width: 100,
+                    width: 75,
                     text: 'Rate Pph',
                     sortable: true,
                     dataIndex: 'rate_pph'
                 },
                 {
-                    width: 200,
+                    width: 100,
                     text: 'Coa Pph',
                     sortable: true,
                     dataIndex: 'coa_pph'
                 },
                 {
-                    width: 300,
-                    text: 'Remaks',
+                    width: 250,
+                    text: 'Remarks',
                     sortable: true,
                     dataIndex: 'remaks'
                 },
@@ -233,6 +227,22 @@ Ext.define('App.view.master.Tax', {
                                     xtype: 'mitos.UpperCaseTextField',
                                     allowBlank: false,
                                     stripCharsRe: /(^\s+|\s+$)/g
+                                }
+                            ]
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Type ",
+                            defaults: {xtype: "radio",name: "type_tax"},
+                            items: [
+                                {
+                                    boxLabel: "P. Masukan",
+                                    inputValue: "M",
+                                    checked: true
+                                },
+                                {
+                                    boxLabel: "P. Keluaran",
+                                    inputValue: "K"
                                 }
                             ]
                         },

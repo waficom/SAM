@@ -308,7 +308,9 @@ class SalesOrder
         $cond = array('co_id' =>$params->co_id, 'so_num' => $params->so_num, 'prod_id' => $params->old_prod_id);
         $sql = $this -> db -> sqlBind($data, 'so10', 'U', $cond);
         $this -> db -> setSQL($sql);
+        //print_r($sql);
         $this -> db -> execLog();
+
         $params->old_co_id = $params->co_id;
         return $params;
     }

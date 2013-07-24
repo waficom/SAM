@@ -499,7 +499,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxPopup',
+                                    xtype: 'xtTaxKPopup',
                                     name : 'tax_code'
 
                                 },

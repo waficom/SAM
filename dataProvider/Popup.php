@@ -31,9 +31,8 @@ class Popup
     public function SalesOrderPopup(stdClass $params)
     {
 
-        $sql = "SELECT A.*, B.cust_nama, C.prod_id FROM so0 A
+        $sql = "SELECT A.*, B.cust_nama, B.prod_id FROM so0 A
          left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
-         left join so11 C on A.so_num=C.so_num and A.co_id=C.co_id
          where A.status<>'A' ORDER BY A.so_num DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -293,7 +292,8 @@ class Popup
     public function getAP_Invpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM ap_inv where status=1 ORDER BY timeedit DESC";
+        $sql = "SELECT * FROM ap_inv where status=1 and hutangsuplier > 0
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -358,6 +358,23 @@ class Popup
     {
 
         $sql = "SELECT * FROM ar_sale_payment where inv_type ='U' and status=1 ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getARPayUMCancelpopup(stdClass $params)
+    {
+
+        $sql = "SELECT A.* FROM ar_sale_payment A where A.inv_type ='U' and A.status=1
+        and not exists(select inv_um from ar_sale_payment where inv_um=A.inv_code and status=1)
+        ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -480,6 +497,51 @@ class Popup
     {
 
         $sql = "SELECT * FROM pb0 where status=1 ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getTaxMPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM tax_m where type_tax='M' ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getTaxKPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM tax_m where type_tax='K' ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getCashbonOutPopup(stdClass $params)
+    {
+        $sql = "SELECT A.*, B.description as bank_nama FROM cashbook_in A
+        left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
+        where A.cb_type='O' and A.status=1 and not exists(select inv_code from cashbon where inv_cb=A.inv_code)
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

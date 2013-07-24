@@ -143,6 +143,8 @@ class Navigation
                     'text' => $this->i18n['releaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelRO'
                 ), array(
                     'text' => $this->i18n['produksi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelProduksi'
+                ),  array(
+                    'text' => $this->i18n['pengadaanbarang'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPengadaanBarang'
                 ), array(
                     'text' => $this->i18n['purchaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPO'
                 ), array(
@@ -153,41 +155,35 @@ class Navigation
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
                 ),*/ array(
                     'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
-                ), array(
+                ),array(
                     'text' => $this->i18n['stock'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelStock'
                 ), array(
-                    'text' => $this->i18n['deliveryorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelDeliveryOrder'
-                ), array(
-                    'text' => $this->i18n['ordermonitoring'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelOM'
-                ), array(
-                    'text' => $this->i18n['pengadaanbarang'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPengadaanBarang'
-                ),
-                array(
-                    'text' => $this->i18n['apinvoice'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice'
-                ),
-                array(
-                    'text' => $this->i18n['appaymentalocation'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Payment_Alocation'
-                ),
-                array(
-                    'text' => $this->i18n['apinvoicepembayaran'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Pembayaran'
-                ), /*    array(
-                    'text' => $this->i18n['apinvoicepaymentrevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Payment_Revision'
-                ),*/
-                array(
                     'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
-                ),
-                array(
-                    'text' => $this->i18n['rc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReclass'
-                ),
-                array(
+                ),array(
+                    'text' => $this->i18n['apinvoice'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice'
+                ),array(
+                    'text' => $this->i18n['apinvoicepembayaran'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Pembayaran'
+                ),array(
+                    'text' => $this->i18n['appaymentalocation'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Payment_Alocation'
+                ),array(
+                    'text' => $this->i18n['deliveryorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelDeliveryOrder'
+                ),array(
                     'text' => $this->i18n['arsale'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale'
-                ),
-                array(
+                ),array(
                     'text' => $this->i18n['arsalepayment'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Sale_Payment'
                 ),
                 array(
                     'text' => $this->i18n['ar_pay_alocation'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Payment_Alocation'
+                ), array(
+                    'text' => $this->i18n['ordermonitoring'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelOM'
                 ),
+
+                 /*    array(
+                    'text' => $this->i18n['apinvoicepaymentrevisi'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Payment_Revision'
+                ),*/
+
+
+
                 array(
                     'text' => $this->i18n['argiro'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAR_Giro'
                 ),
@@ -197,9 +193,9 @@ class Navigation
                 array(
                     'text' => $this->i18n['cbout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Out'
                 ),
-                array(
+                /*array(
                     'text' => $this->i18n['cblebih'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbon_Lebih'
-                ),
+                ),*/
                 array(
                     'text' => $this->i18n['cbkurang'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbon_Kurang'
                 ),
@@ -208,6 +204,8 @@ class Navigation
                 ),
                 array(
                     'text' => $this->i18n['bankout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Bank_Out'
+                ),array(
+                    'text' => $this->i18n['rc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReclass'
                 ),
                 array(
                     'text' => $this->i18n['gl'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVoucher'

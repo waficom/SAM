@@ -52,10 +52,11 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
-        $sql = "select A.*, B.cust_nama, C.description as bank_nama
+        $sql = "select A.*, B.cust_nama, C.description as bank_nama, D.posted_date as posted_date_ar, D.piutangdebtor
         from ar_sale_payment A
         left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
         left join bank_m C on A.bank_code=C.bank_code and A.co_id=C.co_id
+        left join ar_sale D on A.for_inv_code=D.inv_code and A.co_id=D.co_id
          where A.inv_type <>'A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -78,7 +79,12 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from ar_sale_payment where inv_type ='A' ORDER BY $orderx DESC";
+        $sql = "select A.*, B.piutangdebtor, C.nilaidasar as uangmuka,
+B.posted_date as ar_inv_date, C.posted_date as ar_date_um
+        from ar_sale_payment A
+         left join ar_sale B on A.for_inv_code=B.inv_code and A.co_id=B.co_id
+         left join ar_sale_payment C on A.inv_um=C.inv_code and A.co_id=C.co_id
+        where A.inv_type ='A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -103,6 +109,7 @@ class AR_Sale_Payment
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         foreach ($data AS $key => $val)
@@ -110,7 +117,8 @@ class AR_Sale_Payment
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']);
+        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']
+        , $data['posted_date_ar'], $data['piutangdebtor'],$data['ar_inv_date'],$data['ar_date_um'],$data['uangmuka']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -126,9 +134,11 @@ class AR_Sale_Payment
     {
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']);
+        unset($data['id'],$data['inv_code'], $data['bank_nama'], $data['cust_nama']
+        , $data['posted_date_ar'], $data['piutangdebtor'],$data['ar_inv_date'],$data['ar_date_um'],$data['uangmuka']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_payment', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

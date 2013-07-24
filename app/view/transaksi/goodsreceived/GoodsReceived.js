@@ -62,8 +62,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                     {name: 'vend_id',type: 'string'},
                     {name: 'coa',type: 'string'},
                     {name: 'coa_nama',type: 'string'},
-                    {name: 'debit',type: 'string'},
-                    {name: 'credit',type: 'string'},
+                    {name: 'debit',type: 'float'},
+                    {name: 'credit',type: 'float'},
                     {name: 'sequence_no',type: 'string'},
                     {name: 'timeedit',type: 'date'},
                     {name: 'remaks',type: 'string'}
@@ -139,13 +139,15 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             enablePaging: true,
                             columns: [
                                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 200},
                                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                                    return '<b>Total</b>';
+                                }},
+                                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -155,7 +157,10 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 getRowClass: function(record, index) {
                                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                                 }
-                            }
+                            },
+                            features: [{
+                                ftype: 'summary'
+                            }, searching]
                         })
                     ],
 
@@ -670,17 +675,17 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             },
                             listeners: {
                                 scope: me,
-                                select: me.onItemsGridClick,
-                                itemdblclick: function(view, record){
+                                select: me.onItemsGridClick
+                               /* itemdblclick: function(view, record){
                                     oldName = record.get('bb_id');
                                     record.set("old_bb_id",oldName);
                                     if(me.currPosted =='1' || me.currPosted =='2'){
                                     }else{
                                         me.onItemsdblclick(me.GRItemsStore, record, 'Edit Bahan Baku');
                                     }
-                                }
-                            },
-                            dockedItems: [
+                                }*/
+                            }
+                            /*dockedItems: [
                                 {
                                     xtype: 'toolbar',
                                     dock: 'top',
@@ -709,7 +714,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         }
                                     ]
                                 }
-                            ]
+                            ]*/
                         }),
                         me.GRDetailGrid = Ext.create('App.ux.GridPanel', {
                             store: me.GRDetailStore,
@@ -1009,11 +1014,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                         xtype: 'mitos.currency',
                                         name: 'qty_pcs',
                                         id : 'idqty_pcs',
-                                        hideTrigger: true,
-                                        listeners : {
-                                            scope : me,
-                                            specialkey : me.onEnter
-                                        }
+                                        hideTrigger: true
                                     }
                                 ]
                             },
@@ -1421,22 +1422,35 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
         saveloc: function(form, store){
             var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            store.sync({
-                success:function(){
-                    me.winDtl.close();
-                },
-                failure:function(){
-                    me.msg('Opps!', 'Error!!', true);
+            qty_brutto = Ext.getCmp('idgrqty_brutto').getValue();
+            qty_netto = Ext.getCmp('idgrqty_netto').getValue();
+            qty_selisih = qty_netto - qty_brutto;
+            if(qty_brutto <=  me.currQtyPO || qty_netto <=  me.currQtyPO){
+                if(qty_netto <= qty_brutto){
+                    if(storeIndex == -1){
+                        store.add(values);
+                    }else{
+                        record.set(values);
+                    }
+                    store.sync({
+                        success:function(){
+                            me.winDtl.close();
+                        },
+                        failure:function(){
+                            me.msg('Opps!', 'Error!!', true);
+                        }
+                    });
+                    me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+                    store.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
+                    me.GRN_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                }else{
+                    Ext.MessageBox.alert('Warning', 'Qty Timbangan melebih Qty Muatan');
                 }
-            });
-            me.GRItemsStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
-            store.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
-            me.GRN_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+
+            }else{
+                Ext.MessageBox.alert('Warning', 'Qty melebih Qty PO');
+            }
+
         },
         onItemsDelete: function(store){
             var me = this, grid = me.ItemsGrid;
@@ -1489,8 +1503,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                 qty_brutto = Ext.getCmp('idgrqty_brutto').getValue();
                 qty_netto = Ext.getCmp('idgrqty_netto').getValue();
                 qty_selisih = qty_netto - qty_brutto;
-                if(qty_netto <=  me.currQtyPO ){
-                    Ext.getCmp('idgrqty_selisih').setValue(qty_selisih);
+                if(qty_brutto <=  me.currQtyPO || qty_netto <=  me.currQtyPO){
+                    if(qty_netto <= qty_brutto){
+                        Ext.getCmp('idgrqty_selisih').setValue(qty_selisih);
+                    }else{
+                        Ext.MessageBox.alert('Warning', 'Qty Timbangan melebih Qty Muatan');
+                    }
+
                 }else{
                     Ext.MessageBox.alert('Warning', 'Qty melebih Qty PO');
                 }
@@ -1513,15 +1532,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                 layout.setActiveItem(to);
             }
             currCard = layout.getActiveItem();
-            /*
-             if(me.step[currCard.action]){
-             Ext.getCmp('move-next').setDisabled(false);
-             }
-             else{
-             Ext.getCmp('move-next').setDisabled(true);
-             }
-             */
-//        Ext.getCmp('move-prev').setVisible(layout.getPrev());
+
 
         },
 

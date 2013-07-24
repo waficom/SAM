@@ -132,6 +132,7 @@ Ext.define('App.ux.APPopup',
             Ext.getCmp('hutangsuplier').setValue(selected.data.hutangsuplier);
             Ext.getCmp('ap_inv_date').setValue(selected.data.posted_date);
             Ext.getCmp('ap_inv_date_al').setValue(selected.data.posted_date);
+            Ext.getCmp('hutangsuplier_pay').setValue(selected.data.hutangsuplier);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

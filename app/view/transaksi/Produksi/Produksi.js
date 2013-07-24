@@ -765,6 +765,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             }
         });
         this.ReloadGrid();
+        Produksi1Store.load({params:{no_pp: me.currProduksi}});
     },
 
     onProduksi1Save: function(form, store){

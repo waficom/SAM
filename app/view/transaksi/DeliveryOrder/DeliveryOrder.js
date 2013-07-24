@@ -288,6 +288,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                     items: [{
                         text: 'Add',
                         iconCls: 'icoAddRecord',
+                        id:'add_dt_do',
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
@@ -367,7 +368,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'So_Num:'
+                                    value: 'Sales Order :'
                                 },
                                 {
                                     width: 150,
@@ -859,9 +860,11 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         if(selected.data.status == 1 || selected.data.status == 2){
             Ext.getCmp('delete_do').disable();
             Ext.getCmp('delete_dt_do').disable();
+            Ext.getCmp('add_dt_do').disable();
         }else{
             Ext.getCmp('delete_do').enable();
             Ext.getCmp('delete_dt_do').enable();
+            Ext.getCmp('add_dt_do').enable();
         }
         Ext.getCmp('sat_id').setValue(selected.data.sat_id);
 

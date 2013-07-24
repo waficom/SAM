@@ -273,8 +273,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     labelWidth : 35,
                                     width : 150,
                                     format : 'd-m-Y',
-                                    value : new Date(),
-                                    maxValue: new Date()
+                                    value : new Date()
                                 }]
                         },'-',{
                             xtype : 'fieldcontainer',
@@ -288,8 +287,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     labelWidth : 35,
                                     width : 150,
                                     format : 'd-m-Y',
-                                    value : new Date(),
-                                    maxValue: new Date()
+                                    value : new Date()
                                 }]
                         },{
                             xtype : 'fieldcontainer',

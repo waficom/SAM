@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbon_Kurang',
-    pageTitle: 'Penyelesaian CashBon Kurang',
+    pageTitle: 'Penyelesaian CashBon',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -19,16 +19,22 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
+                {name: 'inv_cb',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'bank_code',type: 'string'},
-                {name: 'paid_to',type: 'string'},
-                {name: 'nominal_1',type: 'string'},
-                {name: 'nominal_2',type: 'string'},
+                {name: 'bank_nama',type: 'string'},
+                {name: 'tax_code',type: 'string'},
+                {name: 'tax_nama',type: 'string'},
+                {name: 'nominal_1',type: 'float'},
+                {name: 'nominal_2',type: 'float'},
                 {name: 'remaks',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
-                {name: 'status',type: 'string'}
+                {name: 'status',type: 'string'},
+                {name: 'account',type: 'string'},
+                {name: 'account_nama',type: 'string'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -55,13 +61,16 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
+                {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
             ]
 
         });
@@ -70,10 +79,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Jurnal.getJurnal,
-                    create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
-                    destroy : Jurnal.deleteJurnal
+                    read: Jurnal.getJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -101,13 +107,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 150,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 150,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 150,text: 'Doc CB',sortable: true,dataIndex: 'inv_cb'},
                 {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 100,text: 'DiBayar Ke',sortable: true,dataIndex: 'paid_to'},
+                {width: 100,text: 'Tax',sortable: true,dataIndex: 'tax_code'},
+                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
                 {width: 150,text: 'Nominal 1',sortable: true,dataIndex: 'nominal_1', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {width: 150,text: 'Nominal 2',sortable: true,dataIndex: 'nominal_2', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'remaks',sortable: true,dataIndex: 'remaks'},
+                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'remaks'},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -124,8 +132,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                 select: me.onPBGridClick,
                 itemdblclick: function(view, record){
                     if(record.get('status')!=1){
-                        me.onItemdblclick(me.Cashbon_KurangStore, record, 'Edit CashBon Kurang');
-                        Ext.getCmp('post_cb_k').enable();
+                        me.onItemdblclick(me.Cashbon_KurangStore, record, 'Edit Penyelesaian Cashbon');
+                        Ext.getCmp('post_cashbon').enable(); Ext.getCmp('posted_date_cashbon').disable();
                         Ext.getCmp('total_cb_krg').setValue(record.get('nominal_1')-record.get('nominal_2'));
                     }
 
@@ -144,13 +152,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'Cashbon_KurangModel', 'Tambah Data');
-                                Ext.getCmp('post_cb_k').disable();
+                                Ext.getCmp('post_cashbon').disable(); Ext.getCmp('posted_date_cashbon').disable();
+                                Ext.getCmp('inv_date_cashbon').setValue(new Date());
                             }
                         },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'delete_cashbon',
                             handler:function() {
                                 me.onPBDelete(me.Cashbon_KurangStore);
                             }
@@ -181,13 +191,18 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             region: 'center',
             enablePaging: true,
             columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 150, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
+                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
@@ -196,54 +211,9 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                     return me.currPosted == '1'? 'child-row' : '';
                 }
             },
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    if(me.currPosted !='1'){
-                        var form = this.winformCb_Kurang_Jurnal.down('form');
-                        me.onItemdblclick1(me.Cashbon_Kurang_JurnalStore, record, 'Edit CashBon Kurang Jurnal', me.winformCb_Kurang_Jurnal, form);
-
-                    }
-
-                }
-            },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winformCb_Kurang_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'Cb_Kurang_JurnalModel', 'Tambah Data', me.winformCb_Kurang_Jurnal);
-
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteProduksi1(me.Cashbon_Kurang_JurnalStore, me.Cb_Kurang_JurnalGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.Cb_Kurang_JurnalGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
+            features: [{
+                ftype: 'summary'
+            }, searching]
         });
 
         // *************************************************************************************
@@ -291,14 +261,16 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Entry Date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Entry Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
+                                    maxValue: new Date(),
+                                    id:'inv_date_cashbon',
                                     submitFormat : 'Y-m-d H:i:s',
                                     allowBlank: false
                                 }
@@ -315,13 +287,26 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bank Code : '
+                                    value: 'CB Doc : '
+                                },
+                                {
+                                    width: 180,
+                                    xtype: 'xtCashbonOutPopup',
+                                    name: 'inv_cb',
+                                    allowBlank: false
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtBankPopup',
+                                    xtype: 'textfield',
                                     name: 'bank_code',
-                                    allowBlank: false
+                                    id:'bank_code_cashbon',
+                                    hidden: true
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'bank_nama',
+                                    id:'bank_nama_cashbon'
                                 }
                             ]
                         },
@@ -336,13 +321,44 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'DiBayar ke : '
+                                    value: 'Tax Code : '
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
-                                    name: 'paid_to',
+                                    xtype: 'xtTaxKPopup',
+                                    name: 'tax_code',
                                     allowBlank: false
+                                },{
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'tax_nama',
+                                    id:'tax_nama_cashbon'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Account : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'account',
+                                    allowBlank: false
+                                },{
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'account_nama',
+                                    id:'account_cashbon'
                                 }
                             ]
                         },
@@ -360,7 +376,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'nominal_1',
                                     id:'nominal_1_cb_krg',
                                     listeners : {
@@ -376,7 +393,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'nominal_2',
                                     id:'nominal_2_cb_krg',
                                     listeners : {
@@ -390,7 +408,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     id:'total_cb_krg'
                                 }
                             ]
@@ -423,8 +442,28 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
-                                    id:'post_cb_k',
-                                    name: 'status'
+                                    id:'post_cashbon',
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_cashbon').enable();
+                                            Ext.getCmp('posted_date_cashbon').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_cashbon').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_cashbon'
                                 }
                             ]
                         }
@@ -458,143 +497,6 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                 }
             }
         });
-        me.winformCb_Kurang_Jurnal = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Coa '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'coa',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'vend_id'
-
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debit :'
-                                },
-                                {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Credit :'
-                                },
-                                {
-                                    fieldLabel : 'Credit',
-                                    labelAlign : 'right',
-                                    name: 'credit',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        }
-
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winformCb_Kurang_Jurnal.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi3Save(form, me.Cashbon_Kurang_JurnalStore, me.winformCb_Kurang_Jurnal);
-                        }
-                    }
-                },{
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winformCb_Kurang_Jurnal);
-                }
-            }
-        });
-
-
-
 
         me.pageBody = [me.Cashbon_KurangGrid, me.Cb_Kurang_JurnalGrid];
         me.callParent(arguments);
@@ -670,6 +572,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.Cashbon_Kurang_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        if(selected.data.status == 1 || selected.data.status == 2){
+            Ext.getCmp('delete_cashbon').disable();
+        }else{
+            Ext.getCmp('delete_cashbon').enable();
+        }
 
     },
 
@@ -705,35 +612,6 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
         });
     },
 
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-        f = me.winformCb_Kurang_Jurnal.down('form').getForm(), rec = f.getRecord();
-
-        form.findField('inv_code').setValue(me.currInv_Code);
-        form.findField('vend_id').setValue(me.currDebtor);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformCb_Kurang_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
-    },
 
     onPBDelete: function(store){
         var me = this, grid = me.Cashbon_KurangGrid;
@@ -759,27 +637,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
             }
         });
     },
-    deleteProduksi1: function(store, grid){
-        var me = this,
-            sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        })
-    },
+
     onEnter : function(field, e)
     {
        var nominal_1 = Ext.getCmp('nominal_1_cb_krg').getValue();

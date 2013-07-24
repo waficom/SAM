@@ -364,7 +364,8 @@ Ext.define('App.view.master.Vendor', {
                             items: [
                                 {
                                     boxLabel: "Suplier",
-                                    inputValue: "S"
+                                    inputValue: "S",
+                                    checked: true
                                 },
                                 {
                                     boxLabel: "Transporter",

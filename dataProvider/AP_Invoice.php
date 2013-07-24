@@ -102,7 +102,7 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT A.*, B.description as bank_nama, C.vend_nama, D.posted_date as ap_inv_date
+        $sql = "SELECT A.*, B.description as bank_nama, C.vend_nama, D.posted_date as ap_inv_date, D.hutangsuplier
         FROM ap_inv_pembayaran A
         left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
         left join vendor C on A.vend_id=C.vend_id and A.co_id=C.vend_id
@@ -236,7 +236,7 @@ class AP_Invoice
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['ap_inv_payment'],$data['hutangsuplier'],$data['hutangsuplier'],$data['bank_nama']
+        unset($data['id'],$data['ap_inv_payment'],$data['hutangsuplier'],$data['bank_nama']
         ,$data['vend_nama'],$data['inv_date_um'],$data['ap_inv_date']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'I');
         $this -> db -> setSQL($sql);

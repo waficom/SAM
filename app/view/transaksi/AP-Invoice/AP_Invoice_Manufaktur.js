@@ -95,8 +95,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -137,11 +137,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             region: 'north',
             columns: [
                 {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 200,text: 'No. PPD',sortable: true,dataIndex: 'no_ppd'},
                 {width: 200,text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
                 {width: 200,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
-                {width: 200,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
+                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'keterangan'},
                 {width: 200,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden:true},
                 {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
@@ -237,7 +237,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 200,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 200,text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
                 {width: 200,text: 'qty',sortable: true,dataIndex: 'qty'},
@@ -272,13 +272,15 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
+                {header : 'Creditor ', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -299,7 +301,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
                     }
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
         });
 
         // *************************************************************************************

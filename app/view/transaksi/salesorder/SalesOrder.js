@@ -931,13 +931,13 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                             items: [
                                 {
                                     width: 300,
-                                    xtype: 'mitos.currency',
+                                    xtype: 'displayfield',
                                     name: 'n_netto',
                                     id : 'n_netto_input',
                                     fieldLabel : 'Jumlah ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
-                                    disabled: true
+                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
                                 }
                             ]
                         },
@@ -953,7 +953,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     xtype: 'mitos.currency',
                                     name: 'hrg_loco',
                                     id : 'hrg_loco_input',
-                                    fieldLabel : 'Harga Loco ',
+                                    fieldLabel : 'Loco ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
                                     listeners : {
@@ -975,7 +975,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     xtype: 'mitos.currency',
                                     name: 'hrg_transport',
                                     id : 'hrg_transport_input',
-                                    fieldLabel : 'Harga Transport ',
+                                    fieldLabel : 'Transport ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
                                     listeners : {
@@ -997,7 +997,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     xtype: 'mitos.currency',
                                     name: 'hrg_promosi',
                                     id : 'hrg_promosi_input',
-                                    fieldLabel : 'Harga Promosi ',
+                                    fieldLabel : 'Promosi ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
                                     listeners : {
@@ -1019,7 +1019,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     xtype: 'mitos.currency',
                                     name: 'hrg_sosialisasi',
                                     id : 'hrg_sosialisasi_input',
-                                    fieldLabel : 'Hrg Sosialisasi ',
+                                    fieldLabel : 'Sosialisasi ',
                                     labelAlign : 'right',
                                     hideTrigger: true,
                                     listeners : {
@@ -1639,7 +1639,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
         }
         //Ext.getCmp('n_disc_input').setValue(n_disc);
         //Ext.getCmp('n_brutto_input').setValue(n_brutto);
-
+        //
         //Ext.getCmp('hrg_loco_input').setValue(n_loco);
         //Ext.getCmp('hrg_transport_input').setValue(n_transport);
         //Ext.getCmp('hrg_promosi_input').setValue(n_promosi);

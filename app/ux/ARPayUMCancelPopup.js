@@ -1,7 +1,7 @@
-Ext.define('App.ux.ARPayUMPopup',
+Ext.define('App.ux.ARPayUMCancelPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtARPayUMPopup',
+        alias : 'widget.xtARPayUMCancelPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -31,7 +31,7 @@ Ext.define('App.ux.ARPayUMPopup',
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getARPayUMpopup},
+                        api : {read : Popup.getARPayUMCancelpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -121,6 +121,7 @@ Ext.define('App.ux.ARPayUMPopup',
             var me = this;
             me.onGridClick(grid, selected);
             Ext.getCmp('uangmuka_ar').setValue(selected.data.saldo_akhir);
+            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

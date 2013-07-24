@@ -44,7 +44,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'inv_type',type: 'string'},
                 {name: 'choose',type: 'string'},
                 {name: 'account_type',type: 'string'},
-                {name: 'for_inv_code',type: 'string'}
+                {name: 'for_inv_code',type: 'string'},
+                {name: 'cust_nama',type: 'string'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -75,7 +77,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'description',type: 'string'},
                 {name: 'qty',type: 'string'},
                 {name: 'qty_susut',type: 'string'},
-                {name: 'harga',type: 'string'},
+                {name: 'harga',type: 'float'},
                 {name: 'sat_id',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'}
@@ -110,8 +112,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -153,7 +155,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             readOnly: true,
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 150,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
                 {width: 150,text: 'Doc. AR',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 150,text: 'Acc. Number',sortable: true,dataIndex: 'account'},
@@ -208,8 +210,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
-                                Ext.getCmp('for_inv_ar').disable();
-                                Ext.getCmp('post_ar').disable();
+                                Ext.getCmp('for_inv_ar').disable();Ext.getCmp('inv_date_ar').setValue(new Date());
+                                Ext.getCmp('post_ar').disable();Ext.getCmp('posted_date_ar').disable();
                                 Ext.getCmp('account_ar').enable();
 
                             }
@@ -333,13 +335,15 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -350,7 +354,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
         });
 
         // *************************************************************************************
@@ -436,17 +442,17 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Doc. Date'
+                                    value: 'Entry Date'
                                 },
                                 {
-                                    fieldLabel : 'Doc. Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     allowBlank: false,
-                                    value: new Date()
+                                    maxValue: new Date(),
+                                    id:'inv_date_ar'
                                 }
                             ]
                         },
@@ -541,7 +547,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxPopup',
+                                    xtype: 'xtTaxKPopup',
                                     name: 'tax_code',
                                     allowBlank: false,
                                     id:'tax_ar'
@@ -660,7 +666,27 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'checkboxfield',
                                     fieldLabel: 'Posting',
                                     id:'post_ar',
-                                    name: 'status'
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_ar').enable();
+                                            Ext.getCmp('posted_date_ar').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_ar').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_ar'
                                 }
                             ]
                         }

@@ -74,7 +74,7 @@ class DeliveryOrder
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['do_num'],$data['prod_nama']);
+        unset($data['id'],$data['do_num'],$data['prod_nama'],$data['sat_id']);
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -101,7 +101,7 @@ class DeliveryOrder
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
-        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery'],$data['prod_nama']);
+        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery'],$data['prod_nama'],$data['sat_id']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> old_do_num));
         $this -> db -> setSQL($sql);
         //print_r($sql);

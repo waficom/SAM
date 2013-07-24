@@ -34,7 +34,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'status',type: 'string'},
                 {name: 'inv_type',type: 'string'},
                 {name: 'ap_inv_date',type: 'date'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'hutangsuplier',type: 'float'}
             ]
 
         });
@@ -67,8 +68,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
                 {name: 'harga',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -193,12 +194,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150, renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -209,7 +212,10 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
+           // features:[searching]
 
         });
 
@@ -294,6 +300,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     submitFormat : 'Y-m-d H:i:s',
                                     allowBlank: false,
                                     id:'inv_date_pay',
+                                    maxValue: new Date(),
                                     value: new Date()
                                 }
                             ]
@@ -337,6 +344,13 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     name: 'inv_code',
                                     id:'inv_code_pay',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'hutangsuplier',
+                                    id:'hutangsuplier_pay',
+                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
                                 },
                                 {
                                     width: 100,
@@ -421,7 +435,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     width: 200,
                                     xtype: 'mitos.currency',
                                     name: 'nilaidasar',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    id:'nominal_ap'
                                 }
                             ]
                         },
@@ -472,6 +487,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     value : new Date(),
+                                    maxValue: new Date(),
                                     allowBlank:false,
                                     id:'posted_date_pay'
                                 }
@@ -593,13 +609,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var jenis = Ext.getCmp('inv_code_pay').getValue();
         var posted_date_pay = Ext.getCmp('posted_date_pay').getValue();
         var ap_inv_date = Ext.getCmp('ap_inv_date').getValue();
+        var hutangsuplier = Ext.getCmp('hutangsuplier_pay').getValue();
+        var nominal = Ext.getCmp('nominal_ap').getValue();
+
         if(posted_date_pay == null){
             posted_date_pay = new Date();
         }
-        if(posted_date_pay < ap_inv_date){
+        if(posted_date_pay < ap_inv_date && jenis != null ){
             Ext.MessageBox.alert('Warning', 'Tanggal Posting AP lebih kecil dari Tanggal Posting Invoice');
+        }else if(nominal > hutangsuplier && hutangsuplier!=0){
+            Ext.MessageBox.alert('Warning', 'Nominal Pembayaran Melebihi Hutang');
         }else{
             if(storeIndex == -1){
                 store.add(values);

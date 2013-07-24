@@ -1034,7 +1034,20 @@ $API = array(
             ),
             'getPB0' => array(
                 'len' => 1
+            ),
+            'getTaxKPopup' => array(
+                'len' => 1
+            ),
+            'getTaxMPopup' => array(
+                'len' => 1
+            ),
+            'getARPayUMCancelpopup' => array(
+                'len' => 1
+            ),
+            'getCashbonOutPopup' => array(
+                'len' => 1
             )
+
 
 
         )
@@ -1244,6 +1257,17 @@ $API = array(
         ),
         'deleteCashbook_In' => array(
             'len' => 1
+        ),'getCashbook_In_Detail' => array(
+            'len' => 1
+        ),
+        'addCashbook_In_Detail' => array(
+            'len' => 1
+        ),
+        'updateCashbook_In_Detail' => array(
+            'len' => 1
+        ),
+        'deleteCashbook_In_Detail' => array(
+            'len' => 1
         )
     )
 ),
@@ -1323,6 +1347,17 @@ $API = array(
                 'len' => 1
             ),
             'deleteCashbook_Bank_In' => array(
+                'len' => 1
+            ),'getCashbook_Bank_In_Detail' => array(
+                'len' => 1
+            ),
+            'addCashbook_Bank_In_Detail' => array(
+                'len' => 1
+            ),
+            'updateCashbook_Bank_In_Detail' => array(
+                'len' => 1
+            ),
+            'deleteCashbook_Bank_In_Detail' => array(
                 'len' => 1
             )
         )

@@ -77,6 +77,7 @@ class Cashbook_Bank_Out
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['cb_type'] ='O';
@@ -101,6 +102,7 @@ class Cashbook_Bank_Out
     {
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
@@ -115,7 +117,9 @@ class Cashbook_Bank_Out
         $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-
+        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         $sql = "DELETE FROM cashbook_bank WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

@@ -31,7 +31,12 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'posted_date',type: 'date'},
+                {name: 'piutangdebtor',type: 'string'},
+                {name: 'uangmuka',type: 'string'},
+                {name: 'ar_date_um',type: 'date'},
+                {name: 'ar_inv_date',type: 'date'}
             ]
 
         });
@@ -63,8 +68,8 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -105,7 +110,7 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
             region: 'north',
             columns: [
                 {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
                 {width: 200,text: 'Doc. Inv.',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 200,text: 'Doc. Advance.',sortable: true,dataIndex: 'inv_um'},
@@ -150,6 +155,8 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_Payment_AlocationModel', 'Tambah Data');
                                 Ext.getCmp('post_ar_al').disable();
+                                Ext.getCmp('posted_date_ar_al').disable();
+                                Ext.getCmp('inv_date_ar_al').setValue(new Date());
                             }
                         },
                         {
@@ -188,13 +195,15 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Debtor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -205,7 +214,9 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
         });
 
         // *************************************************************************************
@@ -268,15 +279,17 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Entry Date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Entry Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
+                                    id:'inv_date_ar_al',
+                                    maxValue: new Date(),
                                     allowBlank: false
                                 }
                             ]
@@ -321,6 +334,15 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                 },
                                 {
                                     width: 100,
+                                    xtype: 'datefield',
+                                    id:'ar_inv_date_al',
+                                    name: 'ar_inv_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
+                                },
+                                {
+                                    width: 100,
                                     xtype: 'displayfield',
                                     value: ' Doc. AR UM: '
                                 },
@@ -329,6 +351,15 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                     xtype: 'xtARPayUMPopup',
                                     name: 'inv_um',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'datefield',
+                                    id:'ar_um_date',
+                                    name: 'ar_date_um',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
                                 }
                             ]
                         },
@@ -350,12 +381,14 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                     width: 100,
                                     xtype: 'mitos.currency',
                                     disabled:true,
+                                    name:'piutangdebtor',
                                     hideTrigger: true,
                                     id:'piutang'
                                 },
                                 {
                                     width: 100,
                                     xtype: 'mitos.currency',
+                                    name:'uangmuka',
                                     disabled:true,
                                     hideTrigger: true,
                                     id:'uangmuka_ar'
@@ -435,9 +468,28 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posted',
+                                    fieldLabel: 'Posting',
                                     id:'post_ar_al',
-                                    name: 'status'
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_ar_al').enable();
+                                            Ext.getCmp('posted_date_ar_al').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_ar_al').disable();
+                                        }
+
+                                    }
+                                },{
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_ar_al'
                                 }
                             ]
                         }
@@ -559,22 +611,39 @@ Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
+        var piutang = Ext.getCmp('piutang').getValue();
+        var uangmuka = Ext.getCmp('uangmuka_ar').getValue();
+        var nilaidasar = Ext.getCmp('nilaidasar_ar').getValue();
+        var posted_date_al = Ext.getCmp('posted_date_ar_al').getValue();
+        var inv_um_date = Ext.getCmp('ar_um_date').getValue();
+        var ap_inv_date_al = Ext.getCmp('ar_inv_date_al').getValue();
+        if(posted_date_al == null){
+            posted_date_al = new Date();
         }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+        if(posted_date_al < inv_um_date || posted_date_al <  ap_inv_date_al){
+            Ext.MessageBox.alert('Warning', 'Tgl Posting Alokasi lebih kecil dari tgl posting UM dan AR');
+        }else{
+            if(nilaidasar <= piutang || nilaidasar <= uangmuka){
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                        store.load();
+                        me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    },
+                    failure:function(){
+                        store.load();
+                        me.msg('Opps!', 'Error!!', true);
+                    }
+                });
             }
-        });
+
+        }
+
     },
 
     onProduksi3Save: function(form, store, window){

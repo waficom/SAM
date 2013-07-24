@@ -276,7 +276,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayUMPopup',name:'inv_code', value: this.getValue()});
+                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayUMCancelPopup',name:'inv_code', value: this.getValue()});
                                             //Ext.doLayout();
                                         }
                                     }

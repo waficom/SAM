@@ -77,6 +77,7 @@ class Cashbook_Out
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['cb_type'] ='O';
@@ -100,13 +101,15 @@ class Cashbook_Out
     public function updateCashbook_Out(stdClass $params)
     {
         $data = get_object_vars($params);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'cashbook_in', 'U', array('inv_code' => $params -> inv_code));
+        $sql = $this -> db -> sqlBind($data, 'cashbook_in', 'U', array('inv_code' => $params->inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
+
         return $params;
     }
 
@@ -115,7 +118,9 @@ class Cashbook_Out
         $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-
+        $sql = "DELETE FROM cb_in_detail WHERE inv_code = '$params->inv_code'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         $sql = "DELETE FROM cashbook_in WHERE inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

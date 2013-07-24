@@ -32,7 +32,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'inv_type',type: 'string'},
+                {name: 'posted_date_ar',type: 'date'},
+                {name: 'piutangdebtor',type: 'float'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -64,8 +67,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
@@ -106,7 +109,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             region: 'north',
             columns: [
                 {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
                 {width: 200,text: 'Doc. Inv.',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
@@ -150,7 +153,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_Sale_PaymentModel', 'Tambah Data');
-                                Ext.getCmp('post_arsp').disable();
+                                Ext.getCmp('post_arsp').disable(); Ext.getCmp('posted_date_ar_pay').disable();
+                                Ext.getCmp('inv_date_ar_pay').setValue(new Date());
                             }
                         },
                         {
@@ -189,13 +193,15 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Debtor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 100,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
@@ -206,7 +212,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            features:[searching]
+            features: [{
+                ftype: 'summary'
+            }, searching]
         });
 
         // *************************************************************************************
@@ -285,13 +293,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     value: 'inv_date'
                                 },
                                 {
-                                    fieldLabel : 'Inv. Date',
+                                    fieldLabel : 'Entry Date',
                                     xtype : 'datefield',
                                     width : 100,
                                     name : 'inv_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
+                                    maxValue: new Date(),
+                                    id:'inv_date_ar_pay',
                                     allowBlank: false
                                 }
                             ]
@@ -326,7 +335,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: ' For Doc. AR : '
+                                    value: ' Doc. AR :'
                                 },
                                 {
                                     width: 200,
@@ -334,6 +343,22 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     name: 'for_inv_code',
                                     id:'for_inv_pay',
                                     allowBlank: false
+                                },
+                                {
+                                    width: 200,
+                                    xtype: 'displayfield',
+                                    name:'piutangdebtor',
+                                    id:'piutangdebtor_pay',
+                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'datefield',
+                                    id:'posted_date_ar2',
+                                    name: 'posted_date_ar',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    hidden: true
                                 }
                             ]
                         },
@@ -408,6 +433,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     width: 200,
                                     xtype: 'mitos.currency',
                                     name: 'nilaidasar',
+                                    id:'nilaidasar_ar_pay',
                                     hideTrigger: true,
                                     allowBlank: false
                                 }
@@ -440,9 +466,28 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posted',
+                                    fieldLabel: 'Posting',
                                     id:'post_arsp',
-                                    name: 'status'
+                                    name: 'status',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_ar_pay').enable();
+                                            Ext.getCmp('posted_date_ar_pay').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_ar_pay').disable();
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    maxValue: new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_ar_pay'
                                 }
                             ]
                         }
@@ -564,22 +609,37 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
+        var jenis = Ext.getCmp('for_inv_pay').getValue();
+        var posted_date_pay = Ext.getCmp('posted_date_ar_pay').getValue();
+        var posted_date_ar = Ext.getCmp('posted_date_ar2').getValue();
+        var piutang = Ext.getCmp('piutangdebtor_pay').getValue();
+        var nominal = Ext.getCmp('nilaidasar_ar_pay').getValue();
+        if(posted_date_pay == null){
+            posted_date_pay = new Date();
         }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+        if(posted_date_pay < posted_date_ar && jenis != null){
+            Ext.MessageBox.alert('Warning', 'Tanggal Posting AP lebih kecil dari Tanggal Posting Invoice');
+        }else if(nominal > piutang && piutang != 0 ){
+            Ext.MessageBox.alert('Warning', 'Nominal Pembayaran Melebihi Hutang');
+        }else{
+            if(storeIndex == -1){
+                store.add(values);
+            }else{
+                record.set(values);
             }
-        });
+            store.sync({
+                success:function(){
+                    me.win.close();
+                    store.load();
+                    me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                },
+                failure:function(){
+                    store.load();
+                    me.msg('Opps!', 'Error!!', true);
+                }
+            });
+        }
+
     },
 
     onProduksi3Save: function(form, store, window){

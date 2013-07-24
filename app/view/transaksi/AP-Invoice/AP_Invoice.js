@@ -14,6 +14,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
         me.userinput =null;
         me.useredit=null;
         me.currChoose=null;
+        var total=0;
         //me.myWinChooseItem=null;
 
 
@@ -112,11 +113,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
-                {name: 'remaks',type: 'string'}
+                {name: 'remaks',type: 'string'},
+                {name: 'total',type: 'float'}
             ]
 
         });
@@ -330,28 +332,34 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
             store: me.AP_Inv_JurnalStore,
             region: 'center',
             enablePaging: true,
+            features: [{
+                ftype: 'summary'
+            }],
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Posting. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 200},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
                 {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
-            ],
+               ],
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
-            },
-            features:[searching]
+            }//,
+           // features:[searching]
         });
-
+        function Cal(value, metaData, record, rowIndex, colIndex, store,total) {
+            return total = total + record.data.debit;}
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -394,7 +402,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Entry. Date'
+                                    value: 'Entry Date'
                                 },
                                 {
                                     xtype : 'datefield',
@@ -403,6 +411,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     id:'inv_date_ap',
+                                    maxValue: new Date(),
                                     allowBlank:false
                                 }
                             ]
@@ -512,7 +521,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxPopup',
+                                    xtype: 'xtTaxMPopup',
                                     name: 'tax_code',
                                     allowBlank: false
                                 },
@@ -659,6 +668,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
                                     value : new Date(),
+                                    maxValue: new Date(),
                                     allowBlank:false,
                                     id:'posted_date_ap'
                                 }

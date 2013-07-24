@@ -1,7 +1,7 @@
-Ext.define('App.ux.ARPayUMPopup',
+Ext.define('App.ux.TaxKPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtARPayUMPopup',
+        alias : 'widget.xtTaxKPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,21 +17,39 @@ Ext.define('App.ux.ARPayUMPopup',
                 },
                 prod_id = null;
 
-            Ext.define('JenisSearchModel',
+            Ext.define('TaxSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {name: 'inv_code',type: 'string'},
-                        {name: 'inv_date',type: 'date'},
-                        {name: 'saldo_akhir',type: 'string'},
-                        {name: 'posted_date',type: 'date'},
-                        {name: 'timeedit',type: 'date'}
-
+                        {
+                            name: 'tax_code',
+                            type: 'string'
+                        },
+                        {
+                            name: 'description',
+                            type: 'string'
+                        },
+                        {
+                            name: 'rate_ppn',
+                            type: 'string'
+                        },
+                        {
+                            name: 'coa_ppn',
+                            type: 'string'
+                        },
+                        {
+                            name: 'rate_pph',
+                            type: 'string'
+                        },
+                        {
+                            name: 'coa_pph',
+                            type: 'string'
+                        }
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getARPayUMpopup},
+                        api : {read :Popup.getTaxKPopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -41,7 +59,7 @@ Ext.define('App.ux.ARPayUMPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'JenisSearchModel',
+                    model : 'TaxSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -52,16 +70,47 @@ Ext.define('App.ux.ARPayUMPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Saldo akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {text: 'Posting Date', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                    {
+                        width: 200,
+                        text: 'Tax Code',
+                        sortable: true,
+                        dataIndex: 'tax_code'
+                    },
+                    {
+                        width: 300,
+                        text: 'Description',
+                        sortable: true,
+                        dataIndex: 'description'
+                    },
+                    {
+                        width: 100,
+                        text: 'Rate Ppn',
+                        sortable: true,
+                        dataIndex: 'rate_ppn'
+                    },
+                    {
+                        width: 200,
+                        text: 'Coa Ppn',
+                        sortable: true,
+                        dataIndex: 'coa_ppn'
+                    },
+                    {
+                        width: 100,
+                        text: 'Rate Pph',
+                        sortable: true,
+                        dataIndex: 'rate_pph'
+                    },
+                    {
+                        width: 200,
+                        text: 'Coa Pph',
+                        sortable: true,
+                        dataIndex: 'coa_pph'
+                    }
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AR Payment UM',
+                title: 'Tax',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -114,13 +163,16 @@ Ext.define('App.ux.ARPayUMPopup',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            inv_code = selected.data.inv_code;
-            this.setValue(inv_code);
+            tax_code = selected.data.tax_code;
+            this.setValue(tax_code);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('uangmuka_ar').setValue(selected.data.saldo_akhir);
+            Ext.getCmp('tax_code').setValue(selected.data.description);
+            Ext.getCmp('tax_code_po').setValue(selected.data.description);
+            Ext.getCmp('tax_code_ap').setValue(selected.data.description);
+            Ext.getCmp('tax_nama_cashbon').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

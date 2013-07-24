@@ -1,7 +1,7 @@
-Ext.define('App.ux.ARPayUMPopup',
+Ext.define('App.ux.CashbonOutPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtARPayUMPopup',
+        alias : 'widget.xtCashbonOutPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,21 +17,24 @@ Ext.define('App.ux.ARPayUMPopup',
                 },
                 prod_id = null;
 
-            Ext.define('JenisSearchModel',
+            Ext.define('TaxSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
+                        {name: 'co_id',type: 'string'},
                         {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
-                        {name: 'saldo_akhir',type: 'string'},
-                        {name: 'posted_date',type: 'date'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'bank_code',type: 'string'},
+                        {name: 'bank_nama',type: 'string'},
+                        {name: 'received_from',type: 'string'},
+                        {name: 'nominal',type: 'float'},
+                        {name: 'posted_date',type: 'date'}
 
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getARPayUMpopup},
+                        api : {read :Popup.getCashbonOutPopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -41,7 +44,7 @@ Ext.define('App.ux.ARPayUMPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'JenisSearchModel',
+                    model : 'TaxSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -52,16 +55,20 @@ Ext.define('App.ux.ARPayUMPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                    {width: 150,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Saldo akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
+                    {width: 200,text: 'Bank',sortable: true,dataIndex: 'bank_nama'},
+                    {width: 100,text: 'From Bank',sortable: true,dataIndex: 'received_from'},
+                    {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'Posting Date', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AR Payment UM',
+                title: 'Cashbon Out',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -120,7 +127,10 @@ Ext.define('App.ux.ARPayUMPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('uangmuka_ar').setValue(selected.data.saldo_akhir);
+            Ext.getCmp('bank_code_cashbon').setValue(selected.data.bank_code);
+            Ext.getCmp('bank_nama_cashbon').setValue(selected.data.bank_nama);
+            Ext.getCmp('nominal_1_cb_krg').setValue(selected.data.nominal);
+
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {
