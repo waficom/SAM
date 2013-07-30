@@ -28,7 +28,8 @@ Ext.define('App.ux.ARCancelPopup',
                         {name: 'timeedit',type: 'date'},
                         {name: 'account_type',type: 'string'},
                         {name: 'account',type: 'string'},
-                        {name: 'cust_id',type: 'string'}
+                        {name: 'cust_id',type: 'string'},
+                        {name: 'posted_date',type: 'date'}
                     ],
                     proxy :
                     {
@@ -61,6 +62,7 @@ Ext.define('App.ux.ARCancelPopup',
                     {width: 100,text: 'Account',sortable: true,dataIndex: 'account', hidden:true},
                     {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id', hidden:true},
                     {width: 100,text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {text: 'Posting Date', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
                 ],
@@ -132,6 +134,7 @@ Ext.define('App.ux.ARCancelPopup',
             Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
             Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
             Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
+            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

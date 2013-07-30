@@ -907,20 +907,46 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+        var StatusPosting = form.findField('status').getValue();
+        var CountDetail = me.POItemsStore.getCount({params:{po_num:me.curr_po_num}});
+        if(StatusPosting){
+            if(CountDetail > 0){
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                    },
+                    failure:function(){
+                        me.msg('Opps!', 'Error!!', true);
+                        me.win.close();
+                    }
+                });
+                this.ReloadGrid();
+            }else{
+                Ext.MessageBox.alert('Warning', 'Detail PO Belum Terisi');
             }
-        });
-        this.ReloadGrid();
+        }else{
+            if(storeIndex == -1){
+                store.add(values);
+            }else{
+                record.set(values);
+            }
+            store.sync({
+                success:function(){
+                    me.win.close();
+                },
+                failure:function(){
+                    me.msg('Opps!', 'Error!!', true);
+                    me.win.close();
+                }
+            });
+            this.ReloadGrid();
+        }
+
     },
 
     onPB1Save: function(form, store){
@@ -930,7 +956,6 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
     savePB1: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
             f = me.winform1.down('form').getForm(), rec = f.getRecord();
-
         form.findField('po_num').setValue(me.curr_po_num);
         values = form.getValues();
         if(storeIndex == -1){

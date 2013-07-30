@@ -92,6 +92,7 @@ requires = [
     'Ext.ux.PreviewPlugin',
     'Ext.ux.grid.feature.Searching',
     'Ext.ux.form.SearchField',
+    'Ext.ux.CheckColumn',
     'App.ux.grid.GridToHtml',
     'App.ux.grid.Printer',
 /**
@@ -204,6 +205,8 @@ requires = [
     'App.ux.TaxMPopup',
     'App.ux.TaxKPopup',
     'App.ux.CashbonOutPopup',
+    'App.ux.SODeliveryPopup',
+    'App.ux.RoutePopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -310,6 +313,7 @@ requires = [
     'App.view.transaksi.CashBook.Cashbook_Bank_Out',
     'App.view.transaksi.GL.Voucher',
     'App.view.transaksi.cancel-return.CancelReturn',
+    'App.view.transaksi.AP-Invoice.Reclass',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

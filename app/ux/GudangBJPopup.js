@@ -119,7 +119,7 @@ Ext.define('App.ux.GudangBJPopup',
             var me = this;
             me.onGridClick(grid, selected);
             Ext.getCmp('gudang_nama_ar').setValue(selected.data.gudang_nama);
-            //Ext.getCmp('darigudang_jd_wo').setValue(selected.data.gudang_id);
+            Ext.getCmp('gudang_nama_do').setValue(selected.data.gudang_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

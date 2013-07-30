@@ -20,7 +20,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'inv_type',type: 'string'},
-                {name: 'so_num',type: 'string'},
+                {name: 'do_num',type: 'string'},
                 {name: 'account',type: 'string'},
                 {name: 'account_nama',type: 'string'},
                 {name: 'tax_code',type: 'string'},
@@ -32,11 +32,11 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'discon',type: 'float'},
                 {name: 'remaks',type: 'string'},
                 {name: 'cust_id',type: 'string'},
-                {name: 'ppn_prs',type: 'string'},
-                {name: 'ppn_nilaix',type: 'string'},
-                {name: 'pph_prs',type: 'string'},
-                {name: 'pph_nilaix',type: 'string'},
-                {name: 'totalx',type: 'string'},
+                {name: 'ppn_prs',type: 'float'},
+                {name: 'ppn_nilaix',type: 'float'},
+                {name: 'pph_prs',type: 'float'},
+                {name: 'pph_nilaix',type: 'float'},
+                {name: 'totalx',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
@@ -46,7 +46,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'account_type',type: 'string'},
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'cust_nama',type: 'string'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'piutangdebtor2',type: 'float'}
             ]
 
         });
@@ -156,7 +157,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 150,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
+                {width: 150,text: 'DO Num',sortable: true,dataIndex: 'do_num'},
                 {width: 150,text: 'Doc. AR',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 150,text: 'Acc. Number',sortable: true,dataIndex: 'account'},
                 {width: 100,text: 'Tax Code',sortable: true,dataIndex: 'tax_code'},
@@ -335,7 +336,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'Posting',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Creditor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
@@ -408,7 +409,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                         if (value) {
                                             Ext.getCmp('tax_ar').enable();
                                             Ext.getCmp('gudang_id_ar').enable();
-                                            Ext.getCmp('so_num_ar').enable();
+                                            Ext.getCmp('do_num_ar').enable();
                                             Ext.getCmp('for_inv_ar').disable();
                                             Ext.getCmp('discon_ar').enable();
                                         }
@@ -423,7 +424,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                             Ext.getCmp('tax_ar').disable();
                                             Ext.getCmp('gudang_id_ar').disable();
                                             Ext.getCmp('account_ar').enable();
-                                            Ext.getCmp('so_num_ar').disable();
+                                            Ext.getCmp('do_num_ar').disable();
                                             Ext.getCmp('for_inv_ar').enable();
                                             Ext.getCmp('discon_ar').disable();
                                         }
@@ -467,14 +468,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'SO Num : '
+                                    value: 'DO Num : '
                                 },
                                 {
                                     width: 180,
-                                    xtype: 'xtSalesOrderPopup',
-                                    name: 'so_num',
+                                    xtype: 'xtDOPopup',
+                                    name: 'do_num',
                                     allowBlank: false,
-                                    id:'so_num_ar'
+                                    id:'do_num_ar'
 
                                 },
                                 {
@@ -488,7 +489,12 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     name: 'for_inv_code',
                                     allowBlank: false,
                                     id:'for_inv_ar'
-
+                                },
+                                {
+                                    xtype: 'mitos.currency',
+                                    name:'piutangdebtor2',
+                                    hideTrigger: true,
+                                    hidden: true
                                 }
                             ]
                         },
@@ -1007,6 +1013,32 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         me.savePB(form, store);
     },
     savePB: function(form, store){
+        var me = this;
+        var StatusPosting = form.findField('status').getValue();
+        var type = form.findField('inv_type').getValue();
+        var piutangdebtor2 =  form.findField('piutangdebtor2').getValue();
+        var TotalDetail = me.AR_Sale_DetailStore.getCount({params:{inv_code: me.currInv_Code}});
+        if(StatusPosting){
+            if(type == 'N'){
+                me.CallFunctionSave(form, store);
+            }
+            else{
+                if(TotalDetail > piutangdebtor2){
+                    Ext.MessageBox.alert('Warning', 'Nominal Potongan Melebihi Nominal AR');
+                }
+                else{
+                    me.CallFunctionSave(form, store);
+                }
+            }
+
+        }else{
+            me.CallFunctionSave(form, store);
+        }
+
+
+
+    },
+    CallFunctionSave: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -1017,7 +1049,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             success:function(){
                 me.win.close();
                 store.load();
-               me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
             failure:function(){
                 store.load();

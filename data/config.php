@@ -1046,6 +1046,12 @@ $API = array(
             ),
             'getCashbonOutPopup' => array(
                 'len' => 1
+            ),
+            'getSODeliveryPopup' => array(
+                'len' => 1
+            ),
+            'getRoutePopup' => array(
+                'len' => 1
             )
 
 
@@ -1394,22 +1400,7 @@ $API = array(
             )
         )
     ),
-    'AP_Reclass' => array(
-        'methods' => array(
-            'getReclass' => array(
-                'len' => 1
-            ),
-            'addReclass' => array(
-                'len' => 1
-            ),
-            'updateReclass' => array(
-                'len' => 1
-            ),
-            'deleteReclass' => array(
-                'len' => 1
-            )
-        )
-    ),
+
     'CancelReturn' => array(
         'methods' => array(
             'getCancelReturn' => array(
@@ -1422,6 +1413,26 @@ $API = array(
                 'len' => 1
             ),
             'deleteCancelReturn' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Reclass' => array(
+        'methods' => array(
+            'getViewReclass' => array(
+                'len' => 1
+            ),
+            'addViewReclass' => array(
+                'len' => 1
+            ),
+            'updateCancelReturn' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'AP_Reclass' => array(
+        'methods' => array(
+            'getReclass' => array(
                 'len' => 1
             )
         )

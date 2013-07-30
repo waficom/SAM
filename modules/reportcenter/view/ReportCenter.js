@@ -704,6 +704,83 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Trial_Balance
                 });
             });
+
+            me.StockCategory = me.addCategory('Report Management Stock', 260);
+            me.StockBB = me.addReportByCategory(me.StockCategory, 'Stock Bahan Baku', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    //format : 'Ym',
+                                    //labelAlign : 'right',
+                                    //value : new Date(),
+                                    name : 'report_fromperiode'
+
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    //format : 'Ym',
+                                    //labelAlign : 'right',
+                                    //value : new Date(),
+                                    name : 'report_toperiode'
+                                }]
+                        }
+
+                    ],
+                    fn:Stock_Rpt.StockBB
+                });
+            });
+            me.StockDetailBB = me.addReportByCategory(me.StockCategory, 'Detail Bahan Baku', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'dari',
+                                    labelWidth : 35,
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'sampai',
+                                    labelWidth : 35,
+                                    padding : '0 10 0 0',
+                                    width : 150,
+                                    format : 'm/d/Y',
+                                    labelAlign : 'right',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                }]
+                        }
+
+                    ],
+                    fn:Stock_Rpt.StockDetailBB
+                });
+            });
+
             me.callParent(arguments);
 
         },

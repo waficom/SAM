@@ -46,14 +46,15 @@ Ext.define('App.view.master.Route', {
         Ext.define('RouteDModel', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'route_code',type: 'string',  hidden : true}
-                ,{name: 'sequence_no',type: 'string'}
+                {name: 'route_code',type: 'string'}
+                ,{name: 'sequence_no',type: 'integer'}
                 ,{name: 'route',type: 'string'}
                 ,{name: 'fromcity',type: 'string'}
                 ,{name: 'tocity',type: 'string'}
                 ,{name: 'timeedit',type: 'date'}
                 ,{name: 'useredit',type: 'string'}
                 ,{name: 'userinput',type: 'string'}
+                ,{name: 'ordersource',type: 'string'}
                 ,{name: 'old_sequence_no',type: 'string'}
             ],
             proxy: {
@@ -90,7 +91,7 @@ Ext.define('App.view.master.Route', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'No. Route', sortable: false, dataIndex: 'route_code'},
+                {text: 'Route Cd', sortable: false, dataIndex: 'route_code'},
                 {text: 'Description', width:200, sortable: false,dataIndex: 'description'},
                 {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -161,8 +162,8 @@ Ext.define('App.view.master.Route', {
                 'Ext.toolbar.Paging'
             ],
             columns: [
-                {text: 'sequence_no', sortable: false, dataIndex: 'sequence_no'},
-                {text: 'Route', sortable: false, dataIndex: 'route'},
+                {text: 'Sequence No.', sortable: false, dataIndex: 'sequence_no'},
+                {text: 'Route Cd', sortable: false, dataIndex: 'route_code'},
                 {text: 'From', width:100, sortable: false,dataIndex: 'fromcity'},
                 {text: 'To', width:150, sortable: false,dataIndex: 'tocity'},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
@@ -170,7 +171,6 @@ Ext.define('App.view.master.Route', {
             ],
             listeners: {
                 scope: me,
-                //select: me.onGridClick,
                 itemdblclick: function(view, record){
                     oldName = record.get('sequence_no');
                     record.set("old_sequence_no",oldName);
@@ -214,28 +214,6 @@ Ext.define('App.view.master.Route', {
                 }
             ]
         });
-        /* me.Popup = Ext.create('App.ux.GridPanel', {
-         store: me.RouteStore,
-         itemId: 'GridPopup',
-         height: 300,
-         margin: '0 0 3 0',
-         region: 'center',
-         enablePaging: true,
-         loadMask: true,
-         columns: [
-         {text: 'No. Route', sortable: false, dataIndex: 'no_pp'},
-         {text: 'Deskripsi', width:70, sortable: false,dataIndex: 'description'},
-         {text: 'status',width:70, sortable: true, dataIndex: 'status'},
-         {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'pp_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-         {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-         ],
-         viewConfig: {
-         forceFit: true
-         },
-         features:[searching]
-
-
-         });*/
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -274,7 +252,7 @@ Ext.define('App.view.master.Route', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Route code ' + ': '
+                                    value: 'Route Cd'
                                 },
                                 {
                                     width: 100,
@@ -385,21 +363,18 @@ Ext.define('App.view.master.Route', {
                             ]
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
+                            xtype: "radiogroup",
+                            fieldLabel: "OrderSource",
+                            defaults: {xtype: "radio",name: "ordersource"},
                             items: [
                                 {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Route:'
+                                    boxLabel: "Land",
+                                    inputValue: "Land",
+                                    checked: true
                                 },
                                 {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'route'
+                                    boxLabel: "Sea",
+                                    inputValue: "Sea"
                                 }
                             ]
                         },
@@ -413,7 +388,7 @@ Ext.define('App.view.master.Route', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'From City::'
+                                    value: 'From City :'
                                 },
                                 {
                                     width: 300,
@@ -432,7 +407,7 @@ Ext.define('App.view.master.Route', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'To City::'
+                                    value: 'To City :'
                                 },
                                 {
                                     width: 300,
@@ -472,17 +447,6 @@ Ext.define('App.view.master.Route', {
                 }
             }
         });
-        /*  me.mywin = Ext.create('App.ux.window.Window', {
-         layout: 'fit',
-         title: 'Exception Detail',
-         width: 400,
-         height: 300,
-         closable: false,
-         buttonAlign: 'center',
-         items: [GridPopup],
-         modal: true
-
-         });*/
 
         me.pageBody = [me.RouteGrid, me.RouteDGrid];
         me.callParent(arguments);
@@ -587,19 +551,7 @@ Ext.define('App.view.master.Route', {
 
     },
 
-    ReloadViewGridDetail : function(store, record, title){ //function(form, model, title){
-        /*var me=this;
-         record = me.RouteDGrid.getSelectionModel().getSelection();
-         nppd=record[0].get('no_ppd');
-         sonum=record[0].get('so_num');
-         me.ViewRouteStore.load({params:{no_pp: nppd}});
-         var newModel = Ext.ModelManager.create({
-         }, 'ViewRouteModel');
-
-         this.setForm(form, title);
-         form.getForm().loadRecord(newModel);
-         this.action('new');
-         this.winformdetail.show();*/
+    ReloadViewGridDetail : function(store, record, title){
 
         var form = this.winform1.down('form');
         this.setForm(form, title);

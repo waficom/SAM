@@ -130,6 +130,7 @@ Ext.define('App.ux.CashbonOutPopup',
             Ext.getCmp('bank_code_cashbon').setValue(selected.data.bank_code);
             Ext.getCmp('bank_nama_cashbon').setValue(selected.data.bank_nama);
             Ext.getCmp('nominal_1_cb_krg').setValue(selected.data.nominal);
+            Ext.getCmp('posted_date_cb_cashbon').setValue(selected.data.posted_date);
 
             me.searchwin.close();
         },

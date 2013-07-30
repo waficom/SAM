@@ -293,16 +293,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         }
                                     }
 
-                                }
-                            ]
-                        },
-                        ,
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Type",
-                            defaults: {xtype: "radio", name:'inv_type',hideLabel:true
-                            },
-                            items: [
+                                },
                                 {
                                     boxLabel: "Purchase Order",
                                     inputValue:'11',
@@ -314,7 +305,16 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                         }
                                     }
 
-                                },
+                                }
+                            ]
+                        },
+                        ,
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Type",
+                            defaults: {xtype: "radio", name:'inv_type',hideLabel:true
+                            },
+                            items: [
                                 {
                                     boxLabel: "Delivery Order",
                                     inputValue:'12',
@@ -344,7 +344,7 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                                 {
                                     id:'inv_code_cr'
 
-                                },,
+                                },
                                 {
                                     width: 100,
                                     xtype: 'datefield',

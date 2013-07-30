@@ -972,25 +972,40 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
         me.savePB(form, store);
     },
     savePB: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
-                me.win.close();
+        var me = this;
+        var StatusPosting = form.findField('status').getValue();
+        var CountDetail = me.AP_Inv_DetailStore.getCount({params:{inv_code: me.currInv_Code}});
+        if(StatusPosting){
+            if(CountDetail > 0){
+                me.CallFucntionSave(store, form);
+            }else{
+                Ext.MessageBox.alert('Warning', 'Detail AP Belum Terisi');
             }
-        });
+        }else{
+            me.CallFucntionSave(store, form);
+        }
     },
+
+    CallFucntionSave: function(store, form){
+    var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+    if(storeIndex == -1){
+        store.add(values);
+    }else{
+        record.set(values);
+    }
+    store.sync({
+        success:function(){
+            me.win.close();
+            store.load();
+            me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        },
+        failure:function(){
+            store.load();
+            me.msg('Opps!', 'Error!!', true);
+            me.win.close();
+        }
+    });
+},
     onProduksi2Save: function(form, store, window){
         var me = this;
         me.saveProduksi2(form, store, window);

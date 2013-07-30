@@ -1374,14 +1374,29 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         me.saveProduksi1(form, store, window);
     },
     saveProduksi1: function(form, store, window){
+        var me = this;
+        var StatusPosting = form.findField('status').getValue();
+        var CountBB = me.Wo1DBahanBakuStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+        var CountDP = me.Wo1DBBdalamprosesStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+        var CountBJ = me.Wo1DBahanJadiStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+        if(StatusPosting){
+           if(CountBB > 0 && CountBJ > 0 && globals['site']=='SAM'){
+                me.CallFunctionSave(form, store, window);
+           }else if(CountBB > 0 && CountBJ > 0 && CountDP > 0 && globals['site']!='SAM'){
+               me.CallFunctionSave(form, store, window);
+           }else{
+               Ext.MessageBox.alert('Warning', 'Detail Work Order Masih Belum Terisi');
+           }
+        }else{
+            me.CallFunctionSave(form, store, window);
+        }
+    },
+    CallFunctionSave: function(form, store, window){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-        f = me.winform1.down('form').getForm(), rec = f.getRecord();
-
+            f = me.winform1.down('form').getForm(), rec = f.getRecord();
         form.findField('no_ppd').setValue(me.currProduksi);
         form.findField('prod_id').setValue(me.currProd_id);
         form.findField('so_num').setValue(me.currSo_num);
-
         values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
@@ -1394,13 +1409,12 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 //store.load();
             },
             failure:function(){
-               // store.load();
+                // store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
         store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
     },
-
     onProduksi2Save: function(form, store){
         var me = this;
         me.saveProduksi2(form, store);

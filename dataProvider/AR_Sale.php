@@ -155,7 +155,7 @@ class AR_Sale
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code'],$data['nilaidasarx'],$data['ppn_%'],$data['ppn_nilaix'],$data['pph_%'],$data['pph_nilaix']
-        ,$data['totalx'],$data['nd_setelah_discx'],$data['account_nama'],$data['cust_nama'],$data['gudang_nama'],$data['tax_nama']);
+        ,$data['totalx'],$data['nd_setelah_discx'],$data['account_nama'],$data['cust_nama'],$data['gudang_nama'],$data['tax_nama'],$data['piutangdebtor2']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

@@ -1229,6 +1229,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             me.curr_sat_id = null;
             this.goToSODetail();
             Ext.getCmp('post_gr').enable();
+            Ext.getCmp('gr-move-next').enable();
 
         },
 
@@ -1288,28 +1289,38 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
          */
         onBtnSave : function(form, store)
         {
-            var me = this, form = me.GeneralForm.getForm( ), record = form.getRecord(), values = form.getValues(),
-                storeIndex = store.indexOf(record);
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            /*
-             console.log(values);
-             */
-            store.sync({
-                success:function(){
-                    Ext.getCmp('gr-move-next').enable();
-                    me.getPageBody().getLayout().setActiveItem( 0 );
-                },
-                failure:function(){
-                    me.msg('Opps!', 'Error!!', true);
+            var me = this;
+            var StatusPosting = form.findField('status').getValue();
+            var CountDetail = me.GRDetailStore.getCount({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+            if(StatusPosting){
+                if(CountDetail > 0){
+                    me.CallFunctionSave(form, store);
+                }else{
+                    Ext.MessageBox.alert('Warning', 'Detail GRN Belum Terisi');
                 }
-            });
-            store.load();
+            }else{
+                me.CallFunctionSave(form, store);
+            }
         },
 
+    CallFunctionSave: function(form, store){
+        var me = this, form = me.GeneralForm.getForm( ), record = form.getRecord(), values = form.getValues(),
+            storeIndex = store.indexOf(record);
+        if(storeIndex == -1){
+            store.add(values);
+        }else{
+            record.set(values);
+        }
+        store.sync({
+            success:function(){
+                me.getPageBody().getLayout().setActiveItem( 0 );
+            },
+            failure:function(){
+                me.msg('Opps!', 'Error!!', true);
+            }
+        });
+        store.load();
+    },
         /**
          * Function: Search for Sales Order based on the search fields
          * This function will pass all the fields to the server side

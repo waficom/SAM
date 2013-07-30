@@ -7,10 +7,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
     initComponent: function(){
         var me = this;
         me.currInv_Code = null;
-        me.currCoa = null;
-        me.currDebtor = null;
-        me.currPosted = null;
-        me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
         //me.myWinChooseItem=null;
@@ -19,29 +15,22 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
-                {name: 'inv_date',type: 'date'},
-                {name: 'gudang_id',type: 'string'},
-                {name: 'gudang_nama',type: 'string'},
+                {name: 'for_inv_code',type: 'string'},
                 {name: 'account',type: 'string'},
-                {name: 'account_nama',type: 'string'},
-                {name: 'nominal',type: 'float'},
-                {name: 'remaks',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'},
-                {name: 'status',type: 'string'}
+                {name: 'userinput',type: 'string'}
             ]
-
         });
         me.ReclassStore = Ext.create('Ext.data.Store', {
             model: 'ReclassModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: AP_Reclass.getReclass,
-                    create: AP_Reclass.addReclass,
-                    update: AP_Reclass.updateReclass,
-                    destroy : AP_Reclass.deleteReclass
+                    read: AP_Reclass.getReclass
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -104,33 +93,16 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             region: 'north',
             columns: [
                 {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Doc. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 100,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
                 {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'remaks',sortable: true,dataIndex: 'remaks'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'Description',sortable: true,dataIndex: 'coa_nama'},
+                {width: 150,text: 'Doc Inv',sortable: true,dataIndex: 'for_inv_code'},
+                {width: 100,text: 'debit',sortable: true,dataIndex: 'debit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 100,text: 'credit',sortable: true,dataIndex: 'credit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
             ],
-            viewConfig :
-            {
-                stripeRows: false,
-                getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
-                }
-            },
             listeners: {
                 scope: me,
-                select: me.onPBGridClick,
-                itemdblclick: function(view, record){
-                    if(me.currPosted =='1' || me.currPosted =='2'){
-                    }else{
-                        me.onItemdblclick(me.ReclassStore, record, 'Edit CashBook IN');
-                        Ext.getCmp('post_rc').enable();
-                    }
-
-                }
+                select: me.ShowDataJurnal
             },
             features:[searching],
             dockedItems: [
@@ -138,25 +110,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [
-                        {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            scope: me,
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewPB(form, 'ReclassModel', 'Tambah Data');
-                                Ext.getCmp('post_rc').disable();
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Delete',
-                            iconCls: 'delete',
-                            id:'delete_rc',
-                            handler:function() {
-                                me.onPBDelete(me.ReclassStore);
-                            }
-                        },'->',
+                        '->',
                         {
                             xtype:'displayfield',
                             itemId:'itemuserinput',
@@ -211,329 +165,20 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'inv_code',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Doc. Date'
-                                },
-                                {
-                                    fieldLabel : 'Entry Date',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'inv_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false,
-                                    maxValue: new Date(),
-                                    value: new Date()
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Gudang : '
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtGudangPopup',
-                                    name: 'gudang_id',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'gudang_nama',
-                                    id:'gudang_nama'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Account : '
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'account',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'account_nama',
-                                    id:'account_nama'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'nominal',
-                                    allowBlank: false,
-                                    hideTrigger: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Remaks : '
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'remaks'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posted',
-                                    id:'post_rc',
-                                    name: 'status'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPBSave(form, me.ReclassStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
-        });
         me.pageBody = [me.ReclassGrid, me.Reclass_JurnalGrid];
         me.callParent(arguments);
     },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
-
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    action1: function(action, window){
-        var winf = window, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onItemdblclick1: function(store, record, title, window, form){
-
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old',window);
-        window.show();
-    },
-
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewPB: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-
-    },
-
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-    onPBGridClick: function(grid, selected){
+    ShowDataJurnal: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.inv_code;
-        me.currDebtor=selected.data.received_from;
-        me.currPosted = selected.data.status;
         var TopBarItems = this.ReclassGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_rc').disable();
-        }else{
-            Ext.getCmp('delete_rc').enable();
-        }
-    },
 
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
     },
-
-    onPBSave: function(form, store){
-        var me = this;
-        me.savePB(form, store);
-    },
-    savePB: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-    },
-    onPBDelete: function(store){
-        var me = this, grid = me.ReclassGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    PB.deletePB(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                    me.Reclass_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                }
-            }
-        });
-    },
-
-
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

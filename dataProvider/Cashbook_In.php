@@ -169,7 +169,7 @@ class Cashbook_In
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'cb_in_detail', 'U', array('inv_code' => $params->inv_code));
+        $sql = $this -> db -> sqlBind($data, 'cb_in_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->account));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

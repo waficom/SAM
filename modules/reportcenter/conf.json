@@ -103,6 +103,17 @@
                     "len":1
                 }
             }
+        },
+        "Stock_Rpt":{
+            "methods":{
+                "StockBB":
+                {
+                    "len":1
+                },"StockDetailBB":
+                {
+                    "len":1
+                }
+            }
         }
     },
     "extjs":[

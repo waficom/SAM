@@ -135,12 +135,13 @@ $LANG = array(
     'cbin'                                  => 'CashBook In',
     'cbout'                                  => 'CashBook Out',
     'cblebih'                                  => 'CashBon Plus',
-    'cbkurang'                                  => 'CashBon',
-    'bankin'                                  => 'CashBook Bank In',
-    'bankout'                                  => 'CashBook Bank Out',
+    'cbkurang'                                  => 'Penyelesaian Cashbon',
+    'bankin'                                  => 'Bank In',
+    'bankout'                                  => 'Bank Out',
     'gl'                                  => 'General Ledger',
     'rc'                                  => 'AP Reclass',
     'ar_pay_alocation'                                  => 'AR Payment Alocation',
     'cr'                                  => 'Cancel/Return Transaksi',
+    'ViewReclass'                                  => 'Reclass Biaya',
 
 );

@@ -136,6 +136,7 @@ Ext.define('App.ux.ARPopup',
             Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
             Ext.getCmp('piutangdebtor_pay').setValue(selected.data.piutangdebtor);
             Ext.getCmp('posted_date_ar').setValue(selected.data.posted_date);
+
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

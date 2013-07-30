@@ -117,6 +117,7 @@ Ext.define('App.ux.DOPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('do_num_ar').setValue(selected.data.do_num);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

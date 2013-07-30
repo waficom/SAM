@@ -24,7 +24,8 @@ Ext.define('App.ux.ARAlPopup',
                         {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
                         {name: 'nilaidasar',type: 'string'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'timeedit',type: 'date'},
+                        {name: 'posted_date',type: 'date'}
 
                     ],
                     proxy :
@@ -54,6 +55,7 @@ Ext.define('App.ux.ARAlPopup',
                     {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {text: 'Posting Date', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
                 height: 200,
@@ -118,6 +120,7 @@ Ext.define('App.ux.ARAlPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
+            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

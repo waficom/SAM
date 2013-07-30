@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbook_Bank_Out',
-    pageTitle: 'CashBook Bank Out',
+    pageTitle: 'Bank Out',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -753,6 +753,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var StatusPosting = form.findField('status').getValue();
         var totalDebit= 0, totalCredit= 0, count=0 ;
         me.Cashbook_Bank_Out_JurnalStore.each(function(record){
             if(record.get('inv_code') == me.currInv_Code ) {
@@ -761,16 +762,29 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
             }
 
         });
-        me.CB_Bank_Out_DetailStore.each(function(record){
-            if(record.get('inv_code') == me.currInv_Code ) {
-                count += record.get('nominal');
+        if(StatusPosting){
+            if( totalDebit != totalCredit){
+                Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
+            }else{
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                        store.load();
+                        me.Cashbook_Bank_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    },
+                    failure:function(){
+                        store.load();
+                        me.msg('Opps!', 'Error!!', true);
+                    }
+                });
             }
-
-        });
-        console.log(count);
-        if( totalDebit != totalCredit && count != 0 ){
-            Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
-        }else{
+        }
+        else{
             if(storeIndex == -1){
                 store.add(values);
             }else{

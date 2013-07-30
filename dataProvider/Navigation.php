@@ -211,6 +211,9 @@ class Navigation
                     'text' => $this->i18n['gl'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVoucher'
                 ),
                 array(
+                    'text' => $this->i18n['ViewReclass'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelViewReclass'
+                ),
+                array(
                     'text' => $this->i18n['cr'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCancelReturn'
                 ),
             )

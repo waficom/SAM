@@ -52,11 +52,12 @@ class Cashbon_Kurang
         {
             $orderx = 'timeedit';
         }
-        $sql = "select A.*, B.description as bank_nama, C.description as tax_nama, D.coa_nama as account_nama
+        $sql = "select A.*, B.description as bank_nama, C.description as tax_nama, D.coa_nama as account_nama, E.posted_date as posted_date_cb_cashbon
         from cashbon A
         left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
         left join tax_m C on A.tax_code=C.tax_code and A.co_id=C.co_id
         left join coa D on A.account=D.coa_id and A.co_id=D.co_id
+        left join cashbook_in E on A.inv_cb=E.inv_code and A.co_id=E.co_id
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -90,7 +91,7 @@ class Cashbon_Kurang
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama']);
+        unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama'],$data['posted_date_cb_cashbon']);
         $sql = $this -> db -> sqlBind($data, 'cashbon', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -109,7 +110,7 @@ class Cashbon_Kurang
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama']);
+        unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama'] ,$data['posted_date_cb_cashbon']);
         $sql = $this -> db -> sqlBind($data, 'cashbon', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

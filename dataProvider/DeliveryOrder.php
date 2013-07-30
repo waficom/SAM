@@ -74,7 +74,7 @@ class DeliveryOrder
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['do_num'],$data['prod_nama'],$data['sat_id']);
+        unset($data['id'],$data['do_num'],$data['prod_nama'],$data['sat_id'],$data['gudang_nama'],$data['route_nama']);
         foreach ($data AS $key => $val)
         {
             if ($val == '')
@@ -101,8 +101,9 @@ class DeliveryOrder
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
-        unset($data['id'], $data['do_num'], $data['old_do_num'],$data['cust_nama'],$data['qty'],$data['qty_delivery'],$data['prod_nama'],$data['sat_id']);
-        $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> old_do_num));
+        unset($data['id'], $data['do_num'],$data['cust_nama'],$data['qty']
+        ,$data['prod_nama'],$data['sat_id'],$data['gudang_nama'],$data['route_nama']);
+        $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> do_num));
         $this -> db -> setSQL($sql);
         //print_r($sql);
         $this -> db -> execLog();
@@ -123,7 +124,7 @@ class DeliveryOrder
     public function getDeliveryOrder1(stdClass $params)
     {
         //error_reporting(-1);
-        $this->db->setSQL("SELECT A.*, B.prod_nama, C.vend_nama as vend_tr_nama FROM deliveryorderdetai A
+        $this->db->setSQL("SELECT A.*, B.prod_nama, C.vend_nama FROM deliveryorderdetai A
         left join items B on A.co_id=B.co_id and A.prod_id=B.prod_id
         left join vendor C on A.vend_id=C.vend_id and A.co_id=C.co_id
          WHERE do_num = '" . $params->do_num ."'ORDER BY timeedit DESC");
@@ -144,7 +145,7 @@ class DeliveryOrder
         // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
+        //$data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
@@ -172,10 +173,9 @@ class DeliveryOrder
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
-        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
-        //$data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        //$data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['do_num'], $data['old_sequence_no'], $data['status'], $data['sequence_no'], $data['prod_nama']);
+        unset($data['id'],$data['do_num'], $data['old_sequence_no'], $data['sequence_no'], $data['prod_nama'], $data['vend_nama']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorderdetai', 'U', array('do_num' => $params-> do_num, 'sequence_no' => $params-> sequence_no));
         $this -> db -> setSQL($sql);
         //print_r($sql);
@@ -189,51 +189,6 @@ class DeliveryOrder
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
-    }
-    public function getSOpopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM so0 ORDER BY so_num ASC";
-        $this -> db -> setSQL($sql);
-        // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
-    public function getVEpopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM vendor where (vend_type = '$params->vend_type') ORDER BY vend_id ASC";
-        $this -> db -> setSQL($sql);
-        // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
-    }
-    public function getSatpopup(stdClass $params)
-    {
-        $sql = "SELECT * FROM satuan ORDER BY satuan_id ASC";
-        $this -> db -> setSQL($sql);
-        // print_r($sql);
-        $rows = array();
-        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-        {
-            $row = array_change_key_case($row);
-            array_push($rows, $row);
-        }
-
-        return $rows;
-
     }
 
 

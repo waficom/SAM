@@ -31,8 +31,9 @@ class Popup
     public function SalesOrderPopup(stdClass $params)
     {
 
-        $sql = "SELECT A.*, B.cust_nama, B.prod_id FROM so0 A
+        $sql = "SELECT A.*, B.cust_nama, C.prod_id FROM so0 A
          left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
+         left join so10 C on A.so_num=C.so_num and A.co_id=C.co_id
          where A.status<>'A' ORDER BY A.so_num DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -481,7 +482,8 @@ class Popup
     public function getDeliveryOrderpopup(stdClass $params)
     {
 
-        $sql = "SELECT * FROM deliveryorder where status='1' ORDER BY timeedit DESC";
+        $sql = "SELECT A.* FROM deliveryorder A where A.status=1 and not exists (select * from ar_sale where do_num=A.do_num)
+        ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -540,8 +542,42 @@ class Popup
     {
         $sql = "SELECT A.*, B.description as bank_nama FROM cashbook_in A
         left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
-        where A.cb_type='O' and A.status=1 and not exists(select inv_code from cashbon where inv_cb=A.inv_code)
+        inner join cb_in_detail D on A.inv_code=D.inv_code
+        where A.cb_type='O' and A.status=1 and not exists(select C.inv_code from cashbon C
+        where C.inv_cb=A.inv_code
+        )  and D.account=B.coa_cashbon
         ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getSODeliveryPopup(stdClass $params)
+    {
+
+        $sql = "select * from so10 A
+        where not exists (select * from delivery where so_num=A.so_num and prod_id=A.prod_id and qty_do < A.qty)
+        ORDER BY A.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function getRoutePopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM route ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

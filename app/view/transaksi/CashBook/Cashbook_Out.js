@@ -225,8 +225,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
             region: 'north',
             columns: [
                 {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Total', dataIndex : '',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00'), id:'SumNominal'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -274,7 +273,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                             handler:function() {
                                 me.onCb_In_DetailDelete(me.CB_Out_DetailStore);
                             }
-                        }
+                        },
+                        '<span style="color: #ff2110"> CATATAN: Jika Input Account Kasbon tidak bisa input account yg lain </span>'
                     ]
                 },{
                     xtype: 'pagingtoolbar',
@@ -391,7 +391,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bank Code : '
+                                    value: 'Kas Code : '
                                 },
                                 {
                                     width: 100,
@@ -614,7 +614,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                 },
                                 {
                                     width: 200,
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'nominal',
                                     allowBlank: false
                                 }
@@ -752,6 +753,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var StatusPosting = form.findField('status').getValue();
         var totalDebit= 0, totalCredit= 0, count=0 ;
         me.Cashbook_Out_JurnalStore.each(function(record){
             if(record.get('inv_code') == me.currInv_Code ) {
@@ -760,16 +762,29 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
             }
 
         });
-        me.CB_Out_DetailStore.each(function(record){
-            if(record.get('inv_code') == me.currInv_Code ) {
-                count += record.get('nominal');
+        if(StatusPosting){
+            if( totalDebit != totalCredit){
+                Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
+            }else{
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                        store.load();
+                        me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    },
+                    failure:function(){
+                        store.load();
+                        me.msg('Opps!', 'Error!!', true);
+                    }
+                });
             }
-
-        });
-        console.log(count);
-        if( totalDebit != totalCredit && count != 0 ){
-            Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
-        }else{
+        }
+        else{
             if(storeIndex == -1){
                 store.add(values);
             }else{

@@ -298,7 +298,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
                 {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
+                {header : 'Debitor', dataIndex : 'vend_id',width : 100},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
                 {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
                     return '<b>Total</b>';
@@ -391,7 +391,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bank Code : '
+                                    value: 'Kas Code : '
                                 },
                                 {
                                     width: 100,
@@ -408,7 +408,6 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                             },
                             msgTarget: 'under',
                             items: [
-
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
@@ -418,6 +417,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                                     width: 100,
                                     xtype: 'xtTaxMPopup',
                                     name: 'tax_code',
+                                    valueText: 'id',
                                     allowBlank: false
                                 }
                             ]
@@ -754,6 +754,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
     },
     savePB: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var StatusPosting = form.findField('status').getValue();
         var totalDebit= 0, totalCredit= 0, count=0 ;
         me.Cashbook_In_JurnalStore.each(function(record){
             if(record.get('inv_code') == me.currInv_Code ) {
@@ -762,16 +763,30 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
             }
 
         });
-        me.CB_In_DetailStore.each(function(record){
-            if(record.get('inv_code') == me.currInv_Code ) {
-                count ++;
-            }
 
-        });
-        console.log(count);
-        if( totalDebit != totalCredit && count != 0 ){
-            Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
-        }else{
+        if(StatusPosting){
+            if( totalDebit != totalCredit){
+                Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
+            }else{
+                if(storeIndex == -1){
+                    store.add(values);
+                }else{
+                    record.set(values);
+                }
+                store.sync({
+                    success:function(){
+                        me.win.close();
+                        store.load();
+                        me.Cashbook_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                    },
+                    failure:function(){
+                        store.load();
+                        me.msg('Opps!', 'Error!!', true);
+                    }
+                });
+            }
+        }
+        else{
             if(storeIndex == -1){
                 store.add(values);
             }else{
@@ -789,6 +804,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                 }
             });
         }
+
 
     },
     onCB_In_DetailSave: function(form, store, window){

@@ -174,6 +174,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.GL.Voucher'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Reclass'));
         me.MainPanel.add(Ext.create('App.view.transaksi.cancel-return.CancelReturn'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Reclass'));
 
 
 

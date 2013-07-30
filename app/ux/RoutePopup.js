@@ -1,7 +1,7 @@
-Ext.define('App.ux.VendorSuplierPopup',
+Ext.define('App.ux.RoutePopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtVendorSuplierPopup',
+        alias : 'widget.xtRoutePopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,28 +17,19 @@ Ext.define('App.ux.VendorSuplierPopup',
                 },
                 prod_id = null;
 
-            Ext.define('VendorSuplierSearchModel',
+            Ext.define('WilayahSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {
-                            name: 'vend_id',
-                            type: 'string'
-                        },
-                        {
-                            name: 'vend_nama',
-                            type: 'string'
-                        },
-                        {
-                            name: 'vend_type_desc',
-                            type: 'string'
-                        }
-
+                        {name: 'route_code',type: 'string'},
+                        {name: 'description',type: 'string'},
+                        {name: 'remaks',type: 'string'},
+                        {name: 'timeedit',type: 'date'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.VendorSuplierPopup},
+                        api : {read : Popup.getRoutePopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -48,7 +39,7 @@ Ext.define('App.ux.VendorSuplierPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'VendorSuplierSearchModel',
+                    model : 'WilayahSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -59,29 +50,15 @@ Ext.define('App.ux.VendorSuplierPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {
-                        width: 50,
-                        text: 'ID',
-                        sortable: true,
-                        dataIndex: 'vend_id'
-                    },
-                    {
-                        flex: 1,
-                        text: 'Vendor',
-                        sortable: true,
-                        dataIndex: 'vend_nama'
-                    },
-                    {
-                        flex: 1,
-                        text: 'Type :',
-                        sortable: true,
-                        dataIndex: 'vend_type_desc'
-                    }
+                    {text: 'Route Code', width:70, sortable: false,dataIndex: 'route_code'},
+                    {text: 'Description', flex: 1, sortable: true, dataIndex: 'description'},
+                    {text: 'Remarks', width : 150, dataIndex: 'remaks', sortable : true },
+                    {text: 'LastUpdate', width : 100, sortable: true, dataIndex: 'timeedit'}
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'Suplier',
+                title: 'Route',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -134,18 +111,13 @@ Ext.define('App.ux.VendorSuplierPopup',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            vend_id = selected.data.vend_id;
-            this.setValue(vend_id);
+            route_code = selected.data.route_code;
+            this.setValue(route_code);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('vend_nama').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_po').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_gr').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_ap').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_pay').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_dt_do').setValue(selected.data.vend_nama);
+            Ext.getCmp('route_nama_do').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

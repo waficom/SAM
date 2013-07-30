@@ -122,7 +122,7 @@ Ext.define('App.ux.SalesOrderPopup',
             me.onGridClick(grid, selected);
 
             Ext.getCmp('prod_id').setValue(selected.data.prod_id);
-            Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
+            //Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
 
             me.searchwin.close();
         },

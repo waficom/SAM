@@ -581,7 +581,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Est. Selesai :'
+                                    value: 'E. Selesai :'
                                 },
                                 {
                                     fieldLabel : 'Tanggal',
@@ -591,7 +591,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     submitFormat: 'Y-m-d',
                                     format : globals['date_display_format'],
                                     value : new Date(),
-                                    maxValue: new Date(),
                                     allowBlank:false
                                 }
                             ]
@@ -662,11 +661,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         }
     },
 
-
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
     onNewProduksi: function(form, model, title){
         this.setForm(form, title);
         form.getForm().reset();
@@ -748,6 +742,21 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         me.saveProduksi(form, store);
     },
     saveProduksi: function(form, store){
+        var me = this;
+        var StatusPosting = form.findField('status').getValue();
+        var CountDetail = me.Produksi1Store.getCount({params:{no_pp: me.currProduksi}});
+        if(StatusPosting){
+            if(CountDetail > 0){
+                me.CallFunctionSave(form, store);
+            }else{
+                Ext.MessageBox.alert('Warning', 'Detail Produksi Belum Terisi');
+            }
+        }else{
+            me.CallFunctionSave(form, store);
+        }
+    },
+
+    CallFunctionSave: function(form, store){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -765,16 +774,15 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             }
         });
         this.ReloadGrid();
-        Produksi1Store.load({params:{no_pp: me.currProduksi}});
+        me.Produksi1Store.load({params:{no_pp: 'xxx'}});
     },
-
     onProduksi1Save: function(form, store){
         var me = this;
         me.saveProduksi1(form, store);
+        //me.CallFunctionSave(form, store, me.winform);
     },
     saveProduksi1: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-            f = me.winform1.down('form').getForm(), rec = f.getRecord();
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
 
         form.findField('no_pp').setValue(me.currProduksi);
         //  form.findField('co_id').setValue(me.curr_coid);
@@ -787,7 +795,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                //store.load();
             },
             failure:function(){
                 //store.load();
@@ -796,6 +803,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
         });
        store.load({params:{no_pp: me.currProduksi}});
     },
+
     onProduksiDelete: function(store){
         var me = this, grid = me.ProduksiGrid;
         sm = grid.getSelectionModel();
@@ -849,7 +857,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
 
         // Load the ExtJs dataStore with the new parameters
         this.ProduksiStore.load({params:{datefrom : datefrom, dateto : dateto}});
-
     },
     /**
      * This function is called from Viewport.js when

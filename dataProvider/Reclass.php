@@ -27,7 +27,7 @@ if (!isset($_SESSION))
 $_SESSION['site']['flops'] = 0;
 include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 
-class AP_Reclass
+class Reclass
 {
     /**
      * @var dbHelper
@@ -42,11 +42,12 @@ class AP_Reclass
         return;
     }
 
-    public function getReclass(stdClass $params)
+    public function getViewReclass(stdClass $params)
     {
-        $sql = "select A.*, B.coa_nama from ap_reclass A
-          left join coa B on A.account=B.coa_id and A.co_id=B.co_id
-         ORDER BY A.timeedit DESC";
+        $sql = "select jurnal.coa as account, jurnal.inv_code as for_inv_code, jurnal.debit, jurnal.credit, jurnal.timeedit, coa.coa_nama from jurnal
+        left join coa on jurnal.coa=coa.coa_id and jurnal.co_id=coa.co_id
+        where jurnal.coa='$params->Account' and jurnal.reclass_status = 'N'
+         ORDER BY jurnal.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -54,7 +55,6 @@ class AP_Reclass
             $row = array_change_key_case($row);
             array_push($rows, $row);
         }
-
         return $rows;
 
     }
@@ -63,7 +63,21 @@ class AP_Reclass
      * @param stdClass $params
      * @return stdClass
      */
-
+    public function addViewReclass(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id'],$data['check'],$data['coa_nama']);
+        $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
+        $this -> db -> setSQL($sql);
+        //print_r($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
 
 
 }
