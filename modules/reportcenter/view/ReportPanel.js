@@ -171,15 +171,16 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
         console.log(cbexptype);
         this.renderContainer.removeAll(true);
         delete this.pdf;
+
 //        me.grid = this.getGridPanel();
 //        me.store.load({params:values});
 //        botton.setDisabled(false);
         if(typeof form.reportFn == 'function'){
             this.renderContainer.removeAll(true);
-//            delete this.grid;
             form.reportFn({params:params}, function(provider, response){
 
                 me.pdf = me.getPDFPanel(response.result.url);
+
             });
         }else{
             Ext.Msg.alert('Oops!', 'No function provided');

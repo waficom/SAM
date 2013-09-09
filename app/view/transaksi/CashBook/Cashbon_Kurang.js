@@ -135,9 +135,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                 itemdblclick: function(view, record){
                     if(record.get('status')!=1){
                         me.onItemdblclick(me.Cashbon_KurangStore, record, 'Edit Penyelesaian Cashbon');
-                        Ext.getCmp('post_cashbon').enable(); Ext.getCmp('posted_date_cashbon').disable();
+                        Ext.getCmp('post_cashbon').setDisabled(false);
                         Ext.getCmp('total_cb_krg').setValue(record.get('nominal_1')-record.get('nominal_2'));
-                        Ext.getCmp('nominal_1_cb_krg').setReadOnly(true);
                     }
 
                 }
@@ -155,9 +154,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'Cashbon_KurangModel', 'Tambah Data');
-                                Ext.getCmp('post_cashbon').disable(); Ext.getCmp('posted_date_cashbon').disable();
                                 Ext.getCmp('inv_date_cashbon').setValue(new Date());
-                                Ext.getCmp('nominal_1_cb_krg').setReadOnly(true);
+                                Ext.getCmp('tax_cd_ck').setValue('NT01')
                             }
                         },
                         {
@@ -329,15 +327,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                         if (value== true) {
                                             Ext.getCmp('tax_cd_ck').disable();
                                             Ext.getCmp('acc_id_cashbon').disable();
-                                            Ext.getCmp('nominal_1_cb_krg').disable();
+                                            //Ext.getCmp('nominal_1_cb_krg').disable();
                                             Ext.getCmp('nominal_2_cb_krg').disable();
-                                            Ext.getCmp('total_cb_krg').disable();
+                                            //Ext.getCmp('total_cb_krg').disable();
                                         }else{
                                             Ext.getCmp('tax_cd_ck').enable();
                                             Ext.getCmp('acc_id_cashbon').enable();
-                                            Ext.getCmp('nominal_1_cb_krg').enable();
+                                            //Ext.getCmp('nominal_1_cb_krg').enable();
                                             Ext.getCmp('nominal_2_cb_krg').enable();
-                                            Ext.getCmp('total_cb_krg').enable();
+                                            //Ext.getCmp('total_cb_krg').enable();
                                         }
 
                                     }
@@ -363,7 +361,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxKPopup',
+                                    xtype: 'xtTaxMPopup',
                                     name: 'tax_code',
                                     id:'tax_cd_ck',
                                     allowBlank: false
@@ -420,6 +418,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     hideTrigger: true,
                                     name: 'nominal_1',
                                     id:'nominal_1_cb_krg',
+                                    readOnly: true,
                                     readonly:true
 
                                 },
@@ -447,7 +446,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     width: 100,
                                     xtype: 'mitos.currency',
                                     hideTrigger: true,
-                                    id:'total_cb_krg'
+                                    id:'total_cb_krg',
+                                    readOnly: true
                                 }
                             ]
                         },
@@ -480,13 +480,14 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posted',
                                     id:'post_cashbon',
+                                    disabled: true,
                                     name: 'status',
                                     handler: function(field, value) {
                                         if (value== true) {
-                                            Ext.getCmp('posted_date_cashbon').enable();
+                                            Ext.getCmp('posted_date_cashbon').setDisabled(false);
                                             Ext.getCmp('posted_date_cashbon').setValue(new Date());
                                         }else{
-                                            Ext.getCmp('posted_date_cashbon').disable();
+                                            Ext.getCmp('posted_date_cashbon').setDisabled(true);
                                         }
 
                                     }
@@ -497,7 +498,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     name : 'posted_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
+                                    disabled: true,
                                     maxValue: new Date(),
                                     allowBlank:false,
                                     id:'posted_date_cashbon'
@@ -634,7 +635,6 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
         var tglPost_CB_out = Ext.getCmp('posted_date_cb_cashbon').getValue();
         var StatusPosting = form.findField('status').getValue();
         var tglPosting = form.findField('posted_date').getValue();
-        console.log(tglPosting);
         if(StatusPosting){
             if(tglPosting < tglPost_CB_out ){
                 Ext.MessageBox.alert('Warning', 'Tgl Posting Penyelesaian Cashbon Lebih Kecil dari tgl Posting Cashbook');

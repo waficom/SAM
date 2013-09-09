@@ -109,5 +109,18 @@ class SalesOrder_Rpt extends Reports
             'url' => $url
         );
     }
+    public function DeliveryOrder(stdClass $params)
+    {
+
+
+//        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
+        $this->reportfile = '/var/www/modules/reportcenter/report/marketing/DeliveryOrder.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
 
 }

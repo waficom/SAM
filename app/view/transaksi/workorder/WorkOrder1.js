@@ -15,7 +15,10 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         me.userinput =null;
         me.useredit=null;
         me.currStatus = null;
-        //me.myWinChooseItem=null;
+        me.CountBB = 0;
+        me.CountDP = 0;
+        me.CountBJ = 0;
+            //me.myWinChooseItem=null;
 
         Ext.define('Wo1Model', {
             extend: 'Ext.data.Model',
@@ -224,29 +227,29 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'No. Produksi',width:150, sortable: false, dataIndex: 'no_pp'},
-                {text: 'No. Detail',width:50, sortable: false, dataIndex: 'no_ppd'},
-                {text: 'Sales Number', width:100, sortable: false,dataIndex: 'so_num'},
-                {text: 'Customer', width:200, sortable: false,dataIndex: 'cust_nama'},
-                {text: 'Qty', width:100, sortable: false,dataIndex: 'qty'},
-                {text: 'Qty Produksi', width:100, sortable: false,dataIndex: 'qty_produksi'},
-                {text: 'Formula', width:200, sortable: false,dataIndex: 'formula_nama'},
-                {text: 'Formula id', width:100, sortable: false,dataIndex: 'formula_id', hidden: true},
-                {text: 'Produk id', width:100, sortable: false,dataIndex: 'prod_id', hidden:true},
-                {text: 'Produk', width:200, sortable: false,dataIndex: 'prod_nama'},
-                {text: 'Kemasan', width:100, sortable: false,dataIndex: 'kemasan_nama'},
-                {text: 'Spesifikasi', width:150, sortable: false,dataIndex: 'spesifikasi_nama'},
-                {text: 'N', width:50, sortable: false,dataIndex: 'n'},
-                {text: 'P2O5', width:50, sortable: false,dataIndex: 'p2o5'},
-                {text: 'K2O', width:50, sortable: false,dataIndex: 'k2o'},
-                {text: 'CAO', width:50, sortable: false,dataIndex: 'cao'},
-                {text: 'MGO', width:50, sortable: false,dataIndex: 'mgo'},
-                {text: 'SO4', width:50, sortable: false,dataIndex: 'so4'},
-                {text: 'B', width:50, sortable: false,dataIndex: 'b'},
-                {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
-                {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
-                {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
+                {text: 'No. Produksi', sortable: false, dataIndex: 'no_pp'},
+                {text: 'No. Detail', sortable: false, dataIndex: 'no_ppd'},
+                {text: 'SO Num', sortable: false,dataIndex: 'so_num'},
+                {text: 'Customer', sortable: false,dataIndex: 'cust_nama'},
+                {text: 'Qty SO', sortable: false,dataIndex: 'qty'},
+                {text: 'Qty Produksi', sortable: false,dataIndex: 'qty_produksi'},
+                {text: 'Formula', sortable: false,dataIndex: 'formula_nama'},
+                {text: 'Formula id', sortable: false,dataIndex: 'formula_id', hidden: true},
+                {text: 'Produk id', sortable: false,dataIndex: 'prod_id', hidden:true},
+                {text: 'Produk', sortable: false,dataIndex: 'prod_nama'},
+                {text: 'Kemasan', sortable: false,dataIndex: 'kemasan_nama'},
+                {text: 'Spesifikasi', sortable: false,dataIndex: 'spesifikasi_nama'},
+                {text: 'N', sortable: false,dataIndex: 'n'},
+                {text: 'P2O5', sortable: false,dataIndex: 'p2o5'},
+                {text: 'K2O', sortable: false,dataIndex: 'k2o'},
+                {text: 'CAO', sortable: false,dataIndex: 'cao'},
+                {text: 'MGO', sortable: false,dataIndex: 'mgo'},
+                {text: 'SO4', sortable: false,dataIndex: 'so4'},
+                {text: 'B', sortable: false,dataIndex: 'b'},
+                {text: 'CU', sortable: false,dataIndex: 'cu'},
+                {text: 'ZN', sortable: false,dataIndex: 'zn'},
+                {text: 'AH', sortable: false,dataIndex: 'ah'},
+                {text: 'AF', sortable: false,dataIndex: 'af'},
                 {text: 'status', width:100, sortable: false,dataIndex: 'status', hidden: true},
                 {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
@@ -1341,6 +1344,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         me.currSo_num = selected.data.so_num;
         me.currProd_id = selected.data.prod_id;
         me.currStatus = selected.data.status;
+        me.CountBB = selected.data.qty_bb;
+        me.CountDP = 0;
+        me.CountBJ = selected.data.qty_bj;
         Ext.getCmp('addBahanBaku').setDisabled(false);
         Ext.getCmp('addBarangJadi').setDisabled(false);
         Ext.getCmp('addbbproses').setDisabled(false);
@@ -1376,17 +1382,16 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
     saveProduksi1: function(form, store, window){
         var me = this;
         var StatusPosting = form.findField('status').getValue();
-        var CountBB = me.Wo1DBahanBakuStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
-        var CountDP = me.Wo1DBBdalamprosesStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
-        var CountBJ = me.Wo1DBahanJadiStore.getCount({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+
         if(StatusPosting){
-           if(CountBB > 0 && CountBJ > 0 && globals['site']=='SAM'){
+            me.CallFunctionSave(form, store, window);
+          /* if( me.CountBB = 0 &&  me.CountBJ > 0 && globals['site']=='SAM'){
                 me.CallFunctionSave(form, store, window);
-           }else if(CountBB > 0 && CountBJ > 0 && CountDP > 0 && globals['site']!='SAM'){
+           }else if( me.CountBB > 0 &&  me.CountBJ > 0 && me.CountDP > 0 && globals['site']!='SAM'){
                me.CallFunctionSave(form, store, window);
            }else{
                Ext.MessageBox.alert('Warning', 'Detail Work Order Masih Belum Terisi');
-           }
+           }*/
         }else{
             me.CallFunctionSave(form, store, window);
         }
@@ -1406,14 +1411,14 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         store.sync({
             success:function(){
                 window.close();
-                //store.load();
+                store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
             },
             failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
+                //me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
+
     },
     onProduksi2Save: function(form, store){
         var me = this;
@@ -1444,7 +1449,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 me.Wo1DStore.load({params:{so_num: me.currSo_num, no_ppd: me.currProduksi, prod_id: me.currProd_id}});
             },
             failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Warning', 'Stock Items Kurang!');
+                //me.msg('Stock Items Kurang!', 'Error!!', true);
             }
         });
         store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
@@ -1474,7 +1480,6 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 me.Wo1DStore.load({params:{so_num: me.currSo_num, no_ppd: me.currProduksi, prod_id: me.currProd_id}});
             },
             failure:function(){
-                // store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });

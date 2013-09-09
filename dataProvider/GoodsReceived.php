@@ -216,7 +216,7 @@ class GoodsReceived
                     gr10.qty_brutto,
                     gr10.qty_netto,
                     gr10.qty_pcs,
-                    gr10.qty_selisih,
+                    gr10.qty_brutto -  gr10.qty_netto  as qty_selisih,
                     gr10.keterangan,
                     bahanbaku.bb_nama,
                     satuan.satuan_nama as sat_nama,

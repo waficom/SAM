@@ -131,6 +131,10 @@ class Navigation
                     'text' => $this->i18n['tax'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelTax'
                 ),array(
                     'text' => $this->i18n['bank'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelBank'
+                ),array(
+                    'text' => $this->i18n['pa'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPenyusutan_Aset'
+                ),array(
+                    'text' => $this->i18n['apa'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAcc_Penyusutan_Aset'
                 )
             )
         ));
@@ -155,9 +159,9 @@ class Navigation
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
                 ),*/ array(
                     'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
-                ),array(
+                ),/*array(
                     'text' => $this->i18n['stock'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelStock'
-                ), array(
+                ), */array(
                     'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
                 ),array(
                     'text' => $this->i18n['apinvoice'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice'
@@ -205,13 +209,15 @@ class Navigation
                 array(
                     'text' => $this->i18n['bankout'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashbook_Bank_Out'
                 ),array(
-                    'text' => $this->i18n['rc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReclass'
+                    'text' => $this->i18n['pa2'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPenyusutan_Aset2'
                 ),
                 array(
                     'text' => $this->i18n['gl'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVoucher'
                 ),
                 array(
                     'text' => $this->i18n['ViewReclass'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelViewReclass'
+                ),array(
+                    'text' => $this->i18n['rc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelReclass'
                 ),
                 array(
                     'text' => $this->i18n['cr'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCancelReturn'

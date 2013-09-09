@@ -76,8 +76,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'description',type: 'string'},
-                {name: 'qty',type: 'string'},
-                {name: 'qty_susut',type: 'string'},
+                {name: 'qty',type: 'float'},
+                {name: 'qty_susut',type: 'float'},
                 {name: 'harga',type: 'float'},
                 {name: 'sat_id',type: 'string'},
                 {name: 'sequence_no',type: 'string'},
@@ -193,7 +193,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                     if(me.currPosted =='1' || me.currPosted =='2'){
                     }else{
                         me.onItemdblclick(form, me.AR_SaleStore, record, 'Edit AR Sale');
-                        Ext.getCmp('post_ar').enable();
+                        Ext.getCmp('post_ar').setDisabled(false);
                     }
 
                 }
@@ -211,9 +211,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
-                                Ext.getCmp('for_inv_ar').disable();Ext.getCmp('inv_date_ar').setValue(new Date());
-                                Ext.getCmp('post_ar').disable();Ext.getCmp('posted_date_ar').disable();
-                                Ext.getCmp('account_ar').enable();
+                                Ext.getCmp('inv_date_ar').setValue(new Date());
 
                             }
                         },
@@ -410,8 +408,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                             Ext.getCmp('tax_ar').enable();
                                             Ext.getCmp('gudang_id_ar').enable();
                                             Ext.getCmp('do_num_ar').enable();
-                                            Ext.getCmp('for_inv_ar').disable();
+                                            Ext.getCmp('for_inv_ar').setDisabled(true);
                                             Ext.getCmp('discon_ar').enable();
+                                            Ext.getCmp('at_Y_ar').setValue(true);;Ext.getCmp('at_N_ar').setValue(false);
                                         }
                                     }
 
@@ -423,9 +422,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                         if (value) {
                                             Ext.getCmp('tax_ar').disable();
                                             Ext.getCmp('gudang_id_ar').disable();
-                                            Ext.getCmp('account_ar').enable();
+                                            Ext.getCmp('at_N_ar').setValue(true);Ext.getCmp('at_Y_ar').setValue(false);
                                             Ext.getCmp('do_num_ar').disable();
-                                            Ext.getCmp('for_inv_ar').enable();
+                                            Ext.getCmp('for_inv_ar').setDisabled(false);
                                             Ext.getCmp('discon_ar').disable();
                                         }
                                     }
@@ -488,6 +487,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'xtARPopup',
                                     name: 'for_inv_code',
                                     allowBlank: false,
+                                    disabled: true,
                                     id:'for_inv_ar'
                                 },
                                 {
@@ -508,18 +508,20 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     boxLabel: "Y",
                                     inputValue:'Y',
                                     checked: true,
+                                    id:'at_Y_ar',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('account_ar').enable();
+                                            Ext.getCmp('account_ar').setDisabled(false);
                                         }
                                     }
                                 },
                                 {
                                     boxLabel: "N",
                                     inputValue:'N',
+                                    id:'at_N_ar',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('account_ar').disable();
+                                            Ext.getCmp('account_ar').setDisabled(true);
                                         }
                                     }
                                 },
@@ -672,13 +674,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'checkboxfield',
                                     fieldLabel: 'Posting',
                                     id:'post_ar',
+                                    disabled: true,
                                     name: 'status',
                                     handler: function(field, value) {
                                         if (value== true) {
-                                            Ext.getCmp('posted_date_ar').enable();
+                                            Ext.getCmp('posted_date_ar').setDisabled(false);
                                             Ext.getCmp('posted_date_ar').setValue(new Date());
                                         }else{
-                                            Ext.getCmp('posted_date_ar').disable();
+                                            Ext.getCmp('posted_date_ar').setDisabled(true);
                                         }
 
                                     }
@@ -688,8 +691,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     width : 100,
                                     name : 'posted_date',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
+                                    disabled: true,
                                     maxValue: new Date(),
                                     allowBlank:false,
                                     id:'posted_date_ar'
@@ -796,7 +798,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     fieldLabel : 'qty',
                                     labelAlign : 'right',
                                     name: 'qty',
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     id:'qty_ar'
                                 }
                             ]
@@ -817,7 +820,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     fieldLabel : 'qty',
                                     labelAlign : 'right',
                                     name: 'qty_susut',
-                                    xtype: 'textfield',
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     id:'qty_susut_ar'
                                 }
                             ]
@@ -859,7 +863,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     fieldLabel : 'Harga',
                                     labelAlign : 'right',
                                     name: 'harga',
-                                    xtype: 'textfield'
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true
                                 }
                             ]
                         }
@@ -874,7 +879,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                     handler: function(){
                         var form = me.winformAR_Sale_Detail.down('form').getForm();
                         if(form.isValid()){
-                            me.onProduksi2Save(form, me.AR_Sale_DetailStore, me.winformAR_Sale_Detail);
+                            me.onProduksi2Save(form, me.AR_Sale_DetailStore);
                         }
                     }
                 },{
@@ -1009,36 +1014,11 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
     },
 
     onPBSave: function(form, store){
-        var me = this;
-        me.savePB(form, store);
+        var me = this, showWin =me.win ;
+        me.CallFunctionSave(form, store, showWin);
     },
-    savePB: function(form, store){
-        var me = this;
-        var StatusPosting = form.findField('status').getValue();
-        var type = form.findField('inv_type').getValue();
-        var piutangdebtor2 =  form.findField('piutangdebtor2').getValue();
-        var TotalDetail = me.AR_Sale_DetailStore.getCount({params:{inv_code: me.currInv_Code}});
-        if(StatusPosting){
-            if(type == 'N'){
-                me.CallFunctionSave(form, store);
-            }
-            else{
-                if(TotalDetail > piutangdebtor2){
-                    Ext.MessageBox.alert('Warning', 'Nominal Potongan Melebihi Nominal AR');
-                }
-                else{
-                    me.CallFunctionSave(form, store);
-                }
-            }
 
-        }else{
-            me.CallFunctionSave(form, store);
-        }
-
-
-
-    },
-    CallFunctionSave: function(form, store){
+    CallFunctionSave: function(form, store, showWin){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -1047,72 +1027,41 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         }
         store.sync({
             success:function(){
-                me.win.close();
+                showWin.close();
                 store.load();
+                store.load({params:{inv_code: me.currInv_Code}});
                 me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
             failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+                //me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
             }
         });
     },
-    onProduksi2Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi2(form, store, window);
-    },
-    saveProduksi2: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-            f = me.winformAR_Sale_Detail.down('form').getForm(), rec = f.getRecord();
-
+    onProduksi2Save: function(form, store){
+        var me = this, showWin=me.winformAR_Sale_Detail;
         form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformAR_Sale_Detail.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
+        var qty_kirim = form.findField('qty').getValue();
+        var qty_susut = form.findField('qty_susut').getValue();
+        var total_nominal = form.findField('harga').getValue();
+        console.log(total_nominal);
+        me.AR_SaleStore.each(function(record){
+            if(record.get('inv_code') == me.currInv_Code ) {
+                if(record.get('inv_type')=='P'){
+                    if(total_nominal > record.get('piutangdebtor2')){
+                        Ext.MessageBox.alert('Warning', 'Nominal Potongan Melebihi Nominal AR');
+                    }else{
+                        me.CallFunctionSave(form, store, showWin);
+                    }
+                }else{
+                    if(qty_susut > qty_kirim){
+                        Ext.MessageBox.alert('Warning', 'Qty Susut Melebihi Qty Kirim');
+                    }else{
+                        me.CallFunctionSave(form, store, showWin);
+                    }
+                }
             }
         });
-        store.load({params:{inv_code: me.currInv_Code}});
-        me.AR_SaleStore.load({params:{inv_code: me.currInv_Code}});
-        me.AR_Sale_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-    },
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-        f = me.winformAR_Sale_Jurnal.down('form').getForm(), rec = f.getRecord();
-        form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformAR_Sale_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
     },
 
     onPBDelete: function(store){

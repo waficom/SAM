@@ -23,6 +23,8 @@ Ext.define('App.ux.DOPopup',
                     fields : [
                         {name: 'do_num',type: 'string'},
                         {name: 'so_num',type: 'string'},
+                        {name: 'prod_id',type: 'string'},
+                        {name: 'darigudang',type: 'string'},
                         {name: 'route',type: 'string'},
                         {name: 'deliverydate',type: 'date'}
                     ],
@@ -52,6 +54,8 @@ Ext.define('App.ux.DOPopup',
                 columns: [
                     {text: 'Do_num', sortable: false, dataIndex: 'do_num'},
                     {text: 'So_num', sortable: false, dataIndex: 'so_num'},
+                    {text: 'Produk', sortable: false, dataIndex: 'prod_id'},
+                    {text: 'Gudang', sortable: false, dataIndex: 'darigudang'},
                     {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
                     {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
@@ -118,6 +122,8 @@ Ext.define('App.ux.DOPopup',
             var me = this;
             me.onGridClick(grid, selected);
             Ext.getCmp('do_num_ar').setValue(selected.data.do_num);
+            Ext.getCmp('so_num_do').setValue(selected.data.so_num);
+            Ext.getCmp('prod_id').setValue(selected.data.prod_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

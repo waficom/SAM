@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAP_Invoice_Manufaktur',
-    pageTitle: 'AP Invoice Manufaktur',
+    pageTitle: 'Jurnal Manufaktur',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

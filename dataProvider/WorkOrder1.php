@@ -70,7 +70,17 @@ class WorkOrder1
     }
     public function getWorkOrder1Detail(stdClass $params)
     {
-        $this->db->setSQL("SELECT wo0.*, (qty_bb-qty_bj) as qty_susut FROM wo0 where (so_num = '$params->so_num') and (no_ppd = '$params->no_ppd') and (prod_id = '$params->prod_id') ");
+        $this->db->setSQL("SELECT A.*, B.qty_bJ, C.qty_bb, B.qty_bJ - C.qty_bb as qty_susut
+        from wo0 A
+        left join(
+            select co_id, wo_num, so_num, prod_id, sum(wo2.qty) as qty_bj from wo2
+            group by co_id, wo_num, so_num, prod_id
+        )B on A.co_id=B.co_id and A.wo_num=B.wo_num and A.so_num=B.so_num and A.prod_id=B.prod_id
+        left join (
+            select co_id, wo_num, so_num, prod_id, sum(wo1.total_qty_in) as qty_bb from wo1
+            group by co_id, wo_num, so_num, prod_id
+        )C on A.co_id=C.co_id and A.wo_num=C.wo_num and A.so_num=C.so_num and A.prod_id=C.prod_id
+        where (A.so_num = '$params->so_num') and (A.no_ppd = '$params->no_ppd') and (A.prod_id = '$params->prod_id') ");
 
         $rows = array();
         //print_r($rows);
@@ -233,7 +243,7 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
-        unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['qty_susut']);
+        unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['qty_susut'],$data['qty_bb'],$data['qty_bj']);
         $sql = $this -> db -> sqlBind($data, 'wo0', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

@@ -40,8 +40,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             pageSize : 10,
             autoLoad: false
         });
-
-        Ext.define('Reclass_JurnalModel', {
+        Ext.define('Reclass_JurnalModel',{
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
@@ -56,7 +55,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
             ]
-
         });
         me.Reclass_JurnalStore = Ext.create('Ext.data.Store', {
             model: 'Reclass_JurnalModel',
@@ -70,11 +68,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                     totalProperty : 'totals',
                     root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
+            }
         });
-
         var searching={
             ftype : 'searching',
             mode: 'local'
@@ -92,12 +87,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
-                {text: 'Description',sortable: true,dataIndex: 'coa_nama'},
-                {width: 150,text: 'Doc Inv',sortable: true,dataIndex: 'for_inv_code'},
-                {width: 100,text: 'debit',sortable: true,dataIndex: 'debit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 100,text: 'credit',sortable: true,dataIndex: 'credit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                {text: 'Account',sortable: true,dataIndex: 'account'},
+                {text: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
+                {text: 'Doc Inv',sortable: true,dataIndex: 'for_inv_code'},
+                {text: 'Jumlah',sortable: true,dataIndex: 'debit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             listeners: {

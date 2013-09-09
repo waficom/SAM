@@ -58,6 +58,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'account',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
                 {name: 'nominal',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -157,8 +158,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                 itemdblclick: function(view, record){
                     if(record.get('status')!=1){
                         me.onItemdblclick(me.Cashbook_Bank_InStore, record, 'Edit CashBook Bank In');
-                        Ext.getCmp('post_cb_bank_in').enable();
-                        Ext.getCmp('posted_date_cb_bank_in').disable();
+                        Ext.getCmp('post_cb_bank_in').setDisabled(false);
                     }
                 }
             },
@@ -175,8 +175,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'Cashbook_Bank_InModel', 'Tambah Data');
-                                Ext.getCmp('post_cb_bank_in').disable();Ext.getCmp('posted_date_cb_bank_in').disable();
                                 Ext.getCmp('inv_date_cb_bank_in').setValue(new Date());
+                                Ext.getCmp('tax_cd_bankin').setValue('NT02');
                             }
                         },
                         {
@@ -194,7 +194,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                             iconCls: 'document',
                             scope: me,
                             handler: function(){
-                                me.ShowGridPopup(me.Cashbook_Bank_InStore, 'Detail Item',me.CB_Bank_In_DetailGrid);
+                                me.ShowGridPopup(me.CB_Bank_In_DetailStore, 'Detail Item',me.CB_Bank_In_DetailGrid);
 
                             }
                         },'->',
@@ -224,7 +224,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
+                {text: 'Account',sortable: true,dataIndex: 'account'},
+                {text: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
                 {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00'), id:'SumNominal'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -415,8 +416,9 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxMPopup',
+                                    xtype: 'xtTaxKPopup',
                                     name: 'tax_code',
+                                    id:'tax_cd_bankin',
                                     allowBlank: false
                                 }
                             ]
@@ -493,13 +495,14 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posting',
                                     id:'post_cb_bank_in',
+                                    disabled: true,
                                     name: 'status',
                                     handler: function(field, value) {
                                         if (value== true) {
-                                            Ext.getCmp('posted_date_cb_bank_in').enable();
+                                            Ext.getCmp('posted_date_cb_bank_in').setDisabled(false);
                                             Ext.getCmp('posted_date_cb_bank_in').setValue(new Date());
                                         }else{
-                                            Ext.getCmp('posted_date_cb_bank_in').disable();
+                                            Ext.getCmp('posted_date_cb_bank_in').setDisabled(true);
                                         }
 
                                     }
@@ -510,9 +513,9 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                                     name : 'posted_date',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
-                                    maxValue: new Date(),
+                                    disabled: true,
                                     allowBlank:false,
+                                    maxValue: new Date(),
                                     id:'posted_date_cb_bank_in'
                                 }
                             ]
@@ -774,12 +777,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                 store.sync({
                     success:function(){
                         me.win.close();
-                        store.load();
+                        store.load({params:{co_id:globals['site'] }});
                         me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                     },
                     failure:function(){
-                        store.load();
-                        me.msg('Opps!', 'Error!!', true);
+                        Ext.MessageBox.alert('Opps', 'Error !!!!');
                     }
                 });
             }
@@ -793,12 +795,12 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
             store.sync({
                 success:function(){
                     me.win.close();
-                    store.load();
+                    store.load({params:{co_id:globals['site'] }});
                     me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 },
                 failure:function(){
-                    store.load();
-                    me.msg('Opps!', 'Error!!', true);
+                    Ext.MessageBox.alert('Opps', 'Error !!!!');
+                    //me.msg('Opps!', 'Error!!', true);
                 }
             });
         }
@@ -820,9 +822,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                     me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 },
                 failure:function(){
-                    me.winform.close();
-                    store.load();
-                    me.msg('Opps!', 'Error!!', true);
+                    Ext.MessageBox.alert('Opps', 'Error !!!!');
                 }
             });
     },
@@ -888,15 +888,9 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
         store.load({params:{inv_code: me.currInv_Code}});
         this.myWinChooseItem.show();
     },
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
     onActive: function(callback){
         var me = this;
-        this.Cashbook_Bank_InStore.load({params:{start:0, limit:5}});
+        this.Cashbook_Bank_InStore.load({params:{co_id:globals['site'] }});
         this.Cashbook_Bank_In_JurnalStore.load();
 
         callback(true);

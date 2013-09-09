@@ -140,7 +140,7 @@ Ext.define('App.ux.VendorTransporterPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('vend_tr_nama').setValue(selected.data.vend_nama);
+            //Ext.getCmp('vend_tr_nama').setValue(selected.data.vend_nama);
             Ext.getCmp('vend_tr_nama_gr').setValue(selected.data.vend_nama);
             me.searchwin.close();
         },

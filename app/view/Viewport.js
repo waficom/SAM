@@ -141,6 +141,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.master.Factory_location'));
         me.MainPanel.add(Ext.create('App.view.master.Tax'));
         me.MainPanel.add(Ext.create('App.view.master.Bank'));
+        me.MainPanel.add(Ext.create('App.view.master.Penyusutan_Aset'));
+        me.MainPanel.add(Ext.create('App.view.master.Acc_Penyusutan_Aset'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));
@@ -175,6 +177,8 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Reclass'));
         me.MainPanel.add(Ext.create('App.view.transaksi.cancel-return.CancelReturn'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Reclass'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Penyusutan_Aset'));
+
 
 
 

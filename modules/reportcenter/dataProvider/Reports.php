@@ -19,6 +19,7 @@ class Reports
 {
     public $reportfile;
     public $filename;
+    public $lokasirpt;
     protected $fileManager;
 
     /*
@@ -142,6 +143,10 @@ class Reports
         # Pass the remaining POST "report_TYP" variables as report parameters.
         foreach( $data as $name => $value ) {
 
+            if( strpos( $name, 'report_dir' ) === 0 ) {
+                $params->put( 'SUBREPORT_DIR', $this->lokasirpt );
+            }
+
             if( strpos( $name, 'report_' ) === 0 ) {
                 $length = strlen( 'report_' );
 
@@ -193,7 +198,7 @@ class Reports
         $dbname = (string)$_SESSION['site']['db']['database'];
         $dbuser = (string)$_SESSION['site']['db']['username'];
         $dbpass = (string)$_SESSION['site']['db']['password'];
-
+        $strpassing = 'defaultResultSetHoldable=True';
 
         $conn = null;
         $formatType = 'PDF';
@@ -207,7 +212,7 @@ class Reports
 
             # Attempt a database connection.
             $conn = java( 'java.sql.DriverManager' )->getConnection(
-                "jdbc:firebirdsql://$dbhost:$dbport//$dbname",$dbuser, $dbpass);
+                "jdbc:firebirdsql://$dbhost:$dbport//$dbname?$strpassing",$dbuser, $dbpass);
 
 
             $jaspercompiledreport = new java("net.sf.jasperreports.engine.util.JRLoader");

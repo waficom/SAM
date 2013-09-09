@@ -106,15 +106,14 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
             region: 'north',
             enablePaging: true,
             columns: [
-                {text: 'No. Produksi',width:150, sortable: false, dataIndex: 'no_pp'},
-                {text: 'Deskripsi', width:200, sortable: false,dataIndex: 'description'},
+                {text: 'No. Produksi',sortable: false, dataIndex: 'no_pp'},
+                {text: 'Deskripsi', flex:1, sortable: false,dataIndex: 'description'},
                 {text: 'sequence_no', width:200, sortable: false,dataIndex: 'pabrik_sequence', hidden: true},
-                {text: 'Factory', width:200, sortable: false,dataIndex: 'factory'},
-                {text: 'Status', width:200, sortable: false,dataIndex: 'statusdesc'},
+                {text: 'Factory',  sortable: false,dataIndex: 'factory'},
+                {text: 'Status', sortable: false,dataIndex: 'statusdesc'},
                 {text: 'status',width:70, sortable: true, dataIndex: 'status',hidden:true},
                 {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'pp_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', dataIndex: 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
             ],
             listeners: {
                 scope: me,
@@ -124,9 +123,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     record.set("old_no_pp",oldName);
                     if(record.get('status')=='0'){
                         me.onItemdblclick(me.ProduksiStore, record, 'Edit Produksi');
-                        Ext.getCmp('released_pp').enable();
-                    }else{
-                        Ext.getCmp('released_pp').disable();
+                        Ext.getCmp('released_pp').setDisabled(false);
+                        Ext.getCmp('tgl_pp').setValue(new Date());
                     }
 
                 }
@@ -151,7 +149,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewProduksi(form, 'ProduksiModel', 'Tambah Data');
-                                Ext.getCmp('released_pp').disable();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -273,9 +270,6 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                     record.set("old_no_ppd",oldName);
                     if( me.currReleased =='0'){
                         me.onItemdblclick1(me.Produksi1Store, record, 'Edit Detail Produksi');
-                        Ext.getCmp('released_pp').enable();
-                    }else{
-                        Ext.getCmp('released_pp').disable();
                     }
 
                 }
@@ -396,8 +390,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     name : 'pp_date',
                                     fieldLabel : 'Tanggal',
                                     submitFormat: 'Y-m-d',
-                                    format : globals['date_display_format'],
-                                    value : new Date(),
+                                    id:'tgl_pp',
                                     maxValue: new Date(),
                                     allowBlank:false
                                 }
@@ -437,7 +430,8 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Released',
                                     id:'released_pp',
-                                    name: 'status'
+                                    name: 'status',
+                                    disabled: true
                                 }
                             ]
                         }

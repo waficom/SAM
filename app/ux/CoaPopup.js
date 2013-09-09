@@ -139,7 +139,7 @@ Ext.define('App.ux.CoaPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('account_nama').setValue(selected.data.coa_nama);
+            //Ext.getCmp('account_nama').setValue(selected.data.coa_nama);
             Ext.getCmp('account_nama_ar').setValue(selected.data.coa_nama);
             //Ext.getCmp('account_nama_gr').setValue(selected.data.coa_nama);
             Ext.getCmp('account_nama_ap').setValue(selected.data.coa_nama);

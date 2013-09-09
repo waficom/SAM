@@ -1,22 +1,4 @@
-/**
- GaiaEHR (Electronic Health Records)
- Billing.js
- Billing Forms
- Copyright (C) 2012 Certun, inc.
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
     {
         extend : 'App.ux.RenderPanel',
@@ -104,18 +86,18 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             margin: '0 0 3 0',
                             region: 'north',
                             columns: [
-                                {header : 'Goods Recv #',dataIndex : 'gr_num',width : 150},
+                                {header : 'co_id',dataIndex : 'co_id',hidden: true},
+                                {header : 'Goods Recv #',dataIndex : 'gr_num'},
                                 {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                                {header : 'PO#',dataIndex : 'po_num', width : 150},
-                                {header : 'Supplier',dataIndex : 'vend_nama', width : 200},
-                                {header : 'Transporter',dataIndex : 'vend_tr_nama', width : 200 },
-                                {header : 'Type', dataIndex : 'gr_type_desc', width : 200},
+                                {header : 'PO#',dataIndex : 'po_num'},
+                                {header : 'Supplier',dataIndex : 'vend_nama', flex:1},
+                                {header : 'Transporter',dataIndex : 'vend_tr_nama'},
+                                {header : 'Type', dataIndex : 'gr_type_desc'},
                                 { header : 'Gudang',dataIndex : 'gudang_id', width : 100,hidden: true},
-                                {header : 'Gudang', dataIndex : 'gudang_nama',width : 200},
-                              //  { header : 'Account',dataIndex : 'account', width : 100,hidden: true},
-                               // {header : 'Account', dataIndex : 'account_nama',width : 200},
+                                {header : 'Gudang', dataIndex : 'gudang_nama'},
                                 {header : 'status',dataIndex : 'status',hidden: true},
-                                {header : 'rc_type',dataIndex : 'rc_type',hidden: true}
+                                {header : 'rc_type',dataIndex : 'rc_type',hidden: true},
+                                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
                             ],
                             viewConfig :
                             {
@@ -140,16 +122,16 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             columns: [
                                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                                {header : 'Doc. Number', dataIndex : 'inv_code',width : 200},
-                                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
-                                {header : 'Coa', dataIndex : 'coa',width : 100},
-                                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                                {header : 'Doc. Number', dataIndex : 'inv_code'},
+                                {header : 'Creditor', dataIndex : 'vend_id'},
+                                {header : 'Coa', dataIndex : 'coa'},
+                                {header : 'Description', dataIndex : 'coa_nama', summaryRenderer: function(){
                                     return '<b>Total</b>';
                                 }},
-                                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
-                                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'Debit', dataIndex : 'debit',renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                                {header : 'Credit', dataIndex : 'credit',renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                                {header : 'Remarks', dataIndex : 'remaks'},
                                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
                             ],
                             viewConfig: {
@@ -327,16 +309,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                 items : [
                                                     {
                                                         xtype: 'fieldcontainer',
-                                                        hidden: true,
-                                                        layout: {type: 'hbox'},
-                                                        defaults :{margin : '0 10 0 10'},
-                                                        hideLabel: true,
-                                                        items : [
-                                                            {name: 'co_id', xtype:'textfield', hidden : true}
-                                                        ]
-                                                    },
-                                                    {
-                                                        xtype: 'fieldcontainer',
                                                         defaults: {
                                                             hideLabel: true
                                                         },
@@ -351,7 +323,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 width: 150,
                                                                 xtype: 'textfield',
                                                                 name: 'gr_num',
-                                                                disabled:true,
+                                                                //disabled:true,
+                                                                readOnly: true,
                                                                 id : 'gr_num_input'
                                                             }
                                                         ]
@@ -521,17 +494,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                         Ext.getCmp('gudang_id').enable();
                                                                     }
                                                                 }
-                                                            }/*,
-                                                            {
-                                                                boxLabel: "Account",
-                                                                inputValue:'A',
-                                                                handler: function(field, value) {
-                                                                    if (value) {
-                                                                        Ext.getCmp('gudang_id').disable();
-                                                                        Ext.getCmp('account').enable();
-                                                                    }
-                                                                }
-                                                            }*/
+                                                            }
                                                         ]
                                                     },
                                                     {
@@ -552,25 +515,13 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 name: 'gudang_id',
                                                                 allowBlank: false,
                                                                 id:'gudang_id'
-                                                            }/*,
-                                                            {
-                                                                width: 80,
-                                                                xtype: 'displayfield',
-                                                                value: ' Account :'
-                                                            },
-                                                            {
-                                                                width: 100,
-                                                                xtype: 'xtCoaPopup',
-                                                                name: 'account',
-                                                                allowBlank: false,
-                                                                id:'account'
                                                             },
                                                             {
                                                                 width: 150,
                                                                 xtype: 'displayfield',
-                                                                name:'account_nama',
-                                                                id:'account_nama_gr'
-                                                            }*/
+                                                                name:'gudang_nama',
+                                                                id:'gudang_nama_gr'
+                                                            }
                                                         ]
                                                     },
                                                     {
@@ -590,6 +541,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 xtype: 'mitos.checkbox',
                                                                 fieldLabel: 'Posting',
                                                                 id:'post_gr',
+                                                                disabled:true,
                                                                 name: 'status'
                                                             }]
                                                     }
@@ -676,45 +628,8 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                             listeners: {
                                 scope: me,
                                 select: me.onItemsGridClick
-                               /* itemdblclick: function(view, record){
-                                    oldName = record.get('bb_id');
-                                    record.set("old_bb_id",oldName);
-                                    if(me.currPosted =='1' || me.currPosted =='2'){
-                                    }else{
-                                        me.onItemsdblclick(me.GRItemsStore, record, 'Edit Bahan Baku');
-                                    }
-                                }*/
+
                             }
-                            /*dockedItems: [
-                                {
-                                    xtype: 'toolbar',
-                                    dock: 'top',
-                                    items: [
-                                        {
-                                            text: 'Add',
-                                            iconCls: 'icoAddRecord',
-                                            id:'add_dt_gr',
-                                            scope: me,
-                                            handler: function(){
-                                                var form = me.win.down('form');
-                                                me.onNewItems(form, 'App.model.transaksi.goodsreceived.GRItems', 'Tambah data Bahan Baku');
-                                            },
-                                            tooltip : 'Tambah Data'
-                                        },
-                                        {
-                                            text: 'Delete',
-                                            iconCls: 'delete',
-                                            itemId: 'listDeleteBtn',
-                                            id:'delete_dt_gr',
-                                            scope: me,
-                                            handler: function () {
-                                                me.onItemsDelete(me.GRItemsStore);
-                                            },
-                                            tooltip: 'Hapus Data'
-                                        }
-                                    ]
-                                }
-                            ]*/
                         }),
                         me.GRDetailGrid = Ext.create('App.ux.GridPanel', {
                             store: me.GRDetailStore,
@@ -730,7 +645,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                 { text: 'Jml PCS/SAK', width: 100, sortable: true, dataIndex: 'qty_pcs'},
                                 { text: 'Jml Muatan', width: 100, sortable: true, dataIndex: 'qty_brutto'},
                                 { text: 'Jml diterima', width: 100, sortable: false, dataIndex: 'qty_netto'},
-                                { text: 'Selisih', width:70, sortable: false, dataIndex: 'qty_selisih'},
                                 { text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
                             ],
                             listeners: {
@@ -1098,28 +1012,6 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                     {
                                         width: 100,
                                         xtype: 'displayfield',
-                                        value: 'Selisih'
-                                    },
-                                    {
-                                        width: 200,
-                                        xtype: 'mitos.currency',
-                                        name: 'qty_selisih',
-                                        id : 'idgrqty_selisih',
-                                        hideTrigger: true,
-                                        readonly: true
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                defaults: {
-                                    hideLabel: true
-                                },
-                                msgTarget: 'under',
-                                items: [
-                                    {
-                                        width: 100,
-                                        xtype: 'displayfield',
                                         value: 'Keterangan :'
                                     },
                                     {
@@ -1187,7 +1079,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             form.reset();
             this.goToSODetail();
             Ext.getCmp('gr-move-next').disable(); Ext.getCmp('gr-save-btn').enable();
-            Ext.getCmp('post_gr').disable();
+            Ext.getCmp('post_gr').setDisabled(true);
             //Ext.getCmp('account').disable();
 
 
@@ -1224,13 +1116,12 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             var me = this, form = this.GeneralForm;
             form.loadRecord(record);
             me.curr_gr_num = form.getForm().findField('gr_num').getValue();
-            me.curr_co_id = form.getForm().findField('co_id').getValue();
+            me.curr_co_id = record.get('co_id');//form.getForm().findField('co_id').getValue();
             me.curr_bb_id = null;
             me.curr_sat_id = null;
             this.goToSODetail();
-            Ext.getCmp('post_gr').enable();
             Ext.getCmp('gr-move-next').enable();
-
+            Ext.getCmp('post_gr').setDisabled(false);
         },
 
         /**
@@ -1291,7 +1182,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         {
             var me = this;
             var StatusPosting = form.findField('status').getValue();
-            var CountDetail = me.GRDetailStore.getCount({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num}});
+            var CountDetail = me.GRDetailStore.getCount({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
             if(StatusPosting){
                 if(CountDetail > 0){
                     me.CallFunctionSave(form, store);
@@ -1304,7 +1195,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         },
 
     CallFunctionSave: function(form, store){
-        var me = this, form = me.GeneralForm.getForm( ), record = form.getRecord(), values = form.getValues(),
+        var me = this, form = me.GeneralForm.getForm(), record = form.getRecord(), values = form.getValues(),
             storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -1314,12 +1205,15 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         store.sync({
             success:function(){
                 me.getPageBody().getLayout().setActiveItem( 0 );
+                me.GRDetailStore.load({params:{co_id: me.curr_co_id, gr_num: me.curr_gr_num, bb_id: me.curr_bb_id, sat_id: me.curr_sat_id}});
+                store.load();
             },
             failure:function(){
                 me.msg('Opps!', 'Error!!', true);
+                Ext.getCmp('post_gr').setValue(false);
             }
         });
-        store.load();
+
     },
         /**
          * Function: Search for Sales Order based on the search fields
@@ -1567,16 +1461,12 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
             if(selected.data.status == 1 || selected.data.status == 2){
                 Ext.getCmp('gr-save-btn').disable();
                 Ext.getCmp('delete_gr').disable();
-                Ext.getCmp('delete_dt_gr').disable();
                 Ext.getCmp('delete_dt2_gr').disable();
-                Ext.getCmp('add_dt_gr').disable();
                 Ext.getCmp('add_dt2_gr').disable();
             }else{
                 Ext.getCmp('gr-save-btn').enable();
                 Ext.getCmp('delete_gr').enable();
-                Ext.getCmp('delete_dt_gr').enable();
                 Ext.getCmp('delete_dt2_gr').enable();
-                Ext.getCmp('add_dt_gr').enable();
                 Ext.getCmp('add_dt2_gr').enable();
             }
 
@@ -1591,6 +1481,7 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
         {
             this.ReloadGrid();
             callback( true );
+
         }
     } );
 

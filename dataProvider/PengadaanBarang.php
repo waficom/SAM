@@ -107,9 +107,13 @@ class PengadaanBarang
 
     public function deletePB0(stdClass $params)
     {
+        $sql = "DELETE FROM pengadaan_barang WHERE (co_id = '$params->co_id') and (pb_num = '$params->pb_num')" ;
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         $sql = "DELETE FROM pb0 WHERE (co_id = '$params->co_id') and (pb_num = '$params->pb_num')" ;
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
+
         return $params;
     }
 
@@ -118,6 +122,7 @@ class PengadaanBarang
         $sql = "select A.*, B.bb_nama from
 pengadaan_barang A
 left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
+WHERE (A.co_id = '$params->co_id') and (A.pb_num = '$params->pb_num')
         ORDER BY A.timeedit";
         $this -> db -> setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -135,7 +140,6 @@ left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
             'totals' => $total,
             'rows'   => $records
         );
-
     }
     /**
      * @param stdClass $params
@@ -175,7 +179,6 @@ left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
         unset($data['id'], $data['pb_num'], $data['bb_nama']);
         $sql = $this->db->sqlBind($data, 'pengadaan_barang', 'U', array('pb_num' => $params->pb_num));
         $this->db->setSQL($sql);
-       // print_r($sql);
         $this->db->execLog();
         return $params;
     }

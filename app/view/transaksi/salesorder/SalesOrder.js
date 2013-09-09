@@ -308,7 +308,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                             id : 'so_num_input',
                                             width: 300,
                                             fieldLabel: 'Sales Order #',
-                                            disabled:true
+                                            readOnly: true
                                         },
                                         {
                                             xtype: 'datefield',
@@ -1413,12 +1413,14 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.curr_so_num = Ext.getCmp('so_num_input').getValue();
                 Ext.getCmp('move-next').setDisabled(false);
                 me.getPageBody().getLayout().setActiveItem( 0 );
+                store.load();
             },
             failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
+               // me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load();
+
    	},
 
 	/**
@@ -1521,7 +1523,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.win.close();
             },
             failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
+                //me.msg('Opps!', 'Error!!', true);
             }
         });
         store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});
@@ -1547,7 +1550,8 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 me.winLoc.close();
             },
             failure:function(){
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
+                //me.msg('Opps!', 'Error!!', true);
             }
         });
         store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});

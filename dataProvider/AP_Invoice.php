@@ -284,11 +284,6 @@ class AP_Invoice
         $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "EXECUTE PROCEDURE ap_inv_detail_i '$params->inv_code'";
-        $this -> db -> execOnly($sql);
-        $sql = "commit";
-        $this -> db -> execOnly($sql);
-//		$params -> co_id = $this -> db -> lastInsertId;
         return $params;
     }
 

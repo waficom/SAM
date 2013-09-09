@@ -42,12 +42,10 @@ class Reclass
         return;
     }
 
-    public function getViewReclass(stdClass $params)
+    public function getViewReclassOVB(stdClass $params)
     {
-        $sql = "select jurnal.coa as account, jurnal.inv_code as for_inv_code, jurnal.debit, jurnal.credit, jurnal.timeedit, coa.coa_nama from jurnal
-        left join coa on jurnal.coa=coa.coa_id and jurnal.co_id=coa.co_id
-        where jurnal.coa='$params->Account' and jurnal.reclass_status = 'N'
-         ORDER BY jurnal.timeedit DESC";
+        $sql = "select * from view_reclass where account = '$params->account' or so_num='$params->so_num'
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -56,14 +54,31 @@ class Reclass
             array_push($rows, $row);
         }
         return $rows;
-
+    }
+    public function getViewReclassOBJ(stdClass $params)
+    {
+        (string)$whereClause = '';
+        if($params->inv_code != null)
+            $whereClause .= chr(13) . " where inv_code like '%" . $params->inv_code . "%'";
+        if($params->so_num != null)
+            $whereClause .= chr(13) . " where so_num like '%" . $params->so_num . "%'";
+        $sql = "select * from view_reclass_barangjadi $whereClause
+        ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
     }
 
     /**
      * @param stdClass $params
      * @return stdClass
      */
-    public function addViewReclass(stdClass $params)
+    public function addViewReclassOVB(stdClass $params)
     {
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
@@ -71,10 +86,26 @@ class Reclass
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['check'],$data['coa_nama']);
+        $data['inv_type'] = 'OVB';
+        unset($data['id'],$data['check'],$data['coa_nama'],$data['so_num'] );
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
         $this -> db -> setSQL($sql);
-        //print_r($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function addViewReclassOBJ(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['inv_type'] = 'OBJ';
+        $data['debit'] = $data['total'] ;
+        unset($data['id'],$data['do_num'],$data['so_num'],$data['qty_susut'],$data['total'] );
+        $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
+        $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }

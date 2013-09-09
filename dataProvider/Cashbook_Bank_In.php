@@ -52,7 +52,7 @@ class Cashbook_Bank_In
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from cashbook_bank where cb_type='I' ORDER BY $orderx DESC";
+        $sql = "select * from cashbook_bank where co_id='$params->co_id' and cb_type='I' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -136,7 +136,9 @@ class Cashbook_Bank_In
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from cb_bank_detail where inv_code= '$params->inv_code' ORDER BY $orderx DESC";
+        $sql = "select A.*, B.coa_nama from cb_bank_detail A
+        left join coa B on A.co_id=B.co_id and A.account=B.coa_id
+        where A.inv_code= '$params->inv_code' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -156,7 +158,7 @@ class Cashbook_Bank_In
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id']);
+        unset($data['id'], $data['coa_nama']);
         $sql = $this -> db -> sqlBind($data, 'cb_bank_detail', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -167,7 +169,7 @@ class Cashbook_Bank_In
         $data = get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code']);
+        unset($data['id'],$data['inv_code'], $data['coa_nama']);
         $sql = $this -> db -> sqlBind($data, 'cb_bank_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->account));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

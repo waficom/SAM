@@ -210,9 +210,16 @@ class Popup
             select gr10.bb_id, gr10.co_id, gr0.po_num, sum(gr11.qty_netto) as qty from gr0
             inner join gr10 on gr0.gr_num=gr10.gr_num and gr0.co_id=gr10.co_id
             inner join gr11 on gr10.gr_num=gr11.gr_num and gr10.co_id=gr11.co_id and gr10.bb_id=gr11.bb_id
+            where gr0.gr_type='R'
             group by gr10.bb_id, gr10.co_id, gr0.po_num)B on A.po_num=B.po_num and A.co_id=B.co_id and A1.bb_id=B.bb_id
         left join vendor C on A.vend_id=C.vend_id and A.co_id=C.co_id
-        where B.qty < A1.qty or B.qty is null and A.status=1 order by A.timeedit DESC";
+        left join (
+            select gr10.bb_id, gr10.co_id, gr0.po_num, sum(gr11.qty_netto) as qty from gr0
+            inner join gr10 on gr0.gr_num=gr10.gr_num and gr0.co_id=gr10.co_id
+            inner join gr11 on gr10.gr_num=gr11.gr_num and gr10.co_id=gr11.co_id and gr10.bb_id=gr11.bb_id
+            where gr0.gr_type='B'
+            group by gr10.bb_id, gr10.co_id, gr0.po_num)D on A.po_num=D.po_num and A.co_id=B.co_id and A1.bb_id=D.bb_id
+        where (B.qty-coalesce(D.qty,0)) < A1.qty or B.qty is null and A.status=1 order by A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -227,7 +234,7 @@ class Popup
     public function getGRPopup(stdClass $params)
     {
 
-        $sql = "SELECT * from gr0 where status=1 ORDER BY gr_num";
+        $sql = "SELECT * from gr0 where status=1 and gr_type='R' and not exists (select * from ap_inv where gr_num=gr0.gr_num and status<>2)ORDER BY gr_num";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -482,8 +489,13 @@ class Popup
     public function getDeliveryOrderpopup(stdClass $params)
     {
 
-        $sql = "SELECT A.* FROM deliveryorder A where A.status=1 and not exists (select * from ar_sale where do_num=A.do_num)
-        ORDER BY A.timeedit DESC";
+        $sql = "select o.*
+        from deliveryorder o
+        left join (select co_id, so_num, for_do_num, sum(qty_do) as qty_doreturn from deliveryorder where do_type='R'
+                    group by co_id, so_num, for_do_num) p on o.co_id=p.co_id and o.do_num=p.for_do_num and o.so_num=p.so_num
+        where o.do_type='N' /*and (coalesce(o.qty_do,0)-coalesce(p.qty_doreturn,0) > 0)*/
+        and not exists (select * from ar_sale where do_num=o.do_num and status<>2)
+        ORDER BY o.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -498,7 +510,9 @@ class Popup
     public function getPB0(stdClass $params)
     {
 
-        $sql = "SELECT * FROM pb0 where status=1 ORDER BY timeedit DESC";
+        $sql = "SELECT * FROM pb0
+        where not exists (select * from po0 where pb0.co_id=po0.co_id and pb0.pb_num=po0.pb_num)
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -586,6 +600,27 @@ class Popup
             array_push($rows, $row);
         }
 
+        return $rows;
+
+    }
+    public function getReclassOVBpopup(stdClass $params)
+    {
+        $sql = "select A.do_num, A.so_num, A.qty_do, E.inv_code, F.qty as qty_ar
+        from deliveryorder A
+        inner join(select sum(C.qty) as qty_ar, B.do_num, B.co_id from ar_sale B
+        inner join ar_sale_detail C on B.inv_code=C.inv_code and B.co_id=C.co_id
+        where B.status=1
+        group by B.do_num, B.co_id) D on A.do_num=D.do_num and A.co_id=D.co_id
+        left join ar_sale E on D.do_num=E.do_num and D.co_id=E.co_id
+        inner join ar_sale_detail F on E.inv_code=F.inv_code and E.co_id=F.co_id
+        where A.qty_do=D.qty_ar and E.status=1 and E.reclass_status='N' ORDER BY E.inv_code DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
         return $rows;
 
     }

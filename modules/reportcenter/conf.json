@@ -46,6 +46,10 @@
                 "PermintaanProduksi":
                 {
                     "len":1
+                },
+                "DeliveryOrder":
+                {
+                    "len":1
                 }
             }
         },
@@ -101,6 +105,30 @@
                 },"Trial_Balance":
                 {
                     "len":1
+                },"Neraca":
+                {
+                    "len":1
+                },"DetailHPP":
+                {
+                    "len":1
+                },"SummaryHPP":
+                {
+                    "len":1
+                },"Ringkasan_Hutang":
+                {
+                    "len":1
+                },"Rincian_Hutang":
+                {
+                    "len":1
+                },"Ringkasan_Piutang":
+                {
+                    "len":1
+                },"Rincian_Piutang":
+                {
+                    "len":1
+                },"Laporan_P_Cashbon":
+                {
+                    "len":1
                 }
             }
         },
@@ -110,6 +138,12 @@
                 {
                     "len":1
                 },"StockDetailBB":
+                {
+                    "len":1
+                },"StockBJ":
+                {
+                    "len":1
+                },"StockDetailBJ":
                 {
                     "len":1
                 }

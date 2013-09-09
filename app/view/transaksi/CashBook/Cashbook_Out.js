@@ -58,6 +58,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'account',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
                 {name: 'nominal',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
@@ -157,7 +158,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                 itemdblclick: function(view, record){
                     if(record.get('status')!=1){
                         me.onItemdblclick(me.Cashbook_OutStore, record, 'Edit CashBook IN');
-                        Ext.getCmp('post_cb_out').enable();
+                        Ext.getCmp('post_cb_out').setDisabled(false);
                     }
 
                 }
@@ -175,8 +176,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'Cashbook_OutModel', 'Tambah Data');
-                                Ext.getCmp('post_cb_out').disable();Ext.getCmp('posted_date_cb_out').disable();
                                 Ext.getCmp('inv_date_cb_out').setValue(new Date());
+                                Ext.getCmp('tax_cd_cbout').setValue('NT01');
                             }
                         },
                         {
@@ -194,7 +195,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                             iconCls: 'document',
                             scope: me,
                             handler: function(){
-                                me.ShowGridPopup(me.Cashbook_OutStore, 'Detail Item',me.CB_Out_DetailGrid);
+                                me.ShowGridPopup(me.CB_Out_DetailStore, 'Detail Item',me.CB_Out_DetailGrid);
 
                             }
                         },'->',
@@ -224,7 +225,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
+                {text: 'Account',sortable: true,dataIndex: 'account'},
+                {text: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
                 {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00'), id:'SumNominal'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -416,8 +418,9 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxKPopup',
+                                    xtype: 'xtTaxMPopup',
                                     name: 'tax_code',
+                                    id:'tax_cd_cbout',
                                     allowBlank: false
                                 }
                             ]
@@ -494,13 +497,14 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Posting',
                                     id:'post_cb_out',
+                                    disabled: true,
                                     name: 'status',
                                     handler: function(field, value) {
                                         if (value== true) {
-                                            Ext.getCmp('posted_date_cb_out').enable();
+                                            Ext.getCmp('posted_date_cb_out').setDisabled(false);
                                             Ext.getCmp('posted_date_cb_out').setValue(new Date());
                                         }else{
-                                            Ext.getCmp('posted_date_cb_out').disable();
+                                            Ext.getCmp('posted_date_cb_out').setDisabled(true);
                                         }
 
                                     }
@@ -514,7 +518,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                     value : new Date(),
                                     allowBlank:false,
                                     id:'posted_date_cb_out',
-                                    maxValue: new Date()
+                                    maxValue: new Date(),
+                                    disabled: true
                                 }
                             ]
                         }
@@ -774,12 +779,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                 store.sync({
                     success:function(){
                         me.win.close();
-                        store.load();
+                        store.load({params:{co_id:globals['site'] }});
                         me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                     },
                     failure:function(){
-                        store.load();
-                        me.msg('Opps!', 'Error!!', true);
+                        Ext.MessageBox.alert('Opps', 'Error !!!!');
                     }
                 });
             }
@@ -793,12 +797,12 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
             store.sync({
                 success:function(){
                     me.win.close();
-                    store.load();
+                    store.load({params:{co_id:globals['site'] }});
                     me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 },
                 failure:function(){
-                    store.load();
-                    me.msg('Opps!', 'Error!!', true);
+                    //me.msg('Opps!', 'Error!!', true);
+                    Ext.MessageBox.alert('Opps', 'Error !!!!');
                 }
             });
         }
@@ -817,14 +821,13 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
         store.sync({
             success:function(){
                 me.winform.close();
-                store.load({params:{inv_code: me.currInv_Code}});
-                me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
             failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error !!!!');
             }
         });
+        store.load({params:{inv_code: me.currInv_Code}});
+        me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
     },
 
     onPBDelete: function(store){
@@ -896,7 +899,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
      */
     onActive: function(callback){
         var me = this;
-        this.Cashbook_OutStore.load({params:{start:0, limit:5}});
+        this.Cashbook_OutStore.load({params:{co_id:globals['site'] }});
         this.Cashbook_Out_JurnalStore.load();
 
         callback(true);

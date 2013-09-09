@@ -180,37 +180,34 @@ Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
                         },
                         {
                             xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal Release :'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'datefield',
-                                    name: 'released_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
-                                    maxValue: new Date(),
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
                             msgTarget: 'under',
                             items: [
                                 {
                                     width: 150,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Release',
-                                    name: 'released'
+                                    fieldLabel: 'Released',
+                                    name: 'released',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('released_date').setDisabled(false);
+                                            Ext.getCmp('released_date').setValue(new Date());
+
+                                        }else{
+                                            Ext.getCmp('released_date').setDisabled(true);
+                                        }
+
+                                    }
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'released_date',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    maxValue: new Date(),
+                                    disabled:true,
+                                    id:'released_date',
+                                    allowBlank:false
                                 }
                             ]
                         }

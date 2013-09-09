@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPengadaanBarang',
-    pageTitle: 'Pengadaan Barang',
+    pageTitle: 'Pengadaan Bahan',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -142,11 +142,11 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'PB Num',sortable: true,dataIndex: 'pb_num'},
+                {text: 'PB Num',sortable: true,dataIndex: 'pb_num'},
                 {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 300,text: 'Departement',sortable: true,dataIndex: 'bagian'},
-                {width: 200,text: 'User Request',sortable: true,dataIndex: 'request_by'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
+                {text: 'Departement',flex:1,sortable: true,dataIndex: 'bagian'},
+                {text: 'User Request',sortable: true,dataIndex: 'request_by'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -163,8 +163,8 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                 itemdblclick: function(view, record){
                     if(me.currStatus =='1' || me.currStatus =='2'){
                     }else{
-                        me.onItemdblclick(me.PB0Store, record, 'Edit Pengadaan Barang');
-                        Ext.getCmp('post_pb').enable();
+                        me.onItemdblclick(me.PB0Store, record, 'Edit Pengadaan Bahan');
+                        Ext.getCmp('post_pb').setDisabled(false);
                     }
 
                 }
@@ -182,7 +182,8 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'PB0Model', 'Tambah Data');
-                                Ext.getCmp('post_pb').disable();
+                                Ext.getCmp('tgl_pb').setValue(new Date());
+                                Ext.getCmp('post_pb').setDisabled(true);
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -226,12 +227,12 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'PB Num',sortable: true,dataIndex: 'pb_num', hidden:true},
-                {width: 200,text: 'bb_id',hidden:true,dataIndex: 'bb_id'},
-                {width: 300,text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama' },
-                {width: 200,text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200, text: 'Qty',sortable: true,dataIndex: 'qty' },
-                {width: 300,text: 'Keterangan',sortable: true,dataIndex: 'keterangan'},
+                {text: 'PB Num',sortable: true,dataIndex: 'pb_num', hidden:true},
+                {text: 'bb_id',hidden:true,dataIndex: 'bb_id'},
+                {text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama' },
+                {text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
+                { text: 'Qty',sortable: true,dataIndex: 'qty' },
+                {text: 'Keterangan',flex:1,sortable: true,dataIndex: 'keterangan'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
@@ -259,6 +260,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                         text: 'Add',
                         iconCls: 'icoAddRecord',
                         id:'add_pb',
+                        disabled: true,
                         scope: me,
                         handler: function(){
                             var form1 = me.winform1.down('form');
@@ -270,6 +272,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                             text: 'Hapus Data',
                             iconCls: 'delete',
                             id:'delete_dt_pb',
+                            disabled: true,
                             handler: function() {
                                 me.deletePB1(me.PengadaanBarangStore);
                             }
@@ -386,29 +389,32 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     width : 100,
                                     name : 'tanggal',
                                     format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
+                                    allowBlank:false,
+                                    id:'tgl_pb'
                                 }
                             ]
                         },
                         {
-                            xtype : 'fieldcontainer',
-                            layout :
-                            {
-                                type : 'hbox'
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
                             },
-                            defaults :
-                            {
-                                margin : '0 10 0 10'
-                            },
-                            hideLabel : true,
-                            items : [
+                            msgTarget: 'under',
+                            items: [
+
                                 {
-                                    width: 150,
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Release'
+                                },
+                                {
+                                    width: 100,
                                     xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Release',
+                                    name : 'status',
                                     id:'post_pb',
-                                    name: 'status'
-                                }]
+                                    disabled: true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -661,12 +667,13 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
         var me = this;
         me.currPB = selected.data.pb_num;
         me.currStatus = selected.data.status;
+        me.curr_coid = globals['site'];
         var TopBarItems = this.PB0Grid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.PengadaanBarangStore.load({params:{pb_num: me.currPB}});
+        me.PengadaanBarangStore.load({params:{co_id: me.curr_coid, pb_num: me.currPB}});
         if(selected.data.status == 1 || selected.data.status == 2){
             Ext.getCmp('add_pb').disable();
             Ext.getCmp('delete_pb').disable();
@@ -696,9 +703,23 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
 
     onPBSave: function(form, store){
         var me = this;
-        me.savePB(form, store);
+        var StatusPosting = form.findField('status').getValue();
+        var CountDetail = me.PengadaanBarangStore.getCount({params:{co_id: me.curr_coid, pb_num: me.currPB}});
+
+        if(StatusPosting){
+            if(CountDetail > 0){
+                me.CallFucntionSave(store, form);
+            }else{
+                Ext.MessageBox.alert('Warning', 'Detail Masih Belum Terisi');
+            }
+        }else{
+            me.CallFucntionSave(store, form);
+        }
+
     },
-    savePB: function(form, store){
+
+
+    CallFucntionSave: function(store, form){
         var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
@@ -709,11 +730,10 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             success:function(){
                 me.win.close();
                 store.load();
-                me.PengadaanBarangStore.load();
+                me.PengadaanBarangStore.load({params:{co_id: me.curr_coid, pb_num: me.currPB}});
             },
             failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
             }
         });
     },
@@ -736,15 +756,12 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
         store.sync({
             success:function(){
                 me.winform1.close();
-                // store.load();
             },
             failure:function(){
-                //store.load();
-                me.msg('Opps!', 'Error!!', true);
+                Ext.MessageBox.alert('Opps', 'Error..!!');
             }
         });
-        store.load({params:{pb_num: me.currPB}});
-        //me.DeliveryOrderStore.load();
+        store.load({params:{co_id: me.curr_coid, pb_num: me.currPB}});
     },
     onPBDelete: function(store){
         var me = this, grid = me.PB0Grid;
@@ -758,13 +775,12 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    PB.deletePB(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
-                    me.PengadaanBarangStore.load({params:{pb_num: me.currPB}});
+                    me.PengadaanBarangStore.load({params:{co_id: me.curr_coid, pb_num: me.currPB}});
                 }
             }
         });
@@ -781,7 +797,6 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    PB.deletePB1(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
@@ -792,16 +807,10 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
         })
     },
 
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
     onActive: function(callback){
         var me = this;
         this.PB0Store.load({params:{start:0, limit:5}});
-        this.PengadaanBarangStore.load();
+        this.PengadaanBarangStore.load({params:{co_id: me.curr_coid, pb_num: me.currPB}});
 
         callback(true);
     }

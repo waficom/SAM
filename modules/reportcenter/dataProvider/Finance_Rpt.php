@@ -42,10 +42,50 @@ class Finance_Rpt extends Reports
             'url' => $url
         );
     }
+    public function Ringkasan_Hutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AP/Aging_AP.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Rincian_Hutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AP/Rincian_Aging_AP.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
     public function Laporan_AR(stdClass $params)
     {
 
         $this->reportfile = '/var/www/modules/reportcenter/report/AR/Laporan_AR.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Ringkasan_Piutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AR/Aging_AR.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Rincian_Piutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AR/Rincian_Aging_AR.jasper';
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,
@@ -76,6 +116,48 @@ class Finance_Rpt extends Reports
     {
 
         $this->reportfile = '/var/www/modules/reportcenter/report/GL/TB.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Neraca(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/NRC.jasper';
+        $this->lokasirpt = '/var/www/modules/reportcenter/report/GL/';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function DetailHPP(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/RincianHPP.jasper';
+        $this->lokasirpt = '/var/www/modules/reportcenter/report/GL/';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function SummaryHPP(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/SummaryHPP.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Laporan_P_Cashbon(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/CB/PenyelesaianCashbon.jasper';
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,

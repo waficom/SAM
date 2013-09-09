@@ -1052,6 +1052,9 @@ $API = array(
             ),
             'getRoutePopup' => array(
                 'len' => 1
+            ),
+            'getReclassOVBpopup' => array(
+                'len' => 1
             )
 
 
@@ -1419,20 +1422,68 @@ $API = array(
     ),
     'Reclass' => array(
         'methods' => array(
-            'getViewReclass' => array(
+            'getViewReclassOVB' => array(
                 'len' => 1
             ),
-            'addViewReclass' => array(
+            'addViewReclassOVB' => array(
                 'len' => 1
             ),
             'updateCancelReturn' => array(
                 'len' => 1
-            )
+            ),
+            'getViewReclassOBJ' => array(
+                'len' => 1
+            ),
+            'addViewReclassOBJ' => array(
+                'len' => 1
+            ),
         )
     ),
     'AP_Reclass' => array(
         'methods' => array(
             'getReclass' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Penyusutan_Aset' => array(
+        'methods' => array(
+            'getPenyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'addPenyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'updatePenyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'deletePenyusutan_Aset' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Acc_Penyusutan_Aset' => array(
+        'methods' => array(
+            'getAcc_Penyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'addAcc_Penyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'updateAcc_Penyusutan_Aset' => array(
+                'len' => 1
+            ),
+            'deleteAcc_Penyusutan_Aset' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Penyusutan_Aset2' => array(
+        'methods' => array(
+            'getPenyusutan_Aset2' => array(
+                'len' => 1
+            ),
+            'addPenyusutan_Aset2' => array(
                 'len' => 1
             )
         )

@@ -99,7 +99,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     if(me.currPosted =='1' || me.currPosted =='2'){
                     }else{
                         me.onItemdblclick(me.POStore, record, 'Edit PO');
-                        Ext.getCmp('post_po').enable();
+                        Ext.getCmp('post_po').setDisabled(false);
                     }
 
 
@@ -118,7 +118,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                             handler: function(){
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'App.model.transaksi.purchaseorder.PurchaseOrder', 'Tambah Data');
-                                Ext.getCmp('post_po').disable();
+                                Ext.getCmp('tgl_po').setValue(new Date());Ext.getCmp('tgl_jt_po').setValue(new Date());
+                                Ext.getCmp('tax_cd_po').setValue('NT02');
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -209,11 +210,10 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {text: 'bb_id', width:70, sortable: false, dataIndex: 'bb_id'},
+                {text: 'Code Brg', width:70, sortable: false, dataIndex: 'bb_id'},
                 {text: 'po_num', width:70, sortable: false, dataIndex: 'po_num', hidden: true},
                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
                 {text: 'Sat ID', width:70, sortable: false, dataIndex: 'sat_id'},
-                //{text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
                 {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty'},
                 {text: 'Harga', width: 150, sortable: false, dataIndex: 'hrg'},
                 {text: 'Jumlah', width: 150, sortable: false, dataIndex: 'n_brutto', hidden: true},
@@ -353,7 +353,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     name : 'tgl',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
+                                    id:'tgl_po',
                                     maxValue: new Date(),
                                     allowBlank:false
                                 }
@@ -480,7 +480,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     name : 'tgl_jt',
                                     format : 'd-m-Y',
                                     submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
+                                    id:'tgl_jt_po',
                                     allowBlank:false
                                 }
                             ]
@@ -500,8 +500,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 100,
                                     xtype: 'xtTaxKPopup',
-                                    name : 'tax_code'
-
+                                    name : 'tax_code',
+                                    id:'tax_cd_po'
                                 },
                                 {
                                     width: 150,
@@ -528,7 +528,8 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     width: 100,
                                     xtype: 'mitos.checkbox',
                                     name : 'status',
-                                    id:'post_po'
+                                    id:'post_po',
+                                    disabled:true
 
                                 }
                             ]
@@ -590,9 +591,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                     items: [
                         {name:'co_id', xtype:'textfield', hidden : true},
                         {name: 'po_num', xtype: 'textfield', hidden : true},
-                        {name: 'n_disc', xtype: 'numberfield', id:'pon_disc_input', hidden : true},
-                        {name: 'n_brutto', xtype: 'numberfield', id: 'pon_brutto_input', hidden : true},
-                        {name: 'qty_rcv', xtype: 'numberfield', id: 'poqty_rcv_input', hidden : true},
+
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -604,7 +603,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'BB ID ' + ': '
+                                    value: 'BB ID :'
                                 },
                                 {
                                     width: 100,
@@ -653,14 +652,11 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     value: 'Qty :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'qty',
-                                    id : 'poqty_input',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
+                                    id : 'poqty_input'
                                 }
                             ]
                         },
@@ -677,14 +673,11 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     value: 'hrg :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 150,
                                     xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'hrg',
-                                    id : 'pohrg_input',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
+                                    id : 'pohrg_input'
                                 }
                             ]
                         },
@@ -701,18 +694,15 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     value: 'Disc :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 50,
                                     xtype: 'mitos.currency',
+                                    hideTrigger: true,
                                     name: 'disc_prs',
-                                    id : 'podisc_prs_input',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
+                                    id : 'podisc_prs_input'
                                 }
                             ]
                         },
-                        {
+                       /* {
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -735,7 +725,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     }
                                 }
                             ]
-                        },
+                        },*/
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -902,62 +892,29 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
     },
 
     onPBSave: function(form, store){
-        var me = this;
-        me.savePB(form, store);
-    },
-    savePB: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var me = this, showWin = me.win;
         var StatusPosting = form.findField('status').getValue();
         var CountDetail = me.POItemsStore.getCount({params:{po_num:me.curr_po_num}});
         if(StatusPosting){
             if(CountDetail > 0){
-                if(storeIndex == -1){
-                    store.add(values);
-                }else{
-                    record.set(values);
-                }
-                store.sync({
-                    success:function(){
-                        me.win.close();
-                    },
-                    failure:function(){
-                        me.msg('Opps!', 'Error!!', true);
-                        me.win.close();
-                    }
-                });
-                this.ReloadGrid();
+                me.CallFunctionSave(form,store, showWin);
             }else{
                 Ext.MessageBox.alert('Warning', 'Detail PO Belum Terisi');
             }
         }else{
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            store.sync({
-                success:function(){
-                    me.win.close();
-                },
-                failure:function(){
-                    me.msg('Opps!', 'Error!!', true);
-                    me.win.close();
-                }
-            });
-            this.ReloadGrid();
+            me.CallFunctionSave(form,store, showWin);
         }
-
+        this.ReloadGrid();
     },
-
     onPB1Save: function(form, store){
-        var me = this;
-        me.savePB1(form, store);
-    },
-    savePB1: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-            f = me.winform1.down('form').getForm(), rec = f.getRecord();
+        var me = this, showWin = me.winform1;
         form.findField('po_num').setValue(me.curr_po_num);
-        values = form.getValues();
+        me.CallFunctionSave(form,store,showWin);
+        store.load({params:{po_num: me.curr_po_num}});
+    },
+
+    CallFunctionSave: function(form, store, showWin){
+        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
         if(storeIndex == -1){
             store.add(values);
         }else{
@@ -965,18 +922,16 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         }
         store.sync({
             success:function(){
-                me.winform1.close();
+                showWin.close();
             },
             failure:function(){
-                //store.load();
                 me.msg('Opps!', 'Error!!', true);
             }
         });
-        store.load({params:{po_num: me.curr_po_num}});
-        this.ReloadGrid();
     },
-    onPBDelete: function(store){
-        var me = this, grid = me.POGrid;
+
+    CallFunctionDel:function(store, grid){
+        var me=this;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
         bid = sr[0].get('po_num');
@@ -987,64 +942,26 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    PB.deletePB(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
-                    me.POItemsStore.load({params:{po_num:me.curr_po_num}});
+                    store.load({params:{po_num: me.curr_po_num}});
+                    me.POItemsStore.load({params:{po_num: me.curr_po_num}});
                 }
             }
         });
     },
+    onPBDelete: function(store){
+        var me = this, grid = me.POGrid;
+        me. CallFunctionDel(store, grid);
+    },
     deletePB1: function(store){
         var me = this, grid = me.POItemGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('bb_id');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    PB.deletePB1(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                    this.ReloadGrid();
-                }
-            }
-        })
+        me. CallFunctionDel(store, grid);
     },
-    onEnter : function(field, e)
-    {
-        var hrg = 0,
-            qty = 0,
-            disc_prs = 0,
-            n_brutto = 0,
-            n_disc = 0,
-            n_netto =0;
-        if (e.getKey() == e.ENTER)
-        {
-            qty = Ext.getCmp('poqty_input').getValue();
-            hrg = Ext.getCmp('pohrg_input').getValue();
-            disc_prs = Ext.getCmp('podisc_prs_input').getValue();
-            n_brutto = qty * hrg;
-            n_netto = n_brutto;
-            if (disc_prs > 0) {
-                n_disc = (disc_prs/100)*n_brutto;
-                n_netto = n_brutto - n_disc;
-            }
-        }
-        Ext.getCmp('pon_disc_input').setValue(n_disc);
-        Ext.getCmp('pon_brutto_input').setValue(n_brutto);
-        Ext.getCmp('pon_netto_input').setValue(n_netto);
-    },
+
     ReloadGrid : function(btn)
     {
         // Declare some variables
@@ -1056,6 +973,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
         this.POStore.load({params:{datefrom : datefrom, dateto : dateto}});
 
     },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.

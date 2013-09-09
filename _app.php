@@ -109,6 +109,7 @@ requires = [
     'App.model.transaksi.goodsreceived.GoodsReceived',
     'App.model.transaksi.goodsreceived.GRDetail',
     'App.model.transaksi.goodsreceived.GRItems',
+    'App.model.transaksi.AllModel.Jurnal',
     //'App.model.transaksi.goodsissued.GoodsIssued',
    //'App.model.transaksi.goodsissued.GIDetail',
    //'App.model.transaksi.goodsissued.GIItems',
@@ -207,6 +208,7 @@ requires = [
     'App.ux.CashbonOutPopup',
     'App.ux.SODeliveryPopup',
     'App.ux.RoutePopup',
+    'App.ux.ReclassOVBPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -279,6 +281,8 @@ requires = [
     'App.view.master.Factory_location',
     'App.view.master.Tax',
     'App.view.master.Bank',
+    'App.view.master.Penyusutan_Aset',
+    'App.view.master.Acc_Penyusutan_Aset',
 
     /*
      * Load the root related panels
@@ -314,6 +318,7 @@ requires = [
     'App.view.transaksi.GL.Voucher',
     'App.view.transaksi.cancel-return.CancelReturn',
     'App.view.transaksi.AP-Invoice.Reclass',
+    'App.view.transaksi.AP-Invoice.Penyusutan_Aset',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',
