@@ -848,7 +848,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     width: 300,
                                     name: 'prod_id',
                                     fieldLabel : 'Product ID ',
-//                                    xtype: 'Itemslivetsearch',
                                     xtype : 'xtlistproduct',
                                     itemId : 'prod_id',
                                     labelAlign : 'right',
@@ -940,6 +939,13 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     renderer: Ext.util.Format.numberRenderer('0,000.00')
                                 }
                             ]
+                        },{
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: false
+                            },
+                            fieldLabel : 'RINCIAN HARGA ',
+                            labelAlign : 'right'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -1508,7 +1514,19 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 
     onitemsSave: function(form, store){
         var me = this;
-        me.saveitem(form, store);
+        var hrg_loco = Ext.getCmp('hrg_loco_input').getValue(),
+            hrg_transport = Ext.getCmp('hrg_transport_input').getValue(),
+            hrg_promosi = Ext.getCmp('hrg_promosi_input').getValue(),
+            hrg_sosialisasi = Ext.getCmp('hrg_sosialisasi_input').getValue(),
+            jumlah = Ext.getCmp('hrg_input').getValue(),
+            totalRincian =0;
+        totalRincian = hrg_loco + hrg_transport + hrg_promosi + hrg_sosialisasi;
+        if(totalRincian != jumlah){
+            Ext.MessageBox.alert('Warning', 'Rincian Biaya Tidak Sesuai Dengan Harga');
+        }else{
+            me.saveitem(form, store);
+        }
+
     },
 
     saveitem: function(form, store){
@@ -1524,7 +1542,6 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
             },
             failure:function(){
                 Ext.MessageBox.alert('Opps', 'Error..!!');
-                //me.msg('Opps!', 'Error!!', true);
             }
         });
         store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});

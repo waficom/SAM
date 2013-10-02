@@ -155,26 +155,25 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             region: 'north',
             readOnly: true,
             columns: [
-                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 150,text: 'DO Num',sortable: true,dataIndex: 'do_num'},
-                {width: 150,text: 'Doc. AR',sortable: true,dataIndex: 'for_inv_code'},
-                {width: 150,text: 'Acc. Number',sortable: true,dataIndex: 'account'},
-                {width: 100,text: 'Tax Code',sortable: true,dataIndex: 'tax_code'},
-                {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id'},
-                {width: 100,text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
-                {width: 100,text: 'Nominal',sortable: true,dataIndex: 'nilaidasarx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 50,text: 'Discon',sortable: true,dataIndex: 'discon'},
-                {width: 100,text: 'Setelah Disc',sortable: true,dataIndex: 'nd_setelah_discx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 50,text: 'Ppn %',sortable: true,dataIndex: 'ppn_prs'},
-                {width: 100,text: 'ppn',sortable: true,dataIndex: 'ppn_nilaix', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 50,text: 'Pph %',sortable: true,dataIndex: 'pph_prs'},
-                {width: 100,text: 'Pph',sortable: true,dataIndex: 'pph_nilaix', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 100,text: 'Total',sortable: true,dataIndex: 'totalx', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'Remaks',sortable: true,dataIndex: 'remaks'},
-                {width: 50,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {width: 50,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
-                {width: 50,text: 'account_type',sortable: true,dataIndex: 'account_type', hidden: true},
+                {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                {text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'DO Num',sortable: true,dataIndex: 'do_num'},
+                {text: 'Doc. AR',sortable: true,dataIndex: 'for_inv_code'},
+                {text: 'Acc. Number',sortable: true,dataIndex: 'account'},
+                {text: 'Tax Code',sortable: true,dataIndex: 'tax_code'},
+                {flex: 1,text: 'Customer',sortable: true,dataIndex: 'cust_id'},
+                {text: 'Nominal',sortable: true,dataIndex: 'nilaidasarx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Discon',sortable: true,dataIndex: 'discon'},
+                {text: 'Setelah Disc',sortable: true,dataIndex: 'nd_setelah_discx',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Ppn %',sortable: true,dataIndex: 'ppn_prs'},
+                {text: 'ppn',sortable: true,dataIndex: 'ppn_nilaix', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Pph %',sortable: true,dataIndex: 'pph_prs'},
+                {text: 'Pph',sortable: true,dataIndex: 'pph_nilaix', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Total',sortable: true,dataIndex: 'totalx', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Remaks',sortable: true,dataIndex: 'remaks'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
+                {text: 'account_type',sortable: true,dataIndex: 'account_type', hidden: true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -212,6 +211,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
                                 Ext.getCmp('inv_date_ar').setValue(new Date());
+                                Ext.getCmp('at_Y_ar').setDisabled(false);
 
                             }
                         },
@@ -406,11 +406,11 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('tax_ar').enable();
-                                            Ext.getCmp('gudang_id_ar').enable();
+                                            //Ext.getCmp('gudang_id_ar').enable();
                                             Ext.getCmp('do_num_ar').enable();
                                             Ext.getCmp('for_inv_ar').setDisabled(true);
                                             Ext.getCmp('discon_ar').enable();
-                                            Ext.getCmp('at_Y_ar').setValue(true);;Ext.getCmp('at_N_ar').setValue(false);
+                                            Ext.getCmp('at_Y_ar').setDisabled(false);
                                         }
                                     }
 
@@ -421,8 +421,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('tax_ar').disable();
-                                            Ext.getCmp('gudang_id_ar').disable();
-                                            Ext.getCmp('at_N_ar').setValue(true);Ext.getCmp('at_Y_ar').setValue(false);
+                                           // Ext.getCmp('gudang_id_ar').disable();
+                                            Ext.getCmp('at_Y_ar').setDisabled(true);
                                             Ext.getCmp('do_num_ar').disable();
                                             Ext.getCmp('for_inv_ar').setDisabled(false);
                                             Ext.getCmp('discon_ar').disable();
@@ -500,15 +500,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                         },
                         {
                             xtype: "radiogroup",
-                            fieldLabel: "Account/Susut ",
+                            fieldLabel: "Account/Susut ", id:'at_Y_ar',
                             defaults: {xtype: "radio", name:'account_type'
-                            },
+                            },disabled:true,
                             items: [
                                 {
                                     boxLabel: "Y",
                                     inputValue:'Y',
                                     checked: true,
-                                    id:'at_Y_ar',
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('account_ar').setDisabled(false);
@@ -518,7 +517,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     boxLabel: "N",
                                     inputValue:'N',
-                                    id:'at_N_ar',
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('account_ar').setDisabled(true);
@@ -565,61 +563,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'displayfield',
                                     name:'tax_nama',
                                     id:'tax_code'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debtor : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtCustomerPopup',
-                                    name: 'cust_id',
-                                    id:'cust_id_ar',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'cust_nama',
-                                    id:'cust_nama_ar'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Ambil dari Gudang : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtGudangBJPopup',
-                                    name: 'gudang_id',
-                                    id:'gudang_id_ar'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'gudang_nama',
-                                    id:'gudang_nama_ar'
                                 }
                             ]
                         },
@@ -763,7 +706,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             hidden: true,
                             name: 'sequence_no'
                         },
-                        {
+                        /*{
                             xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
@@ -781,7 +724,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     name:'description'
                                 }
                             ]
-                        },
+                        },*/
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -800,7 +743,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     name: 'qty',
                                     xtype: 'mitos.currency',
                                     hideTrigger: true,
-                                    id:'qty_ar'
+                                    readOnly:true
+                                },
+                                {
+                                    width: 50,
+                                    xtype: 'xtSatuanPopup',
+                                    name:'sat_id',
+                                    readOnly:true
                                 }
                             ]
                         },
@@ -822,28 +771,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     name: 'qty_susut',
                                     xtype: 'mitos.currency',
                                     hideTrigger: true,
-                                    id:'qty_susut_ar'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                                    id:'qty_susut_ar',
+                                    readOnly:true
 
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Satuan :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtSatuanPopup',
-                                    name:'sat_id',
-                                    id:'sat_id_ar'
                                 }
                             ]
                         },
@@ -864,7 +794,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     labelAlign : 'right',
                                     name: 'harga',
                                     xtype: 'mitos.currency',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    readOnly:true,
+                                    id:'hrg_ar_sale'
                                 }
                             ]
                         }
@@ -983,13 +915,14 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             Ext.getCmp('delete_dt_ar').enable();
         }
         if(selected.data.inv_type =='P'){
-            Ext.getCmp('qty_ar').disable();
-            Ext.getCmp('qty_susut_ar').disable();
-            Ext.getCmp('sat_id_ar').disable();
+            Ext.getCmp('qty_susut_ar').setReadOnly(true)
+            Ext.getCmp('hrg_ar_sale').setReadOnly(false)
         }else{
-            Ext.getCmp('qty_ar').enable();
-            Ext.getCmp('qty_susut_ar').enable();
-            Ext.getCmp('sat_id_ar').enable();
+            if(selected.data.account == null || selected.data.account==''){
+                Ext.getCmp('qty_susut_ar').setReadOnly(true)
+            }else{
+                Ext.getCmp('qty_susut_ar').setReadOnly(false)
+            }
         }
     },
 
@@ -1015,6 +948,24 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
 
     onPBSave: function(form, store){
         var me = this, showWin =me.win ;
+        var totalDebit= 0, totalCredit= 0;
+        me.AR_Sale_JurnalStore.each(function(record){
+            if(record.get('inv_code') == me.currInv_Code ) {
+                totalDebit += record.get('debit');
+                totalCredit += record.get('credit');
+            }
+        });
+        var StatusPosting = form.findField('status').getValue();
+        if(StatusPosting){
+            if((totalDebit == 0 && totalCredit==0)){
+                Ext.MessageBox.alert('Warning', 'Detail Data Masih Belum Terisi..!!');
+            }
+            else if(totalDebit != totalCredit){
+                Ext.MessageBox.alert('Warning', 'Debit Credit Tidak Balance..!!');
+            }
+        }
+
+
         me.CallFunctionSave(form, store, showWin);
     },
 
@@ -1044,7 +995,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         var qty_kirim = form.findField('qty').getValue();
         var qty_susut = form.findField('qty_susut').getValue();
         var total_nominal = form.findField('harga').getValue();
-        console.log(total_nominal);
         me.AR_SaleStore.each(function(record){
             if(record.get('inv_code') == me.currInv_Code ) {
                 if(record.get('inv_type')=='P'){

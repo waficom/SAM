@@ -139,6 +139,7 @@ class authProcedures
 			// Change some User related variables and go
 			//-------------------------------------------
 			$_SESSION['user']['name']  = $user['FNAME'] . " " . $user['LNAME'] ;
+            $_SESSION['user']['username'] = $params->authUser;
 			$_SESSION['user']['id']    = $user['ID'];
 			$_SESSION['user']['email'] = $user['EMAIL'];
 			$_SESSION['user']['site']  = $params->site;

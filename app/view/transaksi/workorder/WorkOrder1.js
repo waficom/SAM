@@ -86,7 +86,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 { name : 'qty_bb', type : 'string'},
                 { name : 'qty_bj', type : 'string'},
                 { name : 'qty_susut', type : 'string'},
-                { name : 'status', type : 'string'}
+                { name : 'status', type : 'string'},
+                { name : 'posted_date', type : 'date'}
             ],
             proxy: {
                 type: 'direct',
@@ -150,7 +151,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 { name : 'no_pp', type : 'string'},
                 { name : 'no_ppd', type : 'string'},
                 { name : 'bb_nama', type : 'string'},
-                { name : 'qty_total', type : 'string'},
+                { name : 'total_qty_in', type : 'string'},
                 { name : 'qty_in', type : 'string'},
                 { name : 'sat_id', type : 'string'},
                 { name : 'jml_paket', type : 'string'},
@@ -454,11 +455,11 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'so_num', dataIndex : 'so_num',width : 150, hidden: true},
                 {header : 'prod_id', dataIndex : 'prod_id',width : 150, hidden: true},
-                {header : 'Bahan Baku', dataIndex : 'bb_nama',width : 200},
+                {header : 'Bahan Baku', dataIndex : 'bb_nama',flex:1},
                 {header : 'satuan', dataIndex : 'sat_id',width : 50},
                 {header : 'qty_in', dataIndex : 'qty_in',width : 100},
                 {header : 'jml_paket', dataIndex : 'jml_paket',width : 100},
-                {header : 'qty_total', dataIndex : 'qty_total',width : 100},
+                {header : 'Total', dataIndex : 'total_qty_in',width : 100},
                 {header : 'darigudang', dataIndex : 'darigudang',width : 100},
                 {header : 'kegudang', dataIndex : 'kegudang',width : 100}
             ],
@@ -670,7 +671,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                         handler: function(){
                             var form1 = me.winformBahanJadi.down('form');
                             me.onNewProduksi1(form1, 'Wo1DBahanJadiModel', 'Tambah Data', me.winformBahanJadi);
-                            Ext.getCmp('')
+                            Ext.getCmp('qty_bj_wo').setValue(me.CountBB);
                         }
                     },
                         {
@@ -839,11 +840,29 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Posting'
                                 },
                                 {
-                                    width: 100,
                                     xtype: 'mitos.checkbox',
                                     name : 'status',
-                                    id:'post_wo'
+                                    id:'post_wo',
+                                    handler: function(field, value) {
+                                        if (value== true) {
+                                            Ext.getCmp('posted_date_wo').setDisabled(false);
+                                            Ext.getCmp('posted_date_wo').setValue(new Date());
+                                        }else{
+                                            Ext.getCmp('posted_date_wo').setDisabled(true);
+                                        }
 
+                                    }
+
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'posted_date',
+                                    format : 'd-m-Y',
+                                    disabled: true,
+                                    maxValue: new Date(),
+                                    allowBlank:false,
+                                    id:'posted_date_wo'
                                 }
                             ]
                         }
@@ -1121,9 +1140,8 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'Qty BB :'
                                 },
                                 {
-                                    fieldLabel : 'qty',
+                                    fieldLabel : 'Qty',
                                     labelAlign : 'right',
-                                    id:'qty_bj_wo',
                                     xtype: 'textfield',
                                     disabled:true
                                 },
@@ -1150,6 +1168,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     fieldLabel : 'qty',
                                     labelAlign : 'right',
                                     name: 'qty',
+                                    id:'qty_bj_wo',
                                     xtype: 'textfield'
                                 },
                                 {
@@ -1172,7 +1191,7 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
                                     value: 'qty_pcs:'
                                 },
                                 {
-                                    fieldLabel : 'qty_pcs',
+                                    fieldLabel : 'Qty/Pcs',
                                     labelAlign : 'right',
                                     name: 'qty_pcs',
                                     xtype: 'textfield'

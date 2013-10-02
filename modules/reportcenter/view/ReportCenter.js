@@ -35,34 +35,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
              * this indicator will also be the logic for field rendering.
              */
 
-            me.MarketingCategory = me.addCategory('Report Marketing', 260);
-            me.TestReport = me.addReportByCategory(me.MarketingCategory, 'Maketing', function(btn) {
-
-                me.goToReportPanelAndSetPanel({
-                    title:'Testing 123',
-                    items : [
-                        {
-                            xtype          : 'datefield',
-                            fieldLabel     : 'from',
-                            hideLabel      : false,
-                            name           : 'report_date_datefrom',
-                            format         : 'd-m-Y',
-                            value          : new Date(),
-                            width          : 250
-                        },
-                        {
-                            xtype          : 'datefield',
-                            fieldLabel     : 'to',
-                            hideLabel      : false,
-                            format         : 'd-m-Y',
-                            value          : new Date(),
-                            name           : 'report_date_dateto',
-                            width          : 250
-                        }
-                    ],
-                    fn:Test.TestList
-                });
-            });
+            me.MarketingCategory = me.addCategory('Lap. Marketing', 260);
             me.SalesOrder = me.addReportByCategory(me.MarketingCategory, 'Sales Order', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -100,7 +73,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:SalesOrder_Rpt.SalesOrder
                 });
             });
-            me.DataKonsumen = me.addReportByCategory(me.MarketingCategory, 'Data Konsumen', function(btn) {
+            /*me.DataKonsumen = me.addReportByCategory(me.MarketingCategory, 'Data Konsumen', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -157,7 +130,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ],
                     fn:SalesOrder_Rpt.DataKonsumen
                 });
-            });
+            });*/
             me.RekapPenjualan = me.addReportByCategory(me.MarketingCategory, 'Rekap Penjualan', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -188,6 +161,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     labelAlign : 'right',
                                     value : new Date(),
                                     name : 'report_date_todate'
+                                },{
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
                                 }]
                         }
 
@@ -287,7 +267,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:SalesOrder_Rpt.SuratPesanan
                 });
             });
-            me.DeliveryOrder = me.addReportByCategory(me.MarketingCategory, 'Delivery Order', function(btn) {
+            me.DeliveryOrder = me.addReportByCategory(me.MarketingCategory, 'Pengiriman Barang(DO)', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -320,7 +300,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
-            me.LogisticsCategory = me.addCategory('Report Logistics', 260);
+            me.LogisticsCategory = me.addCategory('Lap. Logistik', 260);
             me.PermintaanProduksi = me.addReportByCategory(me.LogisticsCategory, 'Permintaan Logistics', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -368,6 +348,13 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     labelAlign : 'right',
                                     value : new Date(),
                                     name : 'report_date_todate'
+                                },{
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
                                 }]
                         }
 
@@ -422,6 +409,19 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     labelAlign : 'right',
                                     value : new Date(),
                                     name : 'report_date_todate'
+                                },
+                                {
+                                    xtype          : 'xtPO_rptPopup',
+                                    fieldLabel     : 'PO :',
+                                    name           : 'report_po_num',
+                                    width          : 200
+                                },{
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
                                 }]
                         }
 
@@ -431,7 +431,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             });
 
 
-            me.ProduksiCategory = me.addCategory('Report Produksi', 260);
+            me.ProduksiCategory = me.addCategory('Lap. Produksi', 260);
             me.BarangMasuk = me.addReportByCategory(me.ProduksiCategory, 'Barang Masuk', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -462,6 +462,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                     labelAlign : 'right',
                                     value : new Date(),
                                     name : 'report_date_todate'
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Company',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
                                 }]
                         }
 
@@ -469,7 +477,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Produksi_Rpt.BarangMasuk
                 });
             });
-            me.PengirimanBarang = me.addReportByCategory(me.ProduksiCategory, 'Pengiriman Barang', function(btn) {
+           /* me.PengirimanBarang = me.addReportByCategory(me.ProduksiCategory, 'Pengiriman Barang', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -505,7 +513,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ],
                     fn:Produksi_Rpt.PengirimanBarang
                 });
-            });
+            });*/
             me.SuratJalan = me.addReportByCategory(me.ProduksiCategory, 'Surat Jalan', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -524,25 +532,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 });
             });
 
-            me.FinanceCategory = me.addCategory('Report Finance', 260);
-            me.AP_Invoice= me.addReportByCategory(me.FinanceCategory, 'AP Invoice', function(btn) {
+            me.FinanceCategory = me.addCategory('Lap. Finance', 260);
 
-                me.goToReportPanelAndSetPanel({
-                    title:'Insert Parameter',
-                    items : [
-                        {
-                            xtype          : 'xtDOPopup',
-                            fieldLabel     : 'No. Inv. :',
-                            hideLabel      : false,
-                            name           : 'report_inv_code',
-                            width          : 350
-                        }
-
-                    ],
-                    fn:Finance_Rpt.AP_Invoice
-                });
-            });
-            me.Ringkasan_Hutang= me.addReportByCategory(me.FinanceCategory, 'Ringkasan Hutang', function(btn) {
+            me.Ringkasan_Hutang= me.addReportByCategory(me.FinanceCategory, 'AP Ringkasan Hutang', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -580,7 +572,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Ringkasan_Hutang
                 });
             });
-            me.Rincian_Hutang= me.addReportByCategory(me.FinanceCategory, 'Rincian Hutang', function(btn) {
+            me.Rincian_Hutang= me.addReportByCategory(me.FinanceCategory, 'AP Rincian Hutang', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -618,7 +610,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Rincian_Hutang
                 });
             });
-            me.Laporan_Ap_Invoice = me.addReportByCategory(me.FinanceCategory, 'Laporan AP Invoice', function(btn) {
+           /* me.Laporan_Ap_Invoice = me.addReportByCategory(me.FinanceCategory, 'AP Invoice', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -654,45 +646,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     ],
                     fn:Finance_Rpt.Laporan_Ap_Invoice
                 });
-            });
-            me.Laporan_AR = me.addReportByCategory(me.FinanceCategory, 'Laporan AR', function(btn) {
-
-                me.goToReportPanelAndSetPanel({
-                    title:'Insert Parameter',
-                    items : [
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange',
-                            items : [
-                                {
-                                    xtype : 'datefield',
-                                    fieldLabel : 'dari',
-                                    labelWidth : 35,
-                                    width : 150,
-                                    format : 'm/d/Y',
-                                    labelAlign : 'right',
-                                    value : new Date(),
-                                    name : 'report_date_fromdate'
-                                },
-
-                                {
-                                    xtype : 'datefield',
-                                    fieldLabel : 'sampai',
-                                    labelWidth : 35,
-                                    padding : '0 10 0 0',
-                                    width : 150,
-                                    format : 'm/d/Y',
-                                    labelAlign : 'right',
-                                    value : new Date(),
-                                    name : 'report_date_todate'
-                                }]
-                        }
-
-                    ],
-                    fn:Finance_Rpt.Laporan_AR
-                });
-            });
-            me.Ringkasan_Piutang= me.addReportByCategory(me.FinanceCategory, 'Ringkasan Piutang', function(btn) {
+            });*/
+            me.Ringkasan_Piutang= me.addReportByCategory(me.FinanceCategory, 'AR Ringkasan Piutang', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -736,7 +691,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Ringkasan_Piutang
                 });
             });
-            me.Rincian_Piutang= me.addReportByCategory(me.FinanceCategory, 'Rincian Piutang', function(btn) {
+            me.Rincian_Piutang= me.addReportByCategory(me.FinanceCategory, 'AR Rincian Piutang', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -780,7 +735,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Rincian_Piutang
                 });
             });
-            me.Laporan_Kas_Harian = me.addReportByCategory(me.FinanceCategory, 'Lap. Kas Harian', function(btn) {
+            me.Laporan_Kas_Harian = me.addReportByCategory(me.FinanceCategory, 'CB Lap. Kas Harian', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -826,7 +781,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Laporan_Kas_Harian
                 });
             });
-            me.Laporan_P_Cashbon = me.addReportByCategory(me.FinanceCategory, 'Lap. Penyelesaian Kas bon', function(btn) {
+            me.LapCashflow = me.addReportByCategory(me.FinanceCategory, 'Lap. Cashflow', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -835,28 +790,68 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             xtype : 'fieldcontainer',
                             itemId : 'fieldContainerDateRange',
                             items : [
-                                /*{
-                                    xtype : 'datefield',
-                                    fieldLabel : 'Dari ' ,
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Periode ',
                                     width : 200,
-                                    format : 'm/d/Y',
-                                    value : new Date(),
-                                    name : 'report_date_fromdate'
+                                    name : 'report_periode'
 
                                 },
                                 {
-                                    xtype : 'datefield',
-                                    fieldLabel : 'Sampai ' ,
-                                    width : 200,
-                                    format : 'm/d/Y',
-                                    value : new Date(),
-                                    name : 'report_date_todate'
-                                },*/
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Company',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
+                                }]
+                        }
+
+                    ],
+                    fn:Finance_Rpt.LapCashflow
+                });
+            });
+            me.Laporan_P_Cashbon = me.addReportByCategory(me.FinanceCategory, 'CB Lap. Kasbon', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype: "radiogroup",
+                                    fieldLabel: "Choice ",
+                                    width          : 300,
+                                    defaults: {xtype: "radio", name:'report_pilihan'
+                                    },
+                                    items: [
+                                        {boxLabel: "Settle",checked: true,inputValue:'N'},
+                                        {boxLabel: "Not Settle",inputValue:'Y'}
+                                    ]
+                                },
                                 {
                                     xtype          : 'xtVendorSuplierPopup',
                                     fieldLabel     : 'User :',
                                     name           : 'report_vend_id',
                                     width          : 200
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'From ' ,
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'To ',
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
                                 },
                                 {
                                     xtype : 'textfield',
@@ -870,6 +865,119 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
                     ],
                     fn:Finance_Rpt.Laporan_P_Cashbon
+                });
+            });
+            me.LapAset = me.addReportByCategory(me.FinanceCategory, 'Lap. Penyusutan Aset', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Periode ',
+                                    width : 200,
+                                    name : 'report_periode'
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Code Aset',
+                                    width : 200,
+                                    name : 'report_code'
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'Company',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
+                                }]
+                        }
+
+                    ],
+                    fn:Finance_Rpt.LapAset
+                });
+            });
+            me.DetailHPP = me.addReportByCategory(me.FinanceCategory, 'Rincian HPP', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'fieldcontainer',
+                                    itemId : 'fieldContainerDateRange',
+                                    items : [
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Periode ',
+                                            width : 200,
+                                            name : 'report_periode'
+
+                                        },{
+                                            xtype : 'textfield',
+                                            fieldLabel : 'dari',
+                                            labelAlign : 'right',
+                                            value : globals['site'],
+                                            name : 'report_co_id',
+                                            hidden: true
+                                        },{
+                                            xtype : 'textfield',
+                                            name : 'report_dir',
+                                            hidden: true
+                                        }]
+                                }
+
+                            ]
+
+                        }
+
+                    ],
+                    fn:Finance_Rpt.DetailHPP
+                });
+            });
+            me.SummaryHPP = me.addReportByCategory(me.FinanceCategory, 'Ringkasan HPP', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'fieldcontainer',
+                                    itemId : 'fieldContainerDateRange',
+                                    items : [
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Periode ',
+                                            width : 200,
+                                            name : 'report_periode'
+
+                                        },{
+                                            xtype : 'textfield',
+                                            fieldLabel : 'dari',
+                                            labelAlign : 'right',
+                                            value : globals['site'],
+                                            name : 'report_co_id',
+                                            hidden: true
+                                        }]
+                                }
+
+                            ]
+
+                        }
+
+                    ],
+                    fn:Finance_Rpt.SummaryHPP
                 });
             });
             me.General_Jurnal = me.addReportByCategory(me.FinanceCategory, 'General Jurnal', function(btn) {
@@ -1010,7 +1118,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Finance_Rpt.Neraca
                 });
             });
-            me.DetailHPP = me.addReportByCategory(me.FinanceCategory, 'Detail HPP', function(btn) {
+            me.LabaRugi = me.addReportByCategory(me.FinanceCategory, 'LABA / RUGI', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -1027,14 +1135,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                                             xtype : 'textfield',
                                             fieldLabel : 'Periode ',
                                             width : 200,
-                                            name : 'report_periode'
+                                            name : 'report_prd'
 
                                         },{
                                             xtype : 'textfield',
                                             fieldLabel : 'dari',
                                             labelAlign : 'right',
                                             value : globals['site'],
-                                            name : 'report_co_id',
+                                            name : 'report_coid',
                                             hidden: true
                                         },{
                                             xtype : 'textfield',
@@ -1048,10 +1156,122 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         }
 
                     ],
-                    fn:Finance_Rpt.DetailHPP
+                    fn:Finance_Rpt.LabaRugi
                 });
             });
-            me.SummaryHPP = me.addReportByCategory(me.FinanceCategory, 'Summary HPP', function(btn) {
+
+            me.VoucherCategory = me.addCategory('Voucher', 260);
+            me.AP_Invoice= me.addReportByCategory(me.VoucherCategory, 'AP Voucher', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtAPPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 200
+                        },{
+                            xtype : 'textfield',
+                            value : globals['site'],
+                            name : 'report_co_id',
+                            hidden: true
+                        }
+
+                    ],
+                    fn:Finance_Rpt.AP_Invoice
+                });
+            });
+            me.AR_Voucher= me.addReportByCategory(me.VoucherCategory, 'AR Voucher', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtARPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 200
+                        },{
+                            xtype : 'textfield',
+                            value : globals['site'],
+                            name : 'report_co_id',
+                            hidden: true
+                        }
+
+                    ],
+                    fn:Voucher_Rpt.AR_Voucher
+                });
+            });
+            me.GL_Voucher= me.addReportByCategory(me.VoucherCategory, 'GL AD Voucher', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtGLADPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 200
+                        },{
+                            xtype : 'textfield',
+                            value : globals['site'],
+                            name : 'report_co_id',
+                            hidden: true
+                        }
+
+                    ],
+                    fn:Voucher_Rpt.GL_Voucher
+                });
+            });
+            me.KasBankKeluar_Voucher= me.addReportByCategory(me.VoucherCategory, 'Voucher Kas / Bank Keluar', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtKBKPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 200
+                        },{
+                            xtype : 'textfield',
+                            value : globals['site'],
+                            name : 'report_co_id',
+                            hidden: true
+                        }
+
+                    ],
+                    fn:Voucher_Rpt.KasBankKeluar_Voucher
+                });
+            });
+            me.KasBankMasuk_Voucher= me.addReportByCategory(me.VoucherCategory, 'Voucher Kas / Bank Masuk', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype          : 'xtKBMPopup',
+                            fieldLabel     : 'No. Inv. :',
+                            hideLabel      : false,
+                            name           : 'report_inv_code',
+                            width          : 200
+                        },{
+                            xtype : 'textfield',
+                            value : globals['site'],
+                            name : 'report_co_id',
+                            hidden: true
+                        }
+
+                    ],
+                    fn:Voucher_Rpt.KasBankMasuk_Voucher
+                });
+            });
+            me.Laporan_AR = me.addReportByCategory(me.VoucherCategory, 'AR Form Invoice', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -1061,35 +1281,28 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             itemId : 'fieldContainerDateRange',
                             items : [
                                 {
-                                    xtype : 'fieldcontainer',
-                                    itemId : 'fieldContainerDateRange',
-                                    items : [
-                                        {
-                                            xtype : 'textfield',
-                                            fieldLabel : 'Periode ',
-                                            width : 200,
-                                            name : 'report_periode'
-
-                                        },{
-                                            xtype : 'textfield',
-                                            fieldLabel : 'dari',
-                                            labelAlign : 'right',
-                                            value : globals['site'],
-                                            name : 'report_co_id',
-                                            hidden: true
-                                        }]
+                                    xtype          : 'xtARPopup',
+                                    fieldLabel     : 'Dok AR',
+                                    name           : 'report_inv_code',
+                                    width          : 200
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
                                 }
-
                             ]
-
                         }
 
                     ],
-                    fn:Finance_Rpt.SummaryHPP
+                    fn:Finance_Rpt.Laporan_AR
                 });
             });
 
-            me.StockCategory = me.addCategory('Report Management Stock', 260);
+            me.StockCategory = me.addCategory('Management Stock', 260);
             me.StockBB = me.addReportByCategory(me.StockCategory, 'Stock Bahan Baku', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
@@ -1121,7 +1334,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Stock_Rpt.StockBB
                 });
             });
-            me.StockDetailBB = me.addReportByCategory(me.StockCategory, 'Detail Bahan Baku', function(btn) {
+            me.StockDetailBB = me.addReportByCategory(me.StockCategory, 'Rincian Bahan Baku', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -1198,7 +1411,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Stock_Rpt.StockBJ
                 });
             });
-            me.StockDetailBJ = me.addReportByCategory(me.StockCategory, 'Detail Barang Jadi', function(btn) {
+            me.StockDetailBJ = me.addReportByCategory(me.StockCategory, 'Rincian Barang Jadi', function(btn) {
 
                 me.goToReportPanelAndSetPanel({
                     title:'Insert Parameter',
@@ -1242,7 +1455,247 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     fn:Stock_Rpt.StockDetailBJ
                 });
             });
+            me.RincianMasukBJ = me.addReportByCategory(me.StockCategory, 'Rincian Masuk Barang Jadi', function(btn) {
 
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'fieldcontainer',
+                                    itemId : 'fieldContainerDateRange',
+                                    items : [
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Periode ',
+                                            width : 200,
+                                            name : 'report_periode'
+
+                                        },{
+                                            xtype : 'textfield',
+                                            fieldLabel : 'dari',
+                                            labelAlign : 'right',
+                                            value : globals['site'],
+                                            name : 'report_co_id',
+                                            hidden: true
+                                        },{
+                                            xtype : 'textfield',
+                                            name : 'report_dir',
+                                            hidden: true
+                                        }]
+                                }
+
+                            ]
+
+                        }
+
+                    ],
+                    fn:Stock_Rpt.RincianMasukBJ
+                });
+            });
+            me.RincianKeluarBJ = me.addReportByCategory(me.StockCategory, 'Rincian Keluar Barang Jadi', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'fieldcontainer',
+                                    itemId : 'fieldContainerDateRange',
+                                    items : [
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Periode ',
+                                            width : 200,
+                                            name : 'report_periode'
+
+                                        },{
+                                            xtype : 'textfield',
+                                            fieldLabel : 'dari',
+                                            labelAlign : 'right',
+                                            value : globals['site'],
+                                            name : 'report_co_id',
+                                            hidden: true
+                                        },{
+                                            xtype : 'textfield',
+                                            name : 'report_dir',
+                                            hidden: true
+                                        }]
+                                }
+
+                            ]
+
+                        }
+
+                    ],
+                    fn:Stock_Rpt.RincianKeluarBJ
+                });
+            });
+
+            me.Tax = me.addCategory('Lap. Pajak', 260);
+            me.Tax_in = me.addReportByCategory(me.Tax, 'Pajak Masukan', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Dari Tgl ' ,
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Sampai',
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                },
+                                {
+                                    xtype          : 'xtTaxDokinPopup',
+                                    fieldLabel     : 'No Dok :',
+                                    name           : 'report_dok_no',
+                                    width          : 250
+                                },{
+                                    xtype: "radiogroup",
+                                    fieldLabel: "sudah di bayar ",
+                                    width          : 300,
+                                    defaults: {xtype: "radio", name:'report_sudahbelum'
+                                    },
+                                    items: [
+                                        {boxLabel: "Y",inputValue:'Y'},
+                                        {boxLabel: "N",checked: true,inputValue:'N'}
+                                    ]
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
+                                }]
+                        }
+
+                    ],
+                    fn:Tax_Rpt.Tax_in
+                });
+            });
+            me.Tax_out = me.addReportByCategory(me.Tax, 'Pajak Keluaran', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Dari Tgl ' ,
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Sampai',
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                },
+                                {
+                                    xtype          : 'xtTaxDokoutPopup',
+                                    fieldLabel     : 'No Dok :',
+                                    name           : 'report_dok_no',
+                                    width          : 250
+                                },{
+                                    xtype: "radiogroup",
+                                    fieldLabel: "sudah di bayar ",
+                                    width          : 300,
+                                    defaults: {xtype: "radio", name:'report_sudahbelum'
+                                    },
+                                    items: [
+                                        {boxLabel: "Y",inputValue:'Y'},
+                                        {boxLabel: "N",checked: true,inputValue:'N'}
+                                    ]
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
+                                }]
+                        }
+
+                    ],
+                    fn:Tax_Rpt.Tax_out
+                });
+            });
+
+            me.Staff = me.addCategory('Lap. Karyawan', 260);
+            me.Karyawan = me.addReportByCategory(me.Staff, 'Laporan Karyawan', function(btn) {
+
+                me.goToReportPanelAndSetPanel({
+                    title:'Insert Parameter',
+                    items : [
+                        {
+                            xtype : 'fieldcontainer',
+                            itemId : 'fieldContainerDateRange',
+                            items : [
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Dari Tgl ' ,
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_fromdate'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    fieldLabel : 'Sampai',
+                                    width : 200,
+                                    format : 'm/d/Y',
+                                    value : new Date(),
+                                    name : 'report_date_todate'
+                                },
+                                {
+                                    xtype          : 'textfield',
+                                    fieldLabel     : 'User :',
+                                    name           : 'report_user',
+                                    width          : 250
+                                },
+                                {
+                                    xtype : 'textfield',
+                                    fieldLabel : 'dari',
+                                    labelAlign : 'right',
+                                    value : globals['site'],
+                                    name : 'report_co_id',
+                                    hidden: true
+                                }]
+                        }
+
+                    ],
+                    fn:Staff_Rpt.Karyawan
+                });
+            });
             me.callParent(arguments);
 
         },

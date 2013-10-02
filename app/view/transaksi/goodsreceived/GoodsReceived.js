@@ -542,7 +542,25 @@ Ext.define( 'App.view.transaksi.goodsreceived.GoodsReceived',
                                                                 fieldLabel: 'Posting',
                                                                 id:'post_gr',
                                                                 disabled:true,
-                                                                name: 'status'
+                                                                name: 'status',
+                                                                handler: function(field, value) {
+                                                                    if (value== true) {
+                                                                        Ext.getCmp('posted_date_gr').setDisabled(false);
+                                                                        Ext.getCmp('posted_date_gr').setValue(new Date());
+                                                                    }else{
+                                                                        Ext.getCmp('posted_date_gr').setDisabled(true);
+                                                                    }
+
+                                                                }
+                                                            },{
+                                                                xtype : 'datefield',
+                                                                width : 100,
+                                                                name : 'posted_date',
+                                                                format : 'd-m-Y',
+                                                                disabled: true,
+                                                                maxValue: new Date(),
+                                                                allowBlank:false,
+                                                                id:'posted_date_gr'
                                                             }]
                                                     }
 

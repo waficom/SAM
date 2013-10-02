@@ -143,6 +143,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.master.Bank'));
         me.MainPanel.add(Ext.create('App.view.master.Penyusutan_Aset'));
         me.MainPanel.add(Ext.create('App.view.master.Acc_Penyusutan_Aset'));
+        me.MainPanel.add(Ext.create('App.view.master.Cashflow'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));
@@ -151,9 +152,11 @@ Ext.define('App.view.Viewport', {
        // me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder1'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_NoFormula'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
         me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.DeliveryOrder'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.OrderMonitoring.OrderMonitoring'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.PengadaanBarang'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Invoice'));
@@ -174,10 +177,16 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_In'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_Out'));
         me.MainPanel.add(Ext.create('App.view.transaksi.GL.Voucher'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.GL.Audit_Adjustment'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Reclass'));
         me.MainPanel.add(Ext.create('App.view.transaksi.cancel-return.CancelReturn'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Reclass'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Penyusutan_Aset'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.Jurnal_Penyusutan_Aset'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pinjaman_BB_BJ'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ_O'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Closing_Transaction.Closing_transaction'));
 
 
 

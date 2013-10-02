@@ -132,7 +132,7 @@ Ext.define('App.ux.ARPopup',
             Ext.getCmp('account_ar').setValue(selected.data.account);
             Ext.getCmp('cust_id_pay').setValue(selected.data.cust_id);
             Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
-            Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
+            //Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
             Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
             Ext.getCmp('piutangdebtor_pay').setValue(selected.data.piutangdebtor);
             Ext.getCmp('posted_date_ar').setValue(selected.data.posted_date);

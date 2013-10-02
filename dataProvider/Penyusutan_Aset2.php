@@ -34,11 +34,13 @@ class Penyusutan_Aset2
             $orderx = 'timeedit';
         }
         $company =  $_SESSION['user']['site'];
-        $sql = "select a.co_id, b.account, a.qty * a.harga as debit, a.timeedit, c.coa_nama, a.inv_code, b.so_num, a.sequence_no
+        $getdate = date('Ym');
+        $sql = "select a.co_id, b.account, a.qty * a.harga as debit, a.timeedit, c.coa_nama, a.inv_code, b.so_num, a.sequence_no, a.pa_id, a.sisa_umur_aset
         from ap_inv_detail a
         inner join ap_inv b on a.inv_code=b.inv_code and a.co_id=b.co_id
         left join coa c on b.account=c.coa_id and a.co_id=c.co_id
-        where b.choose='A' and b.status='1' and a.status_aset='N' and (a.sisa_umur_aset > 0 or a.sisa_umur_aset is null) and b.account='$params->account'
+        where b.choose='A' and b.status='1' and (a.sisa_umur_aset > 0 or a.sisa_umur_aset is null)
+        and not exists(select * from ap_reclass where for_inv_code=b.inv_code and periode='$getdate' and sequence_detail_ap=a.sequence_no) and b.account='$params->account' and a.co_id='$company'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -55,13 +57,21 @@ class Penyusutan_Aset2
      * @param stdClass $params
      * @return stdClass
      */
-    public function addPenyusutan_Aset2(stdClass $params)
+    public function updatePenyusutan_AsetP(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['id'],$data['coa_nama'],$data['sisa_umur_aset'],$data['debit'],$data['account'],$data['sequence_no']);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $data['pa_id'] = 'U4';
+        unset($data['id'],$data['inv_code'],$data['pa_id'],$data['coa_nama'],$data['sisa_umur_aset'],$data['debit'],$data['account'],$data['sequence_no']);
         $data['status_aset'] = 'Y';
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'U', array('inv_code' => $params-> inv_code,'sequence_no' => $params-> sequence_no));
+        $this->db->setSQL($sql);
+        $this->db->execLog();
+        return $params;
+    }
+    public function updatePenyusutan_Aset2(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id'],$data['inv_code'],$data['coa_nama'],$data['sisa_umur_aset'],$data['debit'],$data['account'],$data['sequence_no']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'U', array('inv_code' => $params-> inv_code,'sequence_no' => $params-> sequence_no));
         $this->db->setSQL($sql);

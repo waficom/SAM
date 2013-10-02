@@ -94,11 +94,10 @@ class WorkOrder1
     }
     public function getWorkOrder1DetailBBaku(stdClass $params)
     {
-        $this->db->setSQL("select A.*, (A.qty_in * B.jml_paket) as qty_total, bb_nama, B.jml_paket, B.darigudang, B.kegudang
-from wobahanbaku B
-left join wo1 A on A.co_id=B.co_id and A.wo_num=B.wo_num and A.so_num=B.so_num and A.prod_id=B.prod_id and A.no_ppd=B.no_ppd
-left join bahanbaku C on A.bb_id=C.bb_id
-where (B.prod_id = '$params->prod_id') and (B.so_num = '$params->so_num') and (B.wo_num = '$params->wo_num') and B.bb_type='B' ");
+        $this->db->setSQL("select A.*, c.bb_nama
+from wo1 A
+left join bahanbaku C on A.bb_id=C.bb_id and a.co_id=c.co_id
+where (a.prod_id = '$params->prod_id') and (a.so_num = '$params->so_num') and (a.wo_num = '$params->wo_num')");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -242,6 +241,7 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         $data = get_object_vars($params);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         unset($data['id'], $data['no_ppd'], $data['co_id'],$data['wo_num'],$data['qty_susut'],$data['qty_bb'],$data['qty_bj']);
         $sql = $this -> db -> sqlBind($data, 'wo0', 'U', array('no_ppd' => $params-> no_ppd, 'wo_num' => $params-> wo_num));
@@ -271,7 +271,7 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         return $params;
     }
 
-    public function deleteWorkOrder1DetailBBaku(stdClass $params)
+    public function deleteWO_NoFormula /*deleteWorkOrder1DetailBBaku*/(stdClass $params)
     {
         $sql = "DELETE FROM wo1 WHERE (so_num = '$params->so_num') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') and (bb_id = '$params->bb_id')";
         $this -> db -> setSQL($sql);
@@ -300,6 +300,21 @@ left join gudang b on a.gudang_id=b.gudang_id and a.co_id=b.co_id where (a.so_nu
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         $sql = "DELETE FROM wo0 WHERE (no_ppd = '$params->no_ppd') and (wo_num = '$params->wo_num') and (prod_id = '$params->prod_id') ";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function addWO_NoFormula(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
+        unset($data['id']);
+        $sql = $this -> db -> sqlBind($data, 'wo1', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

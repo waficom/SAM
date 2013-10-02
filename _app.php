@@ -209,6 +209,18 @@ requires = [
     'App.ux.SODeliveryPopup',
     'App.ux.RoutePopup',
     'App.ux.ReclassOVBPopup',
+    'App.ux.TaxDokinPopup',
+    'App.ux.TaxDokoutPopup',
+    'App.ux.Stock_IN_OUTPopup',
+    'App.ux.CFPopup',
+    'App.ux.CF_OPopup',
+    'App.ux.CF_IPopup',
+    'App.ux.PO_rptPopup',
+    'App.ux.PAPopup',
+    'App.ux.Voucher_GL_ADPopup',
+    'App.ux.KasBankKeluarPopup',
+    'App.ux.KasBankMasukPopup',
+    'App.ux.SO_ProduksiPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -283,7 +295,7 @@ requires = [
     'App.view.master.Bank',
     'App.view.master.Penyusutan_Aset',
     'App.view.master.Acc_Penyusutan_Aset',
-
+    'App.view.master.Cashflow',
     /*
      * Load the root related panels
      */
@@ -294,9 +306,11 @@ requires = [
     //'App.view.transaksi.goodsissued.GoodsIssued',
     //'App.view.transaksi.workorder.WorkOrder',
     'App.view.transaksi.workorder.WorkOrder1',
+    'App.view.transaksi.workorder.WO_NoFormula',
     'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
     'App.view.transaksi.DeliveryOrder.DeliveryOrder',
+    'App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder',
     'App.view.transaksi.OrderMonitoring.OrderMonitoring',
     'App.view.transaksi.Produksi.PengadaanBarang',
     'App.view.transaksi.AP-Invoice.AP_Invoice',
@@ -319,6 +333,12 @@ requires = [
     'App.view.transaksi.cancel-return.CancelReturn',
     'App.view.transaksi.AP-Invoice.Reclass',
     'App.view.transaksi.AP-Invoice.Penyusutan_Aset',
+    'App.view.transaksi.AP-Invoice.Jurnal_Penyusutan_Aset',
+    'App.view.transaksi.Stock.Pinjaman_BB_BJ',
+    'App.view.transaksi.Stock.Pengembalian_BB_BJ',
+    'App.view.transaksi.Stock.Pengembalian_BB_BJ_O',
+    'App.view.transaksi.Closing_Transaction.Closing_transaction',
+    'App.view.transaksi.GL.Audit_Adjustment',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

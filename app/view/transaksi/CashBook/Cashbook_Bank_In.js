@@ -30,7 +30,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
                 {name: 'tax_code',type: 'string'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -398,6 +399,26 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                                     xtype: 'xtBankPopup',
                                     name: 'bank_code',
                                     allowBlank: false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCFPopup',
+                                    name: 'cf_code',
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -818,13 +839,13 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
             store.sync({
                 success:function(){
                     me.winform.close();
-                    store.load({params:{inv_code: me.currInv_Code}});
                     me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 },
                 failure:function(){
                     Ext.MessageBox.alert('Opps', 'Error !!!!');
                 }
             });
+        store.load({params:{inv_code: me.currInv_Code}});
     },
 
     onPBDelete: function(store){
@@ -845,6 +866,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.CB_Bank_In_DetailStore.load({params:{inv_code: me.currInv_Code}});
                     me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }

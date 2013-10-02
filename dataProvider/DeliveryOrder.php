@@ -47,7 +47,7 @@ class DeliveryOrder
     public function getDeliveryOrder(stdClass $params)
     {
         $sql = "SELECT * FROM viewdeliveryorder
-         where co_id='$params->co_id' and deliverydate between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'  ORDER BY timeedit DESC";
+         where co_id='$params->co_id' and cast(deliverydate as date) between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'  ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -64,29 +64,21 @@ class DeliveryOrder
      * @param stdClass $params
      * @return stdClass
      */
-    public function addDeliveryOrder(stdClass $params)
+    public function addDeliveryOrder()
     {
-//        error_reporting(-1);
-        $data = get_object_vars($params);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['do_num'],$data['prod_nama'],$data['sat_id'],$data['gudang_nama'],$data['route_nama']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-
-        $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'I');
-        $this -> db -> setSQL($sql);
-          //print_r($sql);
-        $this -> db -> execLog();
-//        error_reporting(0);
-        return $params;
+        $co_id= $_SESSION['user']['site'];
+        $userinput=$_SESSION['user']['name'];
+        $useredit=$_SESSION['user']['name'];
+        $this->db->setSQL("execute procedure DELIVERYORDER_I '$userinput','$useredit','$co_id','N'");
+        $this->db->execOnly();
+    }
+    public function addDeliveryOrderReturn()
+    {
+        $co_id= $_SESSION['user']['site'];
+        $userinput=$_SESSION['user']['name'];
+        $useredit=$_SESSION['user']['name'];
+        $this->db->setSQL("execute procedure DELIVERYORDER_I '$userinput','$useredit','$co_id','R'");
+        $this->db->execOnly();
     }
 
     /**
@@ -95,7 +87,7 @@ class DeliveryOrder
      */
     public function updateDeliveryOrder(stdClass $params)
     {
-        //error_reporting(-1);
+
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
@@ -105,13 +97,23 @@ class DeliveryOrder
         ,$data['prod_nama'],$data['sat_id'],$data['gudang_nama'],$data['route_nama']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> do_num));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
+    }
+    public function updateDeliveryOrderPosting(stdClass $params)
+    {
+        $co_id= $_SESSION['user']['site'];
+        $do_num=$params->do_num;
+        $this->db->setSQL("execute procedure DELIVERYORDER_P '$do_num','$co_id'");
+        $this->db->execOnly();
+
     }
 
     public function deleteDeliveryOrder(stdClass $params)
     {
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->do_num'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         $sql = "DELETE FROM deliveryorderdetai WHERE do_num = '$params->do_num'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

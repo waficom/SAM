@@ -65,7 +65,8 @@ class Finance_Rpt extends Reports
     public function Laporan_AR(stdClass $params)
     {
 
-        $this->reportfile = '/var/www/modules/reportcenter/report/AR/Laporan_AR.jasper';
+       // $this->reportfile = '/var/www/modules/reportcenter/report/AR/Laporan_AR.jasper';
+        $this->reportfile = '/var/www/modules/reportcenter/report/AR/Form_Invoice.jasper';
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,
@@ -158,6 +159,37 @@ class Finance_Rpt extends Reports
     {
 
         $this->reportfile = '/var/www/modules/reportcenter/report/CB/PenyelesaianCashbon.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LabaRugi(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/RL1.jasper';
+        $this->lokasirpt = '/var/www/modules/reportcenter/report/GL/';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LapCashflow(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/CB/Cashflow.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LapAset(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AP/ASET.jasper';
         $url = $this->report_execute($params->params);
         return array(
             'success' => true,

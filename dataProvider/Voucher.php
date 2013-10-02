@@ -69,26 +69,13 @@ class Voucher
      * @param stdClass $params
      * @return stdClass
      */
-    public function addVoucher(stdClass $params)
+    public function addVoucher()
     {
-
-        $data = get_object_vars($params);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-        unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'gl', 'I');
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $params;
+        $co_id= $_SESSION['user']['site'];
+        $userinput=$_SESSION['user']['name'];
+        $useredit=$_SESSION['user']['name'];
+        $this->db->setSQL("execute procedure GL_VOUCHER_I '$useredit','$userinput','$co_id'");
+		$this->db->execOnly();
     }
 
 
@@ -98,15 +85,11 @@ class Voucher
      */
     public function updateVoucher(stdClass $params)
     {
-        $data = get_object_vars($params);
-        $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'gl', 'U', array('inv_code' => $params -> inv_code));
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $params;
+
+        $co_id= $_SESSION['user']['site'];
+        $useredit=$_SESSION['user']['name'];
+        $this->db->setSQL("execute procedure GL_VOUCHER_U '$useredit','$params->inv_code','$co_id'");
+        $this->db->execOnly();
     }
 
     public function deleteVoucher(stdClass $params)

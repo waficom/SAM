@@ -840,6 +840,10 @@ $API = array(
             'len' => 1
             ),'addWODetailBBdalamproses' => array(
                 'len' => 1
+            ),'addWO_NoFormula' => array(
+                'len' => 1
+            ),'deleteWO_NoFormula' => array(
+                'len' => 1
             )
         )
     ),
@@ -925,10 +929,16 @@ $API = array(
             'addDeliveryOrder' => array(
                 'len' => 1
             ),
+            'addDeliveryOrderReturn' => array(
+                'len' => 1
+            ),
             'deleteDeliveryOrder' => array(
                 'len' => 1
             ),
             'updateDeliveryOrder' => array(
+                'len' => 1
+            ),
+            'updateDeliveryOrderPosting' => array(
                 'len' => 1
             ),
             'getDeliveryOrder1' => array(
@@ -1055,7 +1065,38 @@ $API = array(
             ),
             'getReclassOVBpopup' => array(
                 'len' => 1
+            ),
+            'getTaxDokinpopup' => array(
+                'len' => 1
+            ),
+            'getTaxDokoutpopup' => array(
+                'len' => 1
+            ),
+            'getStock_IN_OUTpopup' => array(
+                'len' => 1
+            ),
+            'CFPopup' => array(
+                'len' => 1
+            ),
+            'CF_OPopup' => array(
+                'len' => 1
+            ),
+            'PO_rptPopup' => array(
+                'len' => 1
+            ),
+            'getGLADpopup' => array(
+                'len' => 1
+            ),
+            'getKBKpopup' => array(
+                'len' => 1
+            ),
+            'getKBMpopup' => array(
+                'len' => 1
+            ),
+            'SOPPopup' => array(
+                'len' => 1
             )
+
 
 
 
@@ -1403,6 +1444,22 @@ $API = array(
             )
         )
     ),
+    'Audit_Adjustment' => array(
+        'methods' => array(
+            'getAudit_Adjustment' => array(
+                'len' => 1
+            ),
+            'addAudit_Adjustment' => array(
+                'len' => 1
+            ),
+            'updateAudit_Adjustment' => array(
+                'len' => 1
+            ),
+            'deleteAudit_Adjustment' => array(
+                'len' => 1
+            )
+        )
+    ),
 
     'CancelReturn' => array(
         'methods' => array(
@@ -1483,7 +1540,112 @@ $API = array(
             'getPenyusutan_Aset2' => array(
                 'len' => 1
             ),
-            'addPenyusutan_Aset2' => array(
+            'updatePenyusutan_AsetP' => array(
+                'len' => 1
+            ),
+            'updatePenyusutan_Aset2' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Jurnal_Penyusutan_Aset' => array(
+        'methods' => array(
+            'getJurnal_Penyusutan_Aset' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Pinjaman_BB_BJ' => array(
+        'methods' => array(
+            'getPinjam' => array(
+                'len' => 1
+            ),
+            'addPinjam_I' => array(
+                'len' => 1
+            ),
+            'addPinjam_O' => array(
+                'len' => 1
+            ),'updatePinjam' => array(
+                'len' => 1
+            ),'deletePinjam' => array(
+                'len' => 1
+            ),
+            'getPinjamDetail' => array(
+                'len' => 1
+            ),
+            'addPinjamDetail' => array(
+                'len' => 1
+            ),
+            'deletePinjamDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Pengembalian_BB_BJ' => array(
+    'methods' => array(
+        'getPengembalian' => array(
+            'len' => 1
+        ),
+        'getPengembalian_O' => array(
+            'len' => 1
+        ),
+        'addPengembalian_I' => array(
+            'len' => 1
+        ),
+        'addPengembalian_O' => array(
+            'len' => 1
+        ),'updatePengembalian' => array(
+            'len' => 1
+        ),'deletePengembalian' => array(
+            'len' => 1
+        ),
+        'getPengembalianDetail' => array(
+            'len' => 1
+        ),
+        'updatePengembalianDetail' => array(
+            'len' => 1
+        )
+    )
+),
+    'Closing_transaction' => array(
+        'methods' => array(
+            'getCT_month' => array(
+                'len' => 1
+            ),
+            'addCT_month' => array(
+                'len' => 1
+            ),
+            'updateCT_month' => array(
+                'len' => 1
+            ),
+            'deleteCT_month' => array(
+                'len' => 1
+            ),'getCT_year' => array(
+                'len' => 1
+            ),
+            'addCT_year' => array(
+                'len' => 1
+            ),
+            'updateCT_year' => array(
+                'len' => 1
+            ),
+            'deleteCT_year' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Cashflow' => array(
+        'methods' => array(
+            'getCashflow' => array(
+                'len' => 1
+            ),
+            'addCashflow' => array(
+                'len' => 1
+            ),
+            'updateCashflow' => array(
+                'len' => 1
+            ),
+            'deleteCashflow' => array(
                 'len' => 1
             )
         )

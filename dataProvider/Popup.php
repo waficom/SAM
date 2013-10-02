@@ -46,6 +46,24 @@ class Popup
         return $rows;
 
     }
+    public function SOPPopup(stdClass $params)
+    {
+
+        $sql = "SELECT A.*, B.cust_nama, C.prod_id FROM so0 A
+         left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
+         left join so10 C on A.so_num=C.so_num and A.co_id=C.co_id
+         where A.status='B' ORDER BY A.so_num DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
     public function FormulaPopup(stdClass $params)
     {
 
@@ -491,9 +509,11 @@ class Popup
 
         $sql = "select o.*
         from deliveryorder o
-        left join (select co_id, so_num, for_do_num, sum(qty_do) as qty_doreturn from deliveryorder where do_type='R'
-                    group by co_id, so_num, for_do_num) p on o.co_id=p.co_id and o.do_num=p.for_do_num and o.so_num=p.so_num
-        where o.do_type='N' /*and (coalesce(o.qty_do,0)-coalesce(p.qty_doreturn,0) > 0)*/
+        left join (select co_id, for_do_num, sum(qty_do) as qty_doreturn
+                  from deliveryorder where do_type='R'
+                  group by co_id, for_do_num
+        ) p on o.co_id=p.co_id and o.do_num=p.for_do_num
+        where o.do_type='N'
         and not exists (select * from ar_sale where do_num=o.do_num and status<>2)
         ORDER BY o.timeedit DESC";
         $this -> db -> setSQL($sql);
@@ -624,7 +644,163 @@ class Popup
         return $rows;
 
     }
+    public function getTaxDokinpopup(stdClass $params)
+    {
+        $sql = "select a.inv_code, a.posted_date
+                from ap_inv a
+                where a.status=1
 
+                union all
+
+                select b.inv_code, b.posted_date
+                from cashbook_in b
+                where b.status=1 and b.cb_type='O'
+
+                union all
+
+                select c.inv_code, c.posted_date
+                from cashbook_bank c
+                where c.status=1 and c.cb_type='O'";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function getTaxDokoutpopup(stdClass $params)
+    {
+        $sql = "select a.inv_code, a.posted_date
+                from ar_sale a
+                where a.status=1
+
+                union all
+
+                select b.inv_code, b.posted_date
+                from cashbook_in b
+                where b.status=1 and b.cb_type='I'
+
+                union all
+
+                select c.inv_code, c.posted_date
+                from cashbook_bank c
+                where c.status=1 and c.cb_type='I'";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function getStock_IN_OUTpopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM PINJAMAN_BB_BJ ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+    public function CFPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM cashflow ORDER BY cf_code ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+    public function CF_IPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM cashflow where cf_type='I' ORDER BY cf_code ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+    public function CF_OPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM cashflow where cf_type='O' ORDER BY cf_code ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+    public function PO_rptPopup(stdClass $params)
+    {
+        $sql = "SELECT * FROM gr0 ORDER BY timeedit ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+    }
+    public function getGLADpopup(stdClass $params)
+    {
+        $sql = "select * from View_Voucher_GL_AD
+        ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function getKBKpopup(stdClass $params)
+    {
+        $sql = "select * from View_Voucher_KasBankKeluar
+        ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function getKBMpopup(stdClass $params)
+    {
+        $sql = "select * from View_Voucher_KasBankMasuk
+        ORDER BY timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
 
     /**
      *

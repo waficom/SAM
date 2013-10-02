@@ -256,15 +256,12 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                 {text: 'CU', width:50, sortable: false,dataIndex: 'cu'},
                 {text: 'ZN', width:50, sortable: false,dataIndex: 'zn'},
                 {text: 'AH', width:50, sortable: false,dataIndex: 'ah'},
-                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},
-               // {text: 'tgl selesai', sortable : false, dataIndex: 'finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'AF', width:50, sortable: false,dataIndex: 'af'},{text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 //flex: 1
             ],
             listeners: {
                 scope: me,
-                //select: me.onGridClick,
                 itemdblclick: function(view, record){
                     oldName = record.get('no_ppd');
                     record.set("old_no_ppd",oldName);
@@ -519,7 +516,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                 },
                                 {
                                     width: 150,
-                                    xtype: 'xtSalesOrderPopup',
+                                    xtype: 'xtSOPPopup',
                                     name :'so_num'
                                 }
                             ]
@@ -542,29 +539,7 @@ Ext.define('App.view.transaksi.Produksi.Produksi', {
                                     name:'formula_id'
                                 }
                             ]
-                        },/*
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal selesai :'
-                                },
-                                {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'finishdate',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s'
-                                }
-                            ]
-                        },*/
+                        },
                         {
                             xtype: 'fieldcontainer',
                             defaults: {

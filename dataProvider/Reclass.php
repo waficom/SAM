@@ -95,6 +95,7 @@ class Reclass
     }
     public function addViewReclassOBJ(stdClass $params)
     {
+
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
@@ -102,8 +103,7 @@ class Reclass
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['inv_type'] = 'OBJ';
-        $data['debit'] = $data['total'] ;
-        unset($data['id'],$data['do_num'],$data['so_num'],$data['qty_susut'],$data['total'] );
+        unset($data['id'],$data['do_num'],$data['so_num'],$data['qty_susut'],$data['total'],$data['qty_do'],$data['rata2_hpp']);
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

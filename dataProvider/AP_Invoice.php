@@ -296,7 +296,7 @@ class AP_Invoice
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
-        $data['useredit'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['username'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code'],$data['nilaidasarx'],$data['ppn_%'],$data['ppn_nilaix'],$data['pph_%'],$data['pph_nilaix']
         ,$data['totalx'],$data['nd_setelah_discx'],$data['vend_nama'],$data['account_nama'],$data['tax_nama']);

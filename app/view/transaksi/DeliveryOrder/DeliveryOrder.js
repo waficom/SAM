@@ -42,7 +42,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 api: {
                     read: DeliveryOrder.getDeliveryOrder,
                     create: DeliveryOrder.addDeliveryOrder,
+                    create: DeliveryOrder.addDeliveryOrderReturn,
                     update: DeliveryOrder.updateDeliveryOrder,
+                    update: DeliveryOrder.updateDeliveryOrderPosting,
                     destroy: DeliveryOrder.deleteDeliveryOrder
                 }
             }
@@ -92,6 +94,39 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             model: 'DeliveryOrder1Model',
             autoLoad: false
         });
+        Ext.define('DO_JurnalModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'co_id',type: 'string'},
+                {name: 'inv_date',type: 'date'},
+                {name: 'inv_code',type: 'string'},
+                {name: 'inv_code_link',type: 'string'},
+                {name: 'vend_id',type: 'string'},
+                {name: 'coa',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
+                {name: 'sequence_no',type: 'string'},
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
+            ]
+
+        });
+        me.DO_JurnalStore = Ext.create('Ext.data.Store', {
+            model: 'DO_JurnalModel',
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: Jurnal.getJurnal
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
+                }
+            },
+            pageSize : 10,
+            autoLoad: false
+        });
 
         var searching={
             ftype : 'searching',
@@ -106,11 +141,10 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
-            enablePaging: true,
+            selModel :  Ext.create( 'Ext.selection.CheckboxModel'),
             columns: [
                 {text: 'Do Num',sortable: true,dataIndex: 'do_num'},
                 {text: 'DO Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'Do Num',sortable: true,dataIndex: 'do_num'},
                 {text: 'So Num', sortable: false, dataIndex: 'so_num'},
                 {text: 'Produk ID',width:150, sortable: false, dataIndex: 'prod_id', hidden:true},
                 {text: 'Produk', sortable: false, dataIndex: 'prod_nama'},
@@ -119,7 +153,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 {text: 'Qty SO', sortable: false,dataIndex: 'qty'},
                 {text: 'Qty DO', sortable: false,dataIndex: 'qty_do'},
                 {text: 'Sat.', sortable: false, dataIndex: 'sat_id'},
-                {width: 100,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden: true},
                 {text: 'LastUpdate', dataIndex: 'timeedit',width: 100,renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
@@ -136,7 +170,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                     if(me.currPosted =='1' || me.currPosted =='2'){
                     }else{
                         me.onItemdblclick(me.DeliveryOrderStore, record, 'Edit DeliveryOrder');
-                        Ext.getCmp('post_do').setDisabled(false);
                     }
 
                 }
@@ -148,13 +181,25 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                     dock: 'top',
                     items: [
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
+                            text: 'Dok Kirim',
+                            iconCls: 'icoArrowRightSmall',
                             scope: me,
                             handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewDeliveryOrder(form, 'DeliveryOrderModel', 'Tambah Data');
-                                Ext.getCmp('do_date_do').setValue(new Date());Ext.getCmp('post_do').setDisabled(true);
+                                DeliveryOrder.addDeliveryOrder(function(provider, response){
+                                });
+                                this.ReloadGrid();
+                            },
+                            tooltip : 'Tambah Data'
+                        },
+                        {
+                            text: 'Dok Return',
+                            iconCls: 'icoArrowRightSmall',
+                            scope: me,
+                            handler: function(){
+                                DeliveryOrder.addDeliveryOrderReturn(function(provider, response){
+                                    Ext.MessageBox.alert('Sukses', '!!!!');
+                                });
+                                this.ReloadGrid();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -176,9 +221,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     xtype : 'datefield',
                                     itemId : 'datefrom',
-                                    fieldLabel : 'DO Date From',
-                                    labelWidth : 100,
-                                    width : 200,
+                                    fieldLabel : 'Date',
+                                    labelWidth : 20,
+                                    width : 110,
                                     format : 'd-m-Y',
                                     value : new Date()
                                 }]
@@ -212,6 +257,20 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                         click : me.ReloadGrid
                                     }
                                 }]
+                        },{
+                            text: 'Posting',
+                            iconCls: 'icoArrowRightSmall',
+                            id:'post_do',
+                            scope: me,
+                            handler: function(){
+                                var form = me.win.down('form').getForm();
+                                form.findField('do_num').setValue(me.currDeliveryOrder);
+                                var values = form.getValues();
+                                DeliveryOrder.updateDeliveryOrderPosting(values,function(provider, response){
+                                });
+                                this.ReloadGrid();
+                            },
+                            tooltip : 'Tambah Data'
                         },'->',
                         {
                             xtype:'displayfield',
@@ -268,9 +327,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 itemdblclick: function(view, record){
                     if(me.currPosted =='2'){
                     }else{
-                        oldName = record.get('sequence_no');
-                        record.set("old_sequence_no",oldName);
-                        me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
+                        //me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
                     }
                 }
             },
@@ -313,7 +370,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 }
             ]
         });
-
         // *************************************************************************************
         // Window User Form
         // *************************************************************************************
@@ -343,14 +399,17 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                     },
                     items: [
                         {
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'do_num'
+                        },
+                        {
                             xtype: "radiogroup",
-                            fieldLabel: "Jenis ",
+                            fieldLabel: "Jenis ", hidden:true,
                             defaults: {xtype: "radio", name:'do_type'
                             },
                             items: [
                                 {
-                                    boxLabel: "Kirim",
-                                    checked: true,
                                     inputValue:'N',
                                     handler: function(field, value) {
                                         if (value) {
@@ -360,7 +419,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
 
                                 },
                                 {
-                                    boxLabel: "Return",
                                     inputValue:'R',
                                     handler: function(field, value) {
                                         if (value) {
@@ -371,7 +429,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 }
                             ]
                         },
-
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -524,33 +581,10 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 },
                                 {
                                     width: 150,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
+                                    xtype: 'textfield',
+                                    //hideTrigger: true,
                                     name:'qty_do',
                                     allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Posting'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.checkbox',
-                                    name : 'status',
-                                    id:'post_do',
-                                    disabled: true
-
                                 }
                             ]
                         }
@@ -854,7 +888,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             }
         });
 
-        me.pageBody = [me.DeliveryOrderGrid, me.DeliveryOrder1Grid];
+        me.pageBody = [me.DeliveryOrderGrid,me.DeliveryOrder1Grid];
         me.callParent(arguments);
     },
     setForm: function(form, title){
@@ -879,21 +913,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             form.getForm().reset();
         }
     },
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewDeliveryOrder: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-
-    },
-
     onNewDeliveryOrder1: function(form, model, title){
         this.setForm(form, title);
         form.getForm().reset();
@@ -904,6 +923,17 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         this.action1('new');
         this.winform1.show();
     },
+    onItemdblclick1: function(store, record, title){
+        var form = this.winform1.down('form');
+        this.setForm(form, title);
+        form.getForm().loadRecord(record);
+        this.action1('old');
+        this.winform1.show();
+    },
+    /**
+     * This wll load a new record to the grid
+     * and start the rowEditor
+     */
 
     /**
      *
@@ -922,10 +952,13 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
         if(selected.data.status == 1 || selected.data.status == 2){
             Ext.getCmp('delete_do').disable();
+            Ext.getCmp('post_do').disable();
         }else{
             Ext.getCmp('delete_do').enable();
+            Ext.getCmp('post_do').enable();
         }
         Ext.getCmp('sat_id').setValue(selected.data.sat_id);
+        me.DO_JurnalStore.load({params:{inv_code: me.currDeliveryOrder}});
 
     },
 
@@ -937,38 +970,18 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         this.win.show();
     },
 
-    onItemdblclick1: function(store, record, title){
-        var form = this.winform1.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old');
-        this.winform1.show();
-    },
-
     onDeliveryOrderSave: function(form, store){
-        var me = this, showWin = me.win;
-        var StatusPosting = form.findField('status').getValue();
-        var CountDetail = me.DeliveryOrder1Store.getCount({params:{do_num: me.currDeliveryOrder}});
-        if(StatusPosting){
-            if(CountDetail == 0 ){
-                Ext.MessageBox.alert('Warning', 'Route Detail Belum Terisi');
-            }else{
-                me.CallFunctionSave(form,store,showWin);
-            }
-        }else{
-            me.CallFunctionSave(form,store,showWin);
-        }
+        var me = this, form = me.win.down('form').getForm();
+            var values = form.getValues();
+                DeliveryOrder.updateDeliveryOrder(values,function(provider, response){
+                me.win.close();
+            });
         this.ReloadGrid();
     },
     onDeliveryOrder1Save: function(form, store){
-        var me = this, showWin= me.winform1;
+        var me = this, showWin= me.winform1, form = me.winform1.down('form').getForm();
         form.findField('do_num').setValue(me.currDeliveryOrder);
-        me.CallFunctionSave(form,store,showWin);
-        store.load({params:{do_num: me.currDeliveryOrder}});
-
-    },
-    CallFunctionSave: function(form, store, showWin){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
+        var values = form.getValues();
         if(storeIndex == -1){
             store.add(values);
         }else{
@@ -977,13 +990,16 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
         store.sync({
             success:function(){
                 showWin.close();
-               // store.load({params:{do_num: me.currDeliveryOrder}});
+                // store.load({params:{do_num: me.currDeliveryOrder}});
             },
             failure:function(){
                 Ext.MessageBox.alert('Warning', 'Stock Items Kurang..!!');
-               // me.msg('Stock Items Kurang!', 'Error!!', true);
+                // me.msg('Stock Items Kurang!', 'Error!!', true);
             }
         });
+
+        store.load({params:{do_num: me.currDeliveryOrder}});
+
     },
 
     onDeliveryOrderDelete: function(store){

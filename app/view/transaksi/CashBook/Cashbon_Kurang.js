@@ -36,7 +36,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                 {name: 'account_nama',type: 'string'},
                 {name: 'posted_date',type: 'date'},
                 {name: 'btl_cashbon',type: 'string'},
-                {name: 'posted_date_cb_cashbon',type: 'date'}
+                {name: 'posted_date_cb_cashbon',type: 'date'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -137,7 +138,31 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                         me.onItemdblclick(me.Cashbon_KurangStore, record, 'Edit Penyelesaian Cashbon');
                         Ext.getCmp('post_cashbon').setDisabled(false);
                         Ext.getCmp('total_cb_krg').setValue(record.get('nominal_1')-record.get('nominal_2'));
+
+                        var totalDebit= 0, totalCredit= 0;
+                        me.Cashbon_Kurang_JurnalStore.each(function(record){
+                            if(record.get('inv_code') == me.currInv_Code) {
+                                if(record.get('coa_nama')==Ext.getCmp('bank_nama_cashbon').getValue()){
+                                    totalDebit += record.get('debit');
+                                    totalCredit += record.get('credit');
+                                    console.log(totalDebit, totalCredit);
+                                }
+
+                            }
+                        });
+
+                        /*if(totalDebit != '' || totalDebit != 0){
+                            console.log('xxxxxxxx');
+                            //Ext.getCmp('cf_code_cashbon').remove(0);
+                            Ext.getCmp('cf_code_cashbon').add({xtype:'xtCFPopup',name:'cf_code', value: this.getValue()});
+                        }
+                        else if(totalCredit != '' || totalCredit !=0 ){
+                            console.log('zzzzzzz');
+                            //Ext.getCmp('cf_code_cashbon').remove(0);
+                            Ext.getCmp('cf_code_cashbon').add({xtype:'xtCF_OPopup',name:'cf_code', value: this.getValue()});
+                        }*/
                     }
+
 
                 }
             },
@@ -448,6 +473,27 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                     hideTrigger: true,
                                     id:'total_cb_krg',
                                     readOnly: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype:'xtCFPopup',
+                                    id:'cf_code_cashbon',
+                                    name:'cf_code',
+                                    allowBlank: false
                                 }
                             ]
                         },

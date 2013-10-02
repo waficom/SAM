@@ -434,7 +434,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
 
                                 },
                                 {
-                                    boxLabel: "Other",
+                                    boxLabel: "Other     ||",
                                     inputValue:'O',
                                     handler: function(field, value) {
                                         if (value) {
@@ -460,8 +460,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
 
                                 },
                                 {
-                                    boxLabel: "In DIrect OHP",
-                                    inputValue:'T',
+                                    boxLabel: "ASET",
+                                    inputValue:'A',
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('SO_AP').setDisabled(true);
@@ -473,8 +473,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
 
                                 },
                                 {
-                                    boxLabel: "ASET",
-                                    inputValue:'A',
+                                    boxLabel: "In DIrect OHP",
+                                    inputValue:'T',
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('SO_AP').setDisabled(true);

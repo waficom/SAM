@@ -30,7 +30,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
                 {name: 'tax_code',type: 'string'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -58,6 +59,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'account',type: 'string'},
+                {name: 'old_account',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
                 {name: 'nominal',type: 'float'},
                 {name: 'timeedit',type: 'date'},
@@ -241,6 +243,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
+                    oldName = record.get('account');
+                    record.set("old_account",oldName);
                     if(me.currPosted =='1' || me.currPosted =='2'){
                     }else{
                         var form = this.winform.down('form');
@@ -400,6 +404,26 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                     xtype: 'xtBankPopup',
                                     name: 'bank_code',
                                     allowBlank: false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCF_OPopup',
+                                    name: 'cf_code',
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -848,6 +872,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.CB_Out_DetailStore.load({params:{inv_code: me.currInv_Code}});
                     me.Cashbook_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }

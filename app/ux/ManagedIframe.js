@@ -59,7 +59,7 @@ Ext.define('App.ux.ManagedIframe',
 	/*
 	 * @cfg {Boolean} autoMask True to display a loadMask during page content changes
 	 */
-	autoMask : true,
+	autoMask : false,
 
 	/*
 	 * @cfg {String} maskMessage default message text rendered during masking operations

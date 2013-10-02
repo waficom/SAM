@@ -68,6 +68,8 @@ Ext.define('App.view.master.Factory_location', {
                 {name: 'remarks',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_grn',type: 'string'},
+                {name: 'coa_stock_pll',type: 'string'},
+                {name: 'coa_stock_bya',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'useredit',type: 'string'},
                 {name: 'timeinput',type: 'date'},
@@ -181,6 +183,8 @@ Ext.define('App.view.master.Factory_location', {
                 {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
                 {text: 'Coa',width: 100,sortable: true,flex:1,dataIndex: 'coa'},
                 {text: 'Coa GRN',width: 100,sortable: true,flex:1,dataIndex: 'coa_grn'},
+                {text: 'Coa Stock Pll',width: 100,sortable: true,flex:1,dataIndex: 'coa_stock_pll'},
+                {text: 'Coa Stock Bya',width: 100,sortable: true,flex:1,dataIndex: 'coa_stock_bya'},
                 {text: 'Aktif',sortable: true,dataIndex: 'aktif', renderer: authCk},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
@@ -522,6 +526,37 @@ Ext.define('App.view.master.Factory_location', {
                                     width: 100,
                                     xtype: 'xtCoaPopup',
                                     name: 'coa_grn',
+                                    allowBlank: true
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa Stock Pll :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_stock_pll',
+                                    allowBlank: true
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Coa Stock Bya:'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'coa_stock_bya',
                                     allowBlank: true
                                 }
                             ]

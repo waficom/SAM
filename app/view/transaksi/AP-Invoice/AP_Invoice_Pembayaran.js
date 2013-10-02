@@ -35,7 +35,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                 {name: 'inv_type',type: 'string'},
                 {name: 'ap_inv_date',type: 'date'},
                 {name: 'posted_date',type: 'date'},
-                {name: 'hutangsuplier',type: 'float'}
+                {name: 'hutangsuplier',type: 'float'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -316,26 +317,6 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Giro : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'giro_num'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
                                     value: 'Doc. Number : '
                                 },
                                 {
@@ -387,6 +368,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
                                     xtype: 'displayfield',
                                     name:'bank_nama',
                                     id:'bank_nama_pay'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCF_OPopup',
+                                    name: 'cf_code',
+                                    allowBlank:false
                                 }
                             ]
                         },

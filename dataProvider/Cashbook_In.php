@@ -158,7 +158,7 @@ class Cashbook_In
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['coa_nama']);
+        unset($data['id'], $data['coa_nama'],$data['old_account']);
         $sql = $this -> db -> sqlBind($data, 'cb_in_detail', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -169,8 +169,8 @@ class Cashbook_In
         $data = get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'], $data['coa_nama']);
-        $sql = $this -> db -> sqlBind($data, 'cb_in_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->account));
+        unset($data['id'],$data['inv_code'], $data['coa_nama'],$data['old_account']);
+        $sql = $this -> db -> sqlBind($data, 'cb_in_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->old_account));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

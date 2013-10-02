@@ -35,7 +35,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                 {name: 'inv_type',type: 'string'},
                 {name: 'posted_date_ar',type: 'date'},
                 {name: 'piutangdebtor',type: 'float'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -386,6 +387,26 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                     xtype: 'displayfield',
                                     name:'bank_nama',
                                     id:'bank_nama'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCFPopup',
+                                    name: 'cf_code',
+                                    allowBlank:false
                                 }
                             ]
                         },

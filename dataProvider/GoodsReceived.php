@@ -148,6 +148,7 @@ class GoodsReceived
         $data['tgl'] = $this->db->Date_Converter($data['tgl']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num);
         $sql = $this -> db -> sqlBind($data, 'gr0', 'U', $cond);
         $this -> db -> setSQL($sql);

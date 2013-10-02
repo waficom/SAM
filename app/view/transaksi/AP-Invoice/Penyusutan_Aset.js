@@ -18,7 +18,6 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                 {name: 'debit',type: 'float'},
                 {name: 'timeedit',type: 'date'}
             ]
-
         });
         me.Penyusutan_Aset2Store = Ext.create('Ext.data.Store', {
             model: 'Penyusutan_Aset2Model',
@@ -26,7 +25,8 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                 type: 'direct',
                 api: {
                     read: Penyusutan_Aset2.getPenyusutan_Aset2,
-                    create: Penyusutan_Aset2.addPenyusutan_Aset2
+                    update: Penyusutan_Aset2.updatePenyusutan_AsetP,
+                    update: Penyusutan_Aset2.updatePenyusutan_Aset2
                 }
             },
             autoLoad: false
@@ -49,7 +49,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                         xtype: 'combobox'
                     }
                 },
-                {text: 'Sisa Umur Aset (bln)',sortable: true, dataIndex: 'sisa_umur_aset'},
+                {text: 'Sisa Umur(bln)',sortable: true, dataIndex: 'sisa_umur_aset'},
                 {text: 'Doc. Number',sortable: true, dataIndex: 'inv_code'},
                 {text: 'Debit',sortable: true,dataIndex: 'debit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
@@ -92,9 +92,25 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                             iconCls: 'icoArrowRightSmall',
                             scope: me,
                             handler: function(){
-                                var form = me.win.down('form').getForm();
-                                if(form.isValid()){
-                                    me.PostingItem(form, me.Penyusutan_Aset2Store);
+                                var data_selected = me.Penyusutan_Aset2Grid.getSelectionModel();
+                                var length = data_selected.selected.items.length;
+                                for (var i = 0, len = length; i < len; i++) {
+                                    var data = data_selected.selected.items[i].data;
+                                    //cek data sebelum posting
+                                    if(data.pa_id==''){
+                                        Ext.MessageBox.alert('Warning','Umur Aset Belum terisi!!!!');
+                                    }else{
+                                        var form = me.win.down('form').getForm();
+                                        form.findField('inv_code').setValue(data.inv_code);
+                                        form.findField('sequence_no').setValue(data.sequence_no);
+                                        var values = form.getValues();
+                                        Penyusutan_Aset2.updatePenyusutan_AsetP(values, function(provider, response){
+                                            Ext.MessageBox.alert('Sukses', '!!!!');
+                                        });
+                                        me.Penyusutan_Aset2Store.remove(data_selected.getSelection());
+                                    }
+
+
                                 }
                             }
                         }
@@ -106,7 +122,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
         // Window User Form
         // *************************************************************************************
         me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
+            width: 300,
             items: [
                 {
                     xtype: 'mitos.form',
@@ -115,12 +131,21 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                         labelWidth: 100
                     },
                     defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
                     items: [
-                        ,{
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'sequence_no'
-                        },
                         {
                             xtype: 'textfield',
                             hidden: true,
@@ -129,16 +154,64 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'account'
-                        },{
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'debit'
+                            name: 'sequence_no'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 70,
+                                    xtype: 'displayfield',
+                                    value: 'Umur :'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtPAPopup',
+                                    name:'pa_id',
+                                    allowBlank:false
+                                }
+                            ]
                         }
                     ]
                 }
-            ]
+            ],
+            buttons: [
+                {
+                    text: 'Save',
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.win.down('form').getForm();
+                        if(form.isValid()){
+                            var values = form.getValues();
+                            Penyusutan_Aset2.updatePenyusutan_Aset2(values, function(provider, response){
+                                me.win.close();
+                                me.SeachingItem;
+                            })
+                        }
+
+                    }
+                },
+                '-',
+                {
+                    text: 'Cancel',
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            listeners: {
+                scope: me,
+                close: function(){
+                    me.action('close');
+                }
+            }
         });
+
         // END WINDOW
         me.pageBody = [me.Penyusutan_Aset2Grid];
         me.callParent(arguments);
@@ -157,6 +230,13 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
             form.getForm().reset();
         }
     },
+    onItemdblclick: function(store, record, title){
+        var form = this.win.down('form');
+        this.setForm(form, title);
+        form.getForm().loadRecord(record);
+        this.action('old');
+        this.win.show();
+    },
     SeachingItem: function(btn){
         var getAccount = Ext.getCmp('account_susut').getValue();
         this.Penyusutan_Aset2Store.load({params:{account : getAccount}});
@@ -172,22 +252,15 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
             form.findField('debit').setValue(data.debit);
             form.findField('sequence_no').setValue(data.sequence_no);
             var values = form.getValues();
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
+            if(form.isValid()){
+                Penyusutan_Aset2.addPenyusutan_Aset2(values, function(provider, response){
+                    if(response.result.success){
+                        Ext.MessageBox.alert('Sukses', '!!!!');
+                    }else{
+                        Ext.MessageBox.alert('Sukses', '!!!!');
+                    }
+                });
             }
-            store.sync({
-                success:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Sukses', '!!!!');
-                },
-                failure:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Warning', '!!!!');
-                }
-
-            });
         };
 
     },

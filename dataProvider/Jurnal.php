@@ -85,7 +85,7 @@ class Jurnal
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id']);
+        unset($data['id'], $data['posted_date']);
         $sql = $this -> db -> sqlBind($data, 'jurnal', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

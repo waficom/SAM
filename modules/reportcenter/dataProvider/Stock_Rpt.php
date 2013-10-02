@@ -59,4 +59,26 @@ class Stock_Rpt extends Reports
             'url' => $url
         );
     }
+    public function RincianMasukBJ(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/RincianMasukBJ.jasper';
+        $this->lokasirpt = '/var/www/modules/reportcenter/report/GL/';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function RincianKeluarBJ(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/RincianKlwrBJ.jasper';
+        $this->lokasirpt = '/var/www/modules/reportcenter/report/GL/';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
 }

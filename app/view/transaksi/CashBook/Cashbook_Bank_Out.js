@@ -30,7 +30,8 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
                 {name: 'tax_code',type: 'string'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'cf_code',type: 'string'}
             ]
 
         });
@@ -399,6 +400,26 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
                                     xtype: 'xtBankPopup',
                                     name: 'bank_code',
                                     allowBlank: false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'CF Code : '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCF_OPopup',
+                                    name: 'cf_code',
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -786,12 +807,14 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_Out', {
         var me = this, showWin= me.winform;
         form.findField('inv_code').setValue(me.currInv_Code);
         me.CallFunctionSave(form, store, showWin);
+        store.load({params:{inv_code: me.currInv_Code}});
         me.Cashbook_Bank_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
     },
 
     onPBDelete: function(store){
         var me = this, grid = me.Cashbook_Bank_OutGrid;
         me.CallFunctionDel(store, grid);
+        me.CB_Bank_Out_DetailStore.load({params:{inv_code: me.currInv_Code}});
         me.Cashbook_Bank_Out_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
     },

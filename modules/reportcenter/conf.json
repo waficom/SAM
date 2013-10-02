@@ -129,6 +129,15 @@
                 },"Laporan_P_Cashbon":
                 {
                     "len":1
+                },"LabaRugi":
+                {
+                    "len":1
+                },"LapCashflow":
+                {
+                    "len":1
+                },"LapAset":
+                {
+                    "len":1
                 }
             }
         },
@@ -144,6 +153,49 @@
                 {
                     "len":1
                 },"StockDetailBJ":
+                {
+                    "len":1
+                },"RincianMasukBJ":
+                {
+                    "len":1
+                },"RincianKeluarBJ":
+                {
+                    "len":1
+                }
+            }
+        },
+        "Tax_Rpt":{
+            "methods":{
+                "Tax_in":
+                {
+                    "len":1
+                },
+                "Tax_out":
+                {
+                    "len":1
+                }
+            }
+        },
+        "Staff_Rpt":{
+            "methods":{
+                "Karyawan":
+                {
+                    "len":1
+                }
+            }
+        },
+        "Voucher_Rpt":{
+            "methods":{
+                "AR_Voucher":
+                {
+                    "len":1
+                },"GL_Voucher":
+                {
+                    "len":1
+                },"KasBankKeluar_Voucher":
+                {
+                    "len":1
+                },"KasBankMasuk_Voucher":
                 {
                     "len":1
                 }

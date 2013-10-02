@@ -52,6 +52,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                 {name: 'qty_susut',type: 'float'},
                 {name: 'rata2_hpp',type: 'float'},
                 {name: 'total',type: 'float'},
+                {name: 'debit',type: 'float'},
                 {name: 'timeedit',type: 'date'}
             ]
 
@@ -296,11 +297,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'qty_do'
-                        },{
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'rata2_hpp'
+                            name: 'debit'
                         }
                     ]
                 }
@@ -323,23 +320,14 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
             form.findField('for_inv_code').setValue(data.for_inv_code);
             form.findField('debit').setValue(data.debit);
             var values = form.getValues();
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
+            if(form.isValid()){
+                Reclass.addViewReclassOVB(values, function(provider, response){
+                        Ext.MessageBox.alert('Sukses', '!!!!');
+                    store.remove(data_selected.getSelection());
+                });
             }
-            store.sync({
-                success:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Sukses', '!!!!');
-                },
-                failure:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Warning', '!!!!');
-                }
-
-            });
         };
+        this.SeachingItemBJ();
 
     },
     PostingItemOBJ: function(form, store){
@@ -349,25 +337,14 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
         for (var i = 0, len = length; i < len; i++) {
             var data = data_selected.selected.items[i].data;
             form.findField('for_inv_code').setValue(data.for_inv_code);
-            form.findField('qty_do').setValue(data.qty_do);
-            form.findField('rata2_hpp').setValue(data.rata2_hpp);
+            form.findField('debit').setValue(data.total);
             var values = form.getValues();
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
+            if(form.isValid()){
+                Reclass.addViewReclassOBJ(values, function(provider, response){
+                   Ext.MessageBox.alert('Sukses', '!!!!');
+                    store.remove(data_selected.getSelection());
+                });
             }
-            store.sync({
-                success:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Sukses', '!!!!');
-                },
-                failure:function(){
-                    store.remove(data_selected.getSelection());
-                    Ext.MessageBox.alert('Warning', '!!!!');
-                }
-
-            });
         };
 
     },

@@ -1,32 +1,26 @@
 Ext.define('App.view.transaksi.GL.Voucher', {
     extend: 'App.ux.RenderPanel',
     id: 'panelVoucher',
-    pageTitle: 'Penyelesaian Voucher',
+    pageTitle: 'General Ledger',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
         me.currInv_Code = null;
-        me.currCoa = null;
-        me.currDebtor = null;
         me.currPosted = null;
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
-        //me.myWinChooseItem=null;
         Ext.define('VoucherModel', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
-                {name: 'inv_date',type: 'date'},
-                {name: 'nominal',type: 'string'},
-                {name: 'remaks',type: 'string'},
                 {name: 'timeedit',type: 'date'},
+                {name: 'posted_date',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
-                {name: 'status',type: 'string'},
-                {name: 'inv_type',type: 'string'}
+                {name: 'status',type: 'string'}
             ]
 
         });
@@ -53,13 +47,17 @@ Ext.define('App.view.transaksi.GL.Voucher', {
             extend: 'Ext.data.Model',
             fields: [
                 {name: 'co_id',type: 'string'},
+                {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
+                {name: 'inv_code_link',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
-                {name: 'debit',type: 'string'},
-                {name: 'credit',type: 'string'},
+                {name: 'coa_nama',type: 'string'},
+                {name: 'debit',type: 'float'},
+                {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'remaks',type: 'string'}
             ]
 
         });
@@ -70,7 +68,6 @@ Ext.define('App.view.transaksi.GL.Voucher', {
                 api: {
                     read: Jurnal.getJurnal,
                     create: Jurnal.addJurnal,
-                    update: Jurnal.updateJurnal,
                     destroy : Jurnal.deleteJurnal
                 },
                 reader : {
@@ -98,33 +95,23 @@ Ext.define('App.view.transaksi.GL.Voucher', {
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
+            selModel :  Ext.create( 'Ext.selection.CheckboxModel'),
             columns: [
-                {width: 150,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'remaks',sortable: true,dataIndex: 'remaks'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {width: 200,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden: true},
+                {flex:1,text: 'Dok No',sortable: true,dataIndex: 'inv_code'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
+                {text: 'Tgl Posting', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
             ],
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : '';
+                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
                 }
             },
             listeners: {
                 scope: me,
-                select: me.onPBGridClick,
-                itemdblclick: function(view, record){
-                    if(record.get('status')!=1){
-                        me.onItemdblclick(me.VoucherStore, record, 'Edit General Ledger');
-                        Ext.getCmp('post_gl').enable();
-                    }
-
-                }
+                select: me.onPBGridClick
             },
             features:[searching],
             dockedItems: [
@@ -133,21 +120,57 @@ Ext.define('App.view.transaksi.GL.Voucher', {
                     dock: 'top',
                     items: [
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
+                            text: 'Generate Dok.',
+                            iconCls: 'icoArrowRightSmall',
                             scope: me,
                             handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewPB(form, 'VoucherModel', 'Tambah Data');
-                                Ext.getCmp('post_gl').disable();
+                                Voucher.addVoucher(function(provider, response){
+                                        Ext.MessageBox.alert('Sukses', '!!!!');
+                                });
+                                me.VoucherStore.load();
                             }
                         },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'dlt_vc',
                             handler:function() {
                                 me.onPBDelete(me.VoucherStore);
+                            }
+                        },{
+                            text: 'Posting Dok.',
+                            iconCls: 'icoArrowRightSmall',
+                            id:'pst_vc',
+                            scope: me,
+                            handler: function(){
+                                var me=this, totalDebit= 0, totalCredit= 0;
+                                me.Voucher_JurnalStore.each(function(record){
+                                    if(record.get('inv_code') == me.currInv_Code ) {
+                                        totalDebit += record.get('debit');
+                                        totalCredit += record.get('credit');
+                                    }
+                                });
+                                if((totalDebit == 0 && totalCredit==0)){
+                                    Ext.MessageBox.alert('Warning', 'Detail Data Masih Belum Terisi..!!');
+                                }
+                                else if(totalDebit != totalCredit){
+                                    Ext.MessageBox.alert('Warning', 'Debit Credit Tidak Balance..!!');
+                                }else{
+                                    var me = this, form = me.win.down('form').getForm(); data_selected = me.VoucherGrid.getSelectionModel(), length = data_selected.selected.items.length;
+                                    for (var i = 0, len = length; i < len; i++) {
+                                        var data = data_selected.selected.items[i].data;
+                                        form.findField('inv_code').setValue(data.inv_code);
+                                        var values = form.getValues();
+                                            Voucher.updateVoucher(values,function(provider, response){
+                                                Ext.MessageBox.alert('Sukses', '!!!!');
+                                            });
+                                        me.VoucherStore.load();
+                                    }
+
+                                    me.VoucherStore.load();
+                                }
+                                me.Voucher_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                             }
                         },'->',
                         {
@@ -176,44 +199,102 @@ Ext.define('App.view.transaksi.GL.Voucher', {
             region: 'center',
             enablePaging: true,
             columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 150, hidden: true},
-                {header : 'Inv. Code', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
+                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+                {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
+                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
                 {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                    return '<b>Total</b>';
+                }},
+                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
+                {header : 'Remarks', dataIndex : 'remaks',width : 200},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
+                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    if(me.currPosted !='1'){
-                        var form = this.winformVoucher_Jurnal.down('form');
-                        me.onItemdblclick1(me.Voucher_JurnalStore, record, 'Edit General Ledger Jurnal', me.winformVoucher_Jurnal, form);
-
-                    }
-
-                }
-            },
-            features:[searching],
+            features: [{
+                ftype: 'summary'
+            }, searching],
             dockedItems: [
                 {
                     xtype: 'toolbar',
                     dock: 'top',
-                    items: [{
+                    items: [
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'xtCoaPopup',
+                                    width: 150,
+                                    name : 'coa',
+                                    fieldLabel: 'Account',
+                                    labelWidth : 50,
+                                    id:'acc_vc'
+                                }]
+                        }, {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'combo',
+                                    width: 100,
+                                    fieldLabel: 'Jenis',
+                                    displayField : 'title',
+                                    id:'jns_dc_vc',
+                                    labelWidth : 35,
+                                    data : [
+                                        {
+                                            "title" : 'D'
+                                        },
+                                        {
+                                            "title" : 'C'
+                                        }]
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
+                                    width: 150,
+                                    fieldLabel: 'Nominal',
+                                    labelWidth : 50,
+                                    id:'nom_vc'
+                                }]
+                        },
+                    {
                         text: 'Add',
                         iconCls: 'icoAddRecord',
                         scope: me,
+                        id:'add_vc',
                         handler: function(){
-                            var form1 = me.winformVoucher_Jurnal.down('form');
-                            me.onNewProduksi1(form1, 'Voucher_JurnalModel', 'Tambah Data', me.winformVoucher_Jurnal);
+                            var form = me.win.down('form').getForm();
+                            if(form.isValid()){
+                               // me.PostingItem(form, me.Voucher_JurnalStore);
+                                form.findField('coa').setValue(Ext.getCmp('acc_vc').getValue());
+                                form.findField('inv_code').setValue(me.currInv_Code);
+                                form.findField('inv_code_link').setValue(me.currInv_Code);
+                                if(Ext.getCmp('jns_dc_vc').getValue()=='D' || Ext.getCmp('jns_dc_vc').getValue()=='d' ){
+                                    form.findField('debit').setValue(Ext.getCmp('nom_vc').getValue());
+                                    form.findField('credit').setValue(null);
+                                }else{
+                                    form.findField('debit').setValue(null);
+                                    form.findField('credit').setValue(Ext.getCmp('nom_vc').getValue());
+                                }
+                                var values = form.getValues();
+                                if(form.isValid()){
+                                    Jurnal.addJurnal(values, function(provider, response){
+                                        //Ext.MessageBox.alert('Sukses', '!!!!');
+                                        me.Voucher_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+                                    });
+                                }
+                            }
 
                         }
                     },
@@ -221,6 +302,7 @@ Ext.define('App.view.transaksi.GL.Voucher', {
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
+                            id:'dlt_dt_vc',
                             handler: function() {
                                 me.deleteProduksi1(me.Voucher_JurnalStore, me.Voucher_JurnalGrid);
                             }
@@ -240,10 +322,6 @@ Ext.define('App.view.transaksi.GL.Voucher', {
                 }
             ]
         });
-
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
         me.win = Ext.create('App.ux.window.Window', {
             width: 600,
             items: [
@@ -254,357 +332,43 @@ Ext.define('App.view.transaksi.GL.Voucher', {
                         labelWidth: 100
                     },
                     defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'inv_code',
-                            hidden:true
-                        },
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Type ",
-                            defaults: {xtype: "radio", name:'inv_type'
-                            },
-                            items: [
-                                {
-                                    boxLabel: "Memory",
-                                    checked: true,
-                                    inputValue:'V'
-
-                                },
-                                {
-                                    boxLabel: "Cogs & SR",
-                                    inputValue:'C'
-
-                                },
-                                {
-                                    boxLabel: "Depreciation Aset",
-                                    inputValue:'D'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'inv_date'
-                                },
-                                {
-                                    fieldLabel : 'Inv. Date',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'inv_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'nominal'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Remaks : '
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'remaks'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posted',
-                                    id:'post_gl',
-                                    name: 'status'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPBSave(form, me.VoucherStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
-        });
-        me.winformVoucher_Jurnal = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
                     items: [
                         {
                             xtype: 'textfield',
                             hidden: true,
                             name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'sequence_no',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Coa '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'coa',
-                                    allowBlank: false
-                                }
-                            ]
+                        },{
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'inv_code_link'
                         },
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'vend_id'
-
+                            name: 'debit'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Debit :'
-                                },
-                                {
-                                    fieldLabel : 'Debit',
-                                    labelAlign : 'right',
-                                    name: 'debit',
-                                    xtype: 'textfield'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'credit'
                         },
                         {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Credit :'
-                                },
-                                {
-                                    fieldLabel : 'Credit',
-                                    labelAlign : 'right',
-                                    name: 'credit',
-                                    xtype: 'textfield'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            hidden: true,
+                            name: 'coa'
                         }
-
                     ]
                 }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winformVoucher_Jurnal.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi3Save(form, me.Voucher_JurnalStore, me.winformVoucher_Jurnal);
-                        }
-                    }
-                },{
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winformVoucher_Jurnal);
-                }
-            }
+            ]
         });
-
-
-
+        // *************************************************************************************
+        // Window User Form
+        // *************************************************************************************
 
         me.pageBody = [me.VoucherGrid, me.Voucher_JurnalGrid];
         me.callParent(arguments);
     },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
 
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    action1: function(action, window){
-        var winf = window, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onItemdblclick1: function(store, record, title, window, form){
-
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old',window);
-        window.show();
-    },
-
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewPB: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-
-    },
-    onNewProduksi1: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new',window);
-        window.show();
-    },
-
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
     onPBGridClick: function(grid, selected){
         var me = this;
         me.currInv_Code = selected.data.inv_code;
@@ -614,69 +378,19 @@ Ext.define('App.view.transaksi.GL.Voucher', {
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+        if(me.currPosted==1 || me.currPosted==2){
+            Ext.getCmp('dlt_vc').disable();
+            Ext.getCmp('pst_vc').disable();
+            Ext.getCmp('dlt_dt_vc').disable();
+            Ext.getCmp('add_vc').disable();
+        }else{
+            Ext.getCmp('dlt_vc').enable();
+            Ext.getCmp('pst_vc').enable();
+            Ext.getCmp('dlt_dt_vc').enable();
+            Ext.getCmp('add_vc').enable();
+        }
         me.Voucher_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
-    },
-
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-
-    onPBSave: function(form, store){
-        var me = this;
-        me.savePB(form, store);
-    },
-    savePB: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-               me.Voucher_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-    },
-
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-    saveProduksi3: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-
-        f = me.winformVoucher_Jurnal.down('form').getForm(), rec = f.getRecord();
-
-        form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winformVoucher_Jurnal.close();
-                //store.load();
-            },
-            failure:function(){
-                // store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
     },
 
     onPBDelete: function(store){
@@ -691,12 +405,12 @@ Ext.define('App.view.transaksi.GL.Voucher', {
             buttons: Ext.Msg.YESNO,
             fn: function(btn){
                 if(btn == 'yes'){
-//                    PB.deletePB(bid);
                     store.remove(sm.getSelection());
                     store.sync();
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.Voucher_JurnalStore.load({params:{inv_code: me.currInv_Code}});
                 }
             }
         });
