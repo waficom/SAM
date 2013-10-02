@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="adb40c73-9364-4a09-9569-46c2e3996a32">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="62"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from gr0]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="GR_NUM" class="java.lang.String"/>
+	<field name="PO_NUM" class="java.lang.String"/>
+	<field name="TGL" class="java.sql.Date"/>
+	<field name="VEND_ID" class="java.lang.String"/>
+	<field name="VEND_ID_TRANS" class="java.lang.String"/>
+	<field name="KETERANGAN" class="java.lang.String"/>
+	<field name="GR_TYPE" class="java.lang.String"/>
+	<field name="GUDANG_ID" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="POSTED_BY" class="java.lang.String"/>
+	<field name="POSTED_DATE" class="java.sql.Timestamp"/>
+	<field name="CANCELED" class="java.lang.String"/>
+	<field name="CANCELED_BY" class="java.lang.String"/>
+	<field name="CANCELED_DATE" class="java.sql.Timestamp"/>
+	<field name="USERINPUT" class="java.lang.String"/>
+	<field name="USEREDIT" class="java.lang.String"/>
+	<field name="TIMEINPUT" class="java.sql.Timestamp"/>
+	<field name="TIMEEDIT" class="java.sql.Timestamp"/>
+	<field name="ACCOUNT" class="java.lang.String"/>
+	<field name="GRN_RETURN" class="java.lang.String"/>
+	<field name="RC_TYPE" class="java.lang.String"/>
+	<field name="SEQUENCE_NO" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="3cdc17e8-292d-4c75-bc24-c18fb94f64dc" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[GR_NUM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bf3f1dda-18ee-4479-aa60-38e59192d454" x="100" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[TGL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="49" splitType="Stretch">
+			<textField>
+				<reportElement uuid="eace8e16-ccb7-4bb8-8f31-9641d1ae90e6" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GR_NUM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="31596857-eaa0-4530-8c3c-7c78914c8fc8" x="100" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TGL}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="be8e993f-b969-4ef4-95d5-d824f2e56d35" x="0" y="20" width="574" height="29"/>
+				<subreportParameter name="gr_num">
+					<subreportParameterExpression><![CDATA[$F{GR_NUM}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "report1_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

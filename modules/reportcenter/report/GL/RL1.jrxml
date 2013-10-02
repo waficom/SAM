@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RL1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d2b5e56-8e88-4ea9-8eca-09c18b8f5737">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="dstotal" uuid="f70acb6a-00ef-43da-94c3-064e0c6a9c63">
+		<parameter name="prd" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="coid" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select
+    ((SELECT coalesce(sum(tb.ending_balance),0)
+    FROM COA c
+    LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+    LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+    WHERE c.CO_ID = $P{coid} and SUBSTR(c.jenis,1,1) = 'R' and c.status = 'Y') -
+
+    (SELECT coalesce(sum(tb.ending_balance),0)
+    FROM COA c
+    LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+    LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+    WHERE c.CO_ID = $P{coid} and SUBSTR(c.jenis,1,1) = 'E' and c.status = 'Y')) as rl,
+
+    ((SELECT coalesce(sum(tb.ytd),0)
+    FROM COA c
+    LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+    LEFT OUTER JOIN GET_SUM_LR_YTD($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+    WHERE c.CO_ID = $P{coid} and SUBSTR(c.jenis,1,1) = 'R' and c.status = 'Y') -
+
+    (SELECT coalesce(sum(tb.ytd),0)
+    FROM COA c
+    LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+    LEFT OUTER JOIN GET_SUM_LR_YTD($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+    WHERE c.CO_ID = $P{coid} and SUBSTR(c.jenis,1,1) = 'E' and c.status = 'Y')) as ytd
+from rdb$database]]>
+		</queryString>
+		<field name="RL" class="java.math.BigDecimal"/>
+		<field name="YTD" class="java.math.BigDecimal"/>
+	</subDataset>
+	<parameter name="coid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prd" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.*, c1.coa_nama as cp_nama, tb.periode, coalesce(tb.debit,0) as debit, coalesce(tb.credit,0) as credit,
+coalesce(tb.incdec,0) as incdec,
+coalesce(y.debit,0) as debit_ytd,
+coalesce(y.credit,0) as credit_ytd,
+coalesce(y.incdec,0) as incdec_ytd
+FROM COA c
+LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+LEFT OUTER JOIN GET_MUTASI_LR($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+LEFT OUTER JOIN GET_MUTASI_LR_YTD($P{coid}, c.coa_id, $P{prd}) y ON c.CO_ID = y.CO_ID AND c.COA_ID = y.COA_ID
+WHERE c.CO_ID = $P{coid} AND c.COA_PARENT is null
+  AND ((SUBSTR(c.jenis,1,1) = 'R') OR (SUBSTR(c.jenis,1,1) = 'E'))
+ORDER BY c.COA_ID]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="COA_ID" class="java.lang.String"/>
+	<field name="COA_NAMA" class="java.lang.String"/>
+	<field name="COA_LEVEL" class="java.lang.Integer"/>
+	<field name="COA_PARENT" class="java.lang.String"/>
+	<field name="KETERANGAN" class="java.lang.String"/>
+	<field name="AKTIF" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="DK" class="java.lang.String"/>
+	<field name="JENIS" class="java.lang.String"/>
+	<field name="SHOWTOTAL" class="java.lang.String"/>
+	<field name="CP_NAMA" class="java.lang.String"/>
+	<field name="PERIODE" class="java.lang.String"/>
+	<field name="DEBIT" class="java.math.BigDecimal"/>
+	<field name="CREDIT" class="java.math.BigDecimal"/>
+	<field name="INCDEC" class="java.math.BigDecimal"/>
+	<field name="DEBIT_YTD" class="java.math.BigDecimal"/>
+	<field name="CREDIT_YTD" class="java.math.BigDecimal"/>
+	<field name="INCDEC_YTD" class="java.math.BigDecimal"/>
+	<variable name="SUM_EB" class="java.math.BigDecimal" resetType="Group" resetGroup="ByAccount" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC}]]></variableExpression>
+	</variable>
+	<variable name="SUM_YTD" class="java.math.BigDecimal" resetType="Group" resetGroup="ByAccount" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC_YTD}]]></variableExpression>
+	</variable>
+	<group name="ByAccount">
+		<groupExpression><![CDATA[$F{COA_ID}]]></groupExpression>
+		<groupFooter>
+			<band height="19">
+				<printWhenExpression><![CDATA[new Boolean(!(($V{SUM_EB} == 0) && ($V{SUM_YTD} == 0)))]]></printWhenExpression>
+				<line>
+					<reportElement uuid="c377eaba-6551-478d-a940-d92908d935cb" positionType="FixRelativeToBottom" x="333" y="0" width="222" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5" lineColor="#999999"/>
+					</graphicElement>
+				</line>
+				<textField>
+					<reportElement uuid="d6a18f3e-43bf-43f2-af61-3751c50c1a04" x="73" y="0" width="261" height="12"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+						<paragraph leftIndent="10" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total "+$F{COA_NAMA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0">
+					<reportElement uuid="009043ee-4ecd-4d1d-8f9f-43b102ffd824" style="Detail" x="333" y="0" width="111" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+						<paragraph rightIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{SUM_EB}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0">
+					<reportElement uuid="3b9298a1-42f5-4e6d-af4b-ba2605710b4c" style="Detail" x="443" y="0" width="111" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{SUM_YTD}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="30619671-8da5-4225-8525-418e66fd49bb" x="143" y="0" width="315" height="17"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PT. SARASWANTI ANUGERAH MAKMUR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bf110c5-d2d3-455a-8e61-ad02443c55a6" x="1" y="45" width="554" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LABA & RUGI]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d6cf6f34-eaea-4222-917b-6611b1fa8cb2" x="0" y="62" width="555" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Periode : " + $P{prd}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="91d1883b-4715-4c25-9092-91aed7849da3" x="143" y="17" width="383" height="28"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Office : 	Surya Inti Permata Juanda Super Blok A.51 - 55, Jl. Raya Juanda, Waru - Sidoarjo
+	Phone : 62 -31 8675888 (Hunting) Fax : 62 -31 - 8678555
+	Email : samfert@indo.net.id
+Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
+]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="532d7b72-8c53-43e3-894e-7b888916649e" x="0" y="1" width="74" height="14"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KODE AKUN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3a2fb3a9-d9c5-485d-86b9-8f189c25488d" x="73" y="1" width="261" height="14"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KETERANGAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1273bcfb-8df4-4c54-a8a5-811e573e724b" x="333" y="1" width="111" height="14"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BULAN INI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f177d9d-ef76-44cc-9bc5-040c4706b027" x="443" y="1" width="111" height="14"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S/D BULAN INI]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="e8c2f5fe-2476-4336-a41a-c8c56dbf96db" positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean(!(($F{INCDEC} == 0) && ($F{INCDEC_YTD} == 0)))]]></printWhenExpression>
+			<frame>
+				<reportElement uuid="5f349ff6-3b58-4a10-adf9-f18456026c0f" mode="Opaque" x="0" y="0" width="555" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="dd114214-e33b-4511-8728-95f44262adc1" style="Detail" x="0" y="0" width="74" height="12"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+						<paragraph leftIndent="-1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{COA_ID}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="8be849eb-7056-4d6a-86e4-3d6277cf77fc" style="Detail" x="73" y="0" width="261" height="12"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{COA_NAMA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0">
+					<reportElement uuid="14484a69-fe8c-4b9b-8940-727eb80733a4" style="Detail" x="443" y="0" width="111" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{INCDEC_YTD} == 0 || $F{STATUS} == "N" ? " " : $F{INCDEC_YTD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0">
+					<reportElement uuid="3f9bd761-319e-487f-ba9d-02b7dbd298d1" style="Detail" x="333" y="0" width="111" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{INCDEC} == 0 || $F{STATUS} == "N" ? " " : $F{INCDEC}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<subreport>
+				<reportElement uuid="2579d516-5fab-4182-b419-e0b26d1423b1" x="-21" y="12" width="594" height="1"/>
+				<subreportParameter name="coid">
+					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="prd">
+					<subreportParameterExpression><![CDATA[$F{PERIODE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parent">
+					<subreportParameterExpression><![CDATA[$F{COA_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RL1_SR.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement uuid="d6c8a031-c0fb-4665-9a4e-9475f73d8eec" mode="Opaque" x="-21" y="1" width="576" height="12" forecolor="#D0B48E" backcolor="#F2EBDF"/>
+				<textField evaluationTime="Report">
+					<reportElement uuid="cc9a0232-b7e7-4326-9aee-1dd454425ada" style="Column header" x="533" y="0" width="40" height="11" forecolor="#736343"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="14e4a1ce-406c-497d-a327-67c44fc36e75" style="Column header" x="453" y="0" width="80" height="11" forecolor="#736343"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement uuid="9a1e4f6f-43b2-440a-987a-c26411cbd325" style="Column header" x="22" y="1" width="197" height="10" forecolor="#736343"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="31" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="246a4ffd-1bab-4b08-8fa5-259fb054765c" key="table 1" style="Row" x="333" y="0" width="222" height="12"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="dstotal" uuid="909271e2-2f04-4d94-ae56-fd475519abf5">
+						<datasetParameter name="prd">
+							<datasetParameterExpression><![CDATA[$P{prd}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="coid">
+							<datasetParameterExpression><![CDATA[$P{coid}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="111" uuid="cee222d5-2644-4509-8348-d45e1ccbae76">
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="0.0"/>
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+							<textField pattern="#,##0;(#,##0)">
+								<reportElement uuid="e80fa5a4-6e6e-47bf-85ed-e61b3e9384a1" x="0" y="0" width="111" height="12"/>
+								<textElement textAlignment="Right">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{RL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="111" uuid="ac22cff5-0f51-48f8-bc90-21e883ff3b0e">
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="0.0"/>
+								<topPen lineWidth="0.0"/>
+								<leftPen lineWidth="0.0"/>
+								<bottomPen lineWidth="0.0"/>
+								<rightPen lineWidth="0.0"/>
+							</box>
+							<textField pattern="#,##0;(#,##0)">
+								<reportElement uuid="c615c302-19c9-454a-8703-1d277be3701c" x="0" y="0" width="111" height="12"/>
+								<textElement textAlignment="Right">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{YTD}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement uuid="1ac9d8b2-40d1-4fef-9b6d-9049d78668f8" x="233" y="0" width="100" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL LABA - RUGI]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

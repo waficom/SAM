@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RL1_SR" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="5126e601-140e-442d-8106-ac8ac68e4936">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="coid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prd" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="parent" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.*, c1.coa_nama as cp_nama, tb.periode, coalesce(tb.debit,0) as debit, coalesce(tb.credit,0) as credit,
+coalesce(tb.incdec,0) as incdec,
+coalesce(y.debit,0) as debit_ytd,
+coalesce(y.credit,0) as credit_ytd,
+coalesce(y.incdec,0) as incdec_ytd
+FROM COA c
+LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+LEFT OUTER JOIN GET_MUTASI_LR($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+LEFT OUTER JOIN GET_MUTASI_LR_YTD($P{coid}, c.coa_id, $P{prd}) y ON c.CO_ID = y.CO_ID AND c.COA_ID = y.COA_ID
+WHERE c.CO_ID = $P{coid} AND c.COA_PARENT = $P{parent}
+  AND ((SUBSTR(c.jenis,1,1) = 'R') OR (SUBSTR(c.jenis,1,1) = 'E'))
+ORDER BY c.COA_ID]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="COA_ID" class="java.lang.String"/>
+	<field name="COA_NAMA" class="java.lang.String"/>
+	<field name="COA_LEVEL" class="java.lang.Integer"/>
+	<field name="COA_PARENT" class="java.lang.String"/>
+	<field name="KETERANGAN" class="java.lang.String"/>
+	<field name="AKTIF" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="DK" class="java.lang.String"/>
+	<field name="JENIS" class="java.lang.String"/>
+	<field name="SHOWTOTAL" class="java.lang.String"/>
+	<field name="CP_NAMA" class="java.lang.String"/>
+	<field name="PERIODE" class="java.lang.String"/>
+	<field name="DEBIT" class="java.math.BigDecimal"/>
+	<field name="CREDIT" class="java.math.BigDecimal"/>
+	<field name="INCDEC" class="java.math.BigDecimal"/>
+	<field name="DEBIT_YTD" class="java.math.BigDecimal"/>
+	<field name="CREDIT_YTD" class="java.math.BigDecimal"/>
+	<field name="INCDEC_YTD" class="java.math.BigDecimal"/>
+	<variable name="SUM_EB" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC}]]></variableExpression>
+	</variable>
+	<variable name="SUM_YTD" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC_YTD}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean(!(($F{INCDEC} == 0) && ($F{INCDEC_YTD} == 0)))]]></printWhenExpression>
+			<frame>
+				<reportElement uuid="6f35e693-6394-46eb-9980-34d4243f1a33" mode="Opaque" x="0" y="0" width="555" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="3311f336-fa9f-4b98-93f8-e56bcc7baec9" style="Detail" x="0" y="0" width="74" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{COA_ID}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="bb9cbd51-23b8-4006-b96e-8473cebc05dd" style="Detail" x="74" y="0" width="260" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{COA_NAMA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement uuid="d29bb497-afbc-4575-88dc-f48808a674a3" style="Detail" x="333" y="0" width="111" height="12"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{INCDEC} == 0 || $F{STATUS} == "N" ? " " : $F{INCDEC}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<textField isStretchWithOverflow="true" pattern="#,##0">
+				<reportElement uuid="e6252b3a-0b6a-4b8b-b840-c96f4c369c1c" style="Detail" x="444" y="0" width="111" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INCDEC_YTD} == 0 || $F{STATUS} == "N" ? " " : $F{INCDEC_YTD}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="f3ffdd7b-b12c-4ea0-9e59-2e654f24e37a" x="-20" y="12" width="575" height="0"/>
+				<subreportParameter name="coid">
+					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="prd">
+					<subreportParameterExpression><![CDATA[$F{PERIODE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parent">
+					<subreportParameterExpression><![CDATA[$F{COA_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RL1_SR.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="14" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean(!(($V{SUM_EB} == 0) && ($V{SUM_YTD} == 0)) && ( $F{STATUS} == "N"))]]></printWhenExpression>
+			<textField>
+				<reportElement uuid="52827b4a-e1c1-40f4-950c-239e47b2eca2" x="74" y="0" width="259" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="10" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total " +$F{COA_NAMA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="aae34e8a-8491-43cf-9f90-011c6122821d" positionType="FixRelativeToBottom" x="333" y="0" width="222" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="c8123a77-ae2e-4824-a135-8885380809dd" style="Detail" x="333" y="0" width="111" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM_EB}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="55a99d53-8074-4982-8a31-7044f33ee224" style="Detail" x="444" y="0" width="111" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM_YTD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

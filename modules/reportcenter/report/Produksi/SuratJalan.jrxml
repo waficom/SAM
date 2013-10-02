@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="453" pageHeight="510" columnWidth="453" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ab381f94-8e1d-4ced-8fa3-1a6a638d2bbc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="31"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="do_num" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select A.*, B.cust_nama, C.vend_nama, E.size
+from deliveryorderdetai A
+left join viewdeliveryorder B on A.do_num=B.do_num and A.co_id=B.co_id
+left join vendor  C on A.co_id=C.co_id and A.vend_id=C.vend_id
+left join items D on A.prod_id=D.prod_id and A.co_id=D.co_id
+left join kemasan E on D.kemasan_id=E.kemasan_id and D.co_id=E.co_id
+where A.do_num=$P{do_num}]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="DO_NUM" class="java.lang.String"/>
+	<field name="ORDERSOURCE" class="java.lang.String"/>
+	<field name="DELIVERYDATE" class="java.sql.Timestamp"/>
+	<field name="VEND_ID" class="java.lang.String"/>
+	<field name="POLICE_NO" class="java.lang.String"/>
+	<field name="VESSEL" class="java.lang.String"/>
+	<field name="ORIGIN" class="java.lang.String"/>
+	<field name="DESTINATION" class="java.lang.String"/>
+	<field name="QTY" class="java.math.BigDecimal"/>
+	<field name="SATUAN_ID" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="USERINPUT" class="java.lang.String"/>
+	<field name="USEREDIT" class="java.lang.String"/>
+	<field name="TIMEEDIT" class="java.sql.Timestamp"/>
+	<field name="TIMEINPUT" class="java.sql.Timestamp"/>
+	<field name="SURATJALAN" class="java.lang.String"/>
+	<field name="PROD_ID" class="java.lang.String"/>
+	<field name="CONTAINER_NO" class="java.lang.String"/>
+	<field name="SEAL_NO" class="java.lang.String"/>
+	<field name="CONTAINER_NAME" class="java.lang.String"/>
+	<field name="SEQUENCE_NO" class="java.lang.Integer"/>
+	<field name="CUST_NAMA" class="java.lang.String"/>
+	<field name="VEND_NAMA" class="java.lang.String"/>
+	<field name="SIZE" class="java.lang.Integer"/>
+	<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="272" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bf6b7b71-f205-40eb-a9d1-0f5cbfee8c81" x="53" y="111" width="71" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[PROD_ID]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8c283b32-ef93-4af8-beb0-e7d37dc001d6" x="124" y="112" width="130" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROD_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3284ffb7-b85a-4f43-ace1-c098d23c6758" x="53" y="152" width="71" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[NO. CONT.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c7a0f3bb-1d05-4ee5-b56e-d13e0826d567" x="124" y="152" width="130" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONTAINER_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="180f9fa1-c2c1-46dd-a2c9-b553362eb6c0" x="53" y="132" width="71" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[CONTAINER]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="aa0201f6-3da7-4dd0-9263-ed61df233c59" x="124" y="132" width="130" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONTAINER_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="45952fc9-aa8f-446e-88da-23db4f992261" x="53" y="172" width="71" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[SEAL]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f14c89c5-0b14-4bb8-8949-b4fc0b25e47a" x="124" y="172" width="130" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SEAL_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="ce1162a2-fdc3-43ca-9363-d5bda2387fc3" x="254" y="112" width="48" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{QTY}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a2bfcc3e-8783-4bef-b5e1-53549c69fbb4" x="279" y="28" width="174" height="50"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUST_NAMA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="29af2035-4ebb-48e7-9b57-fdc277751aac" x="101" y="250" width="73" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POLICE_NO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8a628c90-5d81-4498-a7d3-a663526dac96" x="28" y="250" width="73" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VEND_NAMA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="908e1577-5b98-4f50-8716-22037e9727dc" x="313" y="112" width="51" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIZE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="afb44f4d-393e-443c-ba4a-d042d6324c90" x="381" y="112" width="49" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{QTY}*$F{SIZE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="09b322ec-e611-45c9-894a-acf8e3b0a80e" x="28" y="111" width="25" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{AUTONUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="12" splitType="Stretch"/>
+	</summary>
+</jasperReport>

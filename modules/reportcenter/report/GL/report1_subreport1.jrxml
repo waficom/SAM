@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1_subreport1" language="groovy" pageWidth="752" pageHeight="572" orientation="Landscape" columnWidth="752" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a372778a-13df-4c75-954d-90f3f011c028">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="gr_num" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from gr10
+where gr_num=$P{gr_num}]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="GR_NUM" class="java.lang.String"/>
+	<field name="BB_ID" class="java.lang.String"/>
+	<field name="SAT_ID" class="java.lang.String"/>
+	<field name="QTY_BRUTTO" class="java.math.BigDecimal"/>
+	<field name="QTY_NETTO" class="java.math.BigDecimal"/>
+	<field name="QTY_PCS" class="java.math.BigDecimal"/>
+	<field name="QTY_SELISIH" class="java.math.BigDecimal"/>
+	<field name="KETERANGAN" class="java.lang.String"/>
+	<field name="HPP" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e0c4627a-eee0-4741-b9ed-c7f1df3cb20a" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{BB_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7f8f1ab8-ca2a-43ba-8ed0-d002afa0ca70" x="100" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SAT_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

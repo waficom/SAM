@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NRC_SR1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="453bede0-74f3-4ec0-8c68-5ec8db8cc25c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="parent" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/var/www/modules/reportcenter/report/GL/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prd" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.*, c1.coa_nama as cp_nama, tb.periode, coalesce(tb.begining_balance,0) as begining_balance, coalesce(tb.ending_balance,0) as ending_balance,
+coalesce(tb.incdec,0) as incdec
+FROM COA c
+LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
+LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
+WHERE c.CO_ID = $P{coid} AND c.COA_PARENT = $P{parent}
+ORDER BY c.COA_ID]]>
+	</queryString>
+	<field name="CO_ID" class="java.lang.String"/>
+	<field name="COA_ID" class="java.lang.String"/>
+	<field name="COA_NAMA" class="java.lang.String"/>
+	<field name="COA_LEVEL" class="java.lang.Integer"/>
+	<field name="COA_PARENT" class="java.lang.String"/>
+	<field name="KETERANGAN" class="java.lang.String"/>
+	<field name="AKTIF" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="CP_NAMA" class="java.lang.String"/>
+	<field name="PERIODE" class="java.lang.String"/>
+	<field name="BEGINING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="ENDING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="INCDEC" class="java.math.BigDecimal"/>
+	<variable name="INCDEC" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{ENDING_BALANCE}.subtract( $F{BEGINING_BALANCE} )]]></variableExpression>
+	</variable>
+	<variable name="JUMLAH" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC}]]></variableExpression>
+	</variable>
+	<variable name="ENDING_BALANCE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ENDING_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="BEGINING_BALANCE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{BEGINING_BALANCE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement uuid="978c527f-c250-4fab-9de0-e7cd869f98fe" x="0" y="0" width="75" height="12"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COA_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ed6ce610-90db-417e-a76a-bac6fab581c9" x="75" y="0" width="254" height="12"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COA_NAMA}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="37813ca3-cfcb-4571-850f-e994c15cdbb9" x="0" y="12" width="595" height="0"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coid">
+					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="prd">
+					<subreportParameterExpression><![CDATA[$F{PERIODE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parent">
+					<subreportParameterExpression><![CDATA[$F{COA_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "NRC_SR1.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="f6b50eec-beac-4403-b01b-cc17cf5d8a9e" x="329" y="0" width="86" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ENDING_BALANCE} == 0) || ($F{STATUS} == "N") ? " ":$F{ENDING_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="c32486d7-e4a7-4bf4-acd9-0097f8efd809" x="415" y="0" width="86" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{BEGINING_BALANCE} == 0) || ($F{STATUS} == "N") ? " " : $F{BEGINING_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="2d79a370-dc12-4f8f-b324-90aa987edb4b" x="501" y="0" width="66" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{INCDEC} == 0) || ($F{STATUS} == "N")? " " : $F{INCDEC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9f44073b-e863-490b-9a99-3e345ec19bb3" positionType="Float" x="0" y="0" width="329" height="12"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="80" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total "+ $F{CP_NAMA}.toString()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="61f9f1f8-2d18-4ec1-a101-67a7b449f60c" x="329" y="0" width="86" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ENDING_BALANCE_1} == 0 ? " " : $V{ENDING_BALANCE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="08193c7b-32c5-4334-996a-7430bea7b4cd" x="415" y="0" width="86" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{BEGINING_BALANCE_1} == 0 ? " " : $V{BEGINING_BALANCE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="cf7066df-be6a-440e-b39a-94b989b2fd53" x="501" y="0" width="66" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{JUMLAH} == 0 ? " " : $V{JUMLAH}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
