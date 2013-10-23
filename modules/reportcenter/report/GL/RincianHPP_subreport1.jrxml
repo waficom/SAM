@@ -496,10 +496,10 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 							<staticText>
 								<reportElement uuid="e90167b5-9ade-458d-a968-b1b799a9a903" x="0" y="0" width="65" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[BB_ID]]></text>
+								<text><![CDATA[KODE BB]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
@@ -518,10 +518,10 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 							<staticText>
 								<reportElement uuid="839801a3-7288-4153-843f-b271b9394d95" x="0" y="0" width="119" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[BB_NAMA]]></text>
+								<text><![CDATA[NAMA BAHAN BAKU]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="13" rowSpan="1">
@@ -548,12 +548,12 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 					<jr:column width="55" uuid="2dbbf341-1246-4f5c-ad08-f394bc453f72">
 						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="52" height="13"/>
+								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="55" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY]]></text>
+								<text><![CDATA[KWANTUM]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="13" rowSpan="1">
@@ -568,7 +568,7 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 						</jr:columnFooter>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="52" height="12"/>
+								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="55" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -582,10 +582,10 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 							<staticText>
 								<reportElement uuid="a1baa054-a924-402b-9353-b4eae07cdc16" x="0" y="0" width="69" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HPP]]></text>
+								<text><![CDATA[RATA2 / KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="13" rowSpan="1"/>
@@ -605,7 +605,7 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 							<staticText>
 								<reportElement uuid="654cb2ef-2777-40e5-a4fc-20b484bef18b" x="0" y="0" width="90" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[TOTAL]]></text>

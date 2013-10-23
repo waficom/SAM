@@ -44,11 +44,12 @@ class Formula
 
     public function getFormulaLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT co_id,
 		                          formula_id, 
 		                          formula_nama
 							FROM formula0
-   							WHERE UPPER(formula_id)     LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(formula_id)     LIKE UPPER('%$params->query%')
    	    					   OR UPPER(formula_nama)   LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -68,10 +69,12 @@ class Formula
 	
 	public function getformula(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$sql = "SELECT f0.*, sp.spesifikasi_nama, c.cust_nama
 		             FROM formula0 f0
 		             LEFT JOIN customer c ON c.cust_id = f0.cust_id and c.co_id = f0.co_id
 		             LEFT JOIN spesifikasi sp ON sp.spesifikasi_id = f0.spesifikasi_id and sp.co_id = f0.co_id
+                     where f0.co_id='$company'
                      ORDER BY f0.formula_nama";
         $this -> db -> setSQL($sql);
 		$rows = array();
@@ -126,7 +129,7 @@ class Formula
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-        $sql = $this->db->sqlBind($data, 'formula0', 'U', array('formula_id' => $params->old_formula_id));
+        $sql = $this->db->sqlBind($data, 'formula0', 'U', array('formula_id' => $params->old_formula_id, 'co_id' => $params->co_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -134,11 +137,11 @@ class Formula
 
 	public function deleteformula(stdClass $params)
 	{
-
-		$sql = "DELETE FROM formula1 WHERE (formula_id = '$params->formula_id')";
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM formula1 WHERE (formula_id = '$params->formula_id', co_id='$company')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
-		$sql = "DELETE FROM formula0 WHERE (formula_id = '$params->formula_id')";
+		$sql = "DELETE FROM formula0 WHERE (formula_id = '$params->formula_id', co_id='$company')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;
@@ -146,11 +149,12 @@ class Formula
 	
 	public function getformula1(stdClass $params)
 	{
-		$this->db->setSQL("SELECT *
+        $company =  $_SESSION['user']['site'];
+        $this->db->setSQL("SELECT *
                          FROM formula1 f1
                     LEFT JOIN satuan s ON f1.satuan_id = s.satuan_id and f1.co_id = s.co_id
                     LEFT JOIN bahanbaku b ON f1.bb_id = b.bb_id and f1.co_id = b.co_id
-                    WHERE f1.formula_id = '" . $params->formula_id ."'");
+                    WHERE f1.co_id='$company' and f1.formula_id = '" . $params->formula_id ."'");
 
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -184,7 +188,8 @@ class Formula
 	 */
 	public function updateformula1(stdClass $params)
 	{
-		$data       = get_object_vars($params);
+        $company =  $_SESSION['user']['site'];
+        $data       = get_object_vars($params);
 		unset($data['id'], $data['bb_id'], $data['old_bb_id'], $data['bb_nama'], $data['satuan_nama'],$data['sequence_no']);
 		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('sequence_no' => trim($params->sequence_no)));
 		$this->db->setSQL($sql);

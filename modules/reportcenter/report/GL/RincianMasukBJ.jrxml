@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report TB" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
 	<property name="ireport.zoom" value="1.5000000000000002"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="113"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Table">
 		<box>
@@ -527,6 +527,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</textElement>
 				<textFieldExpression><![CDATA[$P{periode}]]></textFieldExpression>
 			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="3fd7e194-ae71-4357-ac01-b24d0dcc75ff" x="73" y="0" width="88" height="58"/>
+				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<detail>
@@ -567,7 +571,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[SO_NUM]]></text>
+				<text><![CDATA[NO. PELANGGAN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="298ff0ac-9c40-4e87-a070-723addeaf90b" x="173" y="10" width="76" height="9"/>
@@ -578,7 +582,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[PROD_ID]]></text>
+				<text><![CDATA[KODE PRODUK]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="6c3381bf-7032-473f-ab2c-e792b7a3ea81" x="37" y="10" width="36" height="9"/>
@@ -608,7 +612,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[QTY]]></text>
+				<text><![CDATA[KWANTUM]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 				<reportElement uuid="9e94f4e4-5f30-4ec4-9d4f-b4b84e108fc2" x="248" y="19" width="77" height="10"/>

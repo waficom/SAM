@@ -21,7 +21,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelSO',
-	pageTitle : 'Sales Order',
+	pageTitle : 'Pesanan Penjualan',
 	uses : ['App.ux.GridPanel'],
 	pageLayout : 'card',
 
@@ -865,7 +865,7 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                                     name: 'sat_id',
                                     xtype: 'xtSatuanPopup',
                                     fieldLabel : 'Satuan ',
-                                    labelAlign: 'right',
+                                    itemId:'sat_ap',
                                     allowBlank: false
                                 }
                             ]

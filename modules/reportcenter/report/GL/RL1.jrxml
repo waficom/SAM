@@ -212,6 +212,10 @@ ORDER BY c.COA_ID]]>
 Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 ]]></text>
 			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="30076ca1-5b14-46d7-86e6-acd7529c4279" x="68" y="0" width="75" height="45"/>
+				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>

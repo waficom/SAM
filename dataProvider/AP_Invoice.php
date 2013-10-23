@@ -46,6 +46,7 @@ class AP_Invoice
      * @param stdClass $params
      * @return array
      */
+
     public function getAP_Inv(stdClass $params)
     {
         if (isset($params -> sort))
@@ -56,7 +57,9 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from VIEW_AP_INVOICE ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from VIEW_AP_INVOICE
+        where co_id ='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -78,8 +81,9 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT A.*, B.nilaidasar FROM inv_manufaktur A
-        left join (select sum(qty*harga) as nilaidasar, inv_code from ap_inv_detail group by inv_code) B on A.inv_code=B.inv_code
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT *
+        FROM inv_manufaktur where co_id='$company'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -102,12 +106,13 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT A.*, B.description as bank_nama, C.vend_nama, D.posted_date as ap_inv_date, D.hutangsuplier
         FROM ap_inv_pembayaran A
         left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
         left join vendor C on A.vend_id=C.vend_id and A.co_id=C.vend_id
         left join ap_inv D on A.inv_code=D.inv_code and A.co_id=D.co_id
-        where A.inv_type <>'A' ORDER BY $orderx DESC";
+        where A.inv_type <>'A' and a.co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -129,11 +134,12 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
+        $company =  $_SESSION['user']['site'];
         $sql = "select A.*, B.hutangsuplier, C.nilaidasar as uangmuka, C.posted_date as inv_date_um, B.posted_date as ap_inv_date
                 from ap_inv_pembayaran A
                 left join ap_inv B on A.inv_code=B.inv_code and A.co_id=B.co_id
                 left join ap_inv_pembayaran C on A.inv_um=C.ap_inv_payment and A.co_id=C.co_id
-                where A.inv_type='A' ORDER BY $orderx DESC";
+                where A.inv_type='A' and a.co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -156,7 +162,8 @@ class AP_Invoice
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ap_inv_detail where inv_code ='$params->inv_code' ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM ap_inv_detail where co_id='$company' and inv_code ='$params->inv_code' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -182,6 +189,7 @@ class AP_Invoice
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['inv_type'] = 'N';
@@ -193,9 +201,7 @@ class AP_Invoice
         unset($data['id'],$data['inv_code'],$data['vend_nama'],$data['account_nama'],$data['tax_nama']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv', 'I');
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
-//		$params -> co_id = $this -> db -> lastInsertId;
         return $params;
     }
 
@@ -296,6 +302,7 @@ class AP_Invoice
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         $data['useredit'] = $_SESSION['user']['username'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code'],$data['nilaidasarx'],$data['ppn_%'],$data['ppn_nilaix'],$data['pph_%'],$data['pph_nilaix']
@@ -339,11 +346,9 @@ class AP_Invoice
         unset($data['id'],$data['inv_code'], $data['sequence_no']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv_detail', 'U', array('inv_code' => $params -> inv_code,'sequence_no' => $params -> sequence_no ));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         $sql = "EXECUTE PROCEDURE ap_inv_detail_i '$params->inv_code'";
         $this -> db -> execOnly($sql);
-
         return $params;
     }
 

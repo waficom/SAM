@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbook_In',
-    pageTitle: 'CashBook IN',
+    pageTitle: 'Kas Masuk',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -421,7 +421,7 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtCFPopup',
+                                    xtype: 'xtCF_IPopup',
                                     name: 'cf_code',
                                     allowBlank:false
                                 }
@@ -441,10 +441,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_In', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxKPopup',
+                                    xtype: 'textfield',//'xtTaxKPopup',
                                     name: 'tax_code',
                                     id:'tax_cd_cbin',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    readOnly:true
                                 }
                             ]
                         },

@@ -49,11 +49,12 @@ class Produksi
 
     public function getProduksiLiveSearch(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $this->db->setSQL("SELECT no_pp,
 		                          description,
 		                          pp_date,userinput,useredit,timeedit
 							FROM PP_Produksi
-   							WHERE no_pp          LIKE'$params->query%'
+   							WHERE co_id='$company' and no_pp          LIKE'$params->query%'
    							  OR description         LIKE'$params->query%' Order By no_pp ASC");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -82,7 +83,8 @@ class Produksi
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM PP_Produksi ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM PP_Produksi where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -149,9 +151,11 @@ class Produksi
      * @return stdClass
      */
     public function deleteProduksi(stdClass $params)
+
     {
+        $company =  $_SESSION['user']['site'];
 //		$sql = $this -> db -> sqlBind($data, 'Produksi', 'U', array('Produksi_id' => $params -> Produksi_id));
-        $sql = "DELETE FROM PP_Produksi WHERE (no_pp = '$params->no_pp')";
+        $sql = "DELETE FROM PP_Produksi WHERE no_pp = '$params->no_pp' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

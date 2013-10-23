@@ -51,7 +51,8 @@ class Bank
         {
             $orderx = 'bank_code';
         }
-        $sql = "SELECT * FROM bank_m ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM bank_m where co_id='$company' ORDER BY $orderx";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();

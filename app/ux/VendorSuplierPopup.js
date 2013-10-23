@@ -142,8 +142,8 @@ Ext.define('App.ux.VendorSuplierPopup',
             me.onGridClick(grid, selected);
             Ext.getCmp('vend_nama').setValue(selected.data.vend_nama);
             Ext.getCmp('vend_nama_po').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_gr').setValue(selected.data.vend_nama);
-            Ext.getCmp('vend_nama_ap').setValue(selected.data.vend_nama);
+            //Ext.getCmp('vend_nama_gr').setValue(selected.data.vend_nama);
+            Ext.ComponentQuery.query('#vend_nama')[0].setValue(selected.data.vend_nama);
             Ext.getCmp('vend_nama_pay').setValue(selected.data.vend_nama);
             Ext.getCmp('vend_nama_dt_do').setValue(selected.data.vend_nama);
             me.searchwin.close();

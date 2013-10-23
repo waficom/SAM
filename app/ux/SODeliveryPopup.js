@@ -121,8 +121,7 @@ Ext.define('App.ux.SODeliveryPopup',
             var me = this;
             me.onGridClick(grid, selected);
 
-            Ext.getCmp('prod_id').setValue(selected.data.prod_id);
-
+            Ext.ComponentQuery.query('#prod_id')[0].setValue(selected.data.prod_id);
 
             me.searchwin.close();
         },

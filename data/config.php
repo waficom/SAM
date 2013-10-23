@@ -645,6 +645,8 @@ $API = array(
             ),
             'updateGR' => array(
                 'len' => 1
+            ),'postingGR' => array(
+                'len' => 1
             ),
             'deleteGR' => array(
                 'len' => 1
@@ -1078,6 +1080,9 @@ $API = array(
             'CFPopup' => array(
                 'len' => 1
             ),
+            'CF_IPopup' => array(
+                'len' => 1
+            ),
             'CF_OPopup' => array(
                 'len' => 1
             ),
@@ -1095,7 +1100,21 @@ $API = array(
             ),
             'SOPPopup' => array(
                 'len' => 1
+            ),
+            'PPDPopup' => array(
+                'len' => 1
+            ),
+            'getPB_rptPopup' => array(
+                'len' => 1
+            ),
+            'GudangBDP_2Popup' => array(
+                'len' => 1
+            ),
+            'getKapal' => array(
+                'len' => 1
             )
+
+
 
 
 
@@ -1646,6 +1665,143 @@ $API = array(
                 'len' => 1
             ),
             'deleteCashflow' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Account' => array(
+        'methods' => array(
+            'getAccount' => array(
+                'len' => 1
+            ),
+            'addAccount' => array(
+                'len' => 1
+            ),
+            'updateAccount' => array(
+                'len' => 1
+            ),
+            'deleteAccount' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_BB_Formula' => array(
+        'methods' => array(
+            'getWO_BB_Formula' => array(
+                'len' => 1
+            ),
+            'addWO_BB_Formula' => array(
+                'len' => 1
+            ),
+            'deleteWO_BB_Formula' => array(
+                'len' => 1
+            ),
+            'getWO_BB_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'addtWO_BB_FormulaDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_BJ_Formula' => array(
+        'methods' => array(
+            'getWO_BJ_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'addWO_BJ_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'updateWO_BJ_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'deleteWO_BJ_FormulaDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_BDP_Formula' => array(
+        'methods' => array(
+            'getWO_BDP_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'addWO_BDP_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'updateWO_BDP_FormulaDetail' => array(
+                'len' => 1
+            ),
+            'deleteWO_BDP_FormulaDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'GRN_Return' => array(
+        'methods' => array(
+            'getGRN_Return' => array(
+                'len' => 1
+            ),
+            'addGRN_Return' => array(
+                'len' => 1
+            ),
+            'updateGRN_Return' => array(
+                'len' => 1
+            ),
+            'updateGRN_Return_Posting' => array(
+                'len' => 1
+            ),
+            'deleteGRN_Return' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Jurnal_GRN' => array(
+        'methods' => array(
+            'getJurnal_GRN' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Kapal' => array(
+        'methods' => array(
+            'getVessel' => array(
+                'len' => 1
+            ),
+            'addVessel' => array(
+                'len' => 1
+            ),
+            'updateVessel' => array(
+                'len' => 1
+            ),
+            'deleteVessel' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'SP_Kirim' => array(
+        'methods' => array(
+            'getSP_Kirim' => array(
+                'len' => 1
+            ),
+            'addSP_Kirim' => array(
+                'len' => 1
+            ),
+            'updateSP_Kirim' => array(
+                'len' => 1
+            ),
+            'deleteSP_Kirim' => array(
+                'len' => 1
+            ),
+            'getSP_Kirim_Detail' => array(
+                'len' => 1
+            ),
+            'addSP_Kirim_Detail' => array(
+                'len' => 1
+            ),
+            'updateSP_Kirim_Detail' => array(
+                'len' => 1
+            ),
+            'deleteSP_Kirim_Detail' => array(
                 'len' => 1
             )
         )

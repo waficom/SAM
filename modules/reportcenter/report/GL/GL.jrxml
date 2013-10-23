@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="General Jurnal" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
-	<property name="ireport.zoom" value="1.1000000000000012"/>
+	<property name="ireport.zoom" value="1.948717100000003"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -336,7 +336,7 @@ A.posted_date between $P{fromdate} and $P{todate}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[General Jurnal]]></text>
+				<text><![CDATA[General Ledger]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="54b71b8a-71b4-4168-b66d-58bb32335a4f" x="116" y="17" width="450" height="31"/>
@@ -390,7 +390,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Doc. number]]></text>
+				<text><![CDATA[NO. DOKUMEN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="3620640c-0f8a-4993-8949-27fc4a38ef13" x="113" y="0" width="47" height="13"/>
@@ -403,7 +403,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Post. Date]]></text>
+				<text><![CDATA[TGL DOK.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="92da0e61-308b-4483-b894-80b4f0d64e6e" x="159" y="0" width="50" height="13"/>
@@ -417,7 +417,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Account]]></text>
+				<text><![CDATA[NO. AKUN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="4e6fe12b-1838-40c9-8b05-6552a7b71a11" x="209" y="0" width="109" height="13"/>
@@ -431,7 +431,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Description]]></text>
+				<text><![CDATA[NAMA AKUN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="124c4afe-8c40-4acd-ac1f-e14a7f376004" x="375" y="0" width="52" height="13"/>
@@ -445,7 +445,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Debit]]></text>
+				<text><![CDATA[DEBIT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="65006be0-d7bb-4b40-8b46-8033d7758bc3" x="426" y="0" width="54" height="13"/>
@@ -459,7 +459,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Credit]]></text>
+				<text><![CDATA[KREDIT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="1c206c45-bb0d-45cd-9d06-ff3a2ddfbd95" x="479" y="0" width="89" height="13"/>
@@ -473,7 +473,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Remarks]]></text>
+				<text><![CDATA[KETERANGAN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="73a65e94-964e-4abd-bae1-51b79cc685ce" x="0" y="0" width="32" height="13"/>
@@ -486,7 +486,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<text><![CDATA[No.]]></text>
+				<text><![CDATA[NO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="5cf09a84-5177-4b85-ae25-394e6c68bfdf" x="317" y="0" width="59" height="13"/>
@@ -500,7 +500,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[Creditor / Debtor]]></text>
+				<text><![CDATA[PENJ / PLG]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

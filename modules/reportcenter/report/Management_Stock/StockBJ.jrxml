@@ -340,9 +340,16 @@
 		<parameter name="periode" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="gudang" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
-			<![CDATA[execute procedure RPT_STOCK_BJ($P{periode},$P{co_id})]]>
+			<![CDATA[select * from RPT_STOCK_BJ($P{gudang},$P{periode},$P{co_id})]]>
 		</queryString>
+		<field name="OHP_AKHIR" class="java.math.BigDecimal"/>
+		<field name="OHP_KLWR" class="java.math.BigDecimal"/>
+		<field name="OHP_MASUK" class="java.math.BigDecimal"/>
+		<field name="OHP_AWAL" class="java.math.BigDecimal"/>
 		<field name="PROD_NAMA" class="java.lang.String"/>
 		<field name="PROD_ID" class="java.lang.String"/>
 		<field name="TOTAL_AKHIR" class="java.math.BigDecimal"/>
@@ -352,13 +359,9 @@
 		<field name="HARGA_KLWR" class="java.math.BigDecimal"/>
 		<field name="QTY_KLWR" class="java.math.BigDecimal"/>
 		<field name="TOTAL_MASUK" class="java.math.BigDecimal"/>
-		<field name="OHP_TL" class="java.math.BigDecimal"/>
-		<field name="OHP_L" class="java.math.BigDecimal"/>
 		<field name="HARGA_MASUK" class="java.math.BigDecimal"/>
 		<field name="QTY_MASUK" class="java.math.BigDecimal"/>
 		<field name="TOTAL_AWAL" class="java.math.BigDecimal"/>
-		<field name="OHP_TL_AWAL" class="java.math.BigDecimal"/>
-		<field name="OHP_L_AWAL" class="java.math.BigDecimal"/>
 		<field name="HARGA_AWAL" class="java.math.BigDecimal"/>
 		<field name="QTY_AWAL" class="java.math.BigDecimal"/>
 		<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
@@ -374,7 +377,7 @@
 		<variable name="sum_ttlKlwr" class="java.math.BigDecimal" calculation="Sum">
 			<variableExpression><![CDATA[$F{TOTAL_KLWR}]]></variableExpression>
 		</variable>
-		<variable name="sum_ttlAkhir" class="java.math.BigDecimal">
+		<variable name="sum_ttlAkhir" class="java.math.BigDecimal" calculation="Sum">
 			<variableExpression><![CDATA[$F{TOTAL_AKHIR}]]></variableExpression>
 		</variable>
 	</subDataset>
@@ -382,6 +385,9 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="periode" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="gudang" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
@@ -425,12 +431,15 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 			<componentElement>
 				<reportElement uuid="e7c377f6-45b8-4cb8-8a41-c51bdcfa7fc0" key="table 12" style="table 12" x="0" y="79" width="814" height="42"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="TableData" uuid="5062073e-bd16-4759-bccd-fe7de1cccaf6">
+					<datasetRun subDataset="TableData" uuid="faea94c1-b479-43e0-94ec-8ee7c1222857">
 						<datasetParameter name="co_id">
 							<datasetParameterExpression><![CDATA[$P{co_id}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="periode">
 							<datasetParameterExpression><![CDATA[$P{periode}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="gudang">
+							<datasetParameterExpression><![CDATA[$P{gudang}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
@@ -439,10 +448,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="478c791d-abc5-4676-8818-5b49509c0f9b" x="0" y="0" width="124" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[PROD_NAMA]]></text>
+								<text><![CDATA[NAMA PRODUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -461,10 +470,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="54d0e30a-926e-4aaf-b1e8-d227081b1073" x="0" y="0" width="45" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY AWAL]]></text>
+								<text><![CDATA[KWT AWAL]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1"/>
@@ -484,10 +493,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="70968dfa-70e3-4180-a283-4a48a769532b" x="0" y="0" width="51" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HRG_AWAL]]></text>
+								<text><![CDATA[RATA2/KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
@@ -515,10 +524,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="046696ef-d268-49b5-8120-cdc00983b823" x="0" y="0" width="69" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL_AWAL]]></text>
+								<text><![CDATA[TOTAL SALDO AWAL]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
@@ -547,10 +556,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="100d131e-f1a8-4221-9dcf-998c9f7884c4" x="0" y="0" width="49" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY MASUK]]></text>
+								<text><![CDATA[KWT MASUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -569,10 +578,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="f7b74d4c-c33e-42c7-9be1-26cfc54f17f8" x="0" y="0" width="64" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HRG_MASUK]]></text>
+								<text><![CDATA[RATA2/KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -593,10 +602,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="62211f24-7296-4bad-97ff-d4d9dfce85e2" x="0" y="0" width="65" height="14"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL]]></text>
+								<text><![CDATA[TOTAL MASUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
@@ -625,10 +634,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="ad05678b-8021-431f-bc95-68f3d8c97886" x="0" y="0" width="46" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY KLWR]]></text>
+								<text><![CDATA[KWT KLWR]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -647,10 +656,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="56fdea87-d3ee-4bfd-a529-b4a5e9168505" x="0" y="0" width="67" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HRG_KELUAR]]></text>
+								<text><![CDATA[RATA2/KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -671,10 +680,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="d6eabe8a-2940-454b-be6e-e85dd47f44db" x="0" y="0" width="63" height="14"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL]]></text>
+								<text><![CDATA[TOTAL KELUAR]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
@@ -703,10 +712,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="fbf9f5a8-07ec-436c-9984-01844a01a95a" x="0" y="0" width="33" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY AKHIR]]></text>
+								<text><![CDATA[KWT AKHIR]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -725,10 +734,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="0932c762-3fb1-45ec-807f-acae419416e9" x="0" y="0" width="66" height="14"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HRG_AKHIR]]></text>
+								<text><![CDATA[RATA2/KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
@@ -747,10 +756,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="74011113-4299-4cd4-a189-9f2de5e70e16" x="0" y="0" width="70" height="14"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL]]></text>
+								<text><![CDATA[TOTAL SALDO AKHIR]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
@@ -777,7 +786,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</jr:table>
 			</componentElement>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="ed4a34e8-f2c7-4ca4-937a-4f1ca4a4510d" x="182" y="1" width="91" height="55"/>
+				<reportElement uuid="f62e4298-acce-4f0a-ae6f-6f5aae32db75" x="186" y="1" width="87" height="55"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>

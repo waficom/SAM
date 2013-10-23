@@ -52,7 +52,8 @@ class Voucher
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from gl ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from gl where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -94,11 +95,12 @@ class Voucher
 
     public function deleteVoucher(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
-        $sql = "DELETE FROM gl WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM gl WHERE inv_code = '$params->inv_code' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

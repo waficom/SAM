@@ -59,5 +59,25 @@ class Logistics_Rpt extends Reports
             'url' => $url
         );
     }
+    public function FormulirPermintaanBarang(stdClass $params)
+{
+    $this->reportfile = '/var/www/modules/reportcenter/report/logistics/FormulirPermintaanBarang.jasper';
+
+    $url = $this->report_execute($params->params);
+    return array(
+        'success' => true,
+        'url' => $url
+    );
+}
+    public function RincianbahanBarangMasuk(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/RincianBahanBarang.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
 
 }

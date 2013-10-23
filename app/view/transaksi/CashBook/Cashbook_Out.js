@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbook_Out',
-    pageTitle: 'CashBook Out',
+    pageTitle: 'Kas Keluar',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -442,10 +442,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Out', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxMPopup',
+                                    xtype: 'textfield',//'xtTaxMPopup',
                                     name: 'tax_code',
                                     id:'tax_cd_cbout',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    readOnly:true
                                 }
                             ]
                         },

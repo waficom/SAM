@@ -34,6 +34,7 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
                 read : GoodsReceived.getFilterGRData,
                 create: GoodsReceived.addGR,
                 update: GoodsReceived.updateGR,
+                update: GoodsReceived.postingGR,
                 destroy: GoodsReceived.deleteGR
             },
             reader :

@@ -44,9 +44,10 @@ class Jurnal_Penyusutan_Aset
 
     public function getJurnal_Penyusutan_Aset(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $sql = "select A.*, B.coa_nama from ap_reclass A
           left join coa B on A.account=B.coa_id and A.co_id=B.co_id
-          where a.inv_type='APA'
+          where a.co_id='$company' and a.inv_type='APA'
          ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

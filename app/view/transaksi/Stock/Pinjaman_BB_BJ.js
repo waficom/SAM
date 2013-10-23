@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPinjaman_BB_BJ',
-    pageTitle: 'Pinjaman Bahan Baku & Barang Jadi',
+    pageTitle: 'Pinjam Bahan Baku',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -20,6 +20,7 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                 {name: 'bb_bj_type',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'posted_date',type: 'date'},
+                {name: 'tgl_jt',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
@@ -73,7 +74,7 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                 api: {
                     read: Pinjaman_BB_BJ.getPinjamDetail,
                     create: Pinjaman_BB_BJ.addPinjamDetail,
-                    destroy : Pinjaman_BB_BJ.deletePinjam
+                    destroy : Pinjaman_BB_BJ.deletePinjamDetail
                 },
                 reader : {
                     totalProperty : 'totals',
@@ -138,6 +139,7 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
             columns: [
                 {text: 'Dok No',sortable: true,dataIndex: 'dok_no'},
                 {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
+                {text: 'Tgl JT', width : 80, sortable: true, dataIndex: 'tgl_jt', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'dok_type',sortable: true,dataIndex: 'dok_type', hidden:true},
                 {text: 'bb_bj_type',sortable: true,dataIndex: 'bb_bj_type', hidden:true},
                 {text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
@@ -163,6 +165,7 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                         me.onItemdblclick(me.PinjamStore, record, 'Edit Pinjam BB & BJ');
                     }
                     Ext.getCmp('post_pj').setDisabled(false);
+                    Ext.getCmp('tgl_jt_stock').setValue(new Date());
                 }
             },
             features:[searching],
@@ -269,7 +272,7 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                                     name : 'bb_id',
                                     fieldLabel: 'BB',
                                     labelWidth : 50,
-                                    id:'bb_id_pj'
+                                    itemId:'bb_id'
                                 }]
                         },
                         {
@@ -280,7 +283,8 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                                     width: 100,
                                     name : 'Qty',
                                     fieldLabel: 'Qty',
-                                    id:'qty_pj',
+                                    itemId:'qtybb',
+                                    value:1,
                                     labelWidth : 30
                                 }]
                         },{
@@ -291,7 +295,8 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                                     width: 100,
                                     name : 'sat_id',
                                     fieldLabel: 'Sat',
-                                    id:'sat_pj',
+                                    itemId:'sat_id_bb',
+                                    value:'KG',
                                     labelWidth : 30
                                 }]
                         },
@@ -299,12 +304,13 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype: 'textfield',
-                                    width: 100,
+                                    xtype: 'numberfield',
+                                    width: 150,
                                     name : 'Harga',
-                                    fieldLabel: 'hpp',
-                                    id:'hpp_pj',
-                                    labelWidth : 50
+                                    fieldLabel: 'Hpp',
+                                    itemId:'Hpp',
+                                    labelWidth : 50,
+                                    disabled:true
                                 }]
                         },
                         {
@@ -315,10 +321,10 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                             handler: function(){
                                 var form = me.winform.down('form').getForm();
                                 form.findField('dok_no').setValue( me.currInv_Code);
-                                form.findField('bb_id').setValue(Ext.getCmp('bb_id_pj').getValue());
-                                form.findField('qty').setValue(Ext.getCmp('qty_pj').getValue());
-                                form.findField('sat_id').setValue(Ext.getCmp('sat_pj').getValue());
-                                form.findField('hpp').setValue(Ext.getCmp('hpp_pj').getValue());
+                                form.findField('bb_id').setValue(Ext.ComponentQuery.query('#bb_id')[0].getValue());
+                                form.findField('qty').setValue(Ext.ComponentQuery.query('#qtybb')[0].getValue());
+                                form.findField('sat_id').setValue(Ext.ComponentQuery.query('#sat_id_bb')[0].getValue());
+                                form.findField('hpp').setValue(Ext.ComponentQuery.query('#Hpp')[0].getValue());
                                 var values = form.getValues();
                                 Pinjaman_BB_BJ.addPinjamDetail(values,function(provider, response){
                                 });
@@ -440,6 +446,30 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
+                                    value: 'Due Date'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'tgl_jt',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    id:'tgl_jt_stock',
+                                    value: new Date(),
+                                    allowBlank:false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
                                     value: 'Vendor.'
                                 },
                                 {
@@ -543,6 +573,9 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                         if(form.isValid()){
                             var values = form.getValues();
                             Pinjaman_BB_BJ.updatePinjam(values,function(provider, response){
+                                if (response.type == 'exception'){
+                                    Ext.MessageBox.alert('Error', response.message);
+                                }
                                 me.win.close();
                                 me.PinjamStore.load();
                             });
@@ -593,12 +626,12 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'qty'
+                            name: 'sat_id'
                         },
                         {
                             xtype: 'textfield',
                             hidden: true,
-                            name: 'sat_id'
+                            name: 'qty'
                         }
                     ]
                 }
@@ -651,11 +684,13 @@ Ext.define('App.view.transaksi.Stock.Pinjaman_BB_BJ', {
         if(selected.data.dok_type=='I'){
             Ext.getCmp('vend_id_pj').enable();
             Ext.getCmp('cust_id_pj').disable();
-            Ext.getCmp('hpp_pj').enable();
+            Ext.ComponentQuery.query('#Hpp')[0].setDisabled(false);
+            Ext.ComponentQuery.query('#Hpp')[0].setValue('0');
         }else{
             Ext.getCmp('cust_id_pj').enable();
             Ext.getCmp('vend_id_pj').disable();
-            Ext.getCmp('hpp_pj').disable();
+            Ext.ComponentQuery.query('#Hpp')[0].setDisabled(true);
+            Ext.ComponentQuery.query('#Hpp')[0].setValue('0');
         }
         me.Pinjam_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 

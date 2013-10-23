@@ -119,20 +119,15 @@ Ext.define('App.ux.GRPopup',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            gr_num = selected.data.gr_num;
-            this.setValue(gr_num);
+            grn_return = selected.data.gr_num;
+            this.setValue(grn_return);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('po_num').setValue(selected.data.po_num);
-            Ext.getCmp('vend_id').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_ap').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_trans').setValue(selected.data.vend_id_trans);
-            Ext.getCmp('gudang_id').setValue(selected.data.gudang_id);
-            //Ext.getCmp('account').setValue(selected.data.account);
-           // Ext.getCmp('rc_type').setValue(selected.data.rc_type);
-            Ext.getCmp('gudang_id_ap').setValue(selected.data.gudang_id);
+            Ext.ComponentQuery.query('#vend_id')[0].setValue(selected.data.vend_id);
+            Ext.ComponentQuery.query('#gudang_id_ap')[0].setValue(selected.data.gudang_id);
+           // Ext.getCmp('gudang_id_ap').setValue(selected.data.gudang_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

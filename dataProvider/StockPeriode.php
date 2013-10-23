@@ -59,7 +59,8 @@ class StockPeriode
         {
             $orderx = 'no_ppd';
         }
-        $sql = "SELECT * FROM stock ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM stock where co_id='$company' ORDER BY $orderx";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

@@ -66,8 +66,7 @@ Ext.define('App.ux.PilihProductSearch',
                     {text: 'Kemasan', flex: 1, sortable: true, dataIndex: 'kemasan_nama'},
                     {text: 'spesifikasi_id', dataIndex: 'spesifikasi_id', hidden : true },
                     {text: 'Spesifikasi', flex : 1, dataIndex: 'spesifikasi_nama', sortable : true },
-                    {text: 'Satuan ID', flex: 1, sortable: true, dataIndex: 'satuan_id', hidden : true},
-                    {text: 'Satuan', flex: 1, sortable: true, dataIndex: 'satuan_nama'},
+                    {text: 'Sat ID', flex: 1, sortable: true, dataIndex: 'satuan_id'},
                     {text: 'Bentuk ID', flex: 1, sortable: true, dataIndex: 'bentuk_id', hidden : true},
                     {text: 'Bentuk', flex: 1, sortable: true, dataIndex: 'bentuk_nama'}
                 ],
@@ -133,7 +132,7 @@ Ext.define('App.ux.PilihProductSearch',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('prod_nama').setValue(selected.data.prod_nama);
+            Ext.ComponentQuery.query('#sat_ap')[0].setValue(selected.data.satuan_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

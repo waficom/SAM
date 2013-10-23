@@ -1,154 +1,96 @@
 Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
     extend: 'App.ux.RenderPanel',
     id: 'panelWO_NoFormula',
-    pageTitle: 'WorkOrder Tanpa Formula',
+    pageTitle: 'Produksi tanpa Formula',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
-        me.currProduksi = null;
+        me.curr_coid = null;
+        me.userinput =null;
+        me.useredit=null;
         me.currSo_num = null;
+        me.Formula = null;
         me.currProd_id = null;
-        me.currFormula = null;
         me.currWo_num = null;
-
-        Ext.define('Wo1Model', {
+        me.currNo_PPD = null;
+        Ext.define('WO_BB_FormulaModel', {
             extend: 'Ext.data.Model',
             fields: [
-                 {name: 'no_pp',type: 'string'}
-                ,{name: 'no_ppd',type: 'string'}
-                ,{name: 'so_num',type: 'string'}
-                ,{name: 'cust_nama',type: 'string'}
-                ,{name: 'qty_produksi',type: 'string'}
-                ,{name: 'qty',type: 'string'}
-                ,{name: 'formula_nama',type: 'string'}
-                ,{name: 'formula_id',type: 'string'}
-                ,{name: 'prod_nama',type: 'string'}
-                ,{name: 'prod_id',type: 'string'}
-                ,{name: 'kemasan_nama',type: 'string'}
-                ,{name: 'spesifikasi_nama',type: 'string'}
-                ,{name: 'est_finishdate',type: 'date'}
-                ,{name: 'timeedit',type: 'date'}
-                ,{name: 'useredit',type: 'string'}
-                ,{name: 'userinput',type: 'string'}
+                {name: 'co_id',type: 'string'},
+                {name: 'wo_num',type: 'string'},
+                {name: 'tgl',type: 'string'},
+                {name: 'shift',type: 'integer'},
+                {name: 'ka_shift',type: 'string'},
+                {name: 'so_num',type: 'string'},
+                {name: 'prod_id',type: 'string'},
+                {name: 'no_ppd',type: 'string'},
+                {name: 'formula_id',type: 'string'},
+                {name: 'cust_nama',type: 'string'},
+                {name: 'userinput',type: 'string'},
+                {name: 'useredit',type: 'string'},
+                {name: 'timeinput',type: 'date'},
+                {name: 'timeedit',type: 'date'},
+                {name: 'qtybb',type: 'string'},
+                {name: 'qtybj',type: 'string'},
+                {name: 'qtybdp',type: 'string'},
+                {name: 'qtyso',type: 'string'}
+            ]
 
-            ],
+        });
+        me.WO_BB_FormulaStore = Ext.create('Ext.data.Store', {
+            model: 'WO_BB_FormulaModel',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: WorkOrder1.getWorkOrder1
+                    read: WO_BB_Formula.getWO_BB_Formula,
+                    create: WO_BB_Formula.addWO_BB_Formula,
+                    destroy: WO_BB_Formula.deleteWO_BB_Formula
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
                 }
-            }
-        });
-        me.Wo1Store = Ext.create('Ext.data.Store', {
-            model: 'Wo1Model',
+            },
+            pageSize : 10,
             autoLoad: false
         });
 
-        Ext.define('Wo1DModel', {
+        Ext.define('WO_BB_Formula_Detail_Store_Model', {
             extend: 'Ext.data.Model',
             fields: [
-                { name : 'co_id', type : 'string'},
-                { name : 'no_ppd', type : 'string'},
-                { name : 'wo_num', type : 'string'},
-                { name : 'tgl',	type : 'date'},
-                { name : 'shift', type : 'string'},
-                { name : 'ka_shift', type : 'string'},
-                { name : 'userinput', type : 'string'},
-                { name : 'useredit', type : 'string'},
-                { name : 'timeinput', type : 'date'},
-                { name : 'timeedit', type : 'date'},
-                { name : 'keterangan', type : 'string'},
-                { name : 'prod_id', type : 'string'},
-                { name : 'so_num', type : 'string'},
-                { name : 'qty_bb', type : 'float'},
-                { name : 'qty_bj', type : 'float'},
-                { name : 'qty_susut', type : 'float'},
-                { name : 'status', type : 'string'},
-                { name : 'posted_date', type : 'date'}
-            ],
+                {name: 'co_id',type: 'string'},
+                {name: 'wo_num',type: 'date'},
+                {name: 'so_num',type: 'string'},
+                {name: 'prod_id',type: 'string'},
+                {name: 'no_ppd',type: 'string'},
+                {name: 'bb_id',type: 'string'},
+                {name: 'bb_nama',type: 'string'},
+                {name: 'qty_in',type: 'float'},
+                {name: 'sat_id',type: 'string'},
+                {name: 'keterangan',type: 'string'},
+                {name: 'jml_paket',type: 'string'},
+                {name: 'total_qty_in',type: 'float'},
+                {name: 'darigudang',type: 'string'},
+                {name: 'kegudang',type: 'string'}
+            ]
+
+        });
+        me.WO_BB_Formula_Detail_Store = Ext.create('Ext.data.Store', {
+            model: 'WO_BB_Formula_Detail_Store_Model',
             proxy: {
                 type: 'direct',
                 api: {
-                    read: WorkOrder1.getWorkOrder1Detail,
-                    create: WorkOrder1.addWorkOrder1Detail,
-                    update: WorkOrder1.updateWorkOrder1Detail,
-                    destroy: WorkOrder1.deleteWorkOrder1Detail
-
-                }
-            }
-        });
-        me.Wo1DStore = Ext.create('Ext.data.Store', {
-            model: 'Wo1DModel',
-            autoLoad: false
-        });
-
-        Ext.define('Wo1DBahanJadiModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name : 'co_id', type : 'string'},
-                { name : 'wo_num', type : 'string'},
-                { name : 'so_num', type : 'string'},
-                { name : 'prod_id', type : 'string'},
-                { name : 'qty', type : 'float'},
-                { name : 'qty_pcs', type : 'float'},
-                { name : 'gudang_id', type : 'string'},
-                { name : 'keterangan', type : 'string'},
-                { name : 'userinput', type : 'string'},
-                { name : 'useredit', type : 'string'},
-                { name : 'timeinput', type : 'date'},
-                { name : 'timeedit', type : 'date'},
-                { name : 'kegudang', type : 'string'},
-                { name : 'no_ppd', type : 'string'}
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: WorkOrder1.getWorkOrder1DetailBJadi,
-                    create: WorkOrder1.addWorkOrder1DetailBJadi,
-                    update: WorkOrder1.updateWorkOrder1DetailBJadi,
-                    destroy: WorkOrder1.deleteWorkOrder1DetailBJadi
-
-                }
-            }
-        });
-        me.Wo1DBahanJadiStore = Ext.create('Ext.data.Store', {
-            model: 'Wo1DBahanJadiModel',
-            autoLoad: false
-        });
-
-        Ext.define('Wo1DBahanBakuModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name : 'co_id', type : 'string'},
-                { name : 'wo_num', type : 'string'},
-                { name : 'so_num', type : 'string'},
-                { name : 'prod_id', type : 'string'},
-                { name : 'formula_id', type : 'string'},
-                { name : 'no_pp', type : 'string'},
-                { name : 'no_ppd', type : 'string'},
-                { name : 'bb_id', type : 'string'},
-                { name : 'bb_nama', type : 'string'},
-                { name : 'total_qty_in', type : 'integer'},
-                { name : 'qty_in', type : 'integer'},
-                { name : 'sat_id', type : 'string'},
-                { name : 'darigudang', type : 'string'},
-                { name : 'kegudang', type : 'string'}
-
-
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: WorkOrder1.getWorkOrder1DetailBBaku,
+                    read: WO_BB_Formula.getWO_BB_FormulaDetail,
                     create: WorkOrder1.addWO_NoFormula,
                     destroy: WorkOrder1.deleteWO_NoFormula
-
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
                 }
-            }
-        });
-        me.Wo1DBahanBakuStore = Ext.create('Ext.data.Store', {
-            model: 'Wo1DBahanBakuModel',
+            },
+            pageSize : 10,
             autoLoad: false
         });
 
@@ -156,133 +98,33 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit']
+            disableIndexes:['timeedit','inv_date']
 
         }
 
         /**
          * Lists Grid
          */
-        me.Wo1Grid = Ext.create('App.ux.GridPanel', {
-            store: me.Wo1Store,
-            itemId: 'Wo1Grid',
+        me.WO_BB_FormulaGrid = Ext.create('App.ux.GridPanel', {
+            store: me.WO_BB_FormulaStore,
             height: 300,
             margin: '0 0 3 0',
             region: 'north',
-            enablePaging: true,
             columns: [
-                {text: 'No. Produksi', sortable: false, dataIndex: 'no_pp', hidden: true},
-                {text: 'Dp Num', sortable: false, dataIndex: 'no_ppd'},
-                {text: 'So Num', sortable: false,dataIndex: 'so_num'},
-                {text: 'Customer', sortable: false,dataIndex: 'cust_nama', flex:1},
-                {text: 'Qty SO', sortable: false,dataIndex: 'qty'},
-                {text: 'Formula ID', sortable: false,dataIndex: 'formula_id', hidden:true},
-                {text: 'Formula', sortable: false,dataIndex: 'formula_nama'},
-                {text: 'Produk Id', sortable: false,dataIndex: 'prod_id', hidden:true},
-                {text: 'Produk', sortable: false,dataIndex: 'prod_nama'},
-                {text: 'Kemasan', sortable: false,dataIndex: 'kemasan_nama'},
-                {text: 'Spesifikasi', sortable: false,dataIndex: 'spesifikasi_nama'},
-                {text: 'status',sortable: false,dataIndex: 'status', hidden: true},
-                {text: 'Est. Selesai', width:70, sortable: true, dataIndex: 'est_finishdate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-            ],
-            listeners: {
-                scope: me,
-                select: me.onProduksiGridClick
-            },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
-                        {
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange1',
-                            items : [
-                                {
-                                    xtype : 'datefield',
-                                    itemId : 'datefrom',
-                                    fieldLabel : 'Dari',
-                                    labelWidth : 35,
-                                    width : 150,
-                                    format : 'd-m-Y',
-                                    value : new Date()
-                                }]
-                        },'-',{
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange',
-                            items : [
-
-                                {
-                                    xtype : 'datefield',
-                                    itemId : 'dateto',
-                                    fieldLabel : ' / ',
-                                    labelWidth : 10,
-                                    width : 150,
-                                    format : 'd-m-Y',
-                                    value : new Date()
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerSearch',
-                            layout : 'vbox',
-                            items : [
-                                {
-                                    xtype : 'button',
-                                    width : 80,
-                                    margin : '0 0 3 0',
-                                    text : 'Cari',
-                                    listeners :
-                                    {
-                                        scope : me,
-                                        click : me.ReloadGrid
-                                    }
-                                }]
-                        },'->',
-                        {
-                            xtype:'displayfield',
-                            itemId:'itemuserinput',
-                            margin : '0 5 0 0'
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.ProduksiStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
-
-        });
-        /**
-         * Options Grid
-         */
-        me.Wo1DGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Wo1DStore,
-            region: 'center',
-            enablePaging: true,
-            columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
-                {header : 'so_num', dataIndex : 'so_num',width : 200, hidden: true},
-                {header : 'prod_id', dataIndex : 'prod_id',width : 200, hidden: true},
-                {header : 'Wo Num', dataIndex : 'wo_num',width : 100},
-                {header : 'Tanggal',dataIndex : 'tgl',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Shift#',dataIndex : 'shift'},
-                {header : 'Kepala Shift',dataIndex : 'ka_shift',flex : 1},
-                {header : 'Qty BB',dataIndex : 'qty_bb'},
-                {header : 'Qty BJ',dataIndex : 'qty_bj'},
-                {header : 'Qty Susut',dataIndex : 'qty_susut'},
-                {header : 'Keterangan',dataIndex : 'keterangan',flex : 1},
-                {text: 'status', width:100, sortable: false,dataIndex: 'status', hidden: true},
-                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
+                {text: 'No PPD',sortable: true,dataIndex: 'no_ppd', hidden:true},
+                {text: 'SO Num',sortable: true,dataIndex: 'so_num'},
+                {text: 'Shiff',sortable: true,dataIndex: 'shift'},
+                {text: 'WO Num',sortable: true,dataIndex: 'wo_num', hidden:true},
+                {text: 'Customer',sortable: true,dataIndex: 'cust_nama', flex:1},
+                {text: 'Produk',sortable: true,dataIndex: 'prod_id'},
+                {text: 'Qty SO',sortable: true,dataIndex: 'qtyso'},
+                {text: 'Qty BB',sortable: true,dataIndex: 'qtybb'},
+                {text: 'Qty BDP',sortable: true,dataIndex: 'qtybdp'},
+                {text: 'Qty BJ',sortable: true,dataIndex: 'qtybj'},
+                {text: 'Formula',sortable: true,dataIndex: 'formula_id'},
+                {text: 'KA Shift',sortable: true,dataIndex: 'ka_shift'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
+                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             viewConfig :
             {
@@ -293,68 +135,101 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
             },
             listeners: {
                 scope: me,
-                select: me.onProduksiGridClick2,
-                itemdblclick: function(view, record){
-                    var form = this.winform1.down('form');
-                    if(me.currStatus != 1){
-                        me.onItemdblclick1(me.Wo1DStore, record, 'Edit Detail Work Order', me.winform1, form);
-                        Ext.getCmp('post_wo_noformula').enable();
-                    }
-
-                }
+                select: me.onPBGridClick
             },
             features:[searching],
             dockedItems: [
                 {
                     xtype: 'toolbar',
                     dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winform1.down('form');
-                            me.onNewProduksi1(form1, 'Wo1DModel', 'Tambah Data', me.winform1);
-                            Ext.getCmp('post_wo_noformula').disable();
-                        }
-                    },
+                    items: [
                         {
-                            xtype: 'button',
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'xtPPDPopup',
+                                    width: 150,
+                                    name : 'no_ppd',
+                                    fieldLabel: 'No DPP',
+                                    id:'wo_ppd_noformula',
+                                    labelWidth : 50
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'numberfield',
+                                    width: 100,
+                                    name : 'shift',
+                                    fieldLabel: 'Shift',
+                                    id:'wo_shift_noformula',
+                                    value:0,
+                                    labelWidth : 30
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'textfield',
+                                    width: 150,
+                                    name : 'ka_shift',
+                                    fieldLabel: 'KA Shift',
+                                    id:'wo_ka_shift_noformula',
+                                    labelWidth : 50
+                                }]
+                        },
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+                                {
+                                    xtype: 'textfield',
+                                    width: 150,
+                                    name : 'keterangan',
+                                    fieldLabel: 'Remarks',
+                                    id:'wo_remarks_noformula',
+                                    labelWidth : 50
+                                }]
+                        },
+                        {
+                            text: 'ADD',
+                            iconCls: 'icoAddRecord',
+                            scope: me,
+                            handler: function(){
+                                var form = me.win.down('form').getForm();
+                                if(form.isValid()){
+                                    form.findField('no_ppd').setValue(Ext.getCmp('wo_ppd_noformula').getValue());
+                                    form.findField('shift').setValue(Ext.getCmp('wo_shift_noformula').getValue());
+                                    form.findField('ka_shift').setValue(Ext.getCmp('wo_ka_shift_noformula').getValue());
+                                    form.findField('keterangan').setValue(Ext.getCmp('wo_remarks_noformula').getValue());
+                                    var values = form.getValues();
+                                    WO_BB_Formula.addWO_BB_Formula(values,function(provider, response){
+                                    });
+                                    me.WO_BB_FormulaStore.load();
+                                }
+
+                            }
+                        },
+                        {
                             text: 'Delete',
                             iconCls: 'delete',
-                            id:'dlt_wo_noformula',
-                            handler: function() {
-                                me.deleteProduksi1(me.Wo1DStore, me.Wo1DGrid);
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'BAHAN BAKU',
-                            itemId:'BahanBaku',
-                            id:'addBB_noformula',
-                            disabled:true,
+                            id:'dlt_noformula',
                             scope: me,
                             handler: function(){
-
-                                me.ShowGridPopup(me.Wo1DBahanBakuStore, 'Bahan Baku',me.Wo1DBahanBakuGrid);
-
+                                me.onDeleteDetailWO(me.WO_BB_FormulaStore);
                             }
                         },
+                        '->',
                         {
-                            xtype: 'button',
-                            text: 'BARANG JADI',
-                            id:'addBJ_noformula',
-                            disabled:true,
-                            scope: me,
-                            handler: function(){
-                                me.ShowGridPopup(me.Wo1DBahanJadiStore, 'Barang Jadi',me.Wo1DBahanJadiGrid);
-
-                            }
+                            xtype:'displayfield',
+                            itemId:'itemuserinput',
+                            margin : '0 5 0 0'
                         }
                     ]
                 },{
                     xtype: 'pagingtoolbar',
-                    store: me.Wo1DGrid,
+                    store: me.WO_BB_FormulaStore,
                     beforePageText: 'Page',
                     afterPageText: 'of {0}',
                     displayMsg: 'Diplay {0} - {1} Of {2}',
@@ -362,26 +237,26 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                     dock: 'bottom',
                     displayInfo: true,
                     pageSize: 5
-
                 }
             ]
-        });
 
+        });
         me.Wo1DBahanBakuGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Wo1DBahanBakuStore,
+            store: me.WO_BB_Formula_Detail_Store,
             region: 'center',
             enablePaging: true,
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'wo_num', dataIndex : 'wo_num',width : 150, hidden: true},
                 {header : 'so_num', dataIndex : 'so_num',width : 150, hidden: true},
                 {header : 'prod_id', dataIndex : 'prod_id',width : 150, hidden: true},
-                {header : 'BB ID', dataIndex : 'bb_id'},
+                {header : 'BB Id', dataIndex : 'bb_id'},
                 {header : 'Bahan Baku', dataIndex : 'bb_nama',flex:1},
-                {header : 'Sat', dataIndex : 'sat_id'},
-                {header : 'Qty', dataIndex : 'total_qty_in'},
-                {header : 'Dari Gdg', dataIndex : 'darigudang'},
-                {header : 'Ke Gdg', dataIndex : 'kegudang'}
+                {header : 'qty_in', dataIndex : 'qty_in', hidden:true},
+                {header : 'Paket', dataIndex : 'jml_paket', hidden:true},
+                {header : 'Qty BB', dataIndex : 'total_qty_in'},
+                {header : 'satuan', dataIndex : 'sat_id'},
+                {header : 'Darigudang', dataIndex : 'darigudang'},
+                {header : 'kegudang', dataIndex : 'kegudang'}
             ],
             features:[searching],
             dockedItems: [
@@ -405,11 +280,12 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype: 'textfield',
+                                    xtype: 'numberfield',
                                     width: 100,
                                     name : 'total_qty_in',
                                     fieldLabel: 'Qty',
                                     id:'qty_bb_noformula',
+                                    value:1,
                                     labelWidth : 30
                                 }]
                         },{
@@ -421,6 +297,7 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                                     name : 'sat_id',
                                     fieldLabel: 'Sat',
                                     id:'sat_bb_noformula',
+                                    value:'KG',
                                     labelWidth : 30
                                 }]
                         },{
@@ -446,34 +323,35 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                                     labelWidth : 50
                                 }]
                         },{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form =me.winformBahanBaku.down('form').getForm();
-                            if(form.isValid()){
-                                form.findField('wo_num').setValue(me.currWo_num);
-                                form.findField('no_ppd').setValue(me.currProduksi);
-                                form.findField('prod_id').setValue(me.currProd_id);
-                                form.findField('so_num').setValue(me.currSo_num);
-                                form.findField('bb_id').setValue(Ext.getCmp('bb_id_noformula').getValue());
-                                form.findField('total_qty_in').setValue(Ext.getCmp('qty_bb_noformula').getValue());
-                                form.findField('sat_id').setValue(Ext.getCmp('sat_bb_noformula').getValue());
-                                form.findField('darigudang').setValue(Ext.getCmp('drgdg_bb_noformula').getValue());
-                                form.findField('kegudang').setValue(Ext.getCmp('kegdg_bb_noformula').getValue());
-                                var values = form.getValues();
-                                WorkOrder1.addWO_NoFormula(values,function(provider, response){
-                                });
-                                me.Wo1DBahanBakuStore.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+                            text: 'ADD',
+                            iconCls: 'icoArrowRightSmall',
+                            scope: me,
+                            handler: function(){
+                                var form = me.winformBahanBaku.down('form').getForm();
+                                if(form.isValid()){
+                                    form.findField('wo_num').setValue(me.currWo_num);
+                                    form.findField('no_ppd').setValue(me.currNo_PPD);
+                                    form.findField('prod_id').setValue(me.currProd_id);
+                                    form.findField('so_num').setValue(me.currSo_num);
+                                    form.findField('bb_id').setValue(Ext.getCmp('bb_id_noformula').getValue());
+                                    form.findField('total_qty_in').setValue(Ext.getCmp('qty_bb_noformula').getValue());
+                                    form.findField('qty_in').setValue(Ext.getCmp('qty_bb_noformula').getValue());
+                                    form.findField('sat_id').setValue(Ext.getCmp('sat_bb_noformula').getValue());
+                                    form.findField('darigudang').setValue(Ext.getCmp('drgdg_bb_noformula').getValue());
+                                    form.findField('kegudang').setValue(Ext.getCmp('kegdg_bb_noformula').getValue());
+                                    var values = form.getValues();
+                                    WorkOrder1.addWO_NoFormula(values,function(provider, response){
+                                    });
+                                    me.WO_BB_Formula_Detail_Store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+                                }
                             }
-                        }
-                    }, {
+                        },{
                             xtype: 'button',
                             text: 'Hapus Data',
                             iconCls: 'delete',
                             id:'dlt_dt_noformula',
                             handler:function() {
-                                me.deleteDetailBB_NoFormula(me.Wo1DBahanBakuStore);
+                                me.deleteDetailBB_NoFormula(me.WO_BB_Formula_Detail_Store);
                             }
                         }
                     ]
@@ -491,135 +369,10 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                 }
             ]
         });
-        me.Wo1DBahanJadiGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Wo1DBahanJadiStore,
-            region: 'center',
-            enablePaging: true,
-            columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
-                {header : 'so_num', dataIndex : 'so_num',width : 200, hidden: true},
-                {header : 'prod_id', dataIndex : 'prod_id',flex:1},
-                {header : 'no_ppd', dataIndex : 'no_ppd',width : 200, hidden: true},
-                {header : 'Wo Num', dataIndex : 'wo_num', hidden:true},
-                {header : 'Qty',dataIndex : 'qty'},
-                {header : 'Qty/Sak',dataIndex : 'qty_pcs'},
-                {header : 'Dari Gdg',dataIndex : 'gudang_id'},
-                {header : 'Ke Gdg',dataIndex : 'kegudang'},
-                {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
-            ],
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
-                        {
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'textfield',
-                                    width: 100,
-                                    name : 'qty',
-                                    fieldLabel: 'Qty',
-                                    id:'qty_bj_noformula',
-                                    labelWidth : 30
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtSatuanPopup',
-                                    width: 100,
-                                    name : 'sat_id',
-                                    fieldLabel: 'Sat',
-                                    id:'sat_bj_noformula',
-                                    labelWidth : 30
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'textfield',
-                                    width: 100,
-                                    name : 'qty_pcs',
-                                    fieldLabel: 'Qty/Sak',
-                                    id:'qtypcs_bj_noformula',
-                                    labelWidth : 50
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtGudangBMPopup',
-                                    width: 150,
-                                    name : 'darigudang',
-                                    fieldLabel: 'Dari Gdg',
-                                    id:'drgdg_bj_noformula',
-                                    labelWidth : 50
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtGudangBJPopup',
-                                    width: 150,
-                                    name : 'kegudang',
-                                    fieldLabel: 'Ke Gdg',
-                                    id:'kegdg_bj_noformula',
-                                    labelWidth : 50
-                                }]
-                        },
-                        {
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form = me.winformBahanJadi.down('form').getForm();;
-                            if(form.isValid()){
-                                form.findField('wo_num').setValue(me.currWo_num);
-                                form.findField('no_ppd').setValue(me.currProduksi);
-                                form.findField('prod_id').setValue(me.currProd_id);
-                                form.findField('so_num').setValue(me.currSo_num);
-                                form.findField('qty').setValue(Ext.getCmp('qty_bj_noformula').getValue());
-                                form.findField('qty_pcs').setValue(Ext.getCmp('qtypcs_bj_noformula').getValue());
-                                form.findField('sat_id').setValue(Ext.getCmp('sat_bj_noformula').getValue());
-                                form.findField('gudang_id').setValue(Ext.getCmp('drgdg_bj_noformula').getValue());
-                                form.findField('kegudang').setValue(Ext.getCmp('kegdg_bj_noformula').getValue());
-                                var values = form.getValues();
-                                WorkOrder1.addWorkOrder1DetailBJadi(values,function(provider, response){
-                                });
-                                me.Wo1DBahanJadiStore.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
-                            }
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Delete',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteDetailBJ_NoFormula(me.Wo1DBahanJadiStore, me.Wo1DBahanJadiGrid);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.Wo1DBahanJadiGrid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]
-        });
 
         // *************************************************************************************
         // Window User Form
-        // *************************************************************************************
-        me.winform1 = Ext.create('App.ux.window.Window', {
+        me.win = Ext.create('App.ux.window.Window', {
             width: 400,
             items: [
                 {
@@ -629,191 +382,15 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                         labelWidth: 100
                     },
                     defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
                     items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'no_ppd'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'prod_id'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'so_num'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal :'
-                                },
-                                {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'tgl',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    value: new Date(),
-                                    maxValue: new Date(),
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'shiff :'
-                                },
-                                {
-                                    fieldLabel : 'Shift',
-                                    labelAlign : 'right',
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    name: 'shift'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'kepala shiff # :'
-                                },
-                                {
-                                    fieldLabel : 'Shift',
-                                    labelAlign : 'right',
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    name: 'ka_shift'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'keterangan:'
-                                },
-                                {
-                                    fieldLabel : 'Ketarangan',
-                                    labelAlign : 'right',
-                                    name: 'keterangan',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Posting'
-                                },
-                                {
-                                    xtype: 'mitos.checkbox',
-                                    name : 'status',
-                                    id:'post_wo',
-                                    handler: function(field, value) {
-                                        if (value== true) {
-                                            Ext.getCmp('posted_date_wo_noformula').setDisabled(false);
-                                            Ext.getCmp('posted_date_wo_noformula').setValue(new Date());
-                                        }else{
-                                            Ext.getCmp('posted_date_wo_noformula').setDisabled(true);
-                                        }
-
-                                    }
-
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'posted_date',
-                                    format : 'd-m-Y',
-                                    disabled: true,
-                                    maxValue: new Date(),
-                                    allowBlank:false,
-                                    id:'posted_date_wo_noformula'
-                                }
-                            ]
-                        }
+                        {xtype: 'textfield',hidden: true,name: 'no_ppd'},
+                        {xtype: 'textfield',hidden: true,name: 'shift'},
+                        {xtype: 'textfield',hidden: true,name: 'ka_shift' },
+                        {xtype: 'textfield',hidden: true,name: 'keterangan' }
                     ]
                 }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winform1.down('form').getForm();
-                        if(form.isValid()){
-                            me.onProduksi1Save(form, me.Wo1DStore, me.winform1);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close', me.winform1);
-                }
-            }
+
+            ]
         });
         me.winformBahanBaku = Ext.create('App.ux.window.Window', {
             width: 400,
@@ -832,6 +409,7 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                         {xtype: 'textfield',hidden: true,name: 'no_ppd'},
                         {xtype: 'textfield',hidden: true,name: 'bb_id'},
                         {xtype: 'textfield', hidden: true,name: 'total_qty_in'},
+                        {xtype: 'textfield', hidden: true,name: 'qty_in'},
                         {xtype: 'textfield',hidden: true,name: 'sat_id' },
                         {xtype: 'textfield',hidden: true,name: 'darigudang' },
                         {xtype: 'textfield', hidden: true,name: 'kegudang'}
@@ -841,165 +419,38 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
             ]
         });
 
-        me.winformBahanJadi = Ext.create('App.ux.window.Window', {
-            width: 400,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    items: [
-                        {xtype: 'textfield',hidden: true,name: 'wo_num'},
-                        {xtype: 'textfield',hidden: true,name: 'so_num'},
-                        {xtype: 'textfield',hidden: true,name: 'prod_id'},
-                        {xtype: 'textfield',hidden: true,name: 'no_ppd'},
-                        {xtype: 'textfield', hidden: true,name: 'qty'},
-                        {xtype: 'textfield', hidden: true,name: 'qty_pcs'},
-                        {xtype: 'textfield',hidden: true,name: 'sat_id' },
-                        {xtype: 'textfield',hidden: true,name: 'gudang_id' },
-                        {xtype: 'textfield', hidden: true,name: 'kegudang'}
-                    ]
-                }
-            ]
-        });
+        // *************************************************************************************
 
-
-
-        me.pageBody = [me.Wo1Grid, me.Wo1DGrid];
+        me.pageBody = [me.WO_BB_FormulaGrid,  me.Wo1DBahanBakuGrid];
         me.callParent(arguments);
     },
-    ShowGridPopup: function(store, title, grid){
-        var me=this;
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 800,
-            height: 400,
-            items:[grid],
-            modal:true
 
-        });
-        store.load({params:{so_num: me.currSo_num, wo_num:me.currWo_num, prod_id:me.currProd_id}});
-        this.myWinChooseItem.show();
-    },
-
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
-
-    action1: function(action, window){
-        var winf = window, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-
-    onItemdblclick1: function(store, record, title, window, form){
-
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old',window);
-        window.show();
-    },
-
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-
-    onProduksiGridClick: function(grid, selected){
-        var me = this;
-        me.currProduksi = selected.data.no_ppd;
-        me.currFormula = selected.data.formula_id;
-        me.currProd_id = selected.data.prod_id;
-        me.currSo_num = selected.data.so_num;
-        me.Wo1DStore.load({params:{so_num: me.currSo_num, no_ppd: me.currProduksi, prod_id: me.currProd_id}});
-
-    },
-    onProduksiGridClick2: function(grid, selected){
+    onPBGridClick: function(grid, selected){
         var me = this;
         me.currWo_num = selected.data.wo_num;
         me.currSo_num = selected.data.so_num;
         me.currProd_id = selected.data.prod_id;
         me.currStatus = selected.data.status;
-        me.CountBB = selected.data.qty_bb;
-        me.CountDP = 0;
-        me.CountBJ = selected.data.qty_bj;
-        Ext.getCmp('addBB_noformula').setDisabled(false);
-        Ext.getCmp('addBJ_noformula').setDisabled(false);
-        Ext.getCmp('addbbproses').setDisabled(false);
-        if(me.currStatus == 1 || me.currStatus == 2){
-            Ext.getCmp('dlt_wo_noformula').setDisabled(true);
-            Ext.getCmp('addBB_noformula').setDisabled(true);
-            Ext.getCmp('addBJ_noformula').setDisabled(true);
-
+        me.currNo_PPD = selected.data.no_ppd;
+        if(selected.data.status==1 || selected.data.status==2){
+            Ext.getCmp('dlt_noformula').setDisabled(true);
+            Ext.getCmp('dlt_dt_noformula').setDisabled(true);
         }else{
-            Ext.getCmp('dlt_wo_noformula').setDisabled(false);
-            Ext.getCmp('addBB_noformula').setDisabled(false);
-            Ext.getCmp('addBJ_noformula').setDisabled(false);
+            Ext.getCmp('dlt_noformula').setDisabled(false);
+            Ext.getCmp('dlt_dt_noformula').setDisabled(false);
         }
-
-
+        var TopBarItems = this.WO_BB_FormulaGrid.getDockedItems('toolbar[dock="top"]')[0];
+        me.userinput = selected.data.userinput;
+        me.useredit = selected.data.useredit;
+        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
+        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
+        me.WO_BB_Formula_Detail_Store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
     },
-
-    onProduksi1Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi1(form, store, window);
-    },
-    saveProduksi1: function(form, store, window){
-        var me = this;
-        var StatusPosting = form.findField('status').getValue();
-
-        if(StatusPosting){
-            me.CallFunctionSave(form, store, window);
-
-        }else{
-            me.CallFunctionSave(form, store, window);
-        }
-    },
-    CallFunctionSave: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record),
-            f = me.winform1.down('form').getForm(), rec = f.getRecord();
-        form.findField('no_ppd').setValue(me.currProduksi);
-        form.findField('prod_id').setValue(me.currProd_id);
-        form.findField('so_num').setValue(me.currSo_num);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                window.close();
-                store.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Opps', 'Error..!!');
-                //me.msg('Opps!', 'Error!!', true);
-            }
-        });
-
-    },
-
-    onProduksi3Save: function(form, store, window){
-        var me = this;
-        me.saveProduksi3(form, store, window);
-    },
-
-
-    deleteProduksi1: function(store, grid){
-        var me = this,
+    onDeleteDetailWO: function(store){
+        var me = this, grid = me.WO_BB_FormulaGrid;
         sm = grid.getSelectionModel();
         sr = sm.getSelection();
-        bid = sr[0].get('wo_num');
+        bid = sr[0].get('no_ppd');
         Ext.Msg.show({
             title: 'Please Confirm' + '...',
             msg: 'Are you sure want to delete' + ' ?',
@@ -1012,31 +463,10 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.WO_BB_Formula_Detail_Store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
                 }
             }
-        })
-    },
-
-    deleteDetailBJ_NoFormula: function(store, grid){
-        var me = this,
-            sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('prod_id');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        })
+        });
     },
     deleteDetailBB_NoFormula: function(store){
         var me = this, grid = me.Wo1DBahanBakuGrid;
@@ -1059,17 +489,7 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
             }
         });
     },
-    ReloadGrid : function(btn)
-    {
-        // Declare some variables
-        var topBarItems = this.Wo1Grid.getDockedItems('toolbar[dock="top"]')[0],
-            datefrom = topBarItems.getComponent( 'fieldContainerDateRange1' ).getComponent( 'datefrom' ).getValue( ),
-            dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
-        // Load the ExtJs dataStore with the new parameters
-        this.Wo1Store.load({params:{datefrom : datefrom, dateto : dateto}});
-
-    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -1078,9 +498,9 @@ Ext.define('App.view.transaksi.workorder.WO_NoFormula', {
      */
     onActive: function(callback){
         var me = this;
-        this.ReloadGrid();//this.Wo1Store.load({params:{start:0, limit:5}});
-        this.Wo1DStore.load();
-        callback(true);
+        this.WO_BB_FormulaStore.load();
+        this.WO_BB_Formula_Detail_Store.load();
 
+        callback(true);
     }
 });

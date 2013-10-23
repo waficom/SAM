@@ -216,13 +216,16 @@
 		<parameter name="co_id" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="po_num" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
 			<![CDATA[select A.co_id, A.po_num, A.tgl, A.tgl_jt, A.inv_num, C.bb_nama, B.qty, B.sat_id, B.hrg, B.n_brutto, B.disc_prs, B.n_netto, B.keterangan, D.vend_nama
 from PO0 A
 left join PO1 B on A.co_id=B.co_id and A.po_num=B.po_num
 left join bahanbaku C on B.bb_id=C.bb_id and B.co_id=C.co_id
 left join vendor D on A.vend_id=D.vend_id and A.co_id=D.co_id
-where A.tgl between $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
+where A.tgl between $P{fromdate} and $P{todate} and a.co_id=$P{co_id} and a.po_num like $P{po_num}||'%']]>
 		</queryString>
 		<field name="CO_ID" class="java.lang.String"/>
 		<field name="PO_NUM" class="java.lang.String"/>
@@ -262,6 +265,9 @@ where A.tgl between $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="co_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="po_num" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>

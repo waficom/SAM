@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
     extend: 'App.ux.RenderPanel',
     id: 'panelDeliveryOrder',
-    pageTitle: 'DeliveryOrder',
+    pageTitle: 'Pengiriman Barang Jadi',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -35,7 +35,11 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 {name: 'darigudang',type: 'string'},
                 {name: 'gudang_nama',type: 'string'},
                 {name: 'for_do_num',type: 'string'},
-                {name: 'do_type',type: 'string'}
+                {name: 'do_type',type: 'string'},
+                {name: 'kategory_kirim',type: 'string'},
+                {name: 'cust_id',type: 'string'},
+                {name: 'vessel_id',type: 'string'},
+                {name: 'keterangan',type: 'string'}
             ],
             proxy: {
                 type: 'direct',
@@ -70,8 +74,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 ,{name: 'seal_no',type: 'string'}
                 ,{name: 'origin',type: 'string'}
                 ,{name: 'destination',type: 'string'}
-               // ,{name: 'qty',type: 'string'}
-                //,{name: 'satuan_id',type: 'string'}
                 ,{name: 'status',type: 'string'}
                 ,{name: 'timeedit',type: 'date'}
                 ,{name: 'timeinput',type: 'date'}
@@ -187,7 +189,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             handler: function(){
                                 DeliveryOrder.addDeliveryOrder(function(provider, response){
                                 });
-                                this.ReloadGrid();
+                                me.DeliveryOrderStore.load();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -199,7 +201,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 DeliveryOrder.addDeliveryOrderReturn(function(provider, response){
                                     Ext.MessageBox.alert('Sukses', '!!!!');
                                 });
-                                this.ReloadGrid();
+                                me.DeliveryOrderStore.load();
                             },
                             tooltip : 'Tambah Data'
                         },
@@ -213,49 +215,18 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 me.onDeliveryOrderDelete(me.DeliveryOrderStore);
                             },
                             tooltip: 'Hapus Data'
-                        },{
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange1',
-                            items : [
-
-                                {
-                                    xtype : 'datefield',
-                                    itemId : 'datefrom',
-                                    fieldLabel : 'Date',
-                                    labelWidth : 20,
-                                    width : 110,
-                                    format : 'd-m-Y',
-                                    value : new Date()
-                                }]
-                        },{
+                        },'->',{
                             xtype : 'fieldcontainer',
                             itemId : 'fieldContainerDateRange',
                             items : [
 
                                 {
                                     xtype : 'datefield',
-                                    itemId : 'dateto',
-                                    fieldLabel : 'to',
-                                    labelWidth : 10,
-                                    width : 110,
+                                    itemId : 'tgl_post_do',
+                                    width : 100,
                                     format : 'd-m-Y',
-                                    value : new Date()
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerSearch',
-                            layout : 'vbox',
-                            items : [
-                                {
-                                    xtype : 'button',
-                                    width : 80,
-                                    margin : '0 0 3 0',
-                                    text : 'Cari',
-                                    listeners :
-                                    {
-                                        scope : me,
-                                        click : me.ReloadGrid
-                                    }
+                                    value : new Date(),
+                                    maxValue: new Date()
                                 }]
                         },{
                             text: 'Posting',
@@ -265,10 +236,14 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             handler: function(){
                                 var form = me.win.down('form').getForm();
                                 form.findField('do_num').setValue(me.currDeliveryOrder);
+                                form.findField('posted_date').setValue(Ext.ComponentQuery.query('#tgl_post_do')[0].getValue());
                                 var values = form.getValues();
                                 DeliveryOrder.updateDeliveryOrderPosting(values,function(provider, response){
+                                    if (response.type == 'exception'){
+                                        Ext.MessageBox.alert('Error', response.message);
+                                    }
                                 });
-                                this.ReloadGrid();
+                                me.DeliveryOrderStore.load();
                             },
                             tooltip : 'Tambah Data'
                         },'->',
@@ -325,10 +300,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 scope: me,
                 //select: me.onGridClick,
                 itemdblclick: function(view, record){
-                    if(me.currPosted =='2'){
-                    }else{
-                        //me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
-                    }
+                    me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
                 }
             },
             features:[searching],
@@ -404,6 +376,11 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                             name: 'do_num'
                         },
                         {
+                            xtype: 'datefield',
+                            hidden: true,
+                            name: 'posted_date'
+                        },
+                        {
                             xtype: "radiogroup",
                             fieldLabel: "Jenis ", hidden:true,
                             defaults: {xtype: "radio", name:'do_type'
@@ -413,7 +390,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     inputValue:'N',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('for_do_num').setDisabled(true);
+                                            Ext.ComponentQuery.query('#for_do_num')[0].setDisabled(true);
                                         }
                                     }
 
@@ -422,7 +399,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     inputValue:'R',
                                     handler: function(field, value) {
                                         if (value) {
-                                            Ext.getCmp('for_do_num').setDisabled(false);
+                                            Ext.ComponentQuery.query('#for_do_num')[0].setDisabled(false);
                                         }
                                     }
 
@@ -444,7 +421,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     fieldLabel : 'Tanggal',
                                     xtype : 'datefield',
-                                    width : 100,
+                                    width : 150,
                                     name : 'deliverydate',
                                     format : 'd-m-Y',
                                     readOnly: true,
@@ -452,15 +429,56 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     allowBlank:false
                                 },
                                 {
-                                    width: 60,
+                                    width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Do Num :'
+                                    value: 'Do Return :'
                                 },
                                 {
                                     width: 150,
                                     xtype: 'xtDOPopup',
                                     name:'for_do_num',
-                                    id:'for_do_num',
+                                    itemId:'for_do_num',
+                                    disabled: true,
+                                    allowBlank:false
+                                }
+                            ]
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Kirim Berdasarkan ",
+                            defaults: {xtype: "radio", name:'kategory_kirim'
+                            },
+                            items: [
+                                {
+                                    boxLabel: "Order",
+                                    inputValue:'O',
+                                    itemId:'kategory_o',
+                                    checked: true,
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.ComponentQuery.query('#so_num')[0].setDisabled(false);
+                                            Ext.ComponentQuery.query('#cust_id_do')[0].setDisabled(true);
+                                        }
+                                    }
+
+                                },
+                                {
+                                    boxLabel: "Customer",
+                                    inputValue:'C',
+                                    itemId:'kategory_c',
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.ComponentQuery.query('#cust_id_do')[0].setDisabled(false);
+                                            Ext.ComponentQuery.query('#so_num')[0].setDisabled(true);
+                                        }
+                                    }
+
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'xtCustomerPopup',
+                                    name:'cust_id',
+                                    itemId:'cust_id_do',
                                     disabled: true,
                                     allowBlank:false
                                 }
@@ -482,18 +500,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     width: 150,
                                     xtype: 'xtSalesOrderPopup',
                                     name:'so_num',
-                                    id:'so_num_do',
+                                    itemId:'so_num',
                                     allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                                },
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
@@ -503,14 +512,8 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     width: 150,
                                     xtype: 'xtlistproduct',
                                     name:'prod_id',
-                                    id:'prod_id',
+                                    itemId:'prod_id_do',
                                     allowBlank:false
-                                },
-                                {
-                                    width: 250,
-                                    xtype: 'displayfield',
-                                    name:'prod_nama',
-                                    id:'prod_nama'
                                 }
                             ]
                         },
@@ -528,16 +531,22 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     value: 'Dari Gudang : '
                                 },
                                 {
-                                    width: 100,
+                                    width: 150,
                                     xtype: 'xtGudangBJPopup',
                                     name: 'darigudang',
+                                    itemId:'gudang_do',
                                     allowBlank:true
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'displayfield',
-                                    name:'gudang_nama',
-                                    id:'gudang_nama_do'
+                                    value: 'Qty Kirim:'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'numberfield',
+                                    name:'qty_do',
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -557,15 +566,21 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     width: 150,
                                     xtype: 'xtRoutePopup',
                                     name: 'route',
-                                    allowBlank:false
+                                    allowBlank:false,
+                                    itemId:'route_code'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'displayfield',
-                                    name:'route_nama',
-                                    id:'route_nama_do'
-                                }
-                            ]
+                                    value: 'Kapal :'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'xtKapalPopup',
+                                    name: 'vessel_id',
+                                    allowBlank:false,
+                                    itemId:'vessel_id'
+                                }]
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -577,14 +592,12 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Qty DO:'
+                                    value: 'Keterangan'
                                 },
                                 {
-                                    width: 150,
+                                    width: 450,
                                     xtype: 'textfield',
-                                    //hideTrigger: true,
-                                    name:'qty_do',
-                                    allowBlank:false
+                                    name:'keterangan'
                                 }
                             ]
                         }
@@ -679,33 +692,6 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Vendor ID:'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtVendorSuplierPopup',
-                                    name:'vend_id',
-                                    allowBlank:false
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'displayfield',
-                                    name:'vend_nama',
-                                    id:'vend_nama_dt_do'
-                                }
-                            ]
-                        },
-
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
                                     value: 'Police No:'
                                 },
                                 {
@@ -713,16 +699,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                                     xtype: 'textfield',
                                     name: 'police_no'
                                     // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
+                                },
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
@@ -976,10 +953,10 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 DeliveryOrder.updateDeliveryOrder(values,function(provider, response){
                 me.win.close();
             });
-        this.ReloadGrid();
+        me.DeliveryOrderStore.load();
     },
     onDeliveryOrder1Save: function(form, store){
-        var me = this, showWin= me.winform1, form = me.winform1.down('form').getForm();
+        var me = this, showWin= me.winform1, form = me.winform1.down('form').getForm(), record = form.getRecord(), storeIndex = store.indexOf(record);
         form.findField('do_num').setValue(me.currDeliveryOrder);
         var values = form.getValues();
         if(storeIndex == -1){
@@ -1034,17 +1011,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
             }
         });
     },
-    ReloadGrid : function(btn)
-    {
-        // Declare some variables
-        var topBarItems = this.DeliveryOrderGrid.getDockedItems('toolbar[dock="top"]')[0],
-            datefrom = topBarItems.getComponent( 'fieldContainerDateRange1' ).getComponent( 'datefrom' ).getValue( ),
-            dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
-        // Load the ExtJs dataStore with the new parameters
-        this.DeliveryOrderStore.load({params:{co_id:globals['site'] ,datefrom : datefrom, dateto : dateto}});
-
-    },
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
@@ -1053,7 +1020,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
      */
     onActive: function(callback){
         var me = this;
-        this.ReloadGrid(); // this.DeliveryOrderStore.load({params:{start:0, limit:5}});
+        this.DeliveryOrderStore.load(); // this.DeliveryOrderStore.load({params:{start:0, limit:5}});
         this.DeliveryOrder1Store.load({params:{start:0, limit:5}});
 
         callback(true);

@@ -43,7 +43,8 @@ class Pinjaman_BB_BJ
     }
 
     public function getPinjam(stdClass $params){
-        $sql = "SELECT * FROM PINJAMAN_BB_BJ ORDER BY timeedit DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM PINJAMAN_BB_BJ where co_id='$company' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -54,10 +55,11 @@ class Pinjaman_BB_BJ
         return $rows;
     }
     public function getPinjamDetail(stdClass $params){
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT a.*, b.bb_nama, c.prod_nama FROM PINJAMAN_BB_BJ_DETAIL a
         left join bahanbaku b on a.bb_id=b.bb_id and a.co_id=b.co_id
         left join items c on a.prod_id=c.prod_id and a.co_id=c.co_id
-        where a.dok_no='$params->dok_no'";
+        where a.co_id='$company' and a.dok_no='$params->dok_no'";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -108,12 +110,7 @@ class Pinjaman_BB_BJ
 
     public function updatePinjam(stdClass $params)
     {
-        /*$data = get_object_vars($params);
-        unset($data['id'],$data['dok_no']);
-        $sql = $this -> db -> sqlBind($data, 'pinjaman_bb_bj', 'U', array('dok_no' => $params -> dok_no));
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $params;*/
+
         $co_id= $_SESSION['user']['site'];
         $userinput=$_SESSION['user']['name'];
         $useredit=$_SESSION['user']['name'];
@@ -125,9 +122,14 @@ class Pinjaman_BB_BJ
         $status = $params->status;
         $dok_no = $params->dok_no;
         $dok_type = $params->dok_type;
-        $posted_date = $this->db->Date_Converter(Time::getLocalTime('Y-m-d H:i:s'));
-        $sql =("execute procedure PINJAMAN_BB_BJ_U '$gudang_id','$cust_id','$posted_date','$status','$remaks','$vend_id'
-        ,'$dok_no','$bb_bj_type','$useredit','$userinput','$dok_type','$co_id'");
+        if($params->posted_date == '' or $params->posted_date == null){
+            $posted_date = $this->db->Date_Converter(Time::getLocalTime('Y-m-d H:i:s'));
+        }else{
+            $posted_date = $this->db->Date_Converter($params -> posted_date);
+        }
+        $tgl_jt = $this->db->Date_Converter($params -> tgl_jt);
+        $sql = ("execute procedure PINJAMAN_BB_BJ_U '$gudang_id','$cust_id','$posted_date','$status','$remaks','$vend_id'
+        ,'$dok_no','$bb_bj_type','$useredit','$userinput','$dok_type','$co_id','$tgl_jt'");
         $this->db->setSQL($sql);
         $this->db->execOnly();
 
@@ -158,7 +160,8 @@ class Pinjaman_BB_BJ
     public function deletePinjamDetail(stdClass $params)
     {
 
-        $sql = "DELETE FROM pinjaman_bb_bj_detail WHERE dok_no = '$params->dok_no' and sequence_no='$params->sequence_no'";
+        $sql = "DELETE FROM pinjaman_bb_bj_detail
+        WHERE dok_no = '$params->dok_no' and sequence_no='$params->sequence_no'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

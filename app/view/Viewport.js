@@ -144,11 +144,15 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.master.Penyusutan_Aset'));
         me.MainPanel.add(Ext.create('App.view.master.Acc_Penyusutan_Aset'));
         me.MainPanel.add(Ext.create('App.view.master.Cashflow'));
+        me.MainPanel.add(Ext.create('App.view.master.Account'));
+        me.MainPanel.add(Ext.create('App.view.master.Kapal'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.purchaseorder.PurchaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GoodsReceived'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GRN_Return'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.Jurnal_GRN'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder1'));
@@ -187,6 +191,10 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ_O'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Closing_Transaction.Closing_transaction'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BB_Formula'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BJ_Formula'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BDP_Formula'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.SP_Kirim'));
 
 
 

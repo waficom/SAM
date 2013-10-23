@@ -57,7 +57,8 @@ class OrderMonitoring
         {
             $orderx = 'so_num';
         }
-        $sql = "SELECT * FROM viewordermonitoring ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM viewordermonitoring where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

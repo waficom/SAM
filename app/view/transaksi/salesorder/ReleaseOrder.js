@@ -19,7 +19,7 @@
 Ext.define('App.view.transaksi.salesorder.ReleaseOrder', {
     extend: 'App.ux.RenderPanel',
     id: 'panelRO',
-    pageTitle: 'Release Order',
+    pageTitle: 'Pelepasan Pesanan',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;

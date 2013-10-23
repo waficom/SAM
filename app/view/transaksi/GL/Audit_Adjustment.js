@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.GL.Audit_Adjustment', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAD',
-    pageTitle: 'Audit Adjustment',
+    pageTitle: 'Penyesuaian Audit',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

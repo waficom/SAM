@@ -43,11 +43,12 @@ class Jenis
 
     public function getJenisLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT co_id,
 		                          jenis_id, 
 		                          jenis_nama
 							FROM jenis
-   							WHERE UPPER(jenis_id) LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(jenis_id) LIKE UPPER('%$params->query%')
    							  OR  UPPER(jenis_nama) LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -85,7 +86,8 @@ class Jenis
 		{
 			$orderx = 'jenis_nama';
 		}
-		$sql = "SELECT * FROM jenis ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+		$sql = "SELECT * FROM jenis where co_id='$company' ORDER BY $orderx";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

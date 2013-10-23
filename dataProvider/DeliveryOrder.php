@@ -46,8 +46,9 @@ class DeliveryOrder
 
     public function getDeliveryOrder(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT * FROM viewdeliveryorder
-         where co_id='$params->co_id' and cast(deliverydate as date) between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'  ORDER BY timeedit DESC";
+         where co_id='$company' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -94,7 +95,7 @@ class DeliveryOrder
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         unset($data['id'], $data['do_num'],$data['cust_nama'],$data['qty']
-        ,$data['prod_nama'],$data['sat_id'],$data['gudang_nama'],$data['route_nama']);
+        ,$data['posted_date'],$data['sat_id']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorder', 'U', array('do_num' => $params-> do_num));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -104,8 +105,12 @@ class DeliveryOrder
     {
         $co_id= $_SESSION['user']['site'];
         $do_num=$params->do_num;
-        $this->db->setSQL("execute procedure DELIVERYORDER_P '$do_num','$co_id'");
+        $tglposting = $this->db->Date_Converter($params-> posted_date);
+        $useredit = $_SESSION['user']['name'];
+        $sql = "execute procedure DELIVERYORDER_P '$tglposting','$useredit','$do_num','$co_id' ";
+        $this->db->setSQL($sql);
         $this->db->execOnly();
+        return $params;
 
     }
 
@@ -171,11 +176,9 @@ class DeliveryOrder
      */
     public function updateDeliveryOrder1(stdClass $params)
     {
-        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
-        //$data['deliverydate'] = $this->db->Date_Converter($data['deliverydate']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['do_num'], $data['old_sequence_no'], $data['sequence_no'], $data['prod_nama'], $data['vend_nama']);
         $sql = $this -> db -> sqlBind($data, 'deliveryorderdetai', 'U', array('do_num' => $params-> do_num, 'sequence_no' => $params-> sequence_no));

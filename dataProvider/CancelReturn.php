@@ -51,7 +51,8 @@ class CancelReturn
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM canceltransaksi ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM canceltransaksi where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();

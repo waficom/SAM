@@ -1,25 +1,8 @@
-/*
- GaiaEHR (Electronic Health Records)
- Users.js
- Copyright (C) 2012 Ernesto Rodriguez
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 Ext.define('App.view.master.BahanBaku', {
     extend: 'App.ux.RenderPanel',
     id: 'panelBahanBaku',
-    pageTitle: 'Bahan Baku',
+    pageTitle: 'Nama Barang / Bahan',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
@@ -49,6 +32,14 @@ Ext.define('App.view.master.BahanBaku', {
                 },
                 {
                     name: 'keterangan',
+                    type: 'string'
+                },
+                {
+                    name: 'kategoristock',
+                    type: 'string'
+                },
+                {
+                    name: 'account',
                     type: 'string'
                 },
                 {
@@ -95,43 +86,19 @@ Ext.define('App.view.master.BahanBaku', {
         me.BahanBakuGrid = Ext.create('App.ux.GridPanel', {
             store: me.BahanBakuStore,
             columns: [
-                {
-                    width: 100,
-                    text: 'Company',
-                    sortable: true,
-                    dataIndex: 'co_id',
-                    hidden: true
+                {text: 'Company',sortable: true, dataIndex: 'co_id',hidden: true
                 },
-                {
-                    width: 200,
-                    text: 'ID',
-                    sortable: true,
-                    dataIndex: 'bb_id'
+                {text: 'ID Barang',sortable: true,dataIndex: 'bb_id'
                 },
-                {
-                    flex: 1,
-                    text: 'Bahan Baku',
-                    sortable: true,
-                    dataIndex: 'bb_nama'
+                {flex: 1,text: 'Nama Barang/Bahan',sortable: true,dataIndex: 'bb_nama'
                 },
-                {
-                    width: 50,
-                    text: 'Satuan',
-                    sortable: true,
-                    dataIndex: 'sat_id'
+                {text: 'Satuan',sortable: true,dataIndex: 'sat_id'
                 },
-                {
-                    flex: 1,
-                    text: 'Keterangan',
-                    sortable: true,
-                    dataIndex: 'keterangan'
+                {text: 'Keterangan',sortable: true,dataIndex: 'keterangan'
                 },
-                {
-                    text: 'Aktif',
-                    sortable: true,
-                    dataIndex: 'aktif',
-                    renderer: authCk
-                }
+                {text: 'Akun',sortable: true,dataIndex: 'account'
+                },
+                {text: 'Aktif',sortable: true,dataIndex: 'aktif',renderer: authCk }
             ],
             bbar: new Ext.PagingToolbar({
                 //pageSize    : 10,
@@ -162,7 +129,7 @@ Ext.define('App.view.master.BahanBaku', {
                                 var form = me.win.down('form');
                                 me.onNew(form, 'BahanBakuModel', 'Tambah Data');
                             }
-                        },'->',
+                        },
                         {
                             xtype: 'button',
                             text: 'Hapus Data',
@@ -213,7 +180,7 @@ Ext.define('App.view.master.BahanBaku', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Bahan Baku ID ' + ': '
+                                    value: 'Id Brg'
                                 },
                                 {
                                     width: 100,
@@ -234,7 +201,7 @@ Ext.define('App.view.master.BahanBaku', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Nama :'
+                                    value: 'Nama Brg / Bhn'
                                 },
                                 {
                                     width: 300,
@@ -253,31 +220,12 @@ Ext.define('App.view.master.BahanBaku', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'Satuan :'
+                                    value: 'Satuan'
                                 },
-                                {
-                                    width: 50,
-                                    xtype: 'xtSatuanPopup',
-                                    name: 'sat_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
                                 {
                                     width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'TEST Nama :'
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'srchadd',
-                                    name: 'bb_nama'
+                                    xtype: 'xtSatuanPopup',
+                                    name: 'sat_id'
                                 }
                             ]
                         },
@@ -290,7 +238,56 @@ Ext.define('App.view.master.BahanBaku', {
                                     xtype: 'mitos.checkbox',
                                     fieldLabel: 'Aktif',
                                     name: 'aktif'
-                                }                            ]
+                                }, {
+                                    width: 100,
+                                    xtype: "radiogroup",
+                                    fieldLabel: "Stok ",
+                                    defaults: {xtype: "radio", name:'kategoristock'
+                                    },
+                                    items: [
+                                        {
+                                            boxLabel: "Y",
+                                            inputValue:'Y',
+                                            handler: function(field, value) {
+                                                if (value) {
+                                                    Ext.getCmp('account_bb').setDisabled(true);
+                                                }
+                                            }
+
+                                        },
+                                        {
+                                            boxLabel: "N",
+                                            inputValue:'N',
+                                            checked: true,
+                                            handler: function(field, value) {
+                                                if (value) {
+                                                    Ext.getCmp('account_bb').setDisabled(false);
+                                                }
+                                            }
+
+                                        }
+                                    ]
+                                }                             ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Akun'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'xtCoaPopup',
+                                    name: 'account',
+                                    id:'account_bb'
+                                }
+                            ]
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -416,12 +413,6 @@ Ext.define('App.view.master.BahanBaku', {
         });
 //        store.load();
     },
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
     onActive: function(callback){
         this.BahanBakuStore.load();
         callback(true);

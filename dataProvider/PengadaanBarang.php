@@ -43,7 +43,8 @@ class PengadaanBarang
 
     public function getPB0(stdClass $params)
     {
-        $sql = "select A.* from pb0 A ORDER BY A.timeedit";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select A.* from pb0 A where a.co_id='$company' ORDER BY A.timeedit";
         $this -> db -> setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)

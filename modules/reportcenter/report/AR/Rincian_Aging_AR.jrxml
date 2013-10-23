@@ -246,6 +246,7 @@
 		<queryString>
 			<![CDATA[select * from rpt_rincian_aging_ar($P{co_id},$P{cust_id},$P{tanggal},$P{sales_id})]]>
 		</queryString>
+		<field name="RANGE_KT" class="java.lang.Integer"/>
 		<field name="SALES_NAMA" class="java.lang.String"/>
 		<field name="TOTALHUTANG" class="java.math.BigDecimal"/>
 		<field name="SISA_UANGMUKA" class="java.math.BigDecimal"/>
@@ -413,11 +414,11 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:columnGroup width="115" uuid="7151a704-f488-40c7-9c36-cf1d563d6ec3">
+					<jr:columnGroup width="104" uuid="7151a704-f488-40c7-9c36-cf1d563d6ec3">
 						<jr:groupHeader groupName="vendor">
-							<jr:cell height="16" rowSpan="1">
+							<jr:cell height="14" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-									<reportElement uuid="8c1f1b1b-20e2-4a62-b487-02189305d66a" x="0" y="0" width="115" height="14"/>
+									<reportElement uuid="8c1f1b1b-20e2-4a62-b487-02189305d66a" x="0" y="0" width="104" height="14"/>
 									<textElement verticalAlignment="Middle">
 										<font size="6" isBold="true"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -429,7 +430,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<jr:groupFooter groupName="vendor">
 							<jr:cell height="12" rowSpan="1"/>
 						</jr:groupFooter>
-						<jr:column width="62" uuid="ea893bc5-e504-423f-9f68-c51842b13bee">
+						<jr:column width="53" uuid="ea893bc5-e504-423f-9f68-c51842b13bee">
 							<jr:tableHeader height="0" rowSpan="1"/>
 							<jr:tableFooter height="13" rowSpan="1"/>
 							<jr:groupHeader groupName="vendor">
@@ -437,18 +438,17 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</jr:groupHeader>
 							<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 								<staticText>
-									<reportElement uuid="7dbc3e95-86f0-47ff-ae83-5aec3e7a15e3" x="0" y="0" width="61" height="13"/>
+									<reportElement uuid="7dbc3e95-86f0-47ff-ae83-5aec3e7a15e3" x="0" y="0" width="53" height="13"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="6"/>
-										<paragraph leftIndent="5" rightIndent="5"/>
+										<font size="6" isBold="true"/>
 									</textElement>
-									<text><![CDATA[TGL POSTING]]></text>
+									<text><![CDATA[TLG INV]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:columnFooter height="0" rowSpan="1"/>
 							<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-									<reportElement uuid="4ccb069d-f089-4c6e-92d4-435223ba1b52" x="0" y="0" width="62" height="13"/>
+									<reportElement uuid="4ccb069d-f089-4c6e-92d4-435223ba1b52" x="0" y="0" width="53" height="13"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="6"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -457,7 +457,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="53" uuid="80c07116-47f0-4b38-bbe8-e9d9a22b754b">
+						<jr:column width="51" uuid="80c07116-47f0-4b38-bbe8-e9d9a22b754b">
 							<jr:tableHeader height="0" rowSpan="1"/>
 							<jr:tableFooter height="13" rowSpan="1"/>
 							<jr:groupHeader groupName="vendor">
@@ -465,18 +465,17 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</jr:groupHeader>
 							<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 								<staticText>
-									<reportElement uuid="30c824cb-e662-4c3a-ad9a-603be7dd6755" x="0" y="1" width="53" height="12"/>
+									<reportElement uuid="30c824cb-e662-4c3a-ad9a-603be7dd6755" x="0" y="1" width="51" height="12"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="6"/>
-										<paragraph leftIndent="5" rightIndent="5"/>
+										<font size="6" isBold="true"/>
 									</textElement>
-									<text><![CDATA[TGL JT]]></text>
+									<text><![CDATA[JT INV]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:columnFooter height="0" rowSpan="1"/>
 							<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-									<reportElement uuid="7a2e684a-3c57-44ae-9401-9362e528ead4" x="1" y="0" width="52" height="13"/>
+									<reportElement uuid="7a2e684a-3c57-44ae-9401-9362e528ead4" x="1" y="0" width="50" height="13"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="6"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -486,36 +485,79 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</jr:detailCell>
 						</jr:column>
 					</jr:columnGroup>
-					<jr:column width="29" uuid="ed6409ae-263a-4b18-beec-dafa84dec6d6">
+					<jr:column width="22" uuid="ed6409ae-263a-4b18-beec-dafa84dec6d6">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="13" rowSpan="1"/>
 						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="c4112d89-3fa4-42b3-b9c8-6049dc632d59" x="0" y="0" width="28" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="c4112d89-3fa4-42b3-b9c8-6049dc632d59" x="0" y="0" width="22" height="13"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="5" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[LAMA KETERLAMBATAN]]></text>
+								<text><![CDATA[K]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="0" rowSpan="1"/>
 						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
-							<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-								<reportElement uuid="c4284107-b94f-4752-878d-016d2ed1209e" x="0" y="0" width="29" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
+							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
+								<reportElement uuid="c4284107-b94f-4752-878d-016d2ed1209e" x="0" y="0" width="22" height="13"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{RANGE_KT}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="19" uuid="b665c77b-fe1b-40d7-9d8c-a2c48c7a81d6">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter height="13" rowSpan="1"/>
+						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
+							<staticText>
+								<reportElement uuid="d1ba1ca8-8dca-4e05-8ac3-1c351ba3aaa7" x="0" y="0" width="19" height="13"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="5" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
+								</textElement>
+								<text><![CDATA[B]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="0" rowSpan="1"/>
+						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
+								<reportElement uuid="35570228-ecbe-4625-8a2e-d77ca96912bb" x="0" y="0" width="19" height="13"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{RANGE_JT}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="83" uuid="7991620d-2dad-4168-83e5-c30ce84b6367">
+					<jr:column width="24" uuid="ef206e16-d3b8-4051-890e-f8d82d8f2f43">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter height="13" rowSpan="1"/>
+						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
+							<staticText>
+								<reportElement uuid="b27eb930-3d20-4d72-a0a0-18b8aa12eba4" x="0" y="0" width="24" height="13"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="5" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SINYAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="0" rowSpan="1"/>
+						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
+							<image hAlign="Center" vAlign="Middle">
+								<reportElement uuid="b6b22865-09a6-4284-bab8-237106d6a67c" x="0" y="0" width="24" height="13"/>
+								<imageExpression><![CDATA[$F{RANGE_KT} < $F{RANGE_JT} ? "/var/www/resources/images/icons/cross.png":"/var/www/resources/images/icons/yes.gif"]]></imageExpression>
+							</image>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="7991620d-2dad-4168-83e5-c30ce84b6367">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter style="table 8_TD" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2fb53e1a-f760-47ee-ae8c-f2c6512e613b" x="0" y="0" width="83" height="12"/>
+								<reportElement uuid="2fb53e1a-f760-47ee-ae8c-f2c6512e613b" x="0" y="0" width="70" height="12"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -526,7 +568,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<jr:groupFooter groupName="vendor">
 							<jr:cell style="table 8_TD" height="12" rowSpan="1">
 								<staticText>
-									<reportElement uuid="619928b9-fa8d-480d-8f6f-a5345d567354" x="0" y="0" width="83" height="12"/>
+									<reportElement uuid="619928b9-fa8d-480d-8f6f-a5345d567354" x="0" y="0" width="70" height="12"/>
 									<textElement verticalAlignment="Middle">
 										<font size="6" isBold="true"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -537,19 +579,19 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:groupFooter>
 						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a7a68aa3-5e08-4d9d-b14a-a28aba9c52eb" x="0" y="0" width="83" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="a7a68aa3-5e08-4d9d-b14a-a28aba9c52eb" x="0" y="0" width="70" height="13"/>
+								<textElement verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[INV NUMBER]]></text>
+								<text><![CDATA[NO. INVOICE]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="table 8_TD" height="0" rowSpan="1"/>
 						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-								<reportElement uuid="0a4b243f-72be-4cce-950e-b0b89e5b8b0f" x="0" y="0" width="83" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
+								<reportElement uuid="0a4b243f-72be-4cce-950e-b0b89e5b8b0f" x="0" y="0" width="70" height="13"/>
+								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
@@ -569,7 +611,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:tableFooter>
 						<jr:groupHeader groupName="vendor">
-							<jr:cell height="16" rowSpan="2"/>
+							<jr:cell height="14" rowSpan="2"/>
 						</jr:groupHeader>
 						<jr:groupFooter groupName="vendor">
 							<jr:cell style="table 8_TD" height="12" rowSpan="1">
@@ -587,7 +629,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="f39eafe7-c7a8-465b-b0f7-ea61c794d997" x="0" y="0" width="74" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[1-30 HARI]]></text>
@@ -632,7 +674,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="3da8e680-1c77-47b7-b397-597e7f63b857" x="0" y="0" width="68" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[31-60 HARI]]></text>
@@ -677,7 +719,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="06e788f7-59ee-42d1-8c5c-ab95c4b2d48a" x="0" y="0" width="70" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[61-90 HARI]]></text>
@@ -722,7 +764,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="95e6d7a9-4587-433c-a21f-e05e5eb87fab" x="0" y="0" width="70" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[91-120 HARI]]></text>
@@ -767,7 +809,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="7b475a19-7d88-42e6-ba14-e95b9eb1776e" x="0" y="0" width="70" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[121-150 HARI]]></text>
@@ -812,7 +854,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="10ea2f16-7c9e-42ae-b7c0-5087781c722d" x="0" y="0" width="68" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[151-180 HARI]]></text>
@@ -830,10 +872,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="74" uuid="18039b98-2be8-4d1e-8d98-5f6caf75220a">
+					<jr:column width="65" uuid="18039b98-2be8-4d1e-8d98-5f6caf75220a">
 						<jr:tableFooter style="table 8_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="2accb295-bc2f-49e8-816e-9e2c49044931" x="0" y="0" width="74" height="12"/>
+								<reportElement uuid="2accb295-bc2f-49e8-816e-9e2c49044931" x="0" y="0" width="64" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -844,7 +886,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<jr:groupFooter groupName="vendor">
 							<jr:cell style="table 8_TD" height="12" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-									<reportElement uuid="c8c54a30-ae19-47d5-8f45-0f2b63f3531e" x="0" y="0" width="74" height="12"/>
+									<reportElement uuid="c8c54a30-ae19-47d5-8f45-0f2b63f3531e" x="0" y="0" width="64" height="12"/>
 									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font size="6" isBold="true"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -855,9 +897,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:groupFooter>
 						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="59c55ff6-58e5-4b95-9c3b-8c32a814546c" x="0" y="0" width="74" height="13"/>
+								<reportElement uuid="59c55ff6-58e5-4b95-9c3b-8c32a814546c" x="0" y="0" width="64" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[> 180 HARI]]></text>
@@ -866,7 +908,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<jr:columnFooter style="table 8_TD" height="0" rowSpan="1"/>
 						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="294d3015-7b81-4b3a-8a69-7e804e8549d5" x="0" y="0" width="74" height="13"/>
+								<reportElement uuid="294d3015-7b81-4b3a-8a69-7e804e8549d5" x="0" y="0" width="64" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -903,7 +945,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="9c794139-1082-441c-9ade-b30ddeca9905" x="0" y="0" width="77" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[TOTAL PIUTANG]]></text>
@@ -921,11 +963,11 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="59" uuid="0a5619f9-5e11-44eb-ba55-0ee175e0960e">
+					<jr:column width="50" uuid="0a5619f9-5e11-44eb-ba55-0ee175e0960e">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter style="table 8_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="4f015239-15d2-469d-9fcc-3cc44efda65a" x="0" y="0" width="59" height="12"/>
+								<reportElement uuid="4f015239-15d2-469d-9fcc-3cc44efda65a" x="0" y="0" width="50" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -936,7 +978,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<jr:groupFooter groupName="vendor">
 							<jr:cell style="table 8_TD" height="12" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-									<reportElement uuid="6fb3a35f-6baf-4a53-849f-002d3e4a74d5" x="0" y="0" width="59" height="12"/>
+									<reportElement uuid="6fb3a35f-6baf-4a53-849f-002d3e4a74d5" x="0" y="0" width="50" height="12"/>
 									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font size="6" isBold="true"/>
 										<paragraph leftIndent="5" rightIndent="5"/>
@@ -947,18 +989,18 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:groupFooter>
 						<jr:columnHeader style="table 8_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a04975f7-cc00-4f51-9dbd-a34cf1c074fa" x="0" y="0" width="58" height="13"/>
+								<reportElement uuid="a04975f7-cc00-4f51-9dbd-a34cf1c074fa" x="0" y="0" width="50" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[UANGMUKA]]></text>
+								<text><![CDATA[UM]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="table 8_TD" height="0" rowSpan="1"/>
 						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="3711c379-91b4-4a54-ad08-8dddf4285ca7" x="0" y="0" width="58" height="13"/>
+								<reportElement uuid="3711c379-91b4-4a54-ad08-8dddf4285ca7" x="0" y="0" width="50" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -977,7 +1019,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="d336cb1a-9a6f-481b-aef2-7194f311a906" x="0" y="0" width="49" height="13"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[SALES]]></text>
@@ -1012,7 +1054,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$P{tanggal}]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="ea63844a-b4ae-4e22-9879-abc1d7d61874" x="162" y="-1" width="81" height="48"/>
+				<reportElement uuid="26549a06-b0d1-464f-88bf-05c0ea1d1d70" x="168" y="0" width="75" height="48"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>

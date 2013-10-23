@@ -514,10 +514,10 @@
 							<staticText>
 								<reportElement uuid="759eebb0-e11c-4ff7-a362-da4e33b7f83d" x="0" y="0" width="61" height="15"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[POSTED_DATE]]></text>
+								<text><![CDATA[TLG DOKUMEN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 17_TD" height="13" rowSpan="1">
@@ -531,15 +531,15 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="96" uuid="908091a6-48ac-482d-bb52-1fc778a28a95">
+					<jr:column width="94" uuid="908091a6-48ac-482d-bb52-1fc778a28a95">
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
 								<reportElement uuid="a72db013-5361-461c-a84f-9c508039022c" x="0" y="0" width="94" height="15"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[DOK RECLASS]]></text>
+								<text><![CDATA[NO. DOKUMEN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="16" rowSpan="1">
@@ -569,11 +569,11 @@
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
 								<reportElement uuid="ab36b71b-4279-49ea-85db-68c4d3667d6e" x="0" y="0" width="59" height="15"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL QTY]]></text>
+								<text><![CDATA[QTY BJ]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="16" rowSpan="1"/>
@@ -593,18 +593,18 @@
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
-								<reportElement uuid="1408d6a4-9c23-4714-a570-2657a8004397" x="0" y="0" width="71" height="15"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="1408d6a4-9c23-4714-a570-2657a8004397" x="0" y="0" width="73" height="15"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[BIAYA]]></text>
+								<text><![CDATA[TOTAL OHP LANGSUNG]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="16" rowSpan="1"/>
 						<jr:detailCell style="table 17_TD" height="13" rowSpan="1">
 							<textField pattern="#,##0;-#,##0">
-								<reportElement uuid="8b58dc9e-c784-4c2d-9ffd-5d4de02d7981" x="0" y="0" width="71" height="13"/>
+								<reportElement uuid="8b58dc9e-c784-4c2d-9ffd-5d4de02d7981" x="0" y="0" width="73" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -619,11 +619,11 @@
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
 								<reportElement uuid="fda49a9a-1f79-47f8-8b27-8b61fa499002" x="0" y="0" width="79" height="15"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[RATA2 QTY]]></text>
+								<text><![CDATA[HARGA RATA2]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="16" rowSpan="1"/>
@@ -644,8 +644,8 @@
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
 								<reportElement uuid="3b550080-370f-4879-a704-94b4ca183950" x="0" y="0" width="52" height="15"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[QTY AR]]></text>
@@ -667,11 +667,11 @@
 						<jr:columnHeader style="table 17_CH" height="15" rowSpan="1">
 							<staticText>
 								<reportElement uuid="ae7267ea-b39c-4633-bd49-78f1ccaf63c2" x="0" y="0" width="70" height="15"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[JUMLAH]]></text>
+								<text><![CDATA[TOTAL HPP LANGSUNG]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="16" rowSpan="1">

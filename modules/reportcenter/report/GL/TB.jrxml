@@ -457,7 +457,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="189bef54-b557-45b3-9016-0f06c5f973ed" x="0" y="0" width="33" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
 								<text><![CDATA[NO]]></text>
 							</staticText>
@@ -477,7 +477,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="8c813f86-d333-4b0d-b5de-93f50ecfe959" x="0" y="0" width="44" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
 								<text><![CDATA[PERIODE]]></text>
 							</staticText>
@@ -498,9 +498,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="d0ff79c6-b8a0-474a-93fd-dabf7bd75ac4" x="0" y="0" width="61" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
-								<text><![CDATA[ACCOUNT]]></text>
+								<text><![CDATA[NO. AKUN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 13_TD" height="17" rowSpan="1">
@@ -529,9 +529,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="bb8b4917-6b25-42e8-aeea-0271435a9522" x="0" y="0" width="127" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
-								<text><![CDATA[DESCRIPTION]]></text>
+								<text><![CDATA[NAMA AKUN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="0" rowSpan="1"/>
@@ -553,7 +553,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="ef7eab71-648b-44cc-823d-ec1bcaac0b6c" x="0" y="0" width="34" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
 								<text><![CDATA[STATUS]]></text>
 							</staticText>
@@ -584,9 +584,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="97e17ddb-3926-4ecc-9bc8-ab3f54aec256" x="0" y="0" width="67" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
-								<text><![CDATA[BEGINING_BALANCE]]></text>
+								<text><![CDATA[SALDO AWAL]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 13_TD" height="17" rowSpan="1">
@@ -615,7 +615,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="63d1ad48-0c00-4179-97f0-7617fa86ba6f" x="0" y="0" width="67" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
 								<text><![CDATA[DEBIT]]></text>
 							</staticText>
@@ -646,9 +646,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="f92a33be-6771-4567-b2df-716b37463fe0" x="0" y="0" width="64" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
-								<text><![CDATA[CREDIT]]></text>
+								<text><![CDATA[KREDIT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 13_TD" height="17" rowSpan="1">
@@ -677,9 +677,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							<staticText>
 								<reportElement uuid="bd87fad0-cd24-427d-b019-458a7c8b4c2a" x="0" y="0" width="63" height="15"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 								</textElement>
-								<text><![CDATA[ENDING_BALANCE]]></text>
+								<text><![CDATA[SALDO AKHIR]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 13_TD" height="17" rowSpan="1">
@@ -696,7 +696,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</jr:table>
 			</componentElement>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="fed3ceef-628d-42e9-add7-1def3819416f" x="51" y="0" width="96" height="70"/>
+				<reportElement uuid="fed3ceef-628d-42e9-add7-1def3819416f" x="51" y="0" width="96" height="57"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>

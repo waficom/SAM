@@ -44,7 +44,8 @@ class Reclass
 
     public function getViewReclassOVB(stdClass $params)
     {
-        $sql = "select * from view_reclass where account = '$params->account' or so_num='$params->so_num'
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from view_reclass where co_id='$company' and account = '$params->account' or so_num='$params->so_num'
         ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -58,11 +59,12 @@ class Reclass
     public function getViewReclassOBJ(stdClass $params)
     {
         (string)$whereClause = '';
-        if($params->inv_code != null)
-            $whereClause .= chr(13) . " where inv_code like '%" . $params->inv_code . "%'";
+        if($params->periode != null)
+            $whereClause .= chr(13) . " and (select hasil from get_periode(posted_date))  like '%" . $params->periode . "%'";
         if($params->so_num != null)
-            $whereClause .= chr(13) . " where so_num like '%" . $params->so_num . "%'";
-        $sql = "select * from view_reclass_barangjadi $whereClause
+            $whereClause .= chr(13) . " and so_num like '%" . $params->so_num . "%'";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from view_reclass_barangjadi where co_id='$company' $whereClause
         ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -86,6 +88,7 @@ class Reclass
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['inv_type'] = 'OVB';
         unset($data['id'],$data['check'],$data['coa_nama'],$data['so_num'] );
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');
@@ -102,6 +105,7 @@ class Reclass
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['inv_type'] = 'OBJ';
         unset($data['id'],$data['do_num'],$data['so_num'],$data['qty_susut'],$data['total'],$data['qty_do'],$data['rata2_hpp']);
         $sql = $this -> db -> sqlBind($data, 'ap_reclass', 'I');

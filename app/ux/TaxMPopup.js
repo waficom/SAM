@@ -171,7 +171,7 @@ Ext.define('App.ux.TaxMPopup',
             me.onGridClick(grid, selected);
             Ext.getCmp('tax_code').setValue(selected.data.description);
             Ext.getCmp('tax_code_po').setValue(selected.data.description);
-            Ext.getCmp('tax_code_ap').setValue(selected.data.description);
+            Ext.ComponentQuery.query('#tax_nama')[0].setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

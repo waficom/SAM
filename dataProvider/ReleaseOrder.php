@@ -57,7 +57,8 @@ class ReleaseOrder
         {
             $orderx = 'so_num';
         }
-        $sql = "SELECT * FROM releasedorder ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM releasedorder where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

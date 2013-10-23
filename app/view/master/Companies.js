@@ -83,6 +83,10 @@ Ext.define('App.view.master.Companies', {
                     type: 'string'
                 },
                 {
+                    name: 'kategori_bdp',
+                    type: 'string'
+                },
+                {
                     name: 'aktif',
                     type: 'bool'
                 }
@@ -398,6 +402,24 @@ Ext.define('App.view.master.Companies', {
                                     width: 300,
                                     xtype: 'textfield',
                                     name: 'aes'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: "radiogroup",
+                            fieldLabel: "Barang Dalam Proses ",
+                            defaults: {xtype: "radio", name:'kategori_bdp'
+                            },
+                            items: [
+                                {
+                                    boxLabel: "Yes",
+                                    checked: true,
+                                    inputValue:'Y'
+                                },
+                                {
+                                    boxLabel: "No",
+                                    inputValue:'N'
+
                                 }
                             ]
                         },

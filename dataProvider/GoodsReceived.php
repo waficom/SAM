@@ -45,71 +45,25 @@ class GoodsReceived
         return;
     }
 
-    /**
-     * Function: getFilterEncountersBillingData
-     * The first call to populate the dataGrid on the Billing panel
-     * also it will be used to filter the data by passing parameters
-     * from extjs.
-     */
+
     public function getFilterGRData(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$goodsreceived = '';
-        (int)$total = 0;
-        (string)$sql = '';
-
-//        error_reporting(-1);
-        // Look between service date
-
-        if ($params->datefrom && $params->dateto)
-            $whereClause .= chr(13) . " AND gr0.tgl BETWEEN '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'" ;
-
-        if ($params->gr_numsearch)
-            $whereClause .= chr(13) . " AND gr0.gr_num like '%" . $params->gr_numsearch . "%'";
-
-        if ($params->cust_search)
-            $whereClause .= chr(13) . " AND vendor.vend_nama like '%" . $params->vend_search . "%'";
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
-
-        $sql = "SELECT
-                    gr0.*,
-                    vendor.vend_nama,
-                    transportir.vend_nama as vend_tr_nama, gudang.gudang_nama, --coa.coa_nama as account_nama,
-                    case gr0.gr_type when 'R' then 'Received' else 'Return' end as gr_type_desc
-                FROM gr0
-                   left outer join vendor on (gr0.co_id = vendor.co_id) and (gr0.vend_id = vendor.vend_id)
-                   left outer join vendor transportir on (gr0.co_id = transportir.co_id) and (gr0.vend_id_trans = transportir.vend_id)
-                   left join gudang on gr0.gudang_id=gudang.gudang_id and gr0.co_id=gudang.co_id
-                    --left join coa on gr0.account.coa.coa_id and gr0.co_id=coa.co_id
-				$whereClause
-				ORDER BY
-				     gr0.timeedit DESC";
-        $this->db->setSQL($sql);
-
+        $company =  $_SESSION['user']['site'];
+        $sql = "select a.*, d.vend_nama, b.vend_nama as vend_tr_nama, c.gudang_nama
+        from gr0 a
+        left join vendor b on a.vend_id_trans=b.vend_id and a.co_id=b.co_id
+        left join gudang c on a.gudang_id=c.gudang_id and a.co_id=c.co_id
+        left join vendor d on a.vend_id=d.vend_id and a.co_id=d.co_id
+        where a.co_id='$company' and a.gr_type='R'
+        order by a.timeedit DESC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $goodsreceived[] = $row;
+            array_push($rows, $row);
         }
-
-        $total = count($goodsreceived);
-//		$salesorder = array_slice($salesorder, $params->start, $params->limit);
-//		echo $sql;
-//		echo $salesorder;
-        return array(
-            'totals' => $total,
-            'goodsreceived' => $goodsreceived
-        );
-
+        return $rows;
     }
     /**
      * @param stdClass $params
@@ -117,64 +71,61 @@ class GoodsReceived
      */
     public function addGR(stdClass $params)
     {
-        $data = get_object_vars($params);
-
-        $data['tgl'] = $this->db->Date_Converter($data['tgl']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-        unset($data['vend_nama'],$data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama'], $data['account_nama']);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        $sql = $this -> db -> sqlBind($data, 'gr0', 'I');
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $params;
+        $co_id= $_SESSION['user']['site'];
+        $sql=("execute procedure goods_received_i '$params->po_num','$co_id'
+        ");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
     }
 
-    /**
-     * @param stdClass $params
-     * @return stdClass
-     */
     public function updateGR(stdClass $params)
     {
-        $data = get_object_vars($params);
-        unset($data['gr_num'], $data['id'], $data['vend_nama'], $data['co_id'], $data['vend_tr_nama'], $data['gr_type_desc'], $data['gudang_nama'], $data['account_nama']);
-        $data['tgl'] = $this->db->Date_Converter($data['tgl']);
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
-        $cond = array('co_id' =>$params->co_id, 'gr_num' => $params->gr_num);
-        $sql = $this -> db -> sqlBind($data, 'gr0', 'U', $cond);
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $params->old_co_id = $params->co_id;
+        $co_id= $_SESSION['user']['site'];
+        $sql=("execute procedure goods_received_u
+        '$params->keterangan',
+        '$params->gudang_id',
+        '$params->rc_type',
+        '$params->vend_id_trans',
+        '$params->vend_id',
+        '$params->grn_return',
+        '$params->gr_type',
+        '$params->po_num',
+        '$params->gr_num',
+        '$co_id'
+        ");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
+    }
+    public function updateGRItems(stdClass $params)
+    {
+        $co_id= $_SESSION['user']['site'];
+        $posted_by= $_SESSION['user']['name'];
+        $posted_date =  $this->db->Date_Converter($params->posted_date);
+        $sql=("execute procedure goods_received_p
+        '$posted_by',
+        '$posted_date',
+        '$params->gr_num',
+        '$co_id'
+        ");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
         return $params;
     }
 
-    /**
-     * Not in used. For Now you can only set the Company "inactive"
-     *
-     * @param stdClass $params
-     * @return stdClass
-     */
+
     public function deleteGR(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE (co_id = '$params->co_id') and (inv_code = '$params->gr_num')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM jurnal WHERE (co_id = '$company') and (inv_code = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM gr11 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM gr11 WHERE (co_id = '$company') and (gr_num = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM gr10 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM gr10 WHERE (co_id = '$company') and (gr_num = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM gr0 WHERE (co_id = '$params->co_id') and (gr_num = '$params->gr_num')";
+        $sql = "DELETE FROM gr0 WHERE (co_id = '$company') and (gr_num = '$params->gr_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -189,60 +140,31 @@ class GoodsReceived
 
     public function getGRItems(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
-        (string)$whereClause = '';
-        (array)$gritems = '';
-        (int)$total = 0;
-        (string)$sql = '';
-
-        // Look between service date
-
-        $whereClause .= chr(13) . " AND gr10.co_id = '$params->co_id'";
-        $whereClause .= chr(13) . " AND gr10.gr_num = '$params->gr_num'";
-
-
-        // Eliminate the first 6 characters of the where clause
-        // this to eliminate and extra AND from the SQL statement
-        $whereClause = substr($whereClause, 6);
-
-        // If the whereClause variable is used go ahead and
-        // and add the where command.
-        if ($whereClause)
-            $whereClause = 'WHERE ' . $whereClause;
-        $sql = "select
-                    gr10.co_id,
-                    gr10.gr_num,
-                    gr10.bb_id,
-                    gr10.sat_id,
-                    gr10.qty_brutto,
-                    gr10.qty_netto,
-                    gr10.qty_pcs,
-                    gr10.qty_brutto -  gr10.qty_netto  as qty_selisih,
-                    gr10.keterangan,
-                    bahanbaku.bb_nama,
-                    satuan.satuan_nama as sat_nama,
-                    A.qty_po
-                from gr10
-                   left outer join bahanbaku on (gr10.co_id = bahanbaku.co_id) and (gr10.bb_id = bahanbaku.bb_id)
-                   left outer join satuan on (gr10.co_id = satuan.co_id) and (gr10.sat_id = satuan.satuan_id)
-                   left join gr0 on gr10.gr_num=gr0.gr_num and gr10.co_id=gr0.co_id
-                   left join (select co_id, po_num, bb_id, sum(qty) as qty_po from po1 group by po_num, co_id, bb_id) A on gr0.po_num=A.po_num and gr0.co_id=A.co_id and gr10.bb_id=A.bb_id
-                   $whereClause
-				ORDER BY
-				     bb_nama";
-        $this->db->setSQL($sql);
-
+        $company =  $_SESSION['user']['site'];
+        $sql = "select a.co_id,a.gr_num,a.bb_id, a.sat_id,a.qty_brutto,a.qty_netto,a.qty_pcs,
+        a.qty_brutto -  a.qty_netto  as qty_selisih,a.keterangan,coalesce(c.qty_return,0) as qtygrn , e.bb_nama, f.qty as qty_po
+        , g.nopol, g.do_num, g.qty_brutto, g.qty_netto, g.qty_pcs
+        from gr10 a
+        left join gr0 b on a.co_id=b.co_id and a.gr_num=b.gr_num
+        left join(
+            select sum(c.qty_netto) as qty_return, c.bb_id, c.sat_id, d.po_num, c.co_id
+            from gr10 c
+            left join gr0 d on c.co_id=d.co_id and c.gr_num=d.gr_num
+            where d.status=1 and d.gr_type='B' --return --
+            group by c.co_id, c.bb_id, c.sat_id, d.po_num
+        ) c on b.po_num=c.po_num and a.co_id=c.co_id and a.bb_id=c.bb_id and a.sat_id=c.sat_id
+        left join bahanbaku e on a.bb_id=e.bb_id and a.co_id=e.co_id
+        left join po1 f on b.po_num=f.po_num and a.bb_id=f.bb_id and a.sat_id=f.sat_id
+        left join gr11 g on a.co_id=g.co_id and a.bb_id=g.bb_id and a.sat_id=g.sat_id  and a.gr_num=g.gr_num
+        where a.co_id='$company' and a.gr_num='$params->gr_num' order by a.bb_id ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $gritems[] = $row;
+            array_push($rows, $row);
         }
-
-        $total = count($gritems);
-        return array(
-            'totals' => $total,
-            'gritems' => $gritems
-        );
+        return $rows;
 
     }
     public function addGRItems(stdClass $params)
@@ -266,7 +188,7 @@ class GoodsReceived
      * @param stdClass $params
      * @return stdClass
      */
-    public function updateGRItems(stdClass $params)
+    /*public function updateGRItems(stdClass $params)
     {
         $data = get_object_vars($params);
         unset($data['bb_nama'], $data['id'], $data['sat_nama'], $data['qty_po'], $data['old_bb_id']);
@@ -276,7 +198,7 @@ class GoodsReceived
         $this -> db -> execLog();
         $params->old_co_id = $params->co_id;
         return $params;
-    }
+    }*/
 
     /**
      * Not in used. For Now you can only set the Company "inactive"
@@ -317,19 +239,21 @@ class GoodsReceived
     }
     public function addGRDetail(stdClass $params)
     {
-        $data = get_object_vars($params);
-
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-        unset($data['id']);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $sql = $this -> db -> sqlBind($data, 'gr11', 'I');
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $params;
+        $co_id= $_SESSION['user']['site'];
+        $sql=("execute procedure goods_received_detail_i
+        '$params->do_num',
+        '$params->nopol',
+        '$params->sat_id',
+        '$params->keterangan',
+        '$params->qty_pcs',
+        '$params->qty_netto',
+        '$params->qty_po',
+        '$params->bb_id',
+        '$params->gr_num',
+        '$co_id'
+        ");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
     }
 
     /**

@@ -136,14 +136,14 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 200,text: 'No. PPD',sortable: true,dataIndex: 'no_ppd'},
-                {width: 200,text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
-                {width: 200,text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
-                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'keterangan'},
-                {width: 200,text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden:true},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden:true},
+                {text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                {text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'No. PPD',sortable: true,dataIndex: 'no_ppd'},
+                {text: ' From Gudang',sortable: true,dataIndex: 'from_gudang_id'},
+                {text: ' To Gudang',sortable: true,dataIndex: 'to_gudang_id'},
+                {text: 'Remarks',sortable: true,dataIndex: 'keterangan', flex:1},
+                {text: 'inv_type',sortable: true,dataIndex: 'inv_type', hidden:true},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -237,12 +237,12 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Manufaktur', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 200,text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
-                {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
-                {width: 200,text: 'qty',sortable: true,dataIndex: 'qty'},
-                {width: 100,text: 'satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200,text: 'harga',sortable: true,dataIndex: 'harga', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
+                {text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
+                {text: 'Description',sortable: true,dataIndex: 'description', flex:1},
+                {text: 'qty',sortable: true,dataIndex: 'qty'},
+                {text: 'satuan',sortable: true,dataIndex: 'sat_id'},
+                {text: 'harga',sortable: true,dataIndex: 'harga', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],

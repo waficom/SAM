@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.AP_Payment_Alocation', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAP_Payment_Alocation',
-    pageTitle: 'AP Payment Alocation',
+    pageTitle: 'AP Alocation',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

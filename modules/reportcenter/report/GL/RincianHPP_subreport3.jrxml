@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report TB" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -525,10 +525,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="79">
+		<band height="81">
 			<elementGroup/>
 			<componentElement>
-				<reportElement uuid="1ed5f74d-1d49-417b-b6d3-06602bd03335" key="table 18" style="table 18" x="0" y="28" width="511" height="50"/>
+				<reportElement uuid="1ed5f74d-1d49-417b-b6d3-06602bd03335" key="table 18" style="table 18" x="0" y="29" width="511" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="TableData" uuid="c7b2f611-76cb-4717-9604-84b692a521c5">
 						<datasetParameter name="co_id">
@@ -544,10 +544,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="0f724ce4-5507-4c77-8412-23f5c0d73820" x="0" y="0" width="57" height="12"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[POSTING AR]]></text>
+								<text><![CDATA[TGL INVOICE]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="14" rowSpan="1">
@@ -566,10 +566,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="6befa603-5495-4039-bed3-0fe96eab72a1" x="0" y="0" width="90" height="12"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[ROUTE]]></text>
+								<text><![CDATA[ ROUTE PENGIRIMAN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="14" rowSpan="1">
@@ -588,10 +588,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="2b66150a-6a0c-4ce0-ac56-c376865254f1" x="0" y="0" width="73" height="12"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[DOK AR]]></text>
+								<text><![CDATA[NO INVOICE]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="14" rowSpan="1">
@@ -610,10 +610,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="661475c1-9586-444a-ba41-df5378cf41d0" x="0" y="0" width="82" height="12"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[PROD_ID]]></text>
+								<text><![CDATA[KODE PRODUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="12" rowSpan="1">
@@ -637,20 +637,20 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="39" uuid="6973a9e3-81e9-46b2-a7fe-424192189ba9">
+					<jr:column width="44" uuid="6973a9e3-81e9-46b2-a7fe-424192189ba9">
 						<jr:columnHeader style="table 18_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="b232fcdd-e769-48aa-82f4-9334edb21a0e" x="0" y="0" width="38" height="12"/>
+								<reportElement uuid="b232fcdd-e769-48aa-82f4-9334edb21a0e" x="0" y="0" width="44" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY_DO]]></text>
+								<text><![CDATA[KWANTUM]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="a1e2493c-7991-4919-a37b-905882f3457c" x="0" y="0" width="39" height="12"/>
+								<reportElement uuid="a1e2493c-7991-4919-a37b-905882f3457c" x="0" y="0" width="44" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -660,7 +660,7 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 						</jr:columnFooter>
 						<jr:detailCell style="table 18_TD" height="14" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="f6e95b7f-41f6-49dc-b02b-b38bcc15d389" x="0" y="0" width="38" height="13"/>
+								<reportElement uuid="f6e95b7f-41f6-49dc-b02b-b38bcc15d389" x="0" y="0" width="44" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -674,10 +674,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="9071ebaa-e4b8-4a34-b684-7ebe31b610c5" x="0" y="0" width="59" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[OHP BB]]></text>
+								<text><![CDATA[RATA2/KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="14" rowSpan="1">
@@ -696,10 +696,10 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 							<staticText>
 								<reportElement uuid="2611b7c8-0e7b-4980-b24b-edbfee37054f" x="0" y="0" width="90" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL]]></text>
+								<text><![CDATA[TOTAL HPP BB]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="12" rowSpan="1">
@@ -726,18 +726,18 @@ where a.status=1 and a.so_num=$P{so_num}]]>
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement uuid="f6b8fe3c-60dc-48de-a094-852aad3444b3" x="0" y="18" width="130" height="10"/>
-				<textElement>
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[AR]]></text>
-			</staticText>
-			<staticText>
 				<reportElement uuid="97490031-c964-4a55-ab47-05d0060d96a1" x="0" y="5" width="130" height="10"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RINCIAN HPP :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="38577c53-1d97-4f6f-ae7e-d8d29c6d0c12" x="1" y="18" width="63" height="10"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BAHAN BAKU]]></text>
 			</staticText>
 		</band>
 	</title>

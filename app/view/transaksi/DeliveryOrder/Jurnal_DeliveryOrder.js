@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder', {
     extend: 'App.ux.RenderPanel',
     id: 'panelJurnal_DeliveryOrder',
-    pageTitle: 'Jurnal Delivery Order',
+    pageTitle: 'Jurnal Pengiriman Barang Jadi',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

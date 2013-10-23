@@ -44,7 +44,8 @@ class Route
 
     public function getRouteLiveSearch(stdClass $params)
     {
-        $this->db->setSQL("SELECT route_code, description,FROM Route");
+        $company =  $_SESSION['user']['site'];
+        $this->db->setSQL("SELECT route_code, description FROM Route where co_id='$company'");
 
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -64,7 +65,8 @@ class Route
 
     public function getRoute(stdClass $params)
     {
-        $sql = "SELECT * FROM Route ORDER BY timeedit DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM Route where co_id='$company' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -125,10 +127,11 @@ class Route
 
     public function deleteRoute(stdClass $params)
     {
-        $sql = "DELETE FROM Route_D WHERE route_code = '$params->route_code'";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM Route_D WHERE route_code = '$params->route_code' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM Route WHERE route_code = '$params->route_code'";
+        $sql = "DELETE FROM Route WHERE route_code = '$params->route_code' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -137,9 +140,10 @@ class Route
     public function getRouteD(stdClass $params)
     {
         //error_reporting(-1);
+        $company =  $_SESSION['user']['site'];
         $this->db->setSQL("SELECT *
                          FROM Route_D
-                    WHERE route_code = '" . $params->route_code ."'ORDER BY sequence_no ASC");
+                    WHERE co_id='$company' and route_code = '" . $params->route_code ."'ORDER BY sequence_no ASC");
 
         $rows = array();
         //print_r($rows);
@@ -193,7 +197,8 @@ class Route
 
     public function deleteRouteD(stdClass $params)
     {
-        $sql = "DELETE FROM Route_D WHERE (route_code = '$params->route_code') and (sequence_no = '$params->sequence_no') ";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM Route_D WHERE co_id='$company' and (route_code = '$params->route_code') and (sequence_no = '$params->sequence_no') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

@@ -45,7 +45,8 @@ class BahanBaku
 
 	public function getbb(stdClass $params)
 	{
-		$sql = "SELECT * FROM bahanbaku ORDER BY bb_nama";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM bahanbaku where co_id='$company' ORDER BY bb_id";
 		$this -> db -> setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -80,7 +81,6 @@ class BahanBaku
 		$sql = $this->db->sqlBind($data, 'bahanbaku', 'I');
 		$this->db->setSQL($sql);
 		$this->db->execLog();
-//		$params->id = $this->user_id = $this->db->lastInsertId;
         return $params;
 	}
 
@@ -91,11 +91,12 @@ class BahanBaku
 	public function updatebb(stdClass $params)
 	{
 		$data       = get_object_vars($params);
+        $company =  $_SESSION['user']['site'];
         unset($data['id'], $data['old_bb_id'], $data['bb_id']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'bahanbaku', 'U', array('bb_id' => $params->old_bb_id));
+		$sql = $this->db->sqlBind($data, 'bahanbaku', 'U', array('bb_id' => $params->old_bb_id,'co_id' => $company ));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -103,7 +104,8 @@ class BahanBaku
 
 	public function deletebb(stdClass $params)
 	{
-		$sql = "DELETE FROM bahanbaku WHERE (co_id = '$params->co_id') and (bb_id = '$params->bb_id')" ;
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM bahanbaku WHERE co_id = '$company' and (bb_id = '$params->bb_id')" ;
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

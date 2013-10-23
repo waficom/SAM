@@ -45,10 +45,12 @@ class Produksi
 
     public function getProduksi(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.pabrik_sequence
 , A.userinput, A.useredit, case A.status when '0' then 'new' else 'Released To Factory' end as statusdesc, B.description as factory
 from pp_produksi A
 left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence
+where a.co_id='$company'
 /*where A.pp_date between '$params->datefrom' AND '$params->dateto' */ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -108,10 +110,11 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
 
     public function deleteProduksi(stdClass $params)
     {
-        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE no_pp = '$params->no_pp'";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE no_pp = '$params->no_pp' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM PP_Produksi WHERE no_pp = '$params->no_pp'";
+        $sql = "DELETE FROM PP_Produksi WHERE no_pp = '$params->no_pp' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -119,9 +122,10 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
 
     public function getProduksi1(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $this->db->setSQL("SELECT *
                          FROM VIEWDETAILPRODUKSI
-                    WHERE no_pp = '" . $params->no_pp ."'ORDER BY timeedit DESC");
+                    WHERE co_id ='$company' and no_pp = '" . $params->no_pp ."'ORDER BY timeedit DESC");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -178,7 +182,8 @@ left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_se
 
     public function deleteProduksi1(stdClass $params)
     {
-        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE (no_ppd = '$params->no_ppd') ";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE (no_ppd = '$params->no_ppd' and co_id='$company') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

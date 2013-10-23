@@ -533,14 +533,14 @@
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="70" uuid="25b1354d-656b-42a1-9da6-350f854a88b3">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a3fe4a60-afab-4489-8e2c-f9ea34e5fcd8" x="0" y="0" width="70" height="14"/>
+								<reportElement uuid="a3fe4a60-afab-4489-8e2c-f9ea34e5fcd8" x="0" y="0" width="70" height="19"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[POSTED DATE]]></text>
+								<text><![CDATA[TGL DOKUMEN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
@@ -554,20 +554,20 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="121" uuid="c94eb1b2-4bfe-442a-8504-2982fc87155b">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+					<jr:column width="100" uuid="c94eb1b2-4bfe-442a-8504-2982fc87155b">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="f50e3a90-a692-41ad-8775-d4bd7620590b" x="0" y="0" width="121" height="14"/>
+								<reportElement uuid="f50e3a90-a692-41ad-8775-d4bd7620590b" x="0" y="0" width="100" height="19"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[DOK RECLASS]]></text>
+								<text><![CDATA[NO. DOKUMEN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="table 18_TD" height="15" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2daf8db7-4b7a-4894-95c3-bf005a267c5e" x="0" y="0" width="90" height="15"/>
+								<reportElement uuid="2daf8db7-4b7a-4894-95c3-bf005a267c5e" x="0" y="0" width="100" height="15"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -577,7 +577,7 @@
 						</jr:columnFooter>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField>
-								<reportElement uuid="b3b5ad1f-c188-4eb2-8535-b970890e1c00" x="0" y="0" width="121" height="12"/>
+								<reportElement uuid="b3b5ad1f-c188-4eb2-8535-b970890e1c00" x="0" y="0" width="100" height="12"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -587,14 +587,14 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="55" uuid="963933e7-a9ff-4198-8fa0-772cb27eb281">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="94cf6da4-547f-429b-a875-f6560c997f27" x="0" y="0" width="55" height="14"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="94cf6da4-547f-429b-a875-f6560c997f27" x="0" y="0" width="55" height="19"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL QTY]]></text>
+								<text><![CDATA[QTY BJ]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="table 18_TD" height="15" rowSpan="1"/>
@@ -609,39 +609,40 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="d18c39fc-d8ea-43da-bfdf-405b29651570">
+					<jr:column width="101" uuid="d18c39fc-d8ea-43da-bfdf-405b29651570">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a9cda39e-5b47-4038-a896-b1e4a5b0a837" x="0" y="0" width="90" height="14"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="a9cda39e-5b47-4038-a896-b1e4a5b0a837" x="0" y="0" width="101" height="19"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[BIAYA]]></text>
+								<text><![CDATA[TTL OHP TDK LANGSUNG]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="15" rowSpan="1"/>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="5cfc3a90-357f-4c0d-b38d-c13ea89d073b" x="0" y="0" width="90" height="12"/>
+								<reportElement uuid="5cfc3a90-357f-4c0d-b38d-c13ea89d073b" x="0" y="0" width="101" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
+									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{OHP_TL}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="a81da38b-3a7d-42e6-932f-8e5cbd52d995">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="e59d20b6-3dcc-47e8-aab4-69e63711b0ed" x="0" y="0" width="59" height="14"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="e59d20b6-3dcc-47e8-aab4-69e63711b0ed" x="0" y="0" width="59" height="19"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY RATA2]]></text>
+								<text><![CDATA[HARGA RATA2]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
@@ -656,11 +657,11 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="68" uuid="5e42a9dd-e7c6-446a-8c10-e6e3fda8b786">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="f83938f6-34cb-4411-b539-8adff9593b87" x="0" y="0" width="66" height="14"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="f83938f6-34cb-4411-b539-8adff9593b87" x="0" y="0" width="66" height="19"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[QTY AR]]></text>
@@ -677,20 +678,20 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="c64c21ec-ecaf-4daa-b47b-ef4b88600a24">
-						<jr:columnHeader style="table 18_CH" height="14" rowSpan="1">
+					<jr:column width="103" uuid="c64c21ec-ecaf-4daa-b47b-ef4b88600a24">
+						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="8613f43d-300c-4e7f-a7e8-645a147e4ad0" x="0" y="0" width="90" height="14"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+								<reportElement uuid="aa61395e-e445-48c7-8a86-aa01a069270d" x="0" y="0" width="103" height="19"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TOTAL]]></text>
+								<text><![CDATA[TOTAL OHP TDK LANGSUNG]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter style="table 18_TD" height="15" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="5748b0c4-5508-428b-a1ba-13a995db498d" x="0" y="0" width="90" height="15"/>
+								<reportElement uuid="5748b0c4-5508-428b-a1ba-13a995db498d" x="0" y="0" width="103" height="15"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -700,7 +701,7 @@
 						</jr:columnFooter>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="124491ee-2491-401b-89e9-01f48f10e96f" x="0" y="0" width="90" height="12"/>
+								<reportElement uuid="124491ee-2491-401b-89e9-01f48f10e96f" x="0" y="0" width="103" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>

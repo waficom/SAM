@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice_Pembayaran', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAP_Invoice_Pembayaran',
-    pageTitle: 'AP Invoice Pembayaran',
+    pageTitle: 'AP Pembayaran Invoice',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

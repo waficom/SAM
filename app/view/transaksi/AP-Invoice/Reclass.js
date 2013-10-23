@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
     extend: 'App.ux.RenderPanel',
     id: 'panelViewReclass',
-    pageTitle: 'Reclass',
+    pageTitle: 'Reclass Biaya',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -21,7 +21,8 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                 {name: 'coa_nama',type: 'string'},
                 {name: 'check',type: 'string'},
                 {name: 'debit',type: 'float'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -53,7 +54,8 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                 {name: 'rata2_hpp',type: 'float'},
                 {name: 'total',type: 'float'},
                 {name: 'debit',type: 'float'},
-                {name: 'timeedit',type: 'date'}
+                {name: 'timeedit',type: 'date'},
+                {name: 'posted_date',type: 'date'}
             ]
 
         });
@@ -138,6 +140,18 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                                 scope : me,
                                 click : me.SeachingItem
                             }
+                        },'->',
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'tgl_post',
+                                    width : 100,
+                                    format : 'd-m-Y',
+                                    maxValue: new Date()
+                                }]
                         },
                         {
                             text: 'Posting',
@@ -172,9 +186,9 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
             region: 'north',
             selModel :  Ext.create( 'Ext.selection.CheckboxModel'),
             columns: [
-                {text: 'Dok. AR',sortable: true,dataIndex: 'for_inv_code'},
-                {text: 'DO Num',sortable: true,dataIndex: 'do_num'},
-                {text: 'SO Num',sortable: true, dataIndex: 'so_num'},
+                {text: 'Dok. AR',sortable: true,dataIndex: 'for_inv_code', flex:1},
+                {text: 'DO Num',sortable: true,dataIndex: 'do_num',flex:1},
+                {text: 'SO Num',sortable: true, dataIndex: 'so_num',flex:1},
                 {text: 'Qty DO',sortable: true, dataIndex: 'qty_do'},
                 {text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut'},
                 {text: 'Harga Rata2 HPP',sortable: true,dataIndex: 'rata2_hpp', renderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -188,27 +202,39 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                     dock: 'top',
                     items: [
                         '<span style="color: #ff2110"> RECLASS BJ </span>',
+                        ,'->',
                         {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype : 'xtReclassOVBPopup',
-                                    id : 'dok_ar_rc',
-                                    fieldLabel : 'Dok. AR',
+                                    xtype : 'numberfield',
+                                    itemId : 'periode',
+                                    fieldLabel : 'Periode',
                                     labelWidth : 50,
-                                    width : 200
+                                    width : 130
                                 }]
                         },
                         {
                             xtype : 'button',
                             width : 80,
-                            margin : '0 0 3 0',
-                            text: 'Searching',
+                            text: 'Cari',
                             listeners :
                             {
                                 scope : me,
                                 click : me.SeachingItemBJ
                             }
+                        },'->',
+                        {
+                            xtype : 'fieldcontainer',
+                            items : [
+
+                                {
+                                    xtype : 'datefield',
+                                    itemId : 'tgl_post_2',
+                                    width : 100,
+                                    format : 'd-m-Y',
+                                    value : new Date()
+                                }]
                         },
                         {
                             text: 'Posting',
@@ -220,8 +246,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                                     me.PostingItemOBJ(form, me.ReclassOBJStore);
                                 }
                             }
-                        },'->',
-                        '<span style="color: #ff2110"> CATATAN: Dokumen AR muncul jika total seluruh Qty AR = Qty DO </span>'
+                        }
                     ]
                 },{
                     xtype: 'pagingtoolbar',
@@ -261,6 +286,10 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                             xtype: 'textfield',
                             hidden: true,
                             name: 'debit'
+                        },{
+                            xtype: 'datefield',
+                            hidden: true,
+                            name: 'posted_date'
                         }
                     ]
                 }
@@ -298,6 +327,10 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                             xtype: 'textfield',
                             hidden: true,
                             name: 'debit'
+                        },{
+                            xtype: 'datefield',
+                            hidden: true,
+                            name: 'posted_date'
                         }
                     ]
                 }
@@ -319,6 +352,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
             form.findField('account').setValue(data.account);
             form.findField('for_inv_code').setValue(data.for_inv_code);
             form.findField('debit').setValue(data.debit);
+            form.findField('posted_date').setValue(Ext.ComponentQuery.query('#tgl_post')[0].getValue());
             var values = form.getValues();
             if(form.isValid()){
                 Reclass.addViewReclassOVB(values, function(provider, response){
@@ -338,6 +372,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
             var data = data_selected.selected.items[i].data;
             form.findField('for_inv_code').setValue(data.for_inv_code);
             form.findField('debit').setValue(data.total);
+            form.findField('posted_date').setValue(Ext.ComponentQuery.query('#tgl_post_2')[0].getValue());
             var values = form.getValues();
             if(form.isValid()){
                 Reclass.addViewReclassOBJ(values, function(provider, response){
@@ -355,9 +390,9 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
         this.ReclassOBJStore.load({params:{so_num: getSO_NUM}});
     },
     SeachingItemBJ: function(btn){
-        var getDok_AR = Ext.getCmp('dok_ar_rc').getValue();
+        var getPeriode = Ext.ComponentQuery.query('#periode')[0].getValue();
         var getSO_NUM = Ext.getCmp('so_num_rc').getValue();
-        this.ReclassOBJStore.load({params:{inv_code : getDok_AR, so_num: getSO_NUM}});
+        this.ReclassOBJStore.load({params:{periode : getPeriode, so_num: getSO_NUM}});
     },
 
     onActive: function(callback){

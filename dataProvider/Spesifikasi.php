@@ -43,11 +43,12 @@ class Spesifikasi
 
     public function getSpesifikasiLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT co_id,
 		                          spesifikasi_id, 
 		                          spesifikasi_nama
 							FROM spesifikasi
-   							WHERE UPPER(spesifikasi_id)   LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(spesifikasi_id)   LIKE UPPER('%$params->query%')
    							   OR UPPER(spesifikasi_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -85,7 +86,8 @@ class Spesifikasi
 		{
 			$orderx = 'spesifikasi_nama';
 		}
-		$sql = "SELECT * FROM spesifikasi ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+		$sql = "SELECT * FROM spesifikasi where co_id='$company' ORDER BY $orderx";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -140,7 +142,8 @@ class Spesifikasi
 
 	public function deletespesifikasi(stdClass $params)
 	{
-		$sql = "DELETE FROM spesifikasi WHERE (co_id = '$params->co_id') and (spesifikasi_id = '$params->spesifikasi_id')";
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM spesifikasi WHERE (co_id = '$company') and (spesifikasi_id = '$params->spesifikasi_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

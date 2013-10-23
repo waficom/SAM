@@ -739,3 +739,8 @@ body#login {
 .grown-row .x-grid-cell {
     background-color: #FFB0C4;
 }
+.x-grid-row .custom-column {
+    background-color: #ff100a;
+    color: #090;
+    font-weight: bold;
+}

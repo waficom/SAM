@@ -34,7 +34,7 @@ class Penyusutan_Aset
             $orderx = 'timeedit';
         }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM penyusutan_aset
+        $sql = "SELECT * FROM penyusutan_aset where co_id='$company'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

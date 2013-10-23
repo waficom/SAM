@@ -147,7 +147,6 @@ Ext.define('App.ux.BahanBakuPopup',
             me.onGridClick(grid, selected);
             Ext.getCmp('sat_id_po').setValue(selected.data.sat_id);
             Ext.getCmp('sat_id').setValue(selected.data.sat_id);
-            Ext.getCmp('sat_id_gr').setValue(selected.data.sat_id);
             Ext.getCmp('bb_nama').setValue(selected.data.bb_nama);
             Ext.getCmp('bb_nama_gr').setValue(selected.data.bb_nama);
             me.searchwin.close();

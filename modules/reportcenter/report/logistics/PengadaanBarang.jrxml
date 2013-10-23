@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PengadaanBarang" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="3"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Table">
 		<box>
@@ -85,11 +85,14 @@
 	</style>
 	<subDataset name="TableData" uuid="a10c719c-b9f0-4b23-9faf-c92e808ce880">
 		<parameter name="pbnum" class="java.lang.String"/>
+		<parameter name="co_id" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
 			<![CDATA[select A.*, B.bb_nama from
 pengadaan_barang A
 left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
-where A.pb_num=$P{pbnum}]]>
+where A.pb_num=$P{pbnum} and a.co_id=$P{co_id}]]>
 		</queryString>
 		<field name="CO_ID" class="java.lang.String"/>
 		<field name="PB_NUM" class="java.lang.String"/>
@@ -109,76 +112,74 @@ where A.pb_num=$P{pbnum}]]>
 			<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
 			<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
 		</variable>
+		<variable name="TTL_QTY" class="java.math.BigDecimal" calculation="Sum">
+			<variableExpression><![CDATA[$F{QTY}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="pbnum" class="java.lang.String"/>
+	<parameter name="co_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="No_Order" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[]]>
+		<![CDATA[SELECT pb_num, tanggal, request_by, bagian
+FROM PB0 WHERE CO_ID=$P{co_id} and pb_num=$P{pbnum}]]>
 	</queryString>
+	<field name="PB_NUM" class="java.lang.String"/>
+	<field name="TANGGAL" class="java.sql.Timestamp"/>
+	<field name="REQUEST_BY" class="java.lang.String"/>
+	<field name="BAGIAN" class="java.lang.String"/>
 	<title>
-		<band height="270">
-			<staticText>
-				<reportElement uuid="4baf6388-0a92-4f6b-b889-4cdec3030890" x="152" y="13" width="292" height="18"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fom Permintaan Pengadaan Barang]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ef9bb107-8081-4337-b3b0-f9b3dea93f79" x="13" y="192" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Menyetujui,]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="b778ee40-2ced-495f-969e-f15788000f38" x="236" y="192" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Menyetujui,]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ca6aea3f-852a-423e-8b17-7f28f357386e" x="467" y="192" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Yang Mengajukan]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="c7bee8ba-7df3-4cc8-b7cc-67e44e4d2735" x="13" y="238" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[A. Adhi Harsanto]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="49e813ba-37bf-4b86-a0a2-1e05dd7239b1" x="236" y="238" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[M. Hartono]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="a495843c-0fde-4d1f-a75b-df18ebab9bf6" x="467" y="238" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[(..............................)]]></text>
-			</staticText>
-			<textField pattern="dd-MMM-yyyy">
-				<reportElement uuid="3373a1f6-91fb-4ec9-be83-84d89cf73988" x="464" y="172" width="103" height="20" forecolor="#020202"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<elementGroup>
+		<band height="459">
+			<elementGroup/>
+			<frame>
+				<reportElement uuid="f3e12178-9156-4ec4-8ece-e82438c520a2" style="table_TD" mode="Transparent" x="-3" y="0" width="570" height="250"/>
+				<staticText>
+					<reportElement uuid="4baf6388-0a92-4f6b-b889-4cdec3030890" x="152" y="0" width="292" height="18"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FORMULIR PERMINTAAN BAHAN/BARANG]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="06be9e81-3548-409f-8019-f8f86c4abe1c" x="219" y="18" width="145" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{pbnum}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="f81f9a75-84a5-4a1f-88fa-f2d53932422a" x="2" y="50" width="82" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<text><![CDATA[No. Order]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="10ff8a2a-b78a-45ea-8393-9c33351b2d30" x="94" y="50" width="244" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{No_Order}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="7cd89d7b-6d93-491a-b5e3-7c879acc36f7" x="84" y="50" width="10" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
 				<componentElement>
-					<reportElement uuid="6be7783f-786c-458a-a648-daebf8c0a1f4" key="table 2" style="table 2" x="0" y="84" width="567" height="50"/>
+					<reportElement uuid="6be7783f-786c-458a-a648-daebf8c0a1f4" key="table 2" style="table 2" x="0" y="70" width="570" height="50"/>
 					<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-						<datasetRun subDataset="TableData" uuid="f4f9b8de-e2b0-4830-bdf9-d2fe9c25f140">
+						<datasetRun subDataset="TableData" uuid="4dcdac79-4435-44aa-9218-3ce39a1ea692">
 							<datasetParameter name="pbnum">
 								<datasetParameterExpression><![CDATA[$P{pbnum}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="co_id">
+								<datasetParameterExpression><![CDATA[$P{co_id}]]></datasetParameterExpression>
 							</datasetParameter>
 							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 						</datasetRun>
@@ -187,159 +188,126 @@ where A.pb_num=$P{pbnum}]]>
 								<staticText>
 									<reportElement uuid="2f6c46fb-ddf2-4e16-807b-fd401e2404eb" x="0" y="0" width="37" height="19"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
-									<text><![CDATA[No.]]></text>
+									<text><![CDATA[NO.]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
+							<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
 								<textField>
-									<reportElement uuid="64f4fa8a-ddcf-4a8e-af3e-d6920d664604" x="0" y="0" width="37" height="21"/>
+									<reportElement uuid="64f4fa8a-ddcf-4a8e-af3e-d6920d664604" x="0" y="0" width="37" height="20"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="false"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$V{AUTONUMBER}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="90" uuid="503027d4-c32a-4719-b655-c756945a200e">
-							<jr:tableHeader height="0" rowSpan="1"/>
-							<jr:tableFooter height="0" rowSpan="1"/>
-							<jr:columnHeader style="table 1_CH" height="19" rowSpan="1">
-								<staticText>
-									<reportElement uuid="f3615fe2-40b1-4172-b797-1a71d5ec303b" x="0" y="0" width="90" height="19"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
-									</textElement>
-									<text><![CDATA[PB Number]]></text>
-								</staticText>
-							</jr:columnHeader>
-							<jr:columnFooter height="0" rowSpan="1"/>
-							<jr:detailCell style="table 1_TD" height="21" rowSpan="1">
-								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement uuid="f5e640f4-bb5f-4683-a2de-5e4333744333" x="0" y="0" width="90" height="21"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{PB_NUM}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-						<jr:column width="64" uuid="9aeffb59-7df3-472a-bd1f-bf655f5f0b5f">
+						<jr:column width="188" uuid="9d1c7d77-ab07-4fa2-bc3b-2658d199aeaf">
 							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
 								<staticText>
-									<reportElement uuid="c1b83960-9a11-4857-8bed-fe3ef6dd45ba" x="0" y="0" width="63" height="19"/>
+									<reportElement uuid="cb5ccc9e-5a13-4908-ac37-a528e60051a8" x="0" y="0" width="188" height="19"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
-									<text><![CDATA[Type / Merk]]></text>
+									<text><![CDATA[BAHAN / BARANG]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
-								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement uuid="9cb96877-97b4-4c92-aecb-5b10b3a518cc" x="0" y="0" width="63" height="20"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{PB_TYPE}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-						<jr:column width="108" uuid="9d1c7d77-ab07-4fa2-bc3b-2658d199aeaf">
-							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
+							<jr:columnFooter height="18" rowSpan="1">
 								<staticText>
-									<reportElement uuid="cb5ccc9e-5a13-4908-ac37-a528e60051a8" x="0" y="0" width="108" height="19"/>
+									<reportElement uuid="ecfc7f0e-3e0f-458e-95ad-245159d2f499" x="0" y="0" width="188" height="18"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
-									<text><![CDATA[Bahan Baku]]></text>
+									<text><![CDATA[TOTAL]]></text>
 								</staticText>
-							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
+							</jr:columnFooter>
+							<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
 								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement uuid="acd9eb4a-c6d1-4def-909e-41445dbc179e" x="0" y="0" width="108" height="20"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+									<reportElement uuid="acd9eb4a-c6d1-4def-909e-41445dbc179e" x="0" y="0" width="188" height="20"/>
+									<textElement verticalAlignment="Middle">
+										<font fontName="SansSerif" size="10" isBold="false"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{BB_NAMA}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="53" uuid="283a6bc6-a62e-468d-8ce7-58f7907d3856">
+						<jr:column width="73" uuid="283a6bc6-a62e-468d-8ce7-58f7907d3856">
 							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
 								<staticText>
-									<reportElement uuid="68574dff-4510-4ff2-90d0-f32309e01e18" x="0" y="0" width="53" height="19"/>
+									<reportElement uuid="68574dff-4510-4ff2-90d0-f32309e01e18" x="0" y="0" width="73" height="19"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<text><![CDATA[QTY]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
+							<jr:columnFooter style="table_TD" height="18" rowSpan="1">
+								<textField pattern="#,##0;-#,##0">
+									<reportElement uuid="73856525-bddc-4ba3-b988-c97e59d566cf" x="0" y="0" width="73" height="18"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{TTL_QTY}]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
 								<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-									<reportElement uuid="860b7669-e9b7-4157-a394-3dad0afda35c" x="0" y="0" width="53" height="20"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+									<reportElement uuid="860b7669-e9b7-4157-a394-3dad0afda35c" x="0" y="0" width="73" height="20"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="10" isBold="false"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{QTY}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="46" uuid="e333a9ee-9a37-44f6-960e-336b11ec4b2e">
+						<jr:column width="60" uuid="e333a9ee-9a37-44f6-960e-336b11ec4b2e">
 							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
 								<staticText>
-									<reportElement uuid="7f3a729d-5a07-4317-bdef-fcc2e18c4888" x="0" y="0" width="46" height="19"/>
+									<reportElement uuid="7f3a729d-5a07-4317-bdef-fcc2e18c4888" x="0" y="0" width="60" height="19"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
-									<text><![CDATA[Satuan]]></text>
+									<text><![CDATA[SATUAN]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
+							<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
 								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement uuid="172d8f46-f53d-48d2-99a2-d880ff966360" x="0" y="0" width="46" height="20"/>
+									<reportElement uuid="172d8f46-f53d-48d2-99a2-d880ff966360" x="0" y="0" width="60" height="20"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="false"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{SAT_ID}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="62" uuid="04a6b3be-490d-468b-82c0-51a6ec60f018">
+						<jr:column width="210" uuid="8346ec8b-1d5f-44c9-a843-9fc11dc29bce">
 							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
 								<staticText>
-									<reportElement uuid="78198478-61d0-4f6a-8251-1ca3141c6406" x="0" y="0" width="62" height="19"/>
+									<reportElement uuid="56e3da4a-365f-42f6-8fe6-a55659531480" x="2" y="0" width="208" height="19"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+										<font fontName="SansSerif" size="10" isBold="true"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
-									<text><![CDATA[Tanggal]]></text>
+									<text><![CDATA[KETERANGAN]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
-								<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-									<reportElement uuid="0dff9a81-7cbd-44b0-83b6-6b9c97b19ffe" x="0" y="0" width="62" height="20"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{TANGGAL}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-						<jr:column width="90" uuid="8346ec8b-1d5f-44c9-a843-9fc11dc29bce">
-							<jr:columnHeader style="table 2_CH" height="19" rowSpan="1">
-								<staticText>
-									<reportElement uuid="56e3da4a-365f-42f6-8fe6-a55659531480" x="0" y="0" width="90" height="19"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
-									</textElement>
-									<text><![CDATA[Keterangan]]></text>
-								</staticText>
-							</jr:columnHeader>
-							<jr:detailCell style="table 2_TD" height="21" rowSpan="1">
+							<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
 								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement uuid="f01c2cb1-276d-45e4-bc79-8da091f79192" x="0" y="0" width="90" height="20"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font size="8"/>
+									<reportElement uuid="f01c2cb1-276d-45e4-bc79-8da091f79192" x="2" y="0" width="208" height="20"/>
+									<textElement verticalAlignment="Middle">
+										<font fontName="SansSerif" size="10" isBold="false"/>
+										<paragraph leftIndent="5" rightIndent="5"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{KETERANGAN}]]></textFieldExpression>
 								</textField>
@@ -347,19 +315,41 @@ where A.pb_num=$P{pbnum}]]>
 						</jr:column>
 					</jr:table>
 				</componentElement>
-			</elementGroup>
-			<staticText>
-				<reportElement uuid="4697f4fb-d56a-4dcb-b9d6-5647d3e5efc4" x="152" y="31" width="292" height="29"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[PT. Saraswanti Anugerah Makmur
-Jl. Raden Patah, Ds. Tunggal Pager, Pungging - Mojokerto]]></text>
-			</staticText>
-			<image>
-				<reportElement uuid="fd3d92f1-980b-4cfb-ab8f-217ccd508281" x="13" y="13" width="111" height="60"/>
-				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
-			</image>
+				<staticText>
+					<reportElement uuid="ef9bb107-8081-4337-b3b0-f9b3dea93f79" x="16" y="179" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Menyetujui,]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c7bee8ba-7df3-4cc8-b7cc-67e44e4d2735" x="16" y="225" width="100" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Direksi]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement uuid="6e15862e-7287-45c1-912e-85a8ce6e59d4" x="421" y="159" width="108" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{TANGGAL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2b714ca2-389d-43eb-a471-a0f6b7c141b1" x="364" y="159" width="57" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Sidoarjo,]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="2f4116ea-2985-4b4f-a97f-f6ab2252a354" x="364" y="179" width="183" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Administrasi]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f7120e75-658c-4c49-b783-0371e928656a" x="364" y="225" width="183" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[(..................................................)]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 </jasperReport>

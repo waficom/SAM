@@ -34,7 +34,7 @@ class Cashflow
             $orderx = 'timeedit';
         }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM cashflow
+        $sql = "SELECT * FROM cashflow where co_id='$company'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

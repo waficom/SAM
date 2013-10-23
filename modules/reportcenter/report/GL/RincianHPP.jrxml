@@ -543,7 +543,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 	<detail>
 		<band height="216" splitType="Immediate">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="37f0c104-75f8-48c4-bff8-d1bd8b3eb6c4" x="35" y="11" width="101" height="10"/>
+				<reportElement uuid="37f0c104-75f8-48c4-bff8-d1bd8b3eb6c4" x="73" y="12" width="101" height="10"/>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
@@ -551,7 +551,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{SO_NUM}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="5dc1d955-e372-4fc6-86fc-d368911d20ed" x="135" y="11" width="77" height="10"/>
+				<reportElement uuid="5dc1d955-e372-4fc6-86fc-d368911d20ed" x="173" y="12" width="77" height="10"/>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
@@ -592,7 +592,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianHPP_subreport3.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="bc627ba9-8c79-494e-932f-dd4d291a7872" x="35" y="2" width="101" height="9"/>
+				<reportElement uuid="bc627ba9-8c79-494e-932f-dd4d291a7872" x="73" y="3" width="101" height="9"/>
 				<box>
 					<bottomPen lineWidth="0.5"/>
 				</box>
@@ -600,10 +600,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[SO_NUM]]></text>
+				<text><![CDATA[NO. PESANAN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="298ff0ac-9c40-4e87-a070-723addeaf90b" x="136" y="2" width="76" height="9"/>
+				<reportElement uuid="298ff0ac-9c40-4e87-a070-723addeaf90b" x="174" y="3" width="76" height="9"/>
 				<box>
 					<bottomPen lineWidth="0.5"/>
 				</box>
@@ -611,10 +611,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[PROD_ID]]></text>
+				<text><![CDATA[KODE PRODUK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6c3381bf-7032-473f-ab2c-e792b7a3ea81" x="0" y="2" width="36" height="9"/>
+				<reportElement uuid="6c3381bf-7032-473f-ab2c-e792b7a3ea81" x="38" y="3" width="36" height="9"/>
 				<box>
 					<bottomPen lineWidth="0.5"/>
 				</box>
@@ -625,7 +625,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[NO]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d51aa3c5-2136-41de-b9ce-22d8300c0546" x="0" y="11" width="36" height="10"/>
+				<reportElement uuid="d51aa3c5-2136-41de-b9ce-22d8300c0546" x="38" y="12" width="36" height="10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
 					<paragraph leftIndent="5" rightIndent="5"/>

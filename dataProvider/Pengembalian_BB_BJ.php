@@ -43,8 +43,9 @@ class Pengembalian_BB_BJ
     }
 
     public function getPengembalian(stdClass $params){
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT a.* FROM PENGEMBALIAN_BB_BJ a
-where a.model_type='I'
+where a.model_type='I' and a.co_id='$company'
          ORDER BY a.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -56,8 +57,9 @@ where a.model_type='I'
         return $rows;
     }
     public function getPengembalian_O(stdClass $params){
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT a.* FROM PENGEMBALIAN_BB_BJ a
-         where a.model_type='O'
+         where a.model_type='O' and a.co_id='$company'
          ORDER BY a.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
@@ -69,10 +71,11 @@ where a.model_type='I'
         return $rows;
     }
     public function getPengembalianDetail(stdClass $params){
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT a.*, b.bb_nama, c.prod_nama FROM PENGEMBALIAN_BB_BJ_DETAIL a
         left join bahanbaku b on a.bb_id=b.bb_id and a.co_id=b.co_id
         left join items c on a.prod_id=c.prod_id and a.co_id=c.co_id
-        where a.dok_no='$params->dok_no'";
+        where a.dok_no='$params->dok_no' and a.co_id='$company'";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -139,8 +142,6 @@ where a.model_type='I'
     {
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'], $data['dok_no']);
         $sql = $this -> db -> sqlBind($data, 'pengembalian_bb_bj_detail', 'U', array('dok_no' => $params-> dok_no, 'bb_id' => $params-> bb_id));
         $this -> db -> setSQL($sql);

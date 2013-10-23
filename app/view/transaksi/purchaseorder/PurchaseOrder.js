@@ -1,7 +1,7 @@
 Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
     extend: 'App.ux.RenderPanel',
     id : 'panelPO',
-    pageTitle : 'Purchase Order',
+    pageTitle : 'Order Pembelian',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -423,27 +423,7 @@ Ext.define( 'App.view.transaksi.purchaseorder.PurchaseOrder',{
                                     name : 'vend_inq_num'
                                 }
                             ]
-                        },{
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Invoice #'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    name : 'inv_num'
-                                }
-                            ]
-                        },{
-                            xtype: 'fieldcontainer',
+                        },{  xtype: 'fieldcontainer',
                             defaults: {
                                 hideLabel: true
                             },

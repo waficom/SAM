@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPengadaanBarang',
-    pageTitle: 'Pengadaan Bahan',
+    pageTitle: 'Permintaan Bahan/Barang',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -231,7 +231,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                 {text: 'bb_id',hidden:true,dataIndex: 'bb_id'},
                 {text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama' },
                 {text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
-                { text: 'Qty',sortable: true,dataIndex: 'qty' },
+                { text: 'Qty',sortable: true,dataIndex: 'qty' ,renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Keterangan',flex:1,sortable: true,dataIndex: 'keterangan'},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
@@ -490,7 +490,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     value: 'BB ID :'
                                 },
                                 {
-                                    width: 200,
+                                    width: 100,
                                     xtype: 'xtBahanBakuPopup',
                                     name: 'bb_id',
                                     allowBlank: false
@@ -510,7 +510,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     value: 'Satuan :'
                                 },
                                 {
-                                    width: 100,
+                                    width: 80,
                                     xtype: 'xtSatuanPopup',
                                     name: 'sat_id',
                                     id:'sat_id'
@@ -530,8 +530,8 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     value: 'Qty :'
                                 },
                                 {
-                                    width: 200,
-                                    xtype: 'textfield',
+                                    width: 80,
+                                    xtype: 'numberfield',
                                     name: 'qty'
                                 }
                             ]
@@ -548,7 +548,7 @@ Ext.define('App.view.transaksi.Produksi.PengadaanBarang', {
                                     value: 'Keterangan : '
                                 },
                                 {
-                                    width: 300,
+                                    width: 250,
                                     xtype: 'textfield',
                                     name: 'keterangan'
                                 }

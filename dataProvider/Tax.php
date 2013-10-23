@@ -51,7 +51,8 @@ class Tax
         {
             $orderx = 'tax_code';
         }
-        $sql = "SELECT * FROM tax_m ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM tax_m where co_id='$company' ORDER BY $orderx";
         $this -> db -> setSQL($sql);
        // print_r($sql);
         $rows = array();
@@ -110,7 +111,8 @@ class Tax
 
     public function deleteTax(stdClass $params)
     {
-        $sql = "DELETE FROM tax_m WHERE (co_id = '$params->co_id') and (tax_code = '$params->tax_code')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM tax_m WHERE (co_id = '$company') and (tax_code = '$params->tax_code')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

@@ -48,10 +48,17 @@ class Produksi_Rpt extends Reports
 
     public function SuratJalan(stdClass $params)
     {
-
-
-//        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
         $this->reportfile = '/var/www/modules/reportcenter/report/Produksi/SuratJalan.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LaporanProduksi(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/Produksi/LaporanProduksi.jasper';
 
         $url = $this->report_execute($params->params);
         return array(

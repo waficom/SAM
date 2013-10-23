@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAR_Sale_Payment',
-    pageTitle: 'AR Sale Payment',
+    pageTitle: 'AR Pembayaran',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -111,7 +111,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
             columns: [
                 {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                 {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
+               {width: 200,text: 'Giro Number.',sortable: true,dataIndex: 'giro_num'},
                 {width: 200,text: 'Doc. Inv.',sortable: true,dataIndex: 'for_inv_code'},
                 {width: 200,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
                 {width: 200,text: 'Debtor',sortable: true,dataIndex: 'cust_id'},
@@ -156,6 +156,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 me.onNewPB(form, 'AR_Sale_PaymentModel', 'Tambah Data');
                                 Ext.getCmp('post_arsp').disable(); Ext.getCmp('posted_date_ar_pay').disable();
                                 Ext.getCmp('inv_date_ar_pay').setValue(new Date());
+                                Ext.getCmp('tgl_jt_arp').setValue(new Date());
                             }
                         },
                         {
@@ -291,7 +292,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: 'inv_date'
+                                    value: 'Entry Date'
                                 },
                                 {
                                     fieldLabel : 'Entry Date',
@@ -404,7 +405,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale_Payment', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtCFPopup',
+                                    xtype: 'xtCF_IPopup',
                                     name: 'cf_code',
                                     allowBlank:false
                                 }

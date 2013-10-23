@@ -43,11 +43,12 @@ class Kemasan
 
     public function getKemasanLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT co_id,
 		                          kemasan_id,
 		                          kemasan_nama
 							FROM kemasan
-   							WHERE UPPER(kemasan_id)          LIKE UPPER('%$params->query%')
+   							WHERE co_id ='$company' and  UPPER(kemasan_id)          LIKE UPPER('%$params->query%')
    							   OR UPPER(kemasan_nama)         LIKE UPPER('$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -85,7 +86,8 @@ class Kemasan
 		{
 			$orderx = 'kemasan_nama';
 		}
-		$sql = "SELECT * FROM kemasan ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+		$sql = "SELECT * FROM kemasan where co_id='$company' ORDER BY $orderx";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

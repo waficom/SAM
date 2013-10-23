@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PurchaseOrder" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="228"/>
+	<property name="ireport.y" value="27"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Table">
 		<box>
@@ -292,7 +292,7 @@ where a.co_id=$P{co_id} and a.inv_code=$P{inv_code}]]>
 		<variableExpression><![CDATA[$F{TOTAL}.multiply(BigDecimal.valueOf(0.10))]]></variableExpression>
 	</variable>
 	<variable name="TOTAL" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{TOTAL}.subtract($V{PPN10})]]></variableExpression>
+		<variableExpression><![CDATA[$F{TOTAL}.add($V{PPN10})]]></variableExpression>
 	</variable>
 	<title>
 		<band height="69">

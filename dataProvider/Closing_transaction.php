@@ -43,8 +43,8 @@ class Closing_transaction
     }
     public function getCT_month(stdClass $params)
     {
-
-        $sql = "SELECT * FROM closing_month ORDER BY periode_month DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM closing_month where co_id='$company' ORDER BY periode_month DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

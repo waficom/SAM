@@ -136,6 +136,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</textElement>
 				<text><![CDATA[NERACA]]></text>
 			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="e2f188c1-34db-47ff-98ce-30963b3a8914" x="43" y="2" width="75" height="48"/>
+				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>

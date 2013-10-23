@@ -142,7 +142,7 @@ Ext.define('App.ux.CoaPopup',
             //Ext.getCmp('account_nama').setValue(selected.data.coa_nama);
             Ext.getCmp('account_nama_ar').setValue(selected.data.coa_nama);
             //Ext.getCmp('account_nama_gr').setValue(selected.data.coa_nama);
-            Ext.getCmp('account_nama_ap').setValue(selected.data.coa_nama);
+            Ext.ComponentQuery.query('#account_nama')[0].setValue(selected.data.coa_nama);
             Ext.getCmp('account_cashbon').setValue(selected.data.coa_nama);
             me.searchwin.close();
         },

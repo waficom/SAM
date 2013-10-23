@@ -113,8 +113,9 @@ class Companies
         }
         $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
         $this -> db -> setSQL($sql);
+        //print_r($sql);
         $this -> db -> execLog();
-        $params->old_co_id = $params->co_id;
+       // $params->old_co_id = $params->co_id;
         return $params;
     }
 

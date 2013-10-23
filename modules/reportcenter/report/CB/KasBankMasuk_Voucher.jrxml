@@ -214,7 +214,7 @@
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
 		<queryString>
-			<![CDATA[select a.*, b.coa_nama from View_Rpt_KasBankMasuk a
+			<![CDATA[select a.*, b.coa_nama from view_rpt_kasbankmasuk a
 left join coa b on a.co_id=b.co_id and a.coa=b.coa_id
 where a.co_id=$P{co_id} and a.inv_code=$P{inv_code}]]>
 		</queryString>

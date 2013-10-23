@@ -43,11 +43,19 @@
                 {
                     "len":1
                 },
-                "PermintaanProduksi":
+                "PermintaanLogistics":
                 {
                     "len":1
                 },
                 "DeliveryOrder":
+                {
+                    "len":1
+                },
+                "RekapitulasiPemesanan  ":
+                {
+                    "len":1
+                },
+                "FormulirPesanan":
                 {
                     "len":1
                 }
@@ -66,6 +74,10 @@
                 "SuratJalan":
                 {
                     "len":1
+                },
+                "LaporanProduksi":
+                {
+                    "len":1
                 }
             }
         },
@@ -80,6 +92,14 @@
                     "len":1
                 },
                 "FormPurchaseOrder":
+                {
+                    "len":1
+                },
+                "FormulirPermintaanBarang":
+                {
+                    "len":1
+                },
+                "RincianBahanBarangMasuk":
                 {
                     "len":1
                 }
@@ -136,6 +156,17 @@
                 {
                     "len":1
                 },"LapAset":
+                {
+                    "len":1
+                },"HPP":
+                {
+                    "len":1
+                },
+                "Kartu_Piutang":
+                {
+                    "len":1
+                },
+                "Kartu_Hutang":
                 {
                     "len":1
                 }

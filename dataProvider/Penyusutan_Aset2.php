@@ -39,8 +39,8 @@ class Penyusutan_Aset2
         from ap_inv_detail a
         inner join ap_inv b on a.inv_code=b.inv_code and a.co_id=b.co_id
         left join coa c on b.account=c.coa_id and a.co_id=c.co_id
-        where b.choose='A' and b.status='1' and (a.sisa_umur_aset > 0 or a.sisa_umur_aset is null)
-        and not exists(select * from ap_reclass where for_inv_code=b.inv_code and periode='$getdate' and sequence_detail_ap=a.sequence_no) and b.account='$params->account' and a.co_id='$company'
+        where a.co_id='$company' and b.choose='A' and b.status='1' and (a.sisa_umur_aset > 0 or a.sisa_umur_aset is null)
+        and not exists(select * from ap_reclass where for_inv_code=b.inv_code and periode='$getdate' and sequence_detail_ap=a.sequence_no) and b.account='$params->account'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

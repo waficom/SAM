@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPengembalian_BB_BJ',
-    pageTitle: 'Pengembalian Bahan Baku IN',
+    pageTitle: 'Pengembalian Bahan Masuk',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -225,7 +225,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                 {text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {text: 'BB ID',sortable: true,dataIndex: 'bb_id'},
                 {text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama', flex:1},
-                {text: 'Qty',sortable: true,dataIndex: 'qty'},
+                {text: 'Qty Dikembalikan',sortable: true,dataIndex: 'qty', tdCls: 'custom-column'},
                 {text: 'Sat',sortable: true,dataIndex: 'sat_id'},
                 {header : 'Hrg Rata2', dataIndex : 'hpp',renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Total', dataIndex : 'total',renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -401,30 +401,11 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtCFPopup',
+                                    xtype: 'xtCF_OPopup',
                                     name: 'cf_code',
                                     id:'cf_code_pg',
                                     allowBlank:false,
                                     disabled:true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Gudang '
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtGudangBMPopup',
-                                    name: 'gudang_id'
                                 }
                             ]
                         },
@@ -492,6 +473,9 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                         if(form.isValid()){
                             var values = form.getValues();
                             Pengembalian_BB_BJ.updatePengembalian(values,function(provider, response){
+                                if (response.type == 'exception'){
+                                    Ext.MessageBox.alert('Error', response.message);
+                                }
                                 me.win.close();
                                 me.PengembalianStore.load();
                             });
@@ -524,21 +508,98 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                         labelWidth: 100
                     },
                     defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
                     items: [
                         {
-                            xtype: 'textfield',
-                            name: 'dok_no'
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Dok No.'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'dok_no',
+                                    readOnly:true
+                                }
+                            ]
+                        }, {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'BB Id'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'bb_id',
+                                    readOnly:true
+                                }
+                            ]
                         },{
-                            xtype: 'textfield',
-                            name: 'bb_id'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'qty'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'sat_id'
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Qty '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
+                                    name: 'qty',
+                                    allowBlank:false
+                                }
+                            ]
+                        },{
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Sat Id'
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'textfield',
+                                    name: 'sat_id',
+                                    readOnly:true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -553,7 +614,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                             var values = form.getValues();
                             Pengembalian_BB_BJ.updatePengembalianDetail(values,function(provider, response){
                                 me.winform.close();
-                                me.PengembalianDetailStore.load();
+                                me.PengembalianDetailStore.load({params:{dok_no: me.currInv_Code}});
                             });
                         }
                     }
@@ -607,7 +668,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
         this.win.show();
     },
     onItemdblclick1: function(store, record, title){
-        var form = this.win.down('form');
+        var form = this.winform.down('form');
         this.setForm(form, title);
         form.getForm().loadRecord(record);
         this.action1('old');

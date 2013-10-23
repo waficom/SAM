@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BarangMasuk" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="814" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
-	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -119,7 +119,7 @@
 		</parameter>
 		<queryString>
 			<![CDATA[select A.gr_num, A.tgl, A.vend_id, A.vend_id_trans,A.po_num
-, B.bb_id, B.sat_id, C.nopol, C.qty_brutto, C.qty_netto, C.qty_pcs, C.qty_selisih, C.keterangan
+, B.bb_id, B.sat_id, C.nopol, C.qty_brutto, C.qty_netto, C.qty_pcs, coalesce(C.qty_selisih,0) as qty_selisih, C.keterangan
 , D.vend_nama as Suplier, E.vend_nama as Transporter, F.bb_nama
 from gr0 A
 left join gr10 B on A.co_id=B.co_id and A.gr_num=B.gr_num
@@ -130,7 +130,7 @@ left join bahanbaku F on B.bb_id=F.bb_id and B.co_id=F.co_id
 where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 		</queryString>
 		<field name="GR_NUM" class="java.lang.String"/>
-		<field name="TGL" class="java.sql.Date"/>
+		<field name="TGL" class="java.sql.Timestamp"/>
 		<field name="VEND_ID" class="java.lang.String"/>
 		<field name="VEND_ID_TRANS" class="java.lang.String"/>
 		<field name="PO_NUM" class="java.lang.String"/>
@@ -163,7 +163,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 		<![CDATA[]]>
 	</queryString>
 	<title>
-		<band height="118">
+		<band height="142">
 			<staticText>
 				<reportElement uuid="4baf6388-0a92-4f6b-b889-4cdec3030890" x="288" y="50" width="227" height="17"/>
 				<textElement textAlignment="Center">
@@ -172,7 +172,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 				<text><![CDATA[Barang masuk]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement uuid="d727a63d-a283-4b0b-8fe9-2db822aeb992" key="table 3" style="table 3" x="0" y="68" width="814" height="50"/>
+				<reportElement uuid="d727a63d-a283-4b0b-8fe9-2db822aeb992" key="table 3" style="table 3" x="0" y="92" width="814" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="TableData" uuid="eb6b1081-6656-452a-8eea-29ad79584ffb">
 						<datasetParameter name="fromdate">
@@ -187,9 +187,9 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="29" uuid="6667c93c-bd20-4555-a0cb-b95591d44635">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="3c6f97c5-e96f-4429-a30b-0e6572274bdc" x="0" y="0" width="27" height="11"/>
+								<reportElement uuid="3c6f97c5-e96f-4429-a30b-0e6572274bdc" x="0" y="0" width="27" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -197,7 +197,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 								<text><![CDATA[NO]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField>
 								<reportElement uuid="6beb5733-c419-4a1b-a997-dc414617a090" x="0" y="0" width="27" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -208,21 +208,46 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
+					<jr:column width="59" uuid="81b1b85e-3d05-499a-ad13-93dccd6d3baa">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter height="0" rowSpan="1"/>
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
+							<staticText>
+								<reportElement uuid="2c5b01c0-6b99-4660-aced-373fa2ea0ec0" x="0" y="0" width="59" height="16"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6" isBold="true"/>
+									<paragraph leftIndent="5" rightIndent="5"/>
+								</textElement>
+								<text><![CDATA[TGL DOK.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="0" rowSpan="1"/>
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+								<reportElement uuid="b703a3d4-eb91-4f02-ba8e-59abbc5ef158" x="0" y="0" width="59" height="11"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="6"/>
+									<paragraph leftIndent="5" rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{TGL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
 					<jr:column width="94" uuid="628d7cee-a689-4193-9ba3-d8933aebe501">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9ee049b3-fa80-4b3f-a5a4-316021f15f45" x="0" y="0" width="94" height="11"/>
+								<reportElement uuid="9ee049b3-fa80-4b3f-a5a4-316021f15f45" x="0" y="0" width="94" height="16"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[GR_NUM]]></text>
+								<text><![CDATA[NO. DOK GRN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="0" rowSpan="1"/>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="d9bf8971-1ebe-4211-9a7c-70245e56af76" x="0" y="0" width="94" height="10"/>
 								<textElement verticalAlignment="Middle">
@@ -233,40 +258,18 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="55" uuid="efea4ef4-6e99-417a-ad90-09a5115339e8">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
-							<staticText>
-								<reportElement uuid="ca8e93aa-4b61-45ed-853e-002346291b05" x="0" y="0" width="55" height="11"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6" isBold="true"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<text><![CDATA[TGL]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
-							<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-								<reportElement uuid="00c6b5ca-4870-4f16-b41f-066f04deaf74" x="0" y="0" width="55" height="10"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="6"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{TGL}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
 					<jr:column width="89" uuid="ab7ad3f9-53d7-4ac4-a3d7-ae5f748d7154">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="248a1b22-658a-4b63-b177-852afaab76de" x="0" y="0" width="89" height="11"/>
+								<reportElement uuid="248a1b22-658a-4b63-b177-852afaab76de" x="0" y="0" width="89" height="16"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[NO PO]]></text>
+								<text><![CDATA[NO. DOK.  PO]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField>
 								<reportElement uuid="186df0d5-cc4e-460a-86ec-b42ca9c76dfc" x="0" y="0" width="89" height="10"/>
 								<textElement verticalAlignment="Middle">
@@ -280,9 +283,9 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 					<jr:column width="56" uuid="05599f73-5b66-4824-ac0d-11ac5013f974">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="41d80d07-b52b-485e-b2dd-e67da494fae7" x="0" y="0" width="56" height="11"/>
+								<reportElement uuid="41d80d07-b52b-485e-b2dd-e67da494fae7" x="0" y="0" width="56" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -291,7 +294,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="0" rowSpan="1"/>
-						<jr:detailCell style="table_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="4a100784-b37f-4ea6-b7b0-e42be23de562" x="0" y="0" width="56" height="10"/>
 								<box>
@@ -306,17 +309,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="0cfbf7ef-be20-4e26-8529-09d38eb866e2">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="df877ab9-3932-4dfb-a91b-b29272bf4f3f" x="0" y="0" width="90" height="11"/>
+								<reportElement uuid="df877ab9-3932-4dfb-a91b-b29272bf4f3f" x="0" y="0" width="90" height="16"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TRANSPORTER]]></text>
+								<text><![CDATA[PENGIRIM]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="61c5ecb6-0541-4990-9cf3-aa24565f714a" x="0" y="0" width="90" height="10"/>
 								<textElement verticalAlignment="Middle">
@@ -328,17 +331,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="f68f5d2c-62d5-443f-bcf9-308273d1fc52">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="65c4a71b-cc45-4a9f-9f64-07bd7d028663" x="0" y="0" width="90" height="11"/>
+								<reportElement uuid="65c4a71b-cc45-4a9f-9f64-07bd7d028663" x="0" y="0" width="90" height="16"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[SUPLIER]]></text>
+								<text><![CDATA[PENJUAL]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="c5fd2d90-9e10-4f58-aac4-31ed0488af64" x="0" y="0" width="90" height="10"/>
 								<textElement verticalAlignment="Middle">
@@ -350,17 +353,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="feb7ca38-1ce0-49a5-8a6b-7faa6e2d8eb9">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="d4fe6612-9cf6-4c90-aafe-b6ed1b1caaa2" x="0" y="0" width="49" height="11"/>
+								<reportElement uuid="d4fe6612-9cf6-4c90-aafe-b6ed1b1caaa2" x="0" y="0" width="49" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TONASE]]></text>
+								<text><![CDATA[KWANTUM KIRIM]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 								<reportElement uuid="2581b35d-db22-464a-9d2d-d54ae4096bd0" x="0" y="0" width="49" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -372,17 +375,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="51" uuid="2734ab48-2931-46df-a332-e9e13c58c893">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="78071aab-71ac-4b1f-b662-2a8e467ec113" x="0" y="0" width="50" height="11"/>
+								<reportElement uuid="78071aab-71ac-4b1f-b662-2a8e467ec113" x="0" y="0" width="50" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[TIMBANGAN]]></text>
+								<text><![CDATA[KWT TIMBANG]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 								<reportElement uuid="ca180abf-2ca7-4d17-ae4d-c964207a199f" x="0" y="0" width="50" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -394,17 +397,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="47" uuid="3539c335-e23a-4a26-90d5-7f65bedb2ca3">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="dcfe615c-c39c-423d-8048-325149161df4" x="0" y="0" width="45" height="11"/>
+								<reportElement uuid="dcfe615c-c39c-423d-8048-325149161df4" x="0" y="0" width="45" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[SELISIH]]></text>
+								<text><![CDATA[SELISIH KWT]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 								<reportElement uuid="d4ebc897-491b-467b-8bd8-1510ab22fbf6" x="0" y="0" width="45" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -416,9 +419,9 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="50" uuid="cbec5aa0-3a1b-4f0c-bd6d-9b07dbd2d131">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="35add971-d6d1-4ce4-b9a2-532b4e207190" x="0" y="0" width="48" height="11"/>
+								<reportElement uuid="35add971-d6d1-4ce4-b9a2-532b4e207190" x="0" y="0" width="48" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -426,7 +429,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 								<text><![CDATA[SATUAN]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="46cf5b26-24e4-47f5-874d-6d5ee623db26" x="0" y="0" width="48" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -438,17 +441,17 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="45" uuid="b50ad3c9-1262-40ea-a89b-bf0bbf339a80">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="596316eb-93c8-4a9e-97b5-5a46a5337eb1" x="0" y="0" width="45" height="11"/>
+								<reportElement uuid="596316eb-93c8-4a9e-97b5-5a46a5337eb1" x="0" y="0" width="45" height="16"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[QTY_PCS]]></text>
+								<text><![CDATA[KWT/SAK]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 								<reportElement uuid="3a17a76c-bdcd-41f2-9370-7a18cb5421f4" x="0" y="0" width="45" height="10"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -460,9 +463,9 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="74" uuid="bf6b4760-b139-4240-aa34-ddb6111a4254">
-						<jr:columnHeader style="table 3_CH" height="11" rowSpan="1">
+						<jr:columnHeader style="table 3_CH" height="16" rowSpan="1">
 							<staticText>
-								<reportElement uuid="f41aec08-0738-4f82-8bee-03d5913bab35" x="0" y="0" width="73" height="11"/>
+								<reportElement uuid="f41aec08-0738-4f82-8bee-03d5913bab35" x="0" y="0" width="73" height="16"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -470,7 +473,7 @@ where A.tgl between  $P{fromdate} and $P{todate} and a.co_id=$P{co_id}]]>
 								<text><![CDATA[BAHAN BAKU]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 3_TD" height="10" rowSpan="1">
+						<jr:detailCell style="table 3_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement uuid="fa049f8a-8336-4ef2-b23e-c14c019da8eb" x="0" y="0" width="73" height="10"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -508,6 +511,34 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 			<line>
 				<reportElement uuid="6838afdc-54f5-4e32-8731-9f018d8d3ba1" x="0" y="47" width="814" height="2"/>
 			</line>
+			<staticText>
+				<reportElement uuid="b994cdbe-eaf3-4cdd-91cb-8b1251c1dde4" x="333" y="67" width="32" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Periode :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="d/M/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="1555fe70-75c8-4353-9fec-78e3e559c154" x="365" y="67" width="53" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromdate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="d/M/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a9601f95-2304-4883-a5af-4e392f02a337" x="429" y="67" width="50" height="17"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{todate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e328f2c5-6757-4458-b30d-f92ed469f123" x="418" y="67" width="12" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
 		</band>
 	</title>
 </jasperReport>

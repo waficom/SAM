@@ -120,10 +120,7 @@ Ext.define('App.ux.SalesOrderPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-
-            Ext.getCmp('prod_id').setValue(selected.data.prod_id);
-            //Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
-
+            Ext.ComponentQuery.query('#prod_id_do')[0].setValue(selected.data.prod_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

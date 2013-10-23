@@ -57,7 +57,8 @@ class Factory_location
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM pabrik_location ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM pabrik_location where co_id='$company' ORDER BY $orderx";
         $this -> db -> setSQL($sql);
         //print_r($sql);
         $rows = array();

@@ -13,7 +13,6 @@ Ext.define('App.ux.SearchAdd',
             var me = this, searching = {
                 ftype: 'searching',
                 mode: 'local',
-                menustyle: 'radio',
                 width: 200
             },
             nomor = null;
@@ -42,6 +41,7 @@ Ext.define('App.ux.SearchAdd',
             me.store = Ext.create('Ext.data.Store',
                 {
                     model : 'bsSearchModel',
+                    pageSize : 50,
                     autoLoad : false
                 });
 

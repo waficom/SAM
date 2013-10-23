@@ -221,6 +221,10 @@ requires = [
     'App.ux.KasBankKeluarPopup',
     'App.ux.KasBankMasukPopup',
     'App.ux.SO_ProduksiPopup',
+    'App.ux.PPDPopup',
+    'App.ux.PB_rptPopup',
+    'App.ux.GudangBDP_2Popup',
+    'App.ux.KapalPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -296,6 +300,8 @@ requires = [
     'App.view.master.Penyusutan_Aset',
     'App.view.master.Acc_Penyusutan_Aset',
     'App.view.master.Cashflow',
+    'App.view.master.Account',
+    'App.view.master.Kapal',
     /*
      * Load the root related panels
      */
@@ -303,6 +309,8 @@ requires = [
     'App.view.transaksi.salesorder.ReleaseOrder',
     'App.view.transaksi.purchaseorder.PurchaseOrder',
     'App.view.transaksi.goodsreceived.GoodsReceived',
+    'App.view.transaksi.goodsreceived.Jurnal_GRN',
+    'App.view.transaksi.goodsreceived.GRN_Return',
     //'App.view.transaksi.goodsissued.GoodsIssued',
     //'App.view.transaksi.workorder.WorkOrder',
     'App.view.transaksi.workorder.WorkOrder1',
@@ -339,6 +347,10 @@ requires = [
     'App.view.transaksi.Stock.Pengembalian_BB_BJ_O',
     'App.view.transaksi.Closing_Transaction.Closing_transaction',
     'App.view.transaksi.GL.Audit_Adjustment',
+    'App.view.transaksi.workorder.WO_BB_Formula',
+    'App.view.transaksi.workorder.WO_BJ_Formula',
+    'App.view.transaksi.workorder.WO_BDP_Formula',
+    'App.view.transaksi.DeliveryOrder.SP_Kirim',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',

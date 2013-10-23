@@ -44,11 +44,12 @@ class Wilayah
 
     public function getWilayahLiveSearch(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $this->db->setSQL("SELECT co_id,
 		                          wilayah_id,
 		                          wilayah_nama
 							FROM wilayah
-   							WHERE upper(wilayah_id) LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and upper(wilayah_id) LIKE UPPER('%$params->query%')
    							  OR upper(wilayah_nama) LIKE UPPER('%$params->query%') ");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -68,7 +69,8 @@ class Wilayah
 
     public function getwilayah(stdClass $params)
     {
-        $sql = "SELECT * FROM wilayah";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM wilayah where co_id='$company'";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -130,10 +132,11 @@ class Wilayah
 
     public function deletewilayah(stdClass $params)
     {
-        $sql = "DELETE FROM saleswil WHERE (co_id = '$params->co_id') and (wilayah_id = '$params->wilayah_id')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM saleswil WHERE (co_id = '$company') and (wilayah_id = '$params->wilayah_id')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM wilayah WHERE (co_id = '$params->co_id') and (wilayah_id = '$params->wilayah_id')";
+        $sql = "DELETE FROM wilayah WHERE (co_id = '$company') and (wilayah_id = '$params->wilayah_id')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -193,7 +196,8 @@ class Wilayah
 
     public function deletesaleswil(stdClass $params)
     {
-        $sql = "DELETE FROM saleswil WHERE (co_id = '$params->co_id') and (wilayah_id = '$params->wilayah_id')
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM saleswil WHERE (co_id = '$company') and (wilayah_id = '$params->wilayah_id')
                 and (sales_id = '$params->sales_id')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

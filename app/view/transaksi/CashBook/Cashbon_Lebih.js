@@ -204,6 +204,17 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Lebih', {
                     return me.currPosted == '1'? 'child-row' : '';
                 }
             },
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    if(me.currPosted !='1'){
+                        var form = this.winformCb_Lebih_Jurnal.down('form');
+                        me.onItemdblclick1(me.Cashbon_Lebih_JurnalStore, record, 'Edit CashBon Lebih Jurnal', me.winformCb_Lebih_Jurnal, form);
+
+                    }
+
+                }
+            },
             features: [{
                 ftype: 'summary'
             }, searching]

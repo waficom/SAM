@@ -26,8 +26,8 @@ class Audit_Adjustment
 
     public function getAudit_Adjustment(stdClass $params)
     {
-
-        $sql = "select * from AUDIT_ADJUSTMENT ORDER BY timeedit DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from AUDIT_ADJUSTMENT where co_id='$company' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

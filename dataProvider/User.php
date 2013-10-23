@@ -58,8 +58,9 @@ class User
 
 	public function getCurrentUserTitleLastName()
 	{
+        $company =  $_SESSION['user']['site'];
 		$id = $this->getCurrentUserId();
-		$this->db->setSQL("SELECT lname FROM users WHERE id = $id");
+		$this->db->setSQL("SELECT lname FROM users WHERE co_id='$company' and id = $id");
 		$foo = $this->db->fetchRecord();
 		$foo = $foo['LNAME'];
 		return $foo;

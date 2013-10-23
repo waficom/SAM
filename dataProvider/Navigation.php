@@ -137,6 +137,10 @@ class Navigation
                     'text' => $this->i18n['apa'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAcc_Penyusutan_Aset'
                 ),array(
                     'text' => $this->i18n['cf'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelCashflow'
+                ),array(
+                    'text' => $this->i18n['acc'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAccount'
+                ),array(
+                    'text' => $this->i18n['Kapal'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelVessel'
                 )
             )
         ));
@@ -155,14 +159,24 @@ class Navigation
                     'text' => $this->i18n['purchaseorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelPO'
                 ), array(
                     'text' => $this->i18n['goodsreceived'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGR'
-                ), /*array(
+                ),array(
+                    'text' => $this->i18n['grn_return'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGRN_Return'
+                ),array(
+                    'text' => $this->i18n['j_grn'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelJurnal_GRN'
+                ),  /*array(
                     'text' => $this->i18n['goodsissued'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelGI'
                 ), array(
                     'text' => $this->i18n['workorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO'
-                ),*/ array(
-                    'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
                 ), array(
+                    'text' => $this->i18n['workorder1'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO1'
+                ),*/ array(
                     'text' => $this->i18n['wo_noformula'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO_NoFormula'
+                ), array(
+                    'text' => $this->i18n['wo_bb'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO_BB_Formula'
+                ), array(
+                    'text' => $this->i18n['wo_bdp'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO_BDP_Formula'
+                ),array(
+                    'text' => $this->i18n['wo_bj'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelWO_BJ_Formula'
                 ),
                 array(
                     'text' => $this->i18n['apinvoicemanufaktur'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Invoice_Manufaktur'
@@ -182,6 +196,9 @@ class Navigation
                 ),array(
                     'text' => $this->i18n['appaymentalocation'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelAP_Payment_Alocation'
                 ),array(
+                    'text' => $this->i18n['spkirim'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelSPKirim'
+                ),
+                array(
                     'text' => $this->i18n['deliveryorder'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelDeliveryOrder'
                 ),array(
                     'text' => $this->i18n['jdo'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelJurnal_DeliveryOrder'

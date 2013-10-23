@@ -196,4 +196,35 @@ class Finance_Rpt extends Reports
             'url' => $url
         );
     }
+    public function HPP(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/GL/hpp_vertikal.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Kartu_Piutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AR/KartuPiutang.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function Kartu_Hutang(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/AP/KartuHutang.jasper';
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
 }
+

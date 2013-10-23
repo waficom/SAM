@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPengembalian_BB_BJ_O',
-    pageTitle: 'Pengembalian Bahan Baku Out',
+    pageTitle: 'Pengembalian Bahan Keluar',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -103,7 +103,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
             ]
 
         });
-        me.Pengembalian_JurnalStore = Ext.create('Ext.data.Store', {
+        me.Pengembalian1_JurnalStore = Ext.create('Ext.data.Store', {
             model: 'Pengembalian_JurnalModel',
             proxy: {
                 type: 'direct',
@@ -226,7 +226,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                 {text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {text: 'BB ID',sortable: true,dataIndex: 'bb_id'},
                 {text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama', flex:1},
-                {text: 'Qty',sortable: true,dataIndex: 'qty'},
+                {text: 'Qty Dikembalikan',sortable: true,dataIndex: 'qty', tdCls: 'custom-column'},
                 {text: 'Sat',sortable: true,dataIndex: 'sat_id'},
                 {header : 'Hrg Rata2', dataIndex : 'hpp',renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Total', dataIndex : 'total',renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
@@ -241,82 +241,22 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                     return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
                 }
             },
+            listeners: {
+                scope: me,
+                itemdblclick: function(view, record){
+                    if(me.currPosted =='1' || me.currPosted =='2'){
+                    }else{
+                        me.onItemdblclick1(me.PengembalianDetailStore, record, 'Edit Pengembalian Detail BB & BJ');
+                    }
+                }
+            },
             features: [{
                 ftype: 'summary'
-            }, searching]/*,
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
-                        {
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtBahanBakuPopup',
-                                    width: 150,
-                                    name : 'bb_id',
-                                    fieldLabel: 'BB',
-                                    labelWidth : 50,
-                                    id:'bb_id_pg'
-                                }]
-                        },
-                        {
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'textfield',
-                                    width: 100,
-                                    name : 'Qty',
-                                    fieldLabel: 'Qty',
-                                    id:'qty_pg',
-                                    labelWidth : 50
-                                }]
-                        },
-                        {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            id:'add_dt_pgo',
-                            scope: me,
-                            handler: function(){
-                                var form = me.winform.down('form').getForm();;
-                                form.findField('dok_no').setValue( me.currInv_Code);
-                                form.findField('bb_id').setValue(Ext.getCmp('bb_id_pg').getValue());
-                                form.findField('qty').setValue(Ext.getCmp('qty_pg').getValue());
-                                var values = form.getValues();
-                                Pengembalian_BB_BJ.addPengembalianDetail(values,function(provider, response){
-                                });
-                                me.PengembalianDetailStore.load({params:{dok_no: me.currInv_Code}})
-
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            id:'dlt_dt_pgo',
-                            handler:function() {
-                                me.deletedetail(me.PengembalianDetailStore);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.PengembalianDetailStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
-                }
-            ]*/
+            }, searching]
         });
 
         me.Pengembalian_JurnalGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Pengembalian_JurnalStore,
+            store: me.Pengembalian1_JurnalStore,
             region: 'center',
             enablePaging: true,
             columns: [
@@ -411,6 +351,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('bank_code_pgo').setDisabled(true);
+                                            Ext.getCmp('cf_code_pgo').setDisabled(true);
                                         }
                                     }
                                 },
@@ -420,6 +361,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('bank_code_pgo').setDisabled(false);
+                                            Ext.getCmp('cf_code_pgo').setDisabled(false);
                                         }
                                     }
                                 }
@@ -442,7 +384,8 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                                     xtype: 'xtBankPopup',
                                     name: 'bank_code',
                                     id:'bank_code_pgo',
-                                    disabled:true
+                                    disabled:true,
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -462,26 +405,9 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                                     width: 100,
                                     xtype: 'xtCF_OPopup',
                                     name: 'cf_code',
+                                    id:'cf_code_pgo',
+                                    disabled:true,
                                     allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Gudang '
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtGudangBMPopup',
-                                    name: 'gudang_id'
                                 }
                             ]
                         },
@@ -549,6 +475,9 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                         if(form.isValid()){
                             var values = form.getValues();
                             Pengembalian_BB_BJ.updatePengembalian(values,function(provider, response){
+                                if (response.type == 'exception'){
+                                    Ext.MessageBox.alert('Error', response.message);
+                                }
                                 me.win.close();
                                 me.PengembalianStore.load();
                             });
@@ -571,7 +500,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                 }
             }
         });
-        me.winform = Ext.create('App.ux.window.Window', {
+        /*me.winform = Ext.create('App.ux.window.Window', {
             width: 600,
             items: [
                 {
@@ -604,6 +533,143 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
                     ]
                 }
             ]
+        });*/
+        me.winform = Ext.create('App.ux.window.Window', {
+            width: 600,
+            items: [
+                {
+                    xtype: 'mitos.form',
+                    fieldDefaults: {
+                        msgTarget: 'side',
+                        labelWidth: 100
+                    },
+                    defaultType: 'textfield',
+                    //hideLabels      : true,
+                    defaults: {
+                        labelWidth: 89,
+                        anchor: '100%',
+                        layout: {
+                            type: 'hbox',
+                            defaultMargins: {
+                                top: 0,
+                                right: 5,
+                                bottom: 0,
+                                left: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Dok No.'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'textfield',
+                                    name: 'dok_no',
+                                    readOnly:true
+                                }
+                            ]
+                        }, {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'BB Id'
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'textfield',
+                                    name: 'bb_id',
+                                    readOnly:true
+                                }
+                            ]
+                        },{
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Qty '
+                                },
+                                {
+                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    hideTrigger: true,
+                                    name: 'qty',
+                                    allowBlank:false
+                                }
+                            ]
+                        },{
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Sat Id'
+                                },
+                                {
+                                    width: 80,
+                                    xtype: 'textfield',
+                                    name: 'sat_id',
+                                    readOnly:true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Save',
+                    cls: 'winSave',
+                    handler: function(){
+                        var form = me.winform.down('form').getForm();
+                        if(form.isValid()){
+                            var values = form.getValues();
+                            Pengembalian_BB_BJ.updatePengembalianDetail(values,function(provider, response){
+                                me.winform.close();
+                                me.PengembalianDetailStore.load({params:{dok_no: me.currInv_Code}});
+                            });
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: 'Cancel',
+                    scope: me,
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }
+            ],
+            listeners: {
+                scope: me,
+                close: function(){
+                    me.action1('close');
+                }
+            }
         });
         // *************************************************************************************
         // Window User Form
@@ -624,12 +690,25 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
             form.getForm().reset();
         }
     },
+    action1: function(action){
+        var win = this.winform, form = win.down('form');
+        if(action == 'close'){
+            form.getForm().reset();
+        }
+    },
     onItemdblclick: function(store, record, title){
         var form = this.win.down('form');
         this.setForm(form, title);
         form.getForm().loadRecord(record);
         this.action('old');
         this.win.show();
+    },
+    onItemdblclick1: function(store, record, title){
+        var form = this.winform.down('form');
+        this.setForm(form, title);
+        form.getForm().loadRecord(record);
+        this.action1('old');
+        this.winform.show();
     },
     onPBGridClick: function(grid, selected){
         var me = this;
@@ -642,14 +721,10 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
         if(me.currPosted==1 || me.currPosted==2){
             Ext.getCmp('dlt_pgo').disable();
-            Ext.getCmp('add_dt_pgo').disable();
-            Ext.getCmp('dlt_dt_pgo').disable();
         }else{
             Ext.getCmp('dlt_pgo').enable();
-            Ext.getCmp('add_dt_pgo').enable();
-            Ext.getCmp('dlt_dt_pgo').enable();
         }
-        me.Pengembalian_JurnalStore.load({params:{inv_code: me.currInv_Code}});
+        me.Pengembalian1_JurnalStore.load({params:{inv_code: me.currInv_Code}});
 
     },
     ShowGridPopup: function(store, title, grid){
@@ -711,7 +786,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ_O', {
     onActive: function(callback){
         var me = this;
         me.PengembalianStore.load();
-        me.Pengembalian_JurnalStore.load();
+        me.Pengembalian1_JurnalStore.load();
 
         callback(true);
     }

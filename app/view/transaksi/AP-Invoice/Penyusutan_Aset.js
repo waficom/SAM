@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPenyusutan_Aset2',
-    pageTitle: 'Penyusutan_Aset2',
+    pageTitle: 'Penyusutan Aset',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
@@ -70,7 +70,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                             items : [
                                 {
                                     xtype : 'xtCoaPopup',
-                                    id : 'account_susut',
+                                    itemId : 'account_susut',
                                     fieldLabel : 'Account',
                                     labelWidth : 50,
                                     width : 200
@@ -189,7 +189,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Penyusutan_Aset', {
                             var values = form.getValues();
                             Penyusutan_Aset2.updatePenyusutan_Aset2(values, function(provider, response){
                                 me.win.close();
-                                me.SeachingItem;
+                                this.Penyusutan_Aset2Store.load({params:{account: me.currInv_Code}});
                             })
                         }
 

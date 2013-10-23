@@ -80,7 +80,7 @@ class SalesOrder
 		// and add the where command.
 		if ($whereClause)
 			$whereClause = 'WHERE ' . $whereClause;
-
+        $company =  $_SESSION['user']['site'];
 		$sql = "SELECT so0.*, customer.cust_nama, wilayah.wilayah_nama, salesman.sales_nama
 				FROM
 					so0
@@ -89,7 +89,7 @@ class SalesOrder
 				left join salesman on so0.sales_id=salesman.sales_id and so0.co_id=salesman.co_id
 				$whereClause
 				ORDER BY
-				     timeedit DESC";
+				     so0.timeedit DESC";
 		$this->db->setSQL($sql);
 
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -400,8 +400,9 @@ class SalesOrder
      */
     public function deleteSOLocation(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $data = get_object_vars($params);
-        $sql = "DELETE FROM SO11 WHERE so_num = '". $params -> so_num . "'";
+        $sql = "DELETE FROM SO11 WHERE co_id='$company' and so_num = '". $params -> so_num . "'";
         $sql .= "AND co_id = '" . $params->co_id . "'";
         $sql .= "AND prod_id = '" . $params->prod_id . "'";
         $sql .= "AND urut = ".$params->urut;
@@ -412,8 +413,9 @@ class SalesOrder
 
     public function updateSOnetto(stdClass $params)
     {
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT sum(n_bruto) as sum_n_bruto, sum(n_disc) as sum_n_disc, sum(n_netto) as sum_n_netto from so10
-                WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
+                WHERE (co_id = '$company') and (so_num = '$params->so_num')";
         $this->db->setSQL($sql);
         $row = $this->db->fetchRecord();
         $row = array_change_key_case($row);
@@ -421,7 +423,7 @@ class SalesOrder
                 SET n_bruto = $row->sum_n_bruto,
                     n_disc = $row->sum_n_disc,
                     n_netto = $row->sum_n_netto
-                WHERE (co_id = $params->co_id) and (so_num = '$params->so_num')";
+                WHERE (co_id = '$company') and (so_num = '$params->so_num')";
         $this->db->setSQL($sql);
         $this->db->execOnly(false);
     }

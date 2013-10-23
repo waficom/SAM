@@ -429,9 +429,10 @@
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
 		<queryString>
-			<![CDATA[select a.co_id, a.inv_code, a.posted_date, a.prod_id, b.qty, b.hpp ,b.qty * b.hpp as total
+			<![CDATA[select a.co_id, a.inv_code, a.posted_date, a.prod_id, b.qty, c.debit / b.qty as hpp ,c.debit as total
 from inv_manufaktur a
 inner join wo2 b on a.so_num=b.so_num and a.wo_num=b.wo_num and a.prod_id=b.prod_id and a.co_id=b.co_id
+inner join jurnal c on a.inv_code=c.inv_code and a.co_id=c.co_id and debit is not null
 where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num}]]>
 		</queryString>
 		<field name="CO_ID" class="java.lang.String"/>
@@ -490,14 +491,14 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="65" uuid="78286584-669d-4a0b-93c3-c421b1d71763">
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
 								<reportElement uuid="e90167b5-9ade-458d-a968-b1b799a9a903" x="0" y="0" width="65" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[POSTED DATE]]></text>
+								<text><![CDATA[TGL DOK.]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
@@ -512,21 +513,21 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="119" uuid="111dc225-14b5-44e4-a6ad-b8911fdf020b">
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
 								<reportElement uuid="839801a3-7288-4153-843f-b271b9394d95" x="0" y="0" width="119" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[DOK WO]]></text>
+								<text><![CDATA[NO.DOKUMEN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
 							<staticText>
 								<reportElement uuid="70f95cbd-dc56-44ab-b64a-c28553812447" x="0" y="0" width="119" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[Total]]></text>
@@ -546,14 +547,14 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 					<jr:column width="90" uuid="fcc76ca3-8141-4a2e-b1c6-81a12c3415de">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9949e16e-8ce8-496d-952b-b127f2374647" x="0" y="0" width="90" height="14"/>
+								<reportElement uuid="9949e16e-8ce8-496d-952b-b127f2374647" x="0" y="0" width="90" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[PRODUK]]></text>
+								<text><![CDATA[KODE PRODUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1"/>
@@ -569,11 +570,11 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="55" uuid="2dbbf341-1246-4f5c-ad08-f394bc453f72">
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="52" height="13"/>
+								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="55" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[QTY]]></text>
@@ -583,7 +584,7 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 								<reportElement uuid="66314dbb-a122-48ee-8eaa-45d67018f005" x="0" y="0" width="55" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{totalqty}]]></textFieldExpression>
@@ -591,7 +592,7 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						</jr:columnFooter>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="52" height="12"/>
+								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="55" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -601,14 +602,14 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="152ae2e5-c621-4d4d-ac1a-d9d362f65057">
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
 								<reportElement uuid="a1baa054-a924-402b-9353-b4eae07cdc16" x="0" y="0" width="69" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HPP]]></text>
+								<text><![CDATA[HARGA RATA2]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1"/>
@@ -624,11 +625,11 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="9b9dd619-2274-41c6-a3e5-3de87e7480ac">
-						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
+						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
 								<reportElement uuid="654cb2ef-2777-40e5-a4fc-20b484bef18b" x="0" y="0" width="90" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[TOTAL]]></text>
@@ -638,7 +639,7 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 								<reportElement uuid="fc2915cd-5f3b-4847-91ca-6190ccc39e43" x="0" y="0" width="90" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{total1}]]></textFieldExpression>

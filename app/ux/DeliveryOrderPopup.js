@@ -26,7 +26,10 @@ Ext.define('App.ux.DOPopup',
                         {name: 'prod_id',type: 'string'},
                         {name: 'darigudang',type: 'string'},
                         {name: 'route',type: 'string'},
-                        {name: 'deliverydate',type: 'date'}
+                        {name: 'deliverydate',type: 'date'},
+                        {name: 'vessel_id',type: 'string'},
+                        {name: 'kategory_kirim',type: 'string'},
+                        {name: 'cust_id',type: 'string'}
                     ],
                     proxy :
                     {
@@ -56,7 +59,10 @@ Ext.define('App.ux.DOPopup',
                     {text: 'So_num', sortable: false, dataIndex: 'so_num'},
                     {text: 'Produk', sortable: false, dataIndex: 'prod_id'},
                     {text: 'Gudang', sortable: false, dataIndex: 'darigudang'},
+                    {text: 'Kategory_kirim', sortable: false, dataIndex: 'kategory_kirim'},
+                    {text: 'cust_id', sortable: false, dataIndex: 'cust_id', hidden:true},
                     {text: 'Route', width:100, sortable: false,flex: 1, dataIndex: 'route'},
+                    {text: 'Kapal', width:100, sortable: false,flex: 1, dataIndex: 'vessel_id', hidden:true},
                     {text: 'Delivery Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
                 height: 200,
@@ -122,8 +128,18 @@ Ext.define('App.ux.DOPopup',
             var me = this;
             me.onGridClick(grid, selected);
             Ext.getCmp('do_num_ar').setValue(selected.data.do_num);
-            Ext.getCmp('so_num_do').setValue(selected.data.so_num);
-            Ext.getCmp('prod_id').setValue(selected.data.prod_id);
+            Ext.ComponentQuery.query('#so_num')[0].setValue(selected.data.so_num);
+            Ext.ComponentQuery.query('#prod_id_do')[0].setValue(selected.data.prod_id);
+            Ext.ComponentQuery.query('#gudang_do')[0].setValue(selected.data.darigudang);
+            Ext.ComponentQuery.query('#route_code')[0].setValue(selected.data.route);
+            Ext.ComponentQuery.query('#vessel_id')[0].setValue(selected.data.vessel_id);
+            if(selected.data.cust_id==''){
+                Ext.ComponentQuery.query('#kategory_c')[0].setValue(selected.data.kategory_kirim);
+            }else{
+                Ext.ComponentQuery.query('#kategory_o')[0].setValue(selected.data.kategory_kirim);
+            }
+            Ext.ComponentQuery.query('#cust_id_do')[0].setValue(selected.data.cust_id);
+
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

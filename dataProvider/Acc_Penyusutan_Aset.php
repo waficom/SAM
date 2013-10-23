@@ -39,6 +39,7 @@ class Acc_Penyusutan_Aset
         left join coa B on A.co_id=B.co_id and A.account_master=B.coa_id
         left join coa C on A.co_id=C.co_id and A.account_master=C.coa_id
         left join coa D on A.co_id=D.co_id and A.account_master=D.coa_id
+        where a.co_id = '$company'
         ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

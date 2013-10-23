@@ -2,7 +2,7 @@
 Ext.define('App.view.transaksi.Closing_Transaction.Closing_transaction', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCT',
-    pageTitle: 'Closing Transactions',
+    pageTitle: 'Tutup Pembukuan',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

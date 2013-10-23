@@ -43,11 +43,12 @@ class Items
 
     public function getItemsLiveSearch(stdClass $params)
 	{
-		$this->db->setSQL("SELECT co_id,
+        $company =  $_SESSION['user']['site'];
+        $this->db->setSQL("SELECT co_id,
 		                          prod_id, 
 		                          prod_nama
 							FROM items
-   							WHERE UPPER(prod_id)   LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(prod_id)   LIKE UPPER('%$params->query%')
    							   OR UPPER(prod_nama) LIKE UPPER('%$params->query%') ");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -67,7 +68,7 @@ class Items
 	
 	public function getitems(stdClass $params)
 	{
-
+        $company =  $_SESSION['user']['site'];
 //		$sql = "SELECT * FROM items WHERE $wherex ORDER BY $orderx LIMIT $params->start,$params->limit";
 		$sql = "SELECT i.*, j.jenis_nama, k.kemasan_nama, s.satuan_nama, sp.spesifikasi_nama, b.bentuk_nama 
 		        FROM items i
@@ -75,7 +76,8 @@ class Items
 		        LEFT JOIN kemasan  k ON k.kemasan_id = i.kemasan_id and k.co_id = i.co_id
 		        LEFT JOIN satuan s ON s.satuan_id = i.satuan_id and s.co_id = i.co_id
 		        LEFT JOIN spesifikasi sp ON sp.spesifikasi_id = i.spesifikasi_id and sp.co_id = i.co_id
-		        LEFT JOIN bentuk b ON b.bentuk_id = i.bentuk_id and b.co_id = i.co_id";
+		        LEFT JOIN bentuk b ON b.bentuk_id = i.bentuk_id and b.co_id = i.co_id
+		        where i.co_id='$company' ";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -114,7 +116,8 @@ class Items
 	 */
 	public function updateitems(stdClass $params)
 	{
-		$data       = get_object_vars($params);
+        $company =  $_SESSION['user']['site'];
+        $data       = get_object_vars($params);
 		unset($data['id'], $data['prod_id'], $data['old_prod_id']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
@@ -127,10 +130,11 @@ class Items
 
 	public function deleteitems(stdClass $params)
 	{
-        $sql = "DELETE FROM price WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM price WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id', co_id='$company')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-		$sql = "DELETE FROM items WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id')";
+		$sql = "DELETE FROM items WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id', co_id='$company')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;
@@ -138,10 +142,11 @@ class Items
 	
 	public function getprice(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT p.*
                          FROM price p
                     LEFT JOIN items i ON i.prod_id = p.prod_id and i.co_id = p.co_id
-                    WHERE p.prod_id = '$params->prod_id'");
+                    WHERE p.co_id='$company' and p.prod_id = '$params->prod_id'");
 
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

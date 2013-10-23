@@ -54,6 +54,7 @@ class PurchaseOrder
     public function getFilterPOData(stdClass $params)
     {
         // Declare all the variables that we are going to use.
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT po0.*, vendor.vend_nama, C.netto_total, tax_m.description as tax_nama
 				FROM
 					po0
@@ -62,7 +63,7 @@ class PurchaseOrder
 				ON vendor.vend_id = po0.vend_id
 				left join(select co_id, po_num, sum(n_netto) as netto_total from po1 group by co_id, po_num) C on po0.po_num=C.po_num and po0.co_id=C.co_id
 				left join tax_m on po0.tax_code=tax_m.tax_code and po0.co_id=tax_m.co_id
-				where po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
+				where po0.co_id='$company' and po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
 				ORDER BY
 				     po0.timeedit DESC";
         $this->db->setSQL($sql);
@@ -150,10 +151,11 @@ class PurchaseOrder
      */
     public function deletePO(stdClass $params)
     {
-        $sql = "DELETE FROM po1 WHERE (co_id = '$params->co_id') and (po_num = '$params->po_num')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM po1 WHERE (co_id = '$company') and (po_num = '$params->po_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM po0 WHERE (co_id = '$params->co_id') and (po_num = '$params->po_num')";
+        $sql = "DELETE FROM po0 WHERE (co_id = '$company') and (po_num = '$params->po_num')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -167,7 +169,7 @@ class PurchaseOrder
      */
     public function getPOItems(stdClass $params)
     {
-
+        $company =  $_SESSION['user']['site'];
         $sql = "select
                     po1.co_id,
                     po1.po_num,
@@ -186,7 +188,7 @@ class PurchaseOrder
                 from po1
                    left outer join bahanbaku on (po1.bb_id = bahanbaku.bb_id) and (po1.co_id = bahanbaku.co_id)
                    left outer join satuan on (po1.co_id = satuan.co_id) and (po1.sat_id = satuan.satuan_id)
-                  WHERE po_num = '" . $params->po_num ."'
+                  WHERE po1.co_id='$company' and po1.po_num = '" . $params->po_num ."'
 				";
         $this->db->setSQL($sql);
        // print_r($sql);
@@ -251,7 +253,8 @@ class PurchaseOrder
      */
     public function deletePOItems(stdClass $params)
     {
-        $sql = "DELETE FROM po1 WHERE (po_num = '$params->po_num') and (bb_id = '$params->bb_id')  ";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM po1 WHERE (po_num = '$params->po_num') and (bb_id = '$params->bb_id')  and co_id='$company' ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

@@ -116,8 +116,6 @@ Ext.define('App.ux.RoutePopup',
         },
         ondblclick: function(grid, selected){
             var me = this;
-            me.onGridClick(grid, selected);
-            Ext.getCmp('route_nama_do').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

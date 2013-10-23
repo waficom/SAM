@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.workorder.WorkOrder1', {
     extend: 'App.ux.RenderPanel',
     id: 'panelWO1',
-    pageTitle: 'Produksi',
+    pageTitle: 'Produksi Formula ',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -1385,6 +1385,9 @@ Ext.define('App.view.transaksi.workorder.WorkOrder1', {
         }else{
             Ext.getCmp('addbbproses').enable();
         }
+
+        me.Wo1DBahanBakuStore.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
+        me.Wo1DBahanJadiStore.load({params:{so_num: me.currSo_num ,no_ppd: me.currProduksi, prod_id: me.currProd_id}});
 
     },
     onItemdblclick1: function(store, record, title, window, form){

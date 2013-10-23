@@ -45,8 +45,9 @@ class Vendor
 
 	public function getvendor(stdClass $params)
 	{
-
-		$sql = "SELECT A.*, case vend_type when 'S' then 'Suplier' else 'Transporter' end as vend_type_desc FROM vendor A ORDER BY A.vend_id";
+        $company =  $_SESSION['user']['site'];
+		$sql = "SELECT A.*, case vend_type when 'S' then 'Suplier' else 'Transporter' end as vend_type_desc
+		 FROM vendor A where a.co_id='$company' ORDER BY A.vend_id";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -98,7 +99,8 @@ class Vendor
 
 	public function deletevendor(stdClass $params)
 	{
-		$sql = "DELETE FROM vendor WHERE (co_id = '$params->co_id') and (vend_id = '$params->vend_id')";
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM vendor WHERE (co_id = '$company') and (vend_id = '$params->vend_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

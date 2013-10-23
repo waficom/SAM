@@ -48,11 +48,12 @@ class Bentuk
 
     public function getBentukLiveSearch(stdClass $params)
 	{
-		$this->db->setSQL("SELECT co_id,
+        $company =  $_SESSION['user']['site'];
+        $this->db->setSQL("SELECT co_id,
 		                          bentuk_id, 
 		                          bentuk_nama
 							FROM bentuk
-   							WHERE UPPER(bentuk_id)  LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(bentuk_id)  LIKE UPPER('%$params->query%')
    							  OR UPPER(bentuk_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)

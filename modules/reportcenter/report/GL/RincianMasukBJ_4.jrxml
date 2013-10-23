@@ -491,10 +491,10 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<staticText>
 								<reportElement uuid="e90167b5-9ade-458d-a968-b1b799a9a903" x="0" y="0" width="65" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[POSTED DATE]]></text>
+								<text><![CDATA[TLG DOK.]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
@@ -513,17 +513,17 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<staticText>
 								<reportElement uuid="839801a3-7288-4153-843f-b271b9394d95" x="0" y="0" width="119" height="13"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[DOK DO RETURN]]></text>
+								<text><![CDATA[NO. DOK. RETUR DO]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1">
 							<staticText>
 								<reportElement uuid="70f95cbd-dc56-44ab-b64a-c28553812447" x="0" y="0" width="119" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[Total]]></text>
@@ -547,10 +547,10 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<staticText>
 								<reportElement uuid="9949e16e-8ce8-496d-952b-b127f2374647" x="0" y="0" width="90" height="14"/>
 								<textElement verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[PRODUK]]></text>
+								<text><![CDATA[KODE PRODUK]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1"/>
@@ -568,9 +568,9 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 					<jr:column width="55" uuid="2dbbf341-1246-4f5c-ad08-f394bc453f72">
 						<jr:columnHeader style="table 16_CH" height="14" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="52" height="13"/>
+								<reportElement uuid="2d243b03-5271-4c48-822a-eed806d42886" x="0" y="0" width="55" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[QTY]]></text>
@@ -580,7 +580,7 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 								<reportElement uuid="66314dbb-a122-48ee-8eaa-45d67018f005" x="0" y="0" width="55" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{totalqty}]]></textFieldExpression>
@@ -588,7 +588,7 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 						</jr:columnFooter>
 						<jr:detailCell style="table 16_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="52" height="12"/>
+								<reportElement uuid="cea81dc2-6b37-45e1-985c-299ccead2741" x="0" y="0" width="55" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -602,10 +602,10 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<staticText>
 								<reportElement uuid="a1baa054-a924-402b-9353-b4eae07cdc16" x="0" y="0" width="69" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HPP]]></text>
+								<text><![CDATA[HARGA RATA2]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="14" rowSpan="1"/>
@@ -625,7 +625,7 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<staticText>
 								<reportElement uuid="654cb2ef-2777-40e5-a4fc-20b484bef18b" x="0" y="0" width="90" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<text><![CDATA[TOTAL]]></text>
@@ -635,7 +635,7 @@ where a.status=1 and a.do_type='R' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 								<reportElement uuid="fc2915cd-5f3b-4847-91ca-6190ccc39e43" x="0" y="0" width="90" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
+									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{total1}]]></textFieldExpression>

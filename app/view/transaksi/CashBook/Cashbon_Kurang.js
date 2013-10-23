@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbon_Kurang',
-    pageTitle: 'Penyelesaian CashBon',
+    pageTitle: 'Penyelesaian Kas Bon',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -386,10 +386,11 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'xtTaxMPopup',
+                                    xtype: 'textfield',//'xtTaxMPopup',
                                     name: 'tax_code',
                                     id:'tax_cd_ck',
-                                    allowBlank: false
+                                    allowBlank: false,
+                                    readOnly:true
                                 },{
                                     width: 200,
                                     xtype: 'displayfield',

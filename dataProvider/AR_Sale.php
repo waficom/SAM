@@ -56,7 +56,8 @@ class AR_Sale
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from VIEW_AR_SALE ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from VIEW_AR_SALE where co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -79,7 +80,8 @@ class AR_Sale
         {
             $orderx = 'timeedit';
         }
-        $sql = "SELECT * FROM ar_sale_detail where inv_code ='$params->inv_code' ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM ar_sale_detail where co_id='$company' and inv_code ='$params->inv_code' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -105,6 +107,7 @@ class AR_Sale
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         foreach ($data AS $key => $val)
@@ -152,6 +155,7 @@ class AR_Sale
     {
         $data = get_object_vars($params);
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code'],$data['nilaidasarx'],$data['ppn_%'],$data['ppn_nilaix'],$data['pph_%'],$data['pph_nilaix']

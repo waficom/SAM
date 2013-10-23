@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AR.AR_Payment_Alocation', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAR_Payment_Alocation',
-    pageTitle: 'AR Sale Payment Alocation',
+    pageTitle: 'AR Alokasi',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){

@@ -15,8 +15,15 @@ Ext.define( 'App.model.transaksi.goodsreceived.GRItems',
             { name : 'qty_selisih', type : 'float'},
             { name : 'keterangan', type : 'string'},
             { name : 'qty_po', type : 'string'},
-            { name : 'old_bb_id', type : 'string'}
-        ],
+            { name : 'old_bb_id', type : 'string'},
+            { name : 'nopol', type : 'string'},
+            { name : 'do_num', type : 'string'},
+            { name : 'qty_bruto', type : 'string'},
+            { name : 'qty_netto', type : 'string'},
+            { name : 'qty_pcs', type : 'string'},
+            { name : 'qty_selisih', type : 'string'},
+            { name : 'qtygrn', type : 'string'}
+            ],
         proxy :
         {
             type : 'direct',

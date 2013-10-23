@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
     extend: 'App.ux.RenderPanel',
     id: 'panelReclass',
-    pageTitle: 'AP Reclass',
+    pageTitle: 'Jurnal Reclass Biaya',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -133,16 +133,16 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Doc. Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
-                {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                {header : 'Doc. Number', dataIndex : 'inv_code'},
+                {header : 'Creditor', dataIndex : 'vend_id'},
+                {header : 'Coa', dataIndex : 'coa'},
+                {header : 'Description', dataIndex : 'coa_nama',flex:1, summaryRenderer: function(){
                     return '<b>Total</b>';
                 }},
-                {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Debit', dataIndex : 'debit',renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Credit', dataIndex : 'credit',renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                {header : 'Remarks', dataIndex : 'remaks',flex:1},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {

@@ -44,11 +44,12 @@ class Customer
 
     public function getCustLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
         $sql = "SELECT co_id,
                       cust_id,
                       cust_nama
                 FROM customer
-                WHERE UPPER(cust_id) LIKE UPPER('%$params->query%')
+                WHERE co_id='$company' and UPPER(cust_id) LIKE UPPER('%$params->query%')
                    OR UPPER(cust_nama) LIKE UPPER('%$params->query%')";
 		$this->db->setSQL($sql);
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -69,7 +70,8 @@ class Customer
 
 	public function getcustomer(stdClass $params)
 	{
-		$sql = "SELECT * FROM customer ORDER BY cust_id";
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM customer where co_id='$company' ORDER BY cust_id";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

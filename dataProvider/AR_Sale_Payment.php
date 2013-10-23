@@ -52,12 +52,13 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
+        $company =  $_SESSION['user']['site'];
         $sql = "select A.*, B.cust_nama, C.description as bank_nama, D.posted_date as posted_date_ar, D.piutangdebtor
         from ar_sale_payment A
         left join customer B on A.cust_id=B.cust_id and A.co_id=B.co_id
         left join bank_m C on A.bank_code=C.bank_code and A.co_id=C.co_id
         left join ar_sale D on A.for_inv_code=D.inv_code and A.co_id=D.co_id
-         where A.inv_type <>'A' ORDER BY $orderx DESC";
+         where a.co_id='$company' and A.inv_type <>'A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -79,12 +80,13 @@ class AR_Sale_Payment
         {
             $orderx = 'timeedit';
         }
+        $company =  $_SESSION['user']['site'];
         $sql = "select A.*, B.piutangdebtor, C.nilaidasar as uangmuka,
-B.posted_date as ar_inv_date, C.posted_date as ar_date_um
+          B.posted_date as ar_inv_date, C.posted_date as ar_date_um
         from ar_sale_payment A
          left join ar_sale B on A.for_inv_code=B.inv_code and A.co_id=B.co_id
          left join ar_sale_payment C on A.inv_um=C.inv_code and A.co_id=C.co_id
-        where A.inv_type ='A' ORDER BY $orderx DESC";
+        where a.co_id='$company' and A.inv_type ='A' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

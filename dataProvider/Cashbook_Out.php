@@ -52,7 +52,8 @@ class Cashbook_Out
         {
             $orderx = 'timeedit';
         }
-        $sql = "select * from cashbook_in where co_id='$params->co_id' and cb_type='O' ORDER BY $orderx DESC";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select * from cashbook_in where co_id='$company' and cb_type='O' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

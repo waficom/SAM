@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.AR.AR_Sale', {
     extend: 'App.ux.RenderPanel',
     id: 'panelAR_Sale',
-    pageTitle: 'AR Sale',
+    pageTitle: 'AR Penjualan',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -47,6 +47,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'cust_nama',type: 'string'},
                 {name: 'posted_date',type: 'date'},
+                {name: 'tgl_jt',type: 'date'},
                 {name: 'piutangdebtor2',type: 'float'}
             ]
 
@@ -157,6 +158,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             columns: [
                 {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
                 {text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Due Date',sortable: true,dataIndex: 'tgl_jt', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                 {text: 'DO Num',sortable: true,dataIndex: 'do_num'},
                 {text: 'Doc. AR',sortable: true,dataIndex: 'for_inv_code'},
                 {text: 'Acc. Number',sortable: true,dataIndex: 'account'},
@@ -211,6 +213,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 var form = me.win.down('form');
                                 me.onNewPB(form, 'AR_SaleModel', 'Tambah Data');
                                 Ext.getCmp('inv_date_ar').setValue(new Date());
+                                Ext.getCmp('tgl_jt_ar').setValue(new Date());
                                 Ext.getCmp('at_Y_ar').setDisabled(false);
 
                             }
@@ -261,13 +264,13 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {width: 200,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code', hidden: true},
-                {width: 200,text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
-                {width: 200,text: 'Description',sortable: true,dataIndex: 'description'},
-                {width: 200,text: 'Qty',sortable: true,dataIndex: 'qty'},
-                {width: 200,text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut'},
-                {width: 100,text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
-                {width: 200,text: 'Nominal',sortable: true,dataIndex: 'harga',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code', hidden: true},
+                {text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
+                {flex:1,text: 'Description',sortable: true,dataIndex: 'description'},
+                {text: 'Qty',sortable: true,dataIndex: 'qty'},
+                {text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut'},
+                {text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
+                {text: 'Nominal',sortable: true,dataIndex: 'harga',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
             ],
@@ -335,16 +338,16 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
             columns: [
                 {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
-                {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                {header : 'Doc. Number', dataIndex : 'inv_code'},
+                {header : 'Creditor', dataIndex : 'vend_id'},
+                {header : 'Coa', dataIndex : 'coa'},
+                {header : 'Description', dataIndex : 'coa_nama',flex:1, summaryRenderer: function(){
                     return '<b>Total</b>';
                 }},
                 {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                {header : 'Remarks', dataIndex : 'remaks'},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
             ],
             viewConfig: {
@@ -453,6 +456,21 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     allowBlank: false,
                                     maxValue: new Date(),
                                     id:'inv_date_ar'
+                                },
+                                {
+                                    width: 60,
+                                    xtype: 'displayfield',
+                                    value: 'Due Date'
+                                },
+                                {
+                                    xtype : 'datefield',
+                                    width : 100,
+                                    name : 'tgl_jt',
+                                    format : 'd-m-Y',
+                                    submitFormat : 'Y-m-d H:i:s',
+                                    id:'tgl_jt_ar',
+                                    value: new Date(),
+                                    allowBlank:false
                                 }
                             ]
                         },
@@ -478,9 +496,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
 
                                 },
                                 {
-                                    width: 80,
+                                    width: 60,
                                     xtype: 'displayfield',
-                                    value: 'Doc. AR : '
+                                    value: 'Doc. AR :'
                                 },
                                 {
                                     width: 180,
@@ -507,7 +525,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     boxLabel: "Y",
                                     inputValue:'Y',
-                                    checked: true,
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('account_ar').setDisabled(false);
@@ -517,6 +534,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 {
                                     boxLabel: "N",
                                     inputValue:'N',
+                                    checked: true,
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('account_ar').setDisabled(true);
@@ -528,7 +546,8 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'xtCoaPopup',
                                     name: 'account',
                                     allowBlank: false,
-                                    id:'account_ar'
+                                    id:'account_ar',
+                                    disabled:true
                                 },
                                 {
                                     width: 200,
@@ -795,7 +814,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     name: 'harga',
                                     xtype: 'mitos.currency',
                                     hideTrigger: true,
-                                    readOnly:true,
                                     id:'hrg_ar_sale'
                                 }
                             ]

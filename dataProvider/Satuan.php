@@ -43,11 +43,12 @@ class Satuan
 
     public function getSatuanLiveSearch(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$this->db->setSQL("SELECT co_id,
 		                          satuan_id, 
 		                          satuan_nama
 							FROM satuan
-   							WHERE UPPER(satuan_id) LIKE UPPER('%$params->query%')
+   							WHERE co_id='$company' and UPPER(satuan_id) LIKE UPPER('%$params->query%')
    							   OR UPPER(satuan_nama) LIKE UPPER('%$params->query%')");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
         foreach ($records as $key => $value)
@@ -85,7 +86,8 @@ class Satuan
 		{
 			$orderx = 'satuan_nama';
 		}
-		$sql = "SELECT * FROM satuan ORDER BY $orderx";
+        $company =  $_SESSION['user']['site'];
+		$sql = "SELECT * FROM satuan where co_id='$company' ORDER BY $orderx";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -137,7 +139,8 @@ class Satuan
 
 	public function deletesatuan(stdClass $params)
 	{
-		$sql = "DELETE FROM satuan WHERE (co_id = '$params->co_id') and (satuan_id = '$params->satuan_id')";
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM satuan WHERE (co_id = '$company') and (satuan_id = '$params->satuan_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

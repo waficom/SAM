@@ -96,12 +96,12 @@ class SalesOrder_Rpt extends Reports
             'url' => $url
         );
     }
-    public function PermintaanProduksi(stdClass $params)
+    public function PermintaanLogistics(stdClass $params)
     {
 
 
 //        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
-        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/PermintaanProduksi.jasper';
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/PermintaanLogistics.jasper';
 
         $url = $this->report_execute($params->params);
         return array(
@@ -115,6 +115,28 @@ class SalesOrder_Rpt extends Reports
 
 //        $this->reportfile = $_SESSION['root'] . '/modules/reportcenter/report/marketing/bs.jasper';
         $this->reportfile = '/var/www/modules/reportcenter/report/marketing/DeliveryOrder.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function RekapitulasiPemesanan(stdClass $params)
+{
+
+    $this->reportfile = '/var/www/modules/reportcenter/report/marketing/RekapitulasiPemesanan.jasper';
+
+    $url = $this->report_execute($params->params);
+    return array(
+        'success' => true,
+        'url' => $url
+    );
+}
+    public function FormulirPesanan(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/marketing/FormulirPesanan.jasper';
 
         $url = $this->report_execute($params->params);
         return array(
