@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NRC_SR2" language="groovy" pageWidth="595" pageHeight="802" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bca82307-7533-4bfe-9835-c31e9d91fcec">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prd" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.coa_id, c.coa_nama,coalesce(cr.ending_balance,0) as ending_balance,
+      coalesce(pr.ending_balance,0) as begining_balance,
+      (coalesce(cr.ending_balance,0) - coalesce(pr.ending_balance,0)) as incdec
+FROM COA c
+LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, $P{prd}) cr ON c.CO_ID = cr.CO_ID AND c.COA_ID = cr.COA_ID
+LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, (select periode from GET_PLUSMIN_PERIODE($P{prd},-1))) pr ON c.CO_ID = pr.CO_ID AND c.COA_ID = pr.COA_ID
+WHERE c.CO_ID = $P{coid} AND c.COA_PARENT is null
+  AND ((SUBSTR(c.jenis,1,1) = 'L') OR (SUBSTR(c.jenis,1,1) = 'C'))
+ORDER BY c.COA_ID]]>
+	</queryString>
+	<field name="COA_ID" class="java.lang.String"/>
+	<field name="COA_NAMA" class="java.lang.String"/>
+	<field name="ENDING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="BEGINING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="INCDEC" class="java.math.BigDecimal"/>
+	<variable name="ENDING_BALANCE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ENDING_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="BEGINING_BALANCE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{BEGINING_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="INCDEC_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{INCDEC}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+			<textField pattern="#,##0">
+				<reportElement uuid="a3765892-e2b3-42e1-b248-fa5ec9ded08c" x="268" y="0" width="113" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENDING_BALANCE} == 0 ? "-" : $F{ENDING_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1eb66197-46f8-436f-b093-7014f0aee17e" positionType="Float" x="0" y="0" width="268" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="80" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total "+ $F{COA_NAMA}.toString()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="cd63ca3e-0039-45d7-b13d-c70ca422e5ac" x="381" y="0" width="93" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BEGINING_BALANCE} == 0 ? "-" : $F{BEGINING_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="1aca4220-4222-48b0-8e6c-c8d5bb1dbafd" x="475" y="0" width="86" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INCDEC} == 0 ? "-" : $F{INCDEC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="30" splitType="Stretch">
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="3804ebbe-c3e7-4689-ace7-298ebefe4451" x="268" y="1" width="113" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ENDING_BALANCE_1} == 0 ? "-" : $V{ENDING_BALANCE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="3c0881d5-2977-42f2-9c07-4b3b62095888" x="381" y="1" width="93" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{BEGINING_BALANCE_1} == 0 ? "-" : $V{BEGINING_BALANCE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="073ca54c-eb52-44be-8474-ed518252323e" x="475" y="1" width="86" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{INCDEC_1} == 0 ? "-" : $V{INCDEC_1}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d1ecd0f0-c106-4a32-9718-42f5c0ef4004" x="286" y="21" width="275" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f82482e8-afba-4428-888b-48be2986eea5" x="80" y="1" width="188" height="19"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Hutang + Ekuitas]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="4aeed4d6-9928-4070-b737-8e04ce4dbb12" x="286" y="1" width="275" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>
