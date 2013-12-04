@@ -180,8 +180,6 @@ Ext.define('App.ux.BankPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('bank_nama').setValue(selected.data.description);
-            Ext.getCmp('bank_nama_pay').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

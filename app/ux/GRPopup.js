@@ -121,13 +121,13 @@ Ext.define('App.ux.GRPopup',
         onGridClick: function(grid, selected){
             grn_return = selected.data.gr_num;
             this.setValue(grn_return);
+
+            Ext.ComponentQuery.query('#vend_id')[0].setValue(selected.data.vend_id);
+            Ext.ComponentQuery.query('#gudang_id_ap')[0].setValue(selected.data.gudang_id);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.ComponentQuery.query('#vend_id')[0].setValue(selected.data.vend_id);
-            Ext.ComponentQuery.query('#gudang_id_ap')[0].setValue(selected.data.gudang_id);
-           // Ext.getCmp('gudang_id_ap').setValue(selected.data.gudang_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -27,7 +27,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             requires;
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>SAM Enterprise</title>
+    <title><?php print_r($_SESSION['user']['site'] . " Enterprise") ?></title>
     <link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
     <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
@@ -193,16 +193,12 @@ requires = [
     'App.ux.ARPopup',
     'App.ux.ARCancelPopup',
     'App.ux.APPayUMPopup',
-    'App.ux.APPayUMCancelPopup',
     'App.ux.APPopup',
     'App.ux.ARPayUMPopup',
-    'App.ux.ARPayUMCancelPopup',
-    'App.ux.APAlPopup',
     'App.ux.APPayPopup',
     'App.ux.APRCPopup',
     'App.ux.APMnfPopup',
     'App.ux.ARPayPopup',
-    'App.ux.ARAlPopup',
     'App.ux.TaxMPopup',
     'App.ux.TaxKPopup',
     'App.ux.CashbonOutPopup',
@@ -225,6 +221,20 @@ requires = [
     'App.ux.PB_rptPopup',
     'App.ux.GudangBDP_2Popup',
     'App.ux.KapalPopup',
+    'App.ux.SPKirimPopup',
+    'App.ux.Stock_OUTPopup',
+    'App.ux.AP_RptPopup',
+    'App.ux.SO_RptPopup',
+    'App.ux.StockOpnameBBPopup',
+    'App.ux.StockOpnameBJPopup',
+    'App.ux.AR_LPIPopup',
+    'App.ux.AR_RptPopup',
+    'App.ux.ARDeductionPopup',
+    'App.ux.CBPopup',
+    'App.ux.APPaymentCancelPopup',
+    'App.ux.ARPaymentCancelPopup',
+    'App.ux.CB_BankPopup',
+    'App.ux.Stock_CancelPopup',
 
     'App.ux.ManagedIframe',
     'App.ux.NodeDisabled',
@@ -260,6 +270,9 @@ requires = [
     'App.ux.grid.EventHistory',
     'App.ux.grid.RowFormEditing',
     'App.ux.grid.RowFormEditor',
+    'App.ux.grid.RowFormEditing2',
+    'App.ux.grid.RowFormEditor2',
+
     /*
      * Load the combo boxes spread on all the web application
      * remember this are all reusable combo boxes.
@@ -270,6 +283,8 @@ requires = [
 
      */
     'App.ux.combo.Languages',
+    'App.ux.combo.Roles',
+    'App.ux.combo.Users',
     /*
 
     'App.ux.window.Window',
@@ -302,21 +317,27 @@ requires = [
     'App.view.master.Cashflow',
     'App.view.master.Account',
     'App.view.master.Kapal',
+    'App.view.master.Risk',
+    'App.view.master.BJ_ADL',
     /*
      * Load the root related panels
      */
     'App.view.transaksi.salesorder.SalesOrder',
     'App.view.transaksi.salesorder.ReleaseOrder',
+    'App.view.transaksi.salesorder.CancelReleaseOrder',
     'App.view.transaksi.purchaseorder.PurchaseOrder',
     'App.view.transaksi.goodsreceived.GoodsReceived',
+    'App.view.transaksi.goodsreceived.GRN_DAL',
     'App.view.transaksi.goodsreceived.Jurnal_GRN',
     'App.view.transaksi.goodsreceived.GRN_Return',
     //'App.view.transaksi.goodsissued.GoodsIssued',
     //'App.view.transaksi.workorder.WorkOrder',
     'App.view.transaksi.workorder.WorkOrder1',
-    'App.view.transaksi.workorder.WO_NoFormula',
+    'App.view.transaksi.workorder.WO_ADL',
+    'App.view.transaksi.workorder.WO_SAM',
     'App.view.transaksi.workorder.StockPeriode',
     'App.view.transaksi.Produksi.Produksi',
+    'App.view.transaksi.Produksi.CancelPerintahProduksi',
     'App.view.transaksi.DeliveryOrder.DeliveryOrder',
     'App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder',
     'App.view.transaksi.OrderMonitoring.OrderMonitoring',
@@ -337,6 +358,7 @@ requires = [
     'App.view.transaksi.CashBook.Cashbon_Kurang',
     'App.view.transaksi.CashBook.Cashbook_Bank_In',
     'App.view.transaksi.CashBook.Cashbook_Bank_Out',
+    'App.view.transaksi.CashBook.Refund',
     'App.view.transaksi.GL.Voucher',
     'App.view.transaksi.cancel-return.CancelReturn',
     'App.view.transaksi.AP-Invoice.Reclass',
@@ -347,10 +369,15 @@ requires = [
     'App.view.transaksi.Stock.Pengembalian_BB_BJ_O',
     'App.view.transaksi.Closing_Transaction.Closing_transaction',
     'App.view.transaksi.GL.Audit_Adjustment',
+    'App.view.transaksi.workorder.WO_BB_Mix',
     'App.view.transaksi.workorder.WO_BB_Formula',
     'App.view.transaksi.workorder.WO_BJ_Formula',
     'App.view.transaksi.workorder.WO_BDP_Formula',
     'App.view.transaksi.DeliveryOrder.SP_Kirim',
+    'App.view.transaksi.analisa.Formulir',
+    'App.view.transaksi.Stock.StockOpname',
+    'App.view.transaksi.AR.AR_LatePaymentInterest',
+    'App.view.transaksi.AR.AR_Deduction',
   //  'App.view.transaksi.Report.Report',
 
     //'App.view.calendar.ExtensibleAll',
@@ -424,6 +451,7 @@ requires = [
 //				'App.view.administration.Roles',
 //				'App.view.administration.ExternalDataLoads',
     'App.view.administration.Users',
+    'App.view.administration.Role',
 
     /*
      * Load the miscellaneous related panels

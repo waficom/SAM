@@ -123,6 +123,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.administration.Users'));
         me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
         me.MainPanel.add(Ext.create('App.view.administration.Modules'));
+        me.MainPanel.add(Ext.create('App.view.administration.Role'));
 
         me.MainPanel.add(Ext.create('App.view.master.Companies'));
         me.MainPanel.add(Ext.create('App.view.master.Bentuk'));
@@ -146,19 +147,25 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.master.Cashflow'));
         me.MainPanel.add(Ext.create('App.view.master.Account'));
         me.MainPanel.add(Ext.create('App.view.master.Kapal'));
+        me.MainPanel.add(Ext.create('App.view.master.Risk'));
+        me.MainPanel.add(Ext.create('App.view.master.BJ_ADL'));
 
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.SalesOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.ReleaseOrder'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.salesorder.CancelReleaseOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.purchaseorder.PurchaseOrder'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GRN_DAL'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GoodsReceived'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.GRN_Return'));
         me.MainPanel.add(Ext.create('App.view.transaksi.goodsreceived.Jurnal_GRN'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.goodsissued.GoodsIssued'));
        // me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WorkOrder1'));
-        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_NoFormula'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_ADL'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_SAM'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.StockPeriode'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.Produksi'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Produksi.CancelPerintahProduksi'));
         me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.DeliveryOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder'));
         me.MainPanel.add(Ext.create('App.view.transaksi.OrderMonitoring.OrderMonitoring'));
@@ -180,6 +187,7 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbon_Kurang'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_In'));
         me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Cashbook_Bank_Out'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.CashBook.Refund'));
         me.MainPanel.add(Ext.create('App.view.transaksi.GL.Voucher'));
         me.MainPanel.add(Ext.create('App.view.transaksi.GL.Audit_Adjustment'));
         me.MainPanel.add(Ext.create('App.view.transaksi.AP-Invoice.AP_Reclass'));
@@ -191,10 +199,15 @@ Ext.define('App.view.Viewport', {
         me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Stock.Pengembalian_BB_BJ_O'));
         me.MainPanel.add(Ext.create('App.view.transaksi.Closing_Transaction.Closing_transaction'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BB_Mix'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BB_Formula'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BJ_Formula'));
         me.MainPanel.add(Ext.create('App.view.transaksi.workorder.WO_BDP_Formula'));
         me.MainPanel.add(Ext.create('App.view.transaksi.DeliveryOrder.SP_Kirim'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.analisa.Formulir'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.Stock.StockOpname'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_LatePaymentInterest'));
+        me.MainPanel.add(Ext.create('App.view.transaksi.AR.AR_Deduction'));
 
 
 

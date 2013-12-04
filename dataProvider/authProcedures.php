@@ -129,8 +129,10 @@ class authProcedures
         		        WHERE usrname   = '$params->authUser'
         		          AND authorized = 1");
 		$user = $db->fetchRecord();
-//		if($params->authPass != $aes->decrypt($user['PASSWD'])){
-		if($params->authPass != 'admin'){
+        $user = array_change_key_case($user);
+//		if($params->authPass != $user['passwd']){
+		if($params->authPass != $aes->decrypt($user['passwd'])){
+//		if($params->authPass != 'admin'){
 			return array(
 				'success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.'
 			);
@@ -138,10 +140,10 @@ class authProcedures
 			//-------------------------------------------
 			// Change some User related variables and go
 			//-------------------------------------------
-			$_SESSION['user']['name']  = $user['FNAME'] . " " . $user['LNAME'] ;
+			$_SESSION['user']['name']  = $user['fname'] . " " . $user['lname'] ;
             $_SESSION['user']['username'] = $params->authUser;
-			$_SESSION['user']['id']    = $user['ID'];
-			$_SESSION['user']['email'] = $user['EMAIL'];
+			$_SESSION['user']['id']    = $user['id'];
+			$_SESSION['user']['email'] = $user['email'];
 			$_SESSION['user']['site']  = $params->site;
 			$_SESSION['user']['auth']  = true;
 			//-------------------------------------------
@@ -159,7 +161,7 @@ class authProcedures
 			$_SESSION['site']['localization'] = $params->lang;
 			$_SESSION['timeout']              = time();
 			$session                          = new Sessions();
-			$token = Crypt::encrypt('{"uid":'.$user['ID'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
+			$token = Crypt::encrypt('{"uid":'.$user['id'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
 			$_SESSION['inactive']['timeout'] = time();
 			return array(
 				'success' => true,

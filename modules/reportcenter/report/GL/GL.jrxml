@@ -279,20 +279,31 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select A.*, B.coa_nama from VIEW_GENERAL_JURNAL A
-left join coa B on A.Account=B.coa_id and A.co_id=B.co_id
-where A.co_id=$P{co_id} and A.account like $P{account}||'%' and A.Module like $P{module}||'%' and
-A.posted_date between $P{fromdate} and $P{todate}]]>
+		<![CDATA[select A.*, B.coa_nama from jurnal A
+left join coa B on A.coa=B.coa_id and A.co_id=B.co_id
+where A.co_id=$P{co_id} and A.status <> 0 and A.coa like $P{account}||'%' and
+cast(A.inv_date as date) between $P{fromdate} and $P{todate}]]>
 	</queryString>
 	<field name="CO_ID" class="java.lang.String"/>
 	<field name="INV_CODE" class="java.lang.String"/>
-	<field name="POSTED_DATE" class="java.sql.Timestamp"/>
-	<field name="ACCOUNT" class="java.lang.String"/>
-	<field name="CREDIT" class="java.math.BigDecimal"/>
+	<field name="COA" class="java.lang.String"/>
 	<field name="DEBIT" class="java.math.BigDecimal"/>
-	<field name="REMAKS" class="java.lang.String"/>
+	<field name="CREDIT" class="java.math.BigDecimal"/>
 	<field name="VEND_ID" class="java.lang.String"/>
-	<field name="MODULE" class="java.lang.String"/>
+	<field name="HARGA" class="java.math.BigDecimal"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="USERINPUT" class="java.lang.String"/>
+	<field name="USEREDIT" class="java.lang.String"/>
+	<field name="TIMEINPUT" class="java.sql.Timestamp"/>
+	<field name="TIMEEDIT" class="java.sql.Timestamp"/>
+	<field name="TYPE_COA" class="java.lang.String"/>
+	<field name="SEQUENCE_NO" class="java.lang.Integer"/>
+	<field name="REMAKS" class="java.lang.String"/>
+	<field name="INV_DATE" class="java.sql.Timestamp"/>
+	<field name="INV_CODE_LINK" class="java.lang.String"/>
+	<field name="RECLASS_STATUS" class="java.lang.String"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="PERIODE" class="java.lang.String"/>
 	<field name="COA_NAMA" class="java.lang.String"/>
 	<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
@@ -304,20 +315,6 @@ A.posted_date between $P{fromdate} and $P{todate}]]>
 	<variable name="sumCredit" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{CREDIT}]]></variableExpression>
 	</variable>
-	<group name="posisi">
-		<groupExpression><![CDATA[$F{MODULE}]]></groupExpression>
-		<groupHeader>
-			<band height="15">
-				<textField>
-					<reportElement uuid="131dd382-a64e-4278-9e95-114b397810a6" x="2" y="0" width="100" height="15"/>
-					<textElement verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{MODULE}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupHeader>
-	</group>
 	<title>
 		<band height="63" splitType="Stretch">
 			<elementGroup/>
@@ -420,7 +417,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[NO. AKUN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4e6fe12b-1838-40c9-8b05-6552a7b71a11" x="209" y="0" width="109" height="13"/>
+				<reportElement uuid="4e6fe12b-1838-40c9-8b05-6552a7b71a11" x="209" y="0" width="92" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -434,7 +431,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[NAMA AKUN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="124c4afe-8c40-4acd-ac1f-e14a7f376004" x="375" y="0" width="52" height="13"/>
+				<reportElement uuid="124c4afe-8c40-4acd-ac1f-e14a7f376004" x="360" y="0" width="67" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -448,7 +445,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[DEBIT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="65006be0-d7bb-4b40-8b46-8033d7758bc3" x="426" y="0" width="54" height="13"/>
+				<reportElement uuid="65006be0-d7bb-4b40-8b46-8033d7758bc3" x="426" y="0" width="71" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -462,7 +459,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[KREDIT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1c206c45-bb0d-45cd-9d06-ff3a2ddfbd95" x="479" y="0" width="89" height="13"/>
+				<reportElement uuid="1c206c45-bb0d-45cd-9d06-ff3a2ddfbd95" x="497" y="0" width="71" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -489,7 +486,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[NO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5cf09a84-5177-4b85-ae25-394e6c68bfdf" x="317" y="0" width="59" height="13"/>
+				<reportElement uuid="5cf09a84-5177-4b85-ae25-394e6c68bfdf" x="301" y="0" width="59" height="13"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -518,10 +515,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ACCOUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{COA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="45873e64-38bd-497c-b0b3-12c5a54ae779" x="209" y="0" width="109" height="15"/>
+				<reportElement uuid="45873e64-38bd-497c-b0b3-12c5a54ae779" x="209" y="0" width="92" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -535,7 +532,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{COA_NAMA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="0232cf98-c487-4b63-8689-f4915d85114b" x="375" y="0" width="52" height="15"/>
+				<reportElement uuid="0232cf98-c487-4b63-8689-f4915d85114b" x="360" y="0" width="67" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -549,7 +546,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{DEBIT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="8cee3183-6d18-49fc-9fef-7301cfa93439" x="426" y="0" width="54" height="15"/>
+				<reportElement uuid="8cee3183-6d18-49fc-9fef-7301cfa93439" x="426" y="0" width="71" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -563,7 +560,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{CREDIT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="64587a44-224e-4d62-9123-e73b26f554f5" x="479" y="0" width="89" height="15"/>
+				<reportElement uuid="64587a44-224e-4d62-9123-e73b26f554f5" x="497" y="0" width="71" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -577,7 +574,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{REMAKS}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ee40346c-426b-495f-b72c-fc6eb5a8d126" x="317" y="0" width="59" height="15"/>
+				<reportElement uuid="ee40346c-426b-495f-b72c-fc6eb5a8d126" x="301" y="0" width="59" height="15"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -610,7 +607,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{POSTED_DATE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{INV_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="6296da84-a5ad-462f-9155-01430d885d61" x="0" y="0" width="32" height="15"/>
@@ -628,7 +625,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 	<summary>
 		<band height="13">
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="b4286a0a-dded-44f9-b5e7-f0fe3b0e70ac" x="376" y="0" width="51" height="13"/>
+				<reportElement uuid="b4286a0a-dded-44f9-b5e7-f0fe3b0e70ac" x="361" y="0" width="66" height="13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
@@ -636,7 +633,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$V{ sumDebit}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="5f24e7a1-ffd1-4242-ba3a-2f570177a6b2" x="427" y="0" width="53" height="13"/>
+				<reportElement uuid="5f24e7a1-ffd1-4242-ba3a-2f570177a6b2" x="427" y="0" width="70" height="13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
@@ -644,7 +641,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$V{sumCredit}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c2468ec2-7266-451c-a6af-97d654a084d3" x="316" y="0" width="59" height="13"/>
+				<reportElement uuid="c2468ec2-7266-451c-a6af-97d654a084d3" x="300" y="0" width="61" height="13"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>

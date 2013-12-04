@@ -116,13 +116,14 @@ Ext.define('App.ux.SODeliveryPopup',
         onGridClick: function(grid, selected){
             so_num = selected.data.so_num;
             this.setValue(so_num);
+            if(Ext.ComponentQuery.query('#prod_id_do')[0]){
+                Ext.ComponentQuery.query('#prod_id_do')[0].setValue(selected.data.prod_id);
+            }
+
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-
-            Ext.ComponentQuery.query('#prod_id')[0].setValue(selected.data.prod_id);
-
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -70,6 +70,10 @@ class SP_Kirim
             if ($val == '')
                 unset($data[$key]);
         }
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['co_id'] = $_SESSION['user']['site'];
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['perkiraan_muat'] = $this->db->Date_Converter($data['perkiraan_muat']);
@@ -86,10 +90,14 @@ class SP_Kirim
     public function updateSP_Kirim(stdClass $params)
     {
         $data = get_object_vars($params);
+        $co_id = $_SESSION['user']['site'] ;
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['co_id'] = $_SESSION['user']['site'];
         unset($data['id'], $data['sequence_no']);
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['perkiraan_muat'] = $this->db->Date_Converter($data['perkiraan_muat']);
-        $sql = $this -> db -> sqlBind($data, 'sp_kirim', 'U', array('sequence_no' => $params -> sequence_no));
+        $sql = $this -> db -> sqlBind($data, 'sp_kirim', 'U', array('co_id' => $co_id,'sequence_no' => $params -> sequence_no));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -127,7 +135,7 @@ class SP_Kirim
         {
             $orderx = 'no_urut';
         }
-        $sql = "SELECT * FROM sp_kirim_detail WHERE sequence_no='$params->sequence_no' $wherex ORDER BY $orderx DESC";
+        $sql = "SELECT * FROM sp_kirim_detail WHERE nosurat='$params->nosurat' and $wherex ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -154,6 +162,7 @@ class SP_Kirim
             if ($val == '')
                 unset($data[$key]);
         }
+
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'sp_kirim_detail', 'I');
         $this -> db -> setSQL($sql);
@@ -168,8 +177,10 @@ class SP_Kirim
     public function updateSP_Kirim_Detail(stdClass $params)
     {
         $data = get_object_vars($params);
-        unset($data['id'], $data['no_urut'], $data['sequence_no']);
-        $sql = $this -> db -> sqlBind($data, 'sp_kirim_detail', 'U', array('co_id' => $params -> co_id, 'sequence_no' => $params -> sequence_no, 'no_urut' => $params -> no_urut));
+        $co_id = $_SESSION['user']['site'] ;
+        $data['co_id'] = $_SESSION['user']['site'];
+        unset($data['id'], $data['no_urut'], $data['nosurat']);
+        $sql = $this -> db -> sqlBind($data, 'sp_kirim_detail', 'U', array('co_id' => $co_id, 'nosurat' => $params -> nosurat, 'no_urut' => $params -> no_urut));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -182,7 +193,7 @@ class SP_Kirim
      */
     public function deleteSP_Kirim_Detail(stdClass $params)
     {
-        $sql = "DELETE FROM sp_kirim_detail WHERE (co_id = '$params->co_id') and (sequence_no = '$params->sequence_no') and (no_urut = '$params->no_urut')";
+        $sql = "DELETE FROM sp_kirim_detail WHERE (co_id = '$params->co_id') and (nosurat = '$params->nosurat') and (no_urut = '$params->no_urut')";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

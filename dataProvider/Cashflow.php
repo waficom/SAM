@@ -25,17 +25,9 @@ class Cashflow
     }
     public function getCashflow(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
         $sql = "SELECT * FROM cashflow where co_id='$company'
-        ORDER BY $orderx DESC";
+        ORDER BY cf_code ASC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -60,6 +52,9 @@ class Cashflow
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'cashflow', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
@@ -77,6 +72,9 @@ class Cashflow
         $data['co_id'] = $_SESSION['user']['site'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'cashflow', 'U', array('co_id' => $params->co_id,'cf_code' => $params->cf_code));
         $this->db->setSQL($sql);
         $this->db->execLog();

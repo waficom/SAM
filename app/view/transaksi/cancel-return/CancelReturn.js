@@ -1,35 +1,15 @@
-/*
- GaiaEHR (Electronic Health Records)
- Users.js
- Copyright (C) 2012 Ernesto Rodriguez
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCancelReturn',
-    pageTitle: 'Cancel Return Transaksi',
+    pageTitle: 'Cancel Transaksi',
     uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    initComponent : function()
+    {
         var me = this;
-        me.currPosted = null;
-        me.currInv_Code= null;
-        me.userinput =null;
-        me.useredit=null;
-        Ext.define('CancelReturnModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+
+        Ext.define('CancelTransaksiModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id', type: 'string'},
                 {name: 'inv_code', type: 'string'},
                 {name: 'inv_date', type: 'date'},
@@ -43,534 +23,362 @@ Ext.define('App.view.transaksi.cancel-return.CancelReturn', {
                 {name: 'inv_type', type: 'string'},
                 {name: 'nominal', type: 'string'},
                 {name: 'posted_date',type: 'date'}
-            ]
-
-        });
-        me.CancelReturnStore = Ext.create('Ext.data.Store', {
-            model: 'CancelReturnModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: CancelReturn.getCancelReturn,
                     create: CancelReturn.addCancelReturn,
                     update: CancelReturn.updateCancelReturn,
                     destroy: CancelReturn.deleteCancelReturn
                 }
-            },
-            autoLoad: false
+            }
+
+        });
+        me.CancelTransaksiStore = Ext.create('Ext.data.Store', {
+            storeId : 'CTStore',
+            model : 'CancelTransaksiModel',
+            remoteSort : false
         });
 
-        // *************************************************************************************
-        // Create the GridPanel
-        // *************************************************************************************
-        me.CancelReturnGrid = Ext.create('App.ux.GridPanel', {
-            store: me.CancelReturnStore,
-            columns: [
-                {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 150,text: 'Reason',sortable: true,dataIndex: 'reason'},
-                {width: 150,text: 'Menu',sortable: true,dataIndex: 'inv_type'},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'canceled_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 100,text: 'LastUpdate',sortable: true,dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-            ],
+        me.CTGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('CTStore'),
+            border:false,
+            frame:false,
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'  ? 'child-row' :'';
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
                 }
             },
             listeners: {
                 scope: me,
-                select: me.onGridClick,
-                itemdblclick: function(view, record){
-                    if(record.get('status')!='1'){
-                        me.onItemdblclick(me.CancelReturnStore, record, 'Edit Cancel Return Transaksi');
-                    }
-                    Ext.getCmp('cancel_cr').enable();
-
-                }
+                select: me.onGridClick
             },
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            xtype: 'button',
-                            text: 'Tambah Data',
-                            iconCls: 'save',
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNew(form, 'CancelReturnModel', 'Tambah Data');
-                                Ext.getCmp('cancel_cr').disable();
-                                Ext.getCmp('canceled_date').disable(); Ext.getCmp('inv_date_cl').setValue(new Date());
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            id:'delete_cr',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deleteCancelReturn(me.CancelReturnStore);
-                            }
-                        },'->',
-                        {
-                            xtype:'displayfield',
-                            itemId:'itemuserinput',
-                            margin : '0 5 0 0'
+                            xtype:'container',
+                            layout:'hbox',
+                            flex:1,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Input',
+                                            format : 'd-m-Y',
+                                            itemId:'tgl_input_ct',
+                                            maxValue : new Date(),
+                                            name:'inv_date',
+                                            width:200
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            fieldLabel: "Modul AP",
+                                            width:600,
+                                            defaults: {xtype: "radio", name:'inv_type'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel: "AP Invoice",
+                                                    inputValue:'1',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AP Bayar",
+                                                    inputValue:'2',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('N');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AP UM",
+                                                    inputValue:'3',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('U');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AP Alokasi",
+                                                    inputValue:'4',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('A');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                }
+
+                                            ]
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            fieldLabel: "Modul AR ",
+                                            width:800,
+                                            defaults: {xtype: "radio", name:'inv_type'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel: "AR Invoice",
+                                                    inputValue:'7',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtARCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AR Bayar",
+                                                    inputValue:'8',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('N');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtARPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AR UM",
+                                                    inputValue:'9',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('U');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtARPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AR Alokasi",
+                                                    inputValue:'10',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('A');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtARPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AR Deduction",
+                                                    inputValue:'14',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#cancel_tmp')[0].setValue('P');
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtARPaymentCancelPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "DO",
+                                                    inputValue:'12',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtDOPopup', name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                }
+                                                ]
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            fieldLabel: "Modul Lain2 ",
+                                            width:450,
+                                            defaults: {xtype: "radio", name:'inv_type'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel: "AP Reclass",
+                                                    inputValue:'5',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPRCPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    boxLabel: "AP Manufacture",
+                                                    inputValue:'6',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtAPMnfPopup',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                },{
+                                                    boxLabel: "Stok In",
+                                                    inputValue:'19',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].remove(0);
+                                                            Ext.ComponentQuery.query('#inv_code_ct')[0].add({xtype:'xtStock_Cancel',  name:'inv_code', fieldLabel:'Kode Dokumen', value: this.getValue()});
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            itemId:'inv_code_ct',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'reason',
+                                            width:385
+                                        },
+                                        {
+                                            width: 150,
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'Posting',
+                                            name: 'status',
+                                            handler: function(field, value) {
+                                                if (value == true) {
+                                                    Ext.ComponentQuery.query('#posting_ct')[0].setDisabled(false);
+                                                    Ext.ComponentQuery.query('#posting_ct')[0].setValue(new Date());
+                                                }else{
+                                                    Ext.ComponentQuery.query('#posting_ct')[0].setDisabled(true);
+                                                }
+
+                                            }
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Posting',
+                                            format : 'd-m-Y',
+                                            value : new Date(),
+                                            maxValue : new Date(),
+                                            name:'canceled_date',
+                                            itemId:'posting_ct',
+                                            disabled:true,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            hidden:true,
+                                            itemId:'cancel_tmp',
+                                            width:385
+                                        }
+
+
+                                    ]
+                                }
+                            ]
                         }
                     ]
+                })
+            ],
+            columns:[
+                {text: 'Kode Dokumen',sortable: true,dataIndex: 'inv_code'},
+                {width: 80,text: 'Tgl Input',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {flex: 1,text: 'Keterangan',sortable: true,dataIndex: 'reason'},
+                {text: 'Menu',sortable: true,dataIndex: 'inv_type'},
+                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 80,text: 'Tgl Posting',sortable: true,dataIndex: 'canceled_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {width: 80,text: 'LastUpdate',sortable: true,dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'CancelTransaksiModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'CancelTransaksiModel',
+                    scope:me,
+                    handler:me.onDeleteRec
                 }
+
             ]
         });
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Type ",
-                            defaults: {xtype: "radio", name:'inv_type'
-                            },
-                            items: [
-                                {
-                                    boxLabel: "AP Inv",
-                                    checked: true,
-                                    inputValue:'1',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPCancelPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
 
-                                },
-                                {
-                                    boxLabel: "AP PayMent",
-                                    inputValue:'2',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AP UM",
-                                    inputValue:'3',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPPayUMCancelPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AP Alocation",
-                                    inputValue:'4',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPAlPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AP Reclass",
-                                    inputValue:'5',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPRCPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AP Manufactur",
-                                    inputValue:'6',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            var me=this;
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtAPMnfPopup',name:'inv_code',value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                }
-                            ]
-                        },
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Type",
-                            defaults: {xtype: "radio", name:'inv_type', hideLabel:true
-                            },
-                            items: [
-                                {
-                                    boxLabel: "AR Sale",
-                                    inputValue:'7',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARCancelPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AR PayMent",
-                                    inputValue:'8',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AR UM",
-                                    inputValue:'9',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARPayUMCancelPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "AR Alocation",
-                                    inputValue:'10',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtARAlPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "Purchase Order",
-                                    inputValue:'11',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtPOPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                }
-                            ]
-                        },
-                        ,
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Type",
-                            defaults: {xtype: "radio", name:'inv_type',hideLabel:true
-                            },
-                            items: [
-                                {
-                                    boxLabel: "Delivery Order",
-                                    inputValue:'12',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.getCmp('inv_code_cr').remove(0);
-                                            Ext.getCmp('inv_code_cr').add({xtype:'xtDOPopup',name:'inv_code', value: this.getValue()});
-                                            //Ext.doLayout();
-                                        }
-                                    }
-
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'No. Doc. :'
-                                },
-                                {
-                                    id:'inv_code_cr'
-
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'datefield',
-                                    id:'posted_date',
-                                    name: 'posted_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    hidden: true
-                                }
-                            ]
-                        },{
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Entry Date '
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'inv_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false,
-                                    id:'inv_date_cl'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Reason :'
-                                },
-                                {
-                                    width: 250,
-                                    xtype: 'textfield',
-                                    name: 'reason'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Canceled ',
-                                    id:'cancel_cr',
-                                    name: 'status',
-                                    handler: function(field, value) {
-                                        if (value== true) {
-                                            Ext.getCmp('canceled_date').enable();
-                                            Ext.getCmp('canceled_date').setValue(new Date());
-                                        }else{
-                                            Ext.getCmp('canceled_date').disable();
-                                        }
-
-                                    }
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'canceled_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    value : new Date(),
-                                    allowBlank:false,
-                                    id:'canceled_date'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onCancelReturnSave(form, me.CancelReturnStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-
-            }
-        });
-        // END WINDOW
-        me.pageBody = [me.CancelReturnGrid];
+        me.pageBody = [me.CTGrid];
         me.callParent(arguments);
+
     }, // end of initComponent
 
-    onNew: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-    },
-    onCancelReturnSave: function(form, store){
-        var me = this;
-        me.saveCancelReturn(form, store);
-    },
-    saveCancelReturn: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        var posting_date = Ext.getCmp('posted_date').getValue();
-        var canceled_date = Ext.getCmp('canceled_date').getValue();
-        if(canceled_date == null){
-            canceled_date = new Date();
-        }
-        if(canceled_date < posting_date ){
-            Ext.MessageBox.alert('Warning', 'Tanggal Posting Dokumen melebihi tanggal Cancel Alokasi');
-        }else{
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            store.sync({
-                success:function(){
-                    me.win.close();
-                    store.load();
-                },
-                failure:function(){
-                    me.msg('Opps!', 'Error!!', true);
-                    store.load();
-                }
-            });
-        }
-
-    },
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    deleteCancelReturn: function(store){
-        var me = this, grid = me.CancelReturnGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    CancelReturn.deleteCancelReturn(bid);
-                    store.remove(sr);
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        });
-//        store.load();
-    },
     onGridClick: function(grid, selected){
         var me = this;
-        if(selected.data.status == 1){
-            Ext.getCmp('delete_cr').disable();
-        }else{
-            Ext.getCmp('delete_cr').enable();
-        }
-        var TopBarItems = this.CancelReturnGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
 
     },
+    onNewRec:function(btn){
+        var me = this;
+        var grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+        newModel = Ext.ModelManager.create({
+        }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+        Ext.ComponentQuery.query('#tgl_input_ct')[0].setValue(new Date());
+    },
+
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
+
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
+                    }
+                }
+            });
+
+        }
+
+    },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive: function(callback){
-        this.CancelReturnStore.load();
+    onActive : function(callback)
+    {
+        this.CancelTransaksiStore.load();
         callback(true);
     }
 });
-//ens UserPage class
+//ens LogPage class

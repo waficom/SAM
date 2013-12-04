@@ -53,60 +53,24 @@ class SalesOrder
 	 */
 	public function getFilterSOData(stdClass $params)
 	{
-		// Declare all the variables that we are going to use.
-		(string)$whereClause = '';
-		(array)$salesorder = '';
-		(int)$total = 0;
-		(string)$sql = '';
-
-//        error_reporting(-1);
-		// Look between service date
-		
-		if ($params->datefrom && $params->dateto)
-//			$whereClause .= chr(13) . " AND so0.tanggal BETWEEN '" . substr($params->datefrom, 0, -9) . " 00:00:00' AND '" . substr($params->dateto, 0, -9) . " 23:59:59'";
-            $whereClause .= chr(13) . " AND so0.tanggal BETWEEN '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'" ;
-
-		if ($params->so_numsearch)
-			$whereClause .= chr(13) . " AND so0.so_num like '%" . $params->so_numsearch . "%'";
-
-        if ($params->cust_search)
-            $whereClause .= chr(13) . " AND customer.cust_nama like '%" . $params->cust_search . "%'";
-
-		// Eliminate the first 6 characters of the where clause
-		// this to eliminate and extra AND from the SQL statement
-		$whereClause = substr($whereClause, 6);
-
-		// If the whereClause variable is used go ahead and
-		// and add the where command.
-		if ($whereClause)
-			$whereClause = 'WHERE ' . $whereClause;
         $company =  $_SESSION['user']['site'];
-		$sql = "SELECT so0.*, customer.cust_nama, wilayah.wilayah_nama, salesman.sales_nama
-				FROM
-					so0
-				LEFT JOIN customer ON customer.cust_id = so0.cust_id and customer.co_id=so0.co_id
-				left join wilayah on so0.wilayah_id=wilayah.wilayah_id and so0.co_id=wilayah.co_id
-				left join salesman on so0.sales_id=salesman.sales_id and so0.co_id=salesman.co_id
-				$whereClause
-				ORDER BY
-				     so0.timeedit DESC";
+		$sql = "select a.*, b.prod_id, b.qty, b.sat_id, b.hrg, b.n_netto, b.n_brutto, b.hrg_loco, b.hrg_transport,
+        b.hrg_promosi, b.hrg_sosialisasi, c.lokasi_nama, c.lokasi_kec, c.lokasi_kab, d.cust_nama
+        from so0 a
+        left join so10 b on a.co_id=b.co_id and a.so_num=b.so_num
+        left join so11 c on b.co_id=c.co_id and b.so_num=c.so_num and b.prod_id=c.prod_id
+        left join customer d on a.cust_id=d.cust_id and a.co_id=d.co_id
+        where a.co_id='$company'
+        order by a.timeedit desc";
 		$this->db->setSQL($sql);
-
-		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
-		{
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
             $row = array_change_key_case($row);
-			$salesorder[] = $row;
-		}
+            array_push($rows, $row);
+        }
 
-		$total = count($salesorder);
-//		$salesorder = array_slice($salesorder, $params->start, $params->limit);
-//		echo $sql;
-//		echo $salesorder;
-		return array(
-			'totals' => $total,
-			'salesorder' => $salesorder
-		);
-
+        return $rows;
 	}
     /**
      * @param stdClass $params
@@ -114,36 +78,18 @@ class SalesOrder
      */
     public function addSO(stdClass $params)
     {
-        $data = get_object_vars($params);
-
-        $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
-        $data['cust_po_tgl'] = $this->db->Date_Converter($data['cust_po_tgl']);
-        $data['tgl_jt_kirim'] = $this->db->Date_Converter($data['tgl_jt_kirim']);
-        $data['released_date'] = $this->db->Date_Converter($data['released_date']);
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        if (is_null($data['ppn_so']) || ($data['ppn_so'] == '')) {
-            $data['ppn_so'] = '0';
-        }
-        if (is_null($data['ppn_exc']) || ($data['ppn_exc'] == '')) {
-            $data['ppn_exc'] = '0';
-        }
-        if (is_null($data['released']) || ($data['released'] == '')) {
-            $data['released'] = '0';
-        }
-
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
-        unset($data['cust_nama'],$data['wilayah_nama'],$data['sales_nama']);
-        $data['co_id'] = $_SESSION['user']['site'];
-        $sql = $this -> db -> sqlBind($data, 'so0', 'I');
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
+        $tanggal = $this->db->Date_Converter($params->tanggal);
+        $tgl_jt_kirim= $this->db->Date_Converter($params->tgl_jt_kirim);
+        $co_id= $_SESSION['user']['site'];
+        $userinput=$_SESSION['user']['name'];
+        $useredit=$_SESSION['user']['name'];
+        $sql = ("execute procedure salesorder_i
+        '$params->ppn_exc','$tanggal','$tgl_jt_kirim','$params->cust_id', '$params->wilayah_id', '$params->sales_id', '$params->pembayaran', '$params->keterangan',
+        '$params->prod_id', '$params->qty', '$params->sat_id', $params->hrg, $params->n_netto,
+        $params->hrg_loco,$params->hrg_transport,$params->hrg_promosi,$params->hrg_sosialisasi,'$params->lokasi_nama',
+        '$params->lokasi_kec','$params->lokasi_kab','$useredit','$userinput','$co_id'");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
         return $params;
     }
 
@@ -153,28 +99,18 @@ class SalesOrder
      */
     public function updateSO(stdClass $params)
     {
-        $data = get_object_vars($params);
-        unset($data['so_num'], $data['id'], $data['cust_nama'], $data['co_id'],$data['wilayah_nama'],$data['sales_nama']);
-        $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
-        $data['cust_po_tgl'] = $this->db->Date_Converter($data['cust_po_tgl']);
-        $data['tgl_jt_kirim'] = $this->db->Date_Converter($data['tgl_jt_kirim']);
-        $data['released_date'] = $this->db->Date_Converter($data['released_date']);
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        if (is_null($data['ppn_so']) || ($data['ppn_so'] == '')) {
-            $data['ppn_so'] = '0';
-        }
-        if (is_null($data['ppn_exc']) || ($data['ppn_exc'] == '')) {
-            $data['ppn_exc'] = '0';
-        }
-        if (is_null($data['released']) || ($data['released'] == '')) {
-            $data['released'] = '0';
-        }
-        $cond = array('co_id' =>$params->co_id, 'so_num' => $params->so_num);
-        $sql = $this -> db -> sqlBind($data, 'so0', 'U', $cond);
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $params->old_co_id = $params->co_id;
+        $tanggal = $this->db->Date_Converter($params->tanggal);
+        $tgl_jt_kirim= $this->db->Date_Converter($params->tgl_jt_kirim);
+        $co_id= $_SESSION['user']['site'];
+        $userinput=$_SESSION['user']['name'];
+        $useredit=$_SESSION['user']['name'];
+        $sql = ("execute procedure salesorder_u
+        '$params->ppn_exc','$params->so_num','$tanggal','$tgl_jt_kirim','$params->cust_id', '$params->wilayah_id', '$params->sales_id', '$params->pembayaran', '$params->keterangan',
+        '$params->prod_id', '$params->qty', '$params->sat_id', $params->hrg, $params->n_netto,
+        $params->hrg_loco,$params->hrg_transport,$params->hrg_promosi,$params->hrg_sosialisasi,'$params->lokasi_nama',
+        '$params->lokasi_kec','$params->lokasi_kab','$useredit','$userinput','$co_id'");
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
         return $params;
     }
 
@@ -186,37 +122,14 @@ class SalesOrder
      */
     public function deleteSO(stdClass $params)
     {
-        $sql = "DELETE FROM so11 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM so10 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-		$sql = "DELETE FROM so0 WHERE (co_id = '$params->co_id') and (so_num = '$params->so_num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
+        $co_id= $_SESSION['user']['site'];
+        $sql = ("execute procedure salesorder_d '$params->so_num','$co_id'");
+        $this->db->setSQL($sql);
+        $this->db->setSQL($sql);
+        $this->db->execOnly();
         return $params;
     }
 
-    /**
-     * Not in used. For Now you can only set the Company "inactive"
-     *
-     * @param stdClass $params
-     * @return stdClass
-     */
-   /* public function deletebyso_num($cid, $num)
-    {
-        $sql = "DELETE FROM so11 WHERE (co_id = '$cid') and (so_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM so10 WHERE (co_id = '$cid') and (so_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        $sql = "DELETE FROM so0 WHERE (co_id = '$cid') and (so_num = '$num')";
-        $this -> db -> setSQL($sql);
-        $this -> db -> execLog();
-        return $num;
-    }*/
 
     public function getSOItems(stdClass $params)
     {
@@ -427,5 +340,28 @@ class SalesOrder
         $this->db->setSQL($sql);
         $this->db->execOnly(false);
     }
-
+    public function getSOLoc(stdClass $params)
+    {
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM so12 where co_id='$company' and so_num='$params->so_num' and cust_id='$params->cust_id' ORDER BY custloc_id";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function updateSOLoc(stdClass $params)
+    {
+        $company =  $_SESSION['user']['site'];
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        unset($data['id'],$data['cust_id'], $data['so_num']);
+        $sql = $this -> db -> sqlBind($data, 'so12', 'U', array('co_id' => $company, 'cust_id' => $params-> cust_id, 'so_num' => $params-> so_num, 'custloc_id' => $params-> custloc_id));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
 }

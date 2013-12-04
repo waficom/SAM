@@ -85,24 +85,19 @@ class Route
      */
     public function addRoute(stdClass $params)
     {
-//        error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
         }
-
+        unset($data['id']);
         $sql = $this -> db -> sqlBind($data, 'Route', 'I');
         $this -> db -> setSQL($sql);
-//            print_r($sql);
         $this -> db -> execLog();
-//        error_reporting(0);
         return $params;
     }
 
@@ -112,15 +107,17 @@ class Route
      */
     public function updateRoute(stdClass $params)
     {
-        //error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'], $data['route_code'], $data['old_route_code']);
-        $sql = $this -> db -> sqlBind($data, 'Route', 'U', array('route_code' => $params-> old_route_code));
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'Route', 'U', array('co_id' => $params-> co_id,'route_code' => $params-> route_code));
         $this -> db -> setSQL($sql);
-        // print_r($sql);
+        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -139,14 +136,12 @@ class Route
 
     public function getRouteD(stdClass $params)
     {
-        //error_reporting(-1);
         $company =  $_SESSION['user']['site'];
         $this->db->setSQL("SELECT *
                          FROM Route_D
-                    WHERE co_id='$company' and route_code = '" . $params->route_code ."'ORDER BY sequence_no ASC");
+                    WHERE co_id='$company' and route_code = '$params->route_code' ORDER BY sequence_no ASC");
 
         $rows = array();
-        //print_r($rows);
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
@@ -158,7 +153,6 @@ class Route
 
     public function addRouteD(stdClass $params)
     {
-        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
@@ -172,7 +166,6 @@ class Route
         }
         $sql = $this -> db -> sqlBind($data, 'Route_D', 'I');
         $this -> db -> setSQL($sql);
-         //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -182,15 +175,13 @@ class Route
      */
     public function updateRouteD(stdClass $params)
     {
-        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['route_code'], $data['old_sequence_no']);
-        $sql = $this -> db -> sqlBind($data, 'Route_D', 'U', array('sequence_no' => $params-> old_sequence_no));
+        $sql = $this -> db -> sqlBind($data, 'Route_D', 'U', array('co_id' => $params-> co_id,'sequence_no' => $params-> sequence_no, 'route_code' => $params-> route_code));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }

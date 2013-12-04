@@ -53,7 +53,6 @@ class PurchaseOrder
      */
     public function getFilterPOData(stdClass $params)
     {
-        // Declare all the variables that we are going to use.
         $company =  $_SESSION['user']['site'];
         $sql = "SELECT po0.*, vendor.vend_nama, C.netto_total, tax_m.description as tax_nama
 				FROM
@@ -63,25 +62,18 @@ class PurchaseOrder
 				ON vendor.vend_id = po0.vend_id
 				left join(select co_id, po_num, sum(n_netto) as netto_total from po1 group by co_id, po_num) C on po0.po_num=C.po_num and po0.co_id=C.co_id
 				left join tax_m on po0.tax_code=tax_m.tax_code and po0.co_id=tax_m.co_id
-				where po0.co_id='$company' and po0.tgl between '" . substr($params->datefrom, 0, -9) . "' AND '" . substr($params->dateto, 0, -9) . "'
+				where po0.co_id='$company'
 				ORDER BY
 				     po0.timeedit DESC";
-        $this->db->setSQL($sql);
-
+        $this -> db -> setSQL($sql);
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $purchaseorder[] = $row;
+            array_push($rows, $row);
         }
 
-        $total = count($purchaseorder);
-//		$salesorder = array_slice($salesorder, $params->start, $params->limit);
-//		echo $sql;
-//		echo $salesorder;
-        return array(
-            'totals' => $total,
-            'purchaseorder' => $purchaseorder
-        );
+        return $rows;
 
     }
     /**
@@ -184,26 +176,22 @@ class PurchaseOrder
                     po1.qty_rcv,
                     po1.keterangan,
                     bahanbaku.bb_nama,
-                    satuan.satuan_nama
+                    satuan.satuan_nama, po0.status
                 from po1
                    left outer join bahanbaku on (po1.bb_id = bahanbaku.bb_id) and (po1.co_id = bahanbaku.co_id)
                    left outer join satuan on (po1.co_id = satuan.co_id) and (po1.sat_id = satuan.satuan_id)
+                   left join po0 on po1.co_id=po0.co_id and po1.po_num=po0.po_num
                   WHERE po1.co_id='$company' and po1.po_num = '" . $params->po_num ."'
 				";
-        $this->db->setSQL($sql);
-       // print_r($sql);
-
+        $this -> db -> setSQL($sql);
+        $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
-            $poitems[] = $row;
+            array_push($rows, $row);
         }
 
-        $total = count($poitems);
-        return array(
-            'totals' => $total,
-            'poitems' => $poitems
-        );
+        return $rows;
 
     }
     public function addPOItems(stdClass $params)
@@ -222,7 +210,6 @@ class PurchaseOrder
         $data['co_id'] = $_SESSION['user']['site'];
         $sql = $this -> db -> sqlBind($data, 'po1', 'I');
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -236,7 +223,7 @@ class PurchaseOrder
         $data = get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['bb_nama'], $data['id'], $data['satuan_nama'],$data['old_bb_id']);
+        unset($data['bb_nama'], $data['id'], $data['satuan_nama'],$data['status']);
         $cond = array('co_id' =>$params->co_id, 'po_num' => $params->po_num, 'bb_id' => $params->bb_id);
         $sql = $this -> db -> sqlBind($data, 'po1', 'U', $cond);
         $this -> db -> setSQL($sql);

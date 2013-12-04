@@ -28,7 +28,8 @@ Ext.define('App.ux.APPopup',
                         {name: 'hutangsuplier',type: 'string'},
                         {name: 'timeedit',type: 'date'},
                         {name: 'vend_id',type: 'string'},
-                        {name: 'posted_date',type: 'date'}
+                        {name: 'posted_date',type: 'date'},
+                        {name: 'vend_nama',type: 'string'}
                     ],
                     proxy :
                     {
@@ -54,12 +55,13 @@ Ext.define('App.ux.APPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 200,text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
+                    {text: 'Inv. Number',sortable: true,dataIndex: 'inv_code'},
                     {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
-                    {width: 100,text: 'PO Number',sortable: true,dataIndex: 'po_num'},
-                    {width: 100,text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden:true},
-                    {width: 100,text: 'Hutang Suplier',sortable: true,dataIndex: 'hutangsuplier', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {text: 'GR Number',sortable: true,dataIndex: 'gr_num'},
+                    {text: 'PO Number',sortable: true,dataIndex: 'po_num'},
+                    {text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden:true},
+                    {text: 'Vendor',sortable: true,dataIndex: 'vend_nama', flex:1},
+                    {text: 'Hutang Suplier',sortable: true,dataIndex: 'hutangsuplier', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
@@ -122,17 +124,25 @@ Ext.define('App.ux.APPopup',
         onGridClick: function(grid, selected){
             inv_code = selected.data.inv_code;
             this.setValue(inv_code);
+            if( Ext.ComponentQuery.query('#vend_id_pay')[0]){
+                Ext.ComponentQuery.query('#vend_id_pay')[0].setValue(selected.data.vend_id);
+            }
+            if( Ext.ComponentQuery.query('#hutang_pay')[0]){
+                Ext.ComponentQuery.query('#hutang_pay')[0].setValue(selected.data.hutangsuplier);
+            }
+            if(Ext.ComponentQuery.query('#vend_id_al')[0]){
+                Ext.ComponentQuery.query('#vend_id_al')[0].setValue(selected.data.vend_id);
+            }
+            if( Ext.ComponentQuery.query('#hutang_al')[0]){
+                Ext.ComponentQuery.query('#hutang_al')[0].setValue(selected.data.hutangsuplier);
+            }
+
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('vend_id_ap').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_pay').setValue(selected.data.vend_id);
-            Ext.getCmp('vend_id_al').setValue(selected.data.vend_id);
-            Ext.getCmp('hutangsuplier').setValue(selected.data.hutangsuplier);
-            Ext.getCmp('ap_inv_date').setValue(selected.data.posted_date);
-            Ext.getCmp('ap_inv_date_al').setValue(selected.data.posted_date);
-            Ext.getCmp('hutangsuplier_pay').setValue(selected.data.hutangsuplier);
+           // Ext.ComponentQuery.query('#vend_id_ap')[0].setValue(selected.data.vend_id);
+
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -123,14 +123,19 @@ Ext.define('App.ux.CashbonOutPopup',
         onGridClick: function(grid, selected){
             inv_code = selected.data.inv_code;
             this.setValue(inv_code);
+            if(Ext.ComponentQuery.query('#kode_bank_cb')[0]){
+                Ext.ComponentQuery.query('#kode_bank_cb')[0].setValue(selected.data.bank_code);
+            }
+            if(Ext.ComponentQuery.query('#bank_kasbon')[0]){
+                Ext.ComponentQuery.query('#bank_kasbon')[0].setValue(selected.data.bank_nama);
+            }
+            if(Ext.ComponentQuery.query('#nominal_kasbon')[0]){
+                Ext.ComponentQuery.query('#nominal_kasbon')[0].setValue(selected.data.nominal);
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('bank_code_cashbon').setValue(selected.data.bank_code);
-            Ext.getCmp('bank_nama_cashbon').setValue(selected.data.bank_nama);
-            Ext.getCmp('nominal_1_cb_krg').setValue(selected.data.nominal);
-            Ext.getCmp('posted_date_cb_cashbon').setValue(selected.data.posted_date);
 
             me.searchwin.close();
         },

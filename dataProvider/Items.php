@@ -41,31 +41,6 @@ class Items
 		return;
 	}
 
-    public function getItemsLiveSearch(stdClass $params)
-	{
-        $company =  $_SESSION['user']['site'];
-        $this->db->setSQL("SELECT co_id,
-		                          prod_id, 
-		                          prod_nama
-							FROM items
-   							WHERE co_id='$company' and UPPER(prod_id)   LIKE UPPER('%$params->query%')
-   							   OR UPPER(prod_nama) LIKE UPPER('%$params->query%') ");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
-        {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
-        }
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
-	
 	public function getitems(stdClass $params)
 	{
         $company =  $_SESSION['user']['site'];
@@ -118,11 +93,12 @@ class Items
 	{
         $company =  $_SESSION['user']['site'];
         $data       = get_object_vars($params);
-		unset($data['id'], $data['prod_id'], $data['old_prod_id']);
+		unset($data['id'], $data['prod_id'], $data['old_prod_id'], $data['jenis_nama'], $data['kemasan_nama'], $data['spesifikasi_nama']
+        , $data['bentuk_nama'], $data['satuan_nama']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'items', 'U', array('prod_id' => $params->old_prod_id));
+		$sql = $this->db->sqlBind($data, 'items', 'U', array('prod_id' => $params->prod_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -131,10 +107,10 @@ class Items
 	public function deleteitems(stdClass $params)
 	{
         $company =  $_SESSION['user']['site'];
-        $sql = "DELETE FROM price WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id', co_id='$company')";
+        $sql = "DELETE FROM price WHERE prod_id = '$params->prod_id' and co_id='$company'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-		$sql = "DELETE FROM items WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id', co_id='$company')";
+		$sql = "DELETE FROM items WHERE prod_id = '$params->prod_id' and co_id='$company'";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;
@@ -212,12 +188,10 @@ class Items
 
 	public function deleteprice(stdClass $params)
 	{
-        //$tgl = $this->db->Date_Converter($params['tgl_efektif']);
-       // error_reporting(-1);
-        $sql = "DELETE FROM price WHERE (co_id = '$params->co_id') and (prod_id = '$params->prod_id')
-		        and (sequence_no = 'sequence_no')";
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM price WHERE co_id = '$company' and (prod_id = '$params->prod_id') and (sequence_no = 'sequence_no')";
 		$this -> db -> setSQL($sql);
-        //print_r($sql);
+        print_r($sql);
 		$this -> db -> execLog();
 		return $params;
 	}

@@ -43,18 +43,9 @@ class Tax
     }
     public function getTax(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'tax_code';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM tax_m where co_id='$company' ORDER BY $orderx";
+        $sql = "SELECT * FROM tax_m where co_id='$company' ORDER BY tax_code ASC";
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
@@ -85,7 +76,6 @@ class Tax
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $sql = $this->db->sqlBind($data, 'tax_m', 'I');
         $this->db->setSQL($sql);
-        //print_r($sql);
         $this->db->execLog();
         return $params;
     }
@@ -103,7 +93,7 @@ class Tax
         }
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
-        $sql = $this->db->sqlBind($data, 'tax_m', 'U', array('tax_code' => $params->old_tax_code));
+        $sql = $this->db->sqlBind($data, 'tax_m', 'U', array('co_id' => $params->co_id,'tax_code' => $params->tax_code));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;

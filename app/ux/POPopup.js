@@ -24,6 +24,7 @@ Ext.define('App.ux.POPopup',
                         {name: 'po_num',type: 'string'},
                         {name: 'vend_nama',type: 'string'},
                         {name: 'vend_id',type: 'string'},
+                        {name: 'gudang_id',type: 'string'},
                         {name: 'tgl',type: 'date'}
                     ],
                     proxy :
@@ -69,11 +70,15 @@ Ext.define('App.ux.POPopup',
                     {
                         header : 'Supplier',
                         dataIndex : 'vend_nama',
+                        flex:1
+                    },
+                    {
+                        header : 'Kode Gudang',
+                        dataIndex : 'gudang_id',
                         width : 200
                     }
                 ],
                 height: 200,
-//                selModel : me.smGrid,
                 width: 600,
                 title: 'Purchase Order',
                 features : [searching],
@@ -82,7 +87,6 @@ Ext.define('App.ux.POPopup',
                     pageSize    : 50,
                     store      : me.store,
                     displayInfo: false,
-//                    displayMsg : 'Data yang ada {0} - {1} Dari {2}',
                     emptyMsg   : "Tidak ada data"
                 }),
                 listeners: {
@@ -99,7 +103,6 @@ Ext.define('App.ux.POPopup',
                     {
                         text: 'Pilih',
                         cls: 'winSave',
-//                        handler: me.btnSavePressed
                         handler : function(btn){
                             btn.up('window').close();
                         }
@@ -130,6 +133,12 @@ Ext.define('App.ux.POPopup',
         onGridClick: function(grid, selected){
             po_num = selected.data.po_num;
             this.setValue(po_num);
+            if(Ext.ComponentQuery.query('#vend_id_grndal')[0]){
+                Ext.ComponentQuery.query('#vend_id_grndal')[0].setValue(selected.data.vend_id);
+            }
+            if(Ext.ComponentQuery.query('#gdg_id_grndal')[0]){
+                Ext.ComponentQuery.query('#gdg_id_grndal')[0].setValue(selected.data.gudang_id);
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;

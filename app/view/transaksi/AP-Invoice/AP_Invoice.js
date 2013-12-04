@@ -447,7 +447,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                         }
                                     }
                                 },
-                                {
+                                /*{
                                     boxLabel: "Barang Jadi",
                                     inputValue:'B',
                                     handler: function(field, value) {
@@ -458,7 +458,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                             Ext.ComponentQuery.query('#account')[0].setDisabled(true);
                                         }
                                     }
-                                },
+                                },*/
                                 {
                                     boxLabel: "Other     ||",
                                     inputValue:'O',
@@ -492,7 +492,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                         if (value) {
                                             Ext.ComponentQuery.query('#SO_AP')[0].setDisabled(true);
                                             Ext.ComponentQuery.query('#GR_AP')[0].setDisabled(true);
-                                            Ext.ComponentQuery.query('#gudang_id_ap')[0].setDisabled(true);
+                                            Ext.ComponentQuery.query('#gudang_id_ap')[0].setDisabled(false);
                                             Ext.ComponentQuery.query('#account')[0].setDisabled(false);
                                         }
                                     }
@@ -505,7 +505,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                         if (value) {
                                             Ext.ComponentQuery.query('#SO_AP')[0].setDisabled(true);
                                             Ext.ComponentQuery.query('#GR_AP')[0].setDisabled(true);
-                                            Ext.ComponentQuery.query('#gudang_id_ap')[0].setDisabled(true);
+                                            Ext.ComponentQuery.query('#gudang_id_ap')[0].setDisabled(false);
                                             Ext.ComponentQuery.query('#account')[0].setDisabled(false);
                                         }
                                     }
@@ -835,7 +835,8 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                                     labelAlign : 'right',
                                     name: 'harga',
                                     xtype: 'mitos.currency',
-                                    hideTrigger: true
+                                    hideTrigger: true,
+                                    itemId:'hrg_dt_ap'
                                 }
                             ]
                         }
@@ -957,11 +958,19 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
         if( me.currChoose == 'O' || me.currChoose =='V'){
             Ext.getCmp('qty_dt_ap').disable();
             Ext.ComponentQuery.query('#sat_ap')[0].setDisabled(true);
-        }else{
+        }
+        else{
             Ext.getCmp('qty_dt_ap').enable();
             Ext.ComponentQuery.query('#sat_ap')[0].setDisabled(false);
             if(me.currChoose=='B'){
                 Ext.ComponentQuery.query('#sat_ap')[0].setValue('KG');
+            }
+            if(me.currChoose=='G'){
+                Ext.ComponentQuery.query('#qty_dt_ap')[0].setReadOnly(true);
+                Ext.ComponentQuery.query('#hrg_dt_ap')[0].setReadOnly(true);
+            }else{
+                Ext.ComponentQuery.query('#qty_dt_ap')[0].setReadOnly(false);
+                Ext.ComponentQuery.query('#hrg_dt_ap')[0].setReadOnly(false);
             }
         }
 
@@ -1022,14 +1031,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Invoice', {
                 store.load({params:{inv_code: me.currInv_Code}});
                 me.AP_Inv_JurnalStore.load({params:{inv_code: me.currInv_Code}});
             },
-            failure:function(provider, response){
-                console.log(response);
-                if (response.type == 'exception'){
-                    Ext.MessageBox.alert('Error', response.message);
-                }else{
-                    Ext.MessageBox.alert('Opps', 'Error..!!');
-                }
-
+            failure:function(batch){
+                var error = batch.operations[0].error;
+                    Ext.MessageBox.alert('Error', error);
             }
         });
     },

@@ -46,11 +46,11 @@ class WO_BJ_Formula
         $co_id= $_SESSION['user']['site'];
         $posted_by = $_SESSION['user']['name'];
         $sql=("execute procedure getbarangjadi_wo '$posted_by','$params->sat_id',
-        '$params->qty_pcs','$params->qty','$params->no_ppd','$params->prod_id','$params->so_num','$params->wo_num','$co_id'
+        $params->qty_pcs,$params->qty,'$params->no_ppd','$params->prod_id','$params->so_num','$params->wo_num','$co_id'
         ");
         $this->db->setSQL($sql);
         $this->db->execOnly();
-
+        return $params;
     }
     public function updateWO_BJ_FormulaDetail(stdClass $params)
     {

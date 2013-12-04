@@ -374,13 +374,23 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                                 {
                                     boxLabel: "Gudang",
                                     inputValue:'R',
-                                    readOnly:true
+                                    readOnly:true,
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.ComponentQuery.query('#gudang_id_return')[0].setDisabled(false);
+                                        }
+                                    }
 
                                 },
                                 {
                                     boxLabel: "Non Gudang",
                                     inputValue:'B',
-                                    readOnly:true
+                                    readOnly:true,
+                                    handler: function(field, value) {
+                                        if (value) {
+                                            Ext.ComponentQuery.query('#gudang_id_return')[0].setDisabled(true);
+                                        }
+                                    }
                                 }
                             ]
                         },
@@ -401,6 +411,7 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                                     width: 100,
                                     xtype: 'xtGudangBMPopup',
                                     name: 'gudang_id',
+                                    itemId:'gudang_id_return',
                                     readOlny:true
                                 }
                             ]
@@ -541,7 +552,8 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                                 },
                                 {
                                     width: 150,
-                                    xtype: 'textfield',
+                                    xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_po',
                                     readOnly:true
                                 },
@@ -567,6 +579,7 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                                 {
                                     width: 80,
                                     xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_netto',
                                     value:1,
                                     allowBlank:false
@@ -578,6 +591,7 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                                 {
                                     width: 80,
                                     xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_pcs',
                                     value:1
                                 }
@@ -722,6 +736,7 @@ Ext.define('App.view.transaksi.goodsreceived.GRN_Return', {
                     if (store.getCount() > 0) {
                         sm.select(0);
                     }
+                    me.GR_ReturnStore.load({params:{gr_num: me.gr_num}});
                 }
             }
         })

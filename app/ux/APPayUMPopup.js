@@ -113,20 +113,30 @@ Ext.define('App.ux.APPayUMPopup',
 
         onTrigger1Click : function(){
             var me = this;
+            var vend_id = null;
             me.searchwin.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
-            me.store.load();
+            if(Ext.ComponentQuery.query('#vend_id_al')[0]){
+                vend_id = Ext.ComponentQuery.query('#vend_id_al')[0].getValue()
+            }
+            me.store.load({params:{vend_id: vend_id}});
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
             ap_inv_payment = selected.data.ap_inv_payment;
             this.setValue(ap_inv_payment);
+            if(Ext.ComponentQuery.query('#um_al')[0]){
+                Ext.ComponentQuery.query('#um_al')[0].setValue(selected.data.saldo_akhir);
+            }
+            if(Ext.ComponentQuery.query('#nominal_um_rf')[0]){
+                Ext.ComponentQuery.query('#nominal_um_rf')[0].setValue(selected.data.saldo_akhir);
+            }
+            if(Ext.ComponentQuery.query('#vend_cust_rf2')[0]){
+                Ext.ComponentQuery.query('#vend_cust_rf2')[0].setValue(selected.data.vend_id);
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('uangmuka').setValue(selected.data.saldo_akhir);
-            Ext.getCmp('inv_um_date').setValue(selected.data.posted_date);
-            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -1,26 +1,15 @@
 Ext.define('App.view.master.Items', {
-    extend: 'App.ux.RenderPanel',
-    id: 'panelItems',
-    pageTitle: 'Product',
-    pageLayout: 'border',
-//    uses: ['App.ux.GridPanel', 'App.ux.form.Panel', 'Ext.grid.plugin.RowEditing'],
-    uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    extend:'App.ux.RenderPanel',
+    id:'panelItems',
+    pageTitle:'Produk',
+    initComponent : function()
+    {
         var me = this;
-        me.currprod_id = null;
-        me.curr_coid = null;
-
-        var searching={
-            ftype : 'searching',
-            mode: 'local'
-            ,           width:  200,
-            disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
-
-        }
+        me.prod_id = null;
 
         Ext.define('ItemsModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+            extend : 'Ext.data.Model',
+            fields : [
                 { name: 'co_id', type: 'string'},
                 { name: 'prod_id', type: 'string'},
                 { name: 'prod_nama', type: 'string'},
@@ -35,28 +24,23 @@ Ext.define('App.view.master.Items', {
                 { name: 'spesifikasi_nama', type: 'string'},
                 { name: 'bentuk_id', type: 'string'},
                 { name: 'bentuk_nama', type: 'string'},
-                { name: 'old_prod_id', type: 'string'},
                 { name: 'aktif', type: 'bool'}
-            ]
+            ],
+            proxy:{
+                type:'direct',
+                api:{
+                    read: Items.getitems,
+                    create: Items.additems,
+                    update: Items.updateitems,
+                    destroy: Items.deleteitems
+                }
+            }
 
         });
-        me.ItemsStore = Ext.create('Ext.data.Store', {
-                model: 'ItemsModel',
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read: Items.getitems,
-                        create: Items.additems,
-                        update: Items.updateitems,
-                        destroy: Items.deleteitems
-                    }
-                },
-                autoLoad: false
-            });
 
-        Ext.define('PriceModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        Ext.define('PriceListModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 { name: 'co_id', type: 'string'},
                 { name: 'sequence_no', type: 'string'},
                 { name: 'prod_id', type: 'string'},
@@ -66,29 +50,19 @@ Ext.define('App.view.master.Items', {
                 { name: 'promosi', type: 'bool'},
                 { name: 'puslit', type: 'bool'},
                 { name: 'insentif', type: 'bool'},
-                { name: 'tgl_efektif', type: 'date'},
-                { name: 'old_prod_id', type: 'string'}
-            ]
+                { name: 'tgl_efektif', type: 'date'}
+            ],
+            proxy:{
+                type:'direct',
+                api:{
+                    read: Items.getprice,
+                    create: Items.addprice,
+                    update: Items.updateprice,
+                    destroy: Items.deleteprice
+                }
+            }
 
         });
-        me.PriceStore = Ext.create('Ext.data.Store', {
-                model: 'PriceModel',
-                proxy: {
-                    type: 'direct',
-                    api: {
-                        read: Items.getprice,
-                        create: Items.addprice,
-                        update: Items.updateprice,
-                        destroy: Items.deleteprice
-                    }
-                },
-                autoLoad: false
-            });
-
-
-
-
-
         function authCk(val){
             if(val == '1'){
                 return '<img src="resources/images/icons/yes.gif" />';
@@ -97,642 +71,327 @@ Ext.define('App.view.master.Items', {
             }
             return val;
         }
+        var searching = {
+            ftype: 'searching',
+            mode: 'local',
+            width: 200
+        };
 
-        /**
-         * Lists Grid
-         */
-        me.ItemsGrid = Ext.create('App.ux.GridPanel', {
-            store: me.ItemsStore,
-            itemId: 'ItemsGrid',
-            height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            columns: [
-                {text: 'co_id', sortable: false, dataIndex: 'co_id', hidden : true},
-                {text: 'ID', width:70, sortable: false, dataIndex: 'prod_id'},
-                {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'prod_nama'},
-                {text: 'Jenis ID', flex: 1, sortable: true, dataIndex: 'jenis_id', hidden : true},
-                {text: 'Jenis', flex: 1, sortable: true, dataIndex: 'jenis_nama'},
-                {text: 'Kemasan ID', flex: 1, sortable: true, dataIndex: 'kemasan_id', hidden : true},
-                {text: 'Kemasan', flex: 1, sortable: true, dataIndex: 'kemasan_nama'},
-                {text: 'spesifikasi_id', dataIndex: 'spesifikasi_id', hidden : true },
-                {text: 'Spesifikasi', flex : 1, dataIndex: 'spesifikasi_nama', sortable : true },
-                {text: 'Satuan ID', flex: 1, sortable: true, dataIndex: 'satuan_id', hidden : true},
-                {text: 'Satuan', flex: 1, sortable: true, dataIndex: 'satuan_nama'},
-                {text: 'Bentuk ID', flex: 1, sortable: true, dataIndex: 'bentuk_id', hidden : true},
-                {text: 'Bentuk', flex: 1, sortable: true, dataIndex: 'bentuk_nama'},
-                {text: 'Aktif', width:55, sortable: false, dataIndex: 'aktif', renderer: authCk }
-            ],
+        me.ItemsStore = Ext.create('Ext.data.Store', {
+            storeId : 'Itemstore',
+            model : 'ItemsModel'
+        });
+        me.PriceListStore = Ext.create('Ext.data.Store', {
+            storeId : 'PriceListstore',
+            model : 'PriceListModel'
+        });
+        me.ItemsGrid = Ext.create('Ext.grid.Panel', {
+            title:'Produk',
+            store: Ext.data.StoreManager.lookup('Itemstore'),
+            border:false,
+            frame:false,
+            viewConfig:{
+                stripeRows:true
+            },
+            features:[searching],
             listeners: {
                 scope: me,
-                select: me.onItemsGridClick,
-                itemdblclick: function(view, record){
-                    oldName = record.get('prod_id');
-                    record.set("old_prod_id",oldName);
-                    me.onItemsdblclick(me.ItemsStore, record, 'Edit Product');
-                }
+                select: me.onGridClick
             },
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            scope: me,
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewItems(form, 'ItemsModel', 'Tambah Data');
-                            },
-                            tooltip : 'Tambah Data'
-                        },
-                        '->',
-                        {
-                            text: 'Delete',
-                            iconCls: 'icoDeleteBlack',
-                            itemId: 'listDeleteBtn',
-                            scope: me,
-                            handler: function () {
-                                me.onItemsDelete(me.ItemsStore);
-                            },
-                            tooltip: 'Hapus Data'
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:450,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode',
+                                            name:'prod_id',
+                                            width:300
+                                        },
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Produk',
+                                            name:'prod_nama',
+                                            width:385
+                                        },
+                                        {
+                                            xtype:'xtJenisPopup',
+                                            fieldLabel:'Kode Jenis',
+                                            name:'jenis_id',
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'xtKemasanPopup',
+                                            fieldLabel:'Kode Kemasan',
+                                            name:'kemasan_id',
+                                            width:250
+                                        }
+
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:300,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'xtSpesifikasiPopup',
+                                            fieldLabel:'Kode Spesifikasi',
+                                            name:'spesifikasi_id',
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'xtBentukPopup',
+                                            fieldLabel:'Kode Bentuk',
+                                            name:'bentuk_id',
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'xtSatuanPopup',
+                                            fieldLabel:'Satuan',
+                                            name:'satuan_id',
+                                            width:250
+                                        },
+                                        {
+                                            width: 150,
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'Aktif',
+                                            name: 'aktif'
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
+                })
+            ],
+            columns:[
+                {
+                    header:'Kode',
+                    dataIndex:'prod_id'
+                },
+                {
+                    header:'Produk',
+                    flex:1,
+                    dataIndex:'prod_nama'
+                },
+                {
+                    header:'Jenis',
+                    dataIndex:'jenis_nama'
+                },
+                {
+                    header:'Kemasan',
+                    dataIndex:'kemasan_nama'
+                },
+                {
+                    header:'Jenis',
+                    dataIndex:'jenis_nama'
+                },
+                {
+                    header:'Spesifikasi',
+                    dataIndex:'spesifikasi_nama'
+                },
+                {
+                    header:'Bentuk',
+                    dataIndex:'bentuk_nama'
+                },
+                {
+                    text: 'Aktif',
+                    sortable: true,
+                    dataIndex: 'aktif',
+                    renderer: authCk
                 }
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'ItemsModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'ItemsModel',
+                    scope:me,
+                    handler:me.onDeleteRec
+                }
+
             ]
         });
-        /**
-         * Options Grid
-         */
-        me.PriceGrid = Ext.create('App.ux.GridPanel', {
-            store: me.PriceStore,
-            itemId: 'PriceGrid',
-            region: 'center',
-            columns: [
-                { width: 100, text: 'Company', sortable: true, dataIndex: 'co_id', hidden: true},
-                { width: 100, text: 'sequence_no', sortable: true, dataIndex: 'sequence_no', hidden: true},
-                { width: 200, text: 'ID', sortable: true, dataIndex: 'prod_id', hidden: true},
-                { width: 200, text: 'Harga', sortable: true, dataIndex: 'harga'},
-                { width : 100, text: 'PPN', sortable: true, dataIndex: 'ppn', renderer: authCk},
-                { width : 100, text: 'Promosi', sortable: true, dataIndex: 'promosi', renderer: authCk},
-               // { width : 100, text: 'Puslit', sortable: true, dataIndex: 'puslit', renderer: authCk},
-                //{ width : 100, text: 'Insentif', sortable: true, dataIndex: 'insentif', renderer: authCk},
-                { width : 150, text: 'Tanggal Efektif', sortable: true, dataIndex: 'tgl_efektif', renderer: Ext.util.Format.dateRenderer('d-m-Y')}
-            ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    me.onPricedblclick(me.PriceStore, record, 'Edit Detail Harga');
-                }
+        me.PriceListGrid = Ext.create('Ext.grid.Panel', {
+            title:'Daftar Harga',
+            store: Ext.data.StoreManager.lookup('PriceListstore'),
+            border:false,
+            frame:false,
+            viewConfig:{
+                stripeRows:true
             },
-            dockedItems: [
+            features:[searching],
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing2', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
+                        {
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:450,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            hidden : true,
+                                            name:'prod_id',
+                                            itemId:'prod_id'
+                                        },
+                                        {
+                                            xtype:'numberfield',
+                                            fieldLabel:'Harga',
+                                            name:'harga',
+                                            width:385
+                                        },{
+                                            width : 150,
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'PPN',
+                                            name: 'ppn'
+                                        },
+                                        {
+                                            width : 150,
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'Promosi',
+                                            name: 'promosi'
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tanggal',
+                                            format : 'd-m-Y',
+                                            value : new Date(),
+                                            name:'tgl_efektif',
+                                            width:250
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                })
+            ],
+            columns:[
                 {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winform1.down('form');
-                            me.onNewPrice(form1, 'PriceModel', 'Tambah Data');
-                        }
-                    },
-                    {
-                        xtype: 'button',
-                        text: 'Hapus Data',
-                        iconCls: 'delete',
-                        handler: function() {
-                            me.deletePrice(me.PriceStore);
-                        }
-                    }]
+                    header:'No.Urut',
+                    hidden:true,
+                    dataIndex:'sequence_no'
+                },
+                {
+                    header:'Kd Produk',
+                    dataIndex:'prod_id',
+                    flex:1
+                },
+                {
+                    header:'Harga',
+                    dataIndex:'harga'
+                },
+                {
+                    header:'PPN',
+                    dataIndex:'ppn',
+                    renderer: authCk
+                },
+                {
+                    header : 'Promisi',
+                    dataIndex : 'promosi',
+                    renderer: authCk
+                },
+                {
+                    header : 'Tanggal Efektif',
+                    dataIndex : 'tgl_efektif',
+                    renderer:Ext.util.Format.dateRenderer('d-m-Y'),
+                    width : 100
                 }
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'PriceListModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'PriceListModel',
+                    scope:me,
+                    handler:me.onDeleteRec
+                }
+
             ]
         });
-
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Product ID ' + ': '
-                                },
-                                {
-                                    width: 100,
-                                    name: 'prod_id',
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    allowBlank: false,
-                                    stripCharsRe: /(^\s+|\s+$)/g
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nama Product :'
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'prod_nama'
-                                }                                
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Jenis ID :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtJenisPopup',
-                                    name: 'jenis_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                               {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Kemasan :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtKemasanPopup',
-                                    name: 'kemasan_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Satuan :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtSatuanPopup',
-                                    name: 'satuan_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Spesifikasi :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtSpesifikasiPopup',
-                                    name: 'spesifikasi_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'bentuk :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'xtBentukPopup',
-                                    name: 'bentuk_id'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Aktif',
-                                    name: 'aktif'
-                                }                            
-                           	]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onitemsSave(form, me.ItemsStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
+        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+            activeTab:0,
+            items:[ me.ItemsGrid, me.PriceListGrid]
         });
-        
-        
-        me.winform1 = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'co_id'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'prod_id'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'sequence_no'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Harga  :'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.currency',
-                                    name: 'harga',
-							        hideTrigger: true,
-							        keyNavEnabled: false,
-							        mouseWheelEnabled: false
-                                }                                
-                            ]
-						},
-						{
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width : 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'PPN',
-                                    name: 'ppn'
-                                }
-                            ]
-						},
-						{
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width : 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Promosi',
-                                    name: 'promosi'
-                                }
-                            ]
-						},
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tanggal :'
-                                },
-                                {
-									fieldLabel : 'Tanggal',
-									xtype : 'datefield',
-									format: 'd-m-Y',
-									submitFormat: 'Y-m-d H:i:s',
-									width : 100,
-									name : 'tgl_efektif'
-									
-                                }                                
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winform1.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPriceSave(form, me.PriceStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close');
-                }
-            }
-        });
-        
-        me.pageBody = [me.ItemsGrid, me.PriceGrid];
+
+        me.pageBody = [me.FormulirPanel];
         me.callParent(arguments);
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    action1: function(action){
-        var winf = this.winform1, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
 
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewItems: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-            }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-    },
-    onNewPrice: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-            }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new');
-        this.winform1.show();
-        
-    },
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-    onItemsGridClick: function(grid, selected){
+    }, // end of initComponent
+    onGridClick: function(grid, selected){
         var me = this;
-        me.currprod_id = selected.data.prod_id;
-        me.curr_coid = selected.data.co_id;
-        me.PriceStore.load({params:{prod_id: me.currprod_id}});
-    },
-
-    onItemsdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-
-    onPricedblclick: function(store, record, title){
-        var form = this.winform1.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old');
-        this.winform1.show();
-    },
-
-    onitemsSave: function(form, store){
-        var me = this;
-			me.saveitem(form, store);
-    },
-    saveitem: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        console.log(values);
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load(pro);
-    },
-
-    onPriceSave: function(form, store){
-        var me = this;
-			me.saveprice(form, store);
+        me.prod_id = selected.data.prod_id;
+        me.PriceListStore.load({params:{prod_id: me.prod_id}});
 
     },
-    saveprice: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record), 
-        f = me.win.down('form').getForm(), rec = f.getRecord();
-        
-        form.findField('prod_id').setValue(me.currprod_id);
-        form.findField('co_id').setValue(me.curr_coid);
-        values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-//        console.log(values);
-        store.sync({
-            success:function(){
-                me.winform1.close();
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{prod_id: me.currprod_id}});
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+//        plugin.cancelEdit();
+        newModel = Ext.ModelManager.create({ co_id : globals.site }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+        Ext.ComponentQuery.query('#prod_id')[0].setValue(me.prod_id);
     },
-    onItemsDelete: function(store){
-        var me = this, grid = me.ItemsGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('prod_id');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    Items.deleteitems(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
+
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
+
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
                     }
                 }
-            }
-        });
-//        store.load();
-    },
-    deletePrice: function(store){
-        var me = this, grid = me.PriceGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('sequence_no');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    Items.deleteprice(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        });
-//        store.load();
+            });
+
+        }
+
     },
 
     /**
@@ -741,10 +400,11 @@ Ext.define('App.view.master.Items', {
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive: function(callback){
-        var me = this;
+    onActive : function(callback)
+    {
         this.ItemsStore.load();
-        this.PriceStore.load();
+        this.PriceListStore.load();
         callback(true);
     }
 });
+//ens LogPage class

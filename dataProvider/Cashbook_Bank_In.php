@@ -44,16 +44,8 @@ class Cashbook_Bank_In
 
     public function getCashbook_Bank_In(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "select * from cashbook_bank where co_id='$company' and cb_type='I' ORDER BY $orderx DESC";
+        $sql = "select * from cashbook_bank where co_id='$company' and cb_type='I' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -82,10 +74,10 @@ class Cashbook_Bank_In
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['cb_type'] ='I';
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
         }
         unset($data['id'],$data['inv_code']);
         $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'I');
@@ -107,7 +99,12 @@ class Cashbook_Bank_In
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'U', array('inv_code' => $params -> inv_code));
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'U', array('inv_code' => $params -> inv_code, 'co_id' => $params -> co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -115,13 +112,13 @@ class Cashbook_Bank_In
 
     public function deleteCashbook_Bank_In(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cashbook_bank WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cashbook_bank WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
@@ -129,17 +126,11 @@ class Cashbook_Bank_In
     }
     public function getCashbook_Bank_In_Detail(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
-        $sql = "select A.*, B.coa_nama from cb_bank_detail A
+        $sql = "select A.*, B.coa_nama, c.status
+        from cb_bank_detail A
         left join coa B on A.co_id=B.co_id and A.account=B.coa_id
-        where A.inv_code= '$params->inv_code' ORDER BY $orderx DESC";
+        left join cashbook_bank c on a.co_id=c.co_id and a.inv_code=c.inv_code
+        where A.inv_code= '$params->inv_code' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -159,7 +150,7 @@ class Cashbook_Bank_In
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['coa_nama']);
+        unset($data['id'], $data['coa_nama'], $data['status']);
         $sql = $this -> db -> sqlBind($data, 'cb_bank_detail', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -170,15 +161,15 @@ class Cashbook_Bank_In
         $data = get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'], $data['coa_nama']);
-        $sql = $this -> db -> sqlBind($data, 'cb_bank_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->account));
+        unset($data['id'],$data['inv_code'], $data['coa_nama'], $data['status']);
+        $sql = $this -> db -> sqlBind($data, 'cb_bank_detail', 'U', array('inv_code' => $params->inv_code, 'account' => $params->account, 'co_id' => $params->co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
     }
     public function deleteCashbook_Bank_In_Detail(stdClass $params)
     {
-        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code' and account = '$params->account'";
+        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code' and account = '$params->account' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

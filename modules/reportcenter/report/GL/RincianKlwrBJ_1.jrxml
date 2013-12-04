@@ -476,10 +476,15 @@
 		<parameter name="so_num" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="periode" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
-			<![CDATA[select a.co_id, a.posted_date, a.do_num, a.prod_id, a.qty_do, a.hpp, a.qty_do * a.hpp as total, a.route from deliveryorder a
-where a.status=1 and a.do_type='N' and a.so_num=$P{so_num} and a.co_id=$P{co_id}]]>
+			<![CDATA[select a.co_id, a.posted_date, a.do_num, a.prod_id, a.qty_do, a.hpp, a.qty_do * a.hpp as total, a.route
+from deliveryorder a
+where a.status=1 and a.do_type='N' and a.so_num=$P{so_num} and a.co_id=$P{co_id} and (select hasil from get_periode(a.posted_date))=$P{periode}]]>
 		</queryString>
+		<field name="CO_ID" class="java.lang.String"/>
 		<field name="POSTED_DATE" class="java.sql.Timestamp"/>
 		<field name="DO_NUM" class="java.lang.String"/>
 		<field name="PROD_ID" class="java.lang.String"/>
@@ -504,6 +509,9 @@ where a.status=1 and a.do_type='N' and a.so_num=$P{so_num} and a.co_id=$P{co_id}
 	<parameter name="so_num" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="periode" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -526,12 +534,15 @@ where a.status=1 and a.do_type='N' and a.so_num=$P{so_num} and a.co_id=$P{co_id}
 			<componentElement>
 				<reportElement uuid="1ed5f74d-1d49-417b-b6d3-06602bd03335" key="table 18" style="table 18" x="0" y="17" width="511" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="TableData" uuid="c7b2f611-76cb-4717-9604-84b692a521c5">
+					<datasetRun subDataset="TableData" uuid="6bb33a25-6253-4ce7-93f5-a4f7f53e742c">
 						<datasetParameter name="co_id">
 							<datasetParameterExpression><![CDATA[$P{co_id}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="so_num">
 							<datasetParameterExpression><![CDATA[$P{so_num}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="periode">
+							<datasetParameterExpression><![CDATA[$P{periode}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>

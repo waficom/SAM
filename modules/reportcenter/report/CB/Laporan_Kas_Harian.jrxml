@@ -626,7 +626,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[KODE PENJ/PLG]]></text>
+								<text><![CDATA[KODE CRD / CUST]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 11_TD" height="12" rowSpan="1">
@@ -648,7 +648,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[NAMA PENJUAL / PELANGGAN]]></text>
+								<text><![CDATA[NAMA CREDITOR / CUSTOMER]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 11_TD" height="12" rowSpan="1">
@@ -794,32 +794,46 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 	<columnFooter>
 		<band height="58">
 			<staticText>
-				<reportElement uuid="2d589f6e-1bae-4450-a8f4-a6842b73d8fd" x="133" y="0" width="65" height="20"/>
+				<reportElement uuid="09450cb0-d6ae-4d2f-8ab2-9960325c8274" positionType="Float" x="411" y="0" width="103" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Diketahui Oleh]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2c2ddb87-e9d2-463a-9564-c84e06780cce" positionType="Float" x="25" y="0" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Dibuat Oleh :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d0a97738-e4a4-4333-a57a-4c0efc116e1a" x="589" y="0" width="75" height="20"/>
+				<reportElement uuid="e93af671-941a-48d0-aeff-3ebcd4d97a6d" positionType="Float" x="411" y="35" width="103" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[( Manager Keuangan )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b09328bc-7176-471c-84d2-bb69648a6e73" positionType="Float" x="25" y="35" width="75" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[( Kasir )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5b26a2e-be4a-41a5-badb-a5a08cbe8d77" positionType="Float" x="814" y="0" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Disetujui Oleh]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="aa00eb1a-e9fb-43f6-a832-69113d323a3a" x="123" y="35" width="75" height="20"/>
+				<reportElement uuid="388b479c-51a6-4511-a8e9-08975bb6013d" positionType="Float" x="814" y="35" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[(....................)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="5ee92bb2-cfd5-4b54-ab43-57f871c0130c" x="589" y="35" width="75" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[(....................)]]></text>
+				<text><![CDATA[( Direksi )]]></text>
 			</staticText>
 		</band>
 	</columnFooter>

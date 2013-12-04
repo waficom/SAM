@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PurchaseOrder" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
 	<property name="ireport.zoom" value="1.7715610000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="30"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Table">
 		<box>
@@ -241,22 +241,25 @@ where a.co_id=$P{co_id} and a.inv_code=$P{inv_code}]]>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select * from View_Voucher_KasBankKeluar
-where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
+		<![CDATA[select a.*, b.description as bank_nama from View_Voucher_KasBankKeluar a
+left join bank_m b on a.co_id=b.co_id and a.bank_code=b.bank_code
+where a.co_id=$P{co_id} and a.inv_code=$P{inv_code}]]>
 	</queryString>
 	<field name="CO_ID" class="java.lang.String"/>
 	<field name="INV_CODE" class="java.lang.String"/>
 	<field name="POSTED_DATE" class="java.sql.Timestamp"/>
 	<field name="TIMEEDIT" class="java.sql.Timestamp"/>
 	<field name="MODULE" class="java.lang.String"/>
+	<field name="BANK_CODE" class="java.lang.String"/>
+	<field name="BANK_NAMA" class="java.lang.String"/>
 	<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="248">
+		<band height="173">
 			<frame>
-				<reportElement uuid="b6dc9035-4864-422e-8a0e-a53a36ef7b26" x="0" y="0" width="567" height="248"/>
+				<reportElement uuid="b6dc9035-4864-422e-8a0e-a53a36ef7b26" x="0" y="0" width="567" height="173"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -265,7 +268,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<staticText>
-					<reportElement uuid="30b4c030-cee2-4fdf-a57a-1701bafec9ff" x="0" y="190" width="65" height="11"/>
+					<reportElement uuid="30b4c030-cee2-4fdf-a57a-1701bafec9ff" positionType="Float" x="0" y="112" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -279,7 +282,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Pemeriksa]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="f80d5d73-1803-4620-834d-5213ee6dbadd" x="437" y="190" width="65" height="11"/>
+					<reportElement uuid="f80d5d73-1803-4620-834d-5213ee6dbadd" positionType="Float" x="437" y="112" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -293,7 +296,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Pembuat]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="5cfa7af4-9e6e-4d88-a9fb-b9c66bdf6bc5" x="502" y="190" width="65" height="11"/>
+					<reportElement uuid="5cfa7af4-9e6e-4d88-a9fb-b9c66bdf6bc5" positionType="Float" x="502" y="112" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -307,7 +310,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Menyetujui]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="896d5676-dfc4-4a73-a09b-62aca0fd3c1d" x="502" y="232" width="65" height="11"/>
+					<reportElement uuid="896d5676-dfc4-4a73-a09b-62aca0fd3c1d" positionType="Float" x="502" y="154" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -321,7 +324,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Manager Keuangan]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="2e0dcc87-e5a5-426e-a940-d03985c7f9d9" x="0" y="232" width="65" height="11"/>
+					<reportElement uuid="2e0dcc87-e5a5-426e-a940-d03985c7f9d9" positionType="Float" x="0" y="154" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -335,7 +338,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Staff Akutansi]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="dc158b06-970f-4e01-ada8-8a90d5e71c3b" x="437" y="232" width="65" height="11"/>
+					<reportElement uuid="dc158b06-970f-4e01-ada8-8a90d5e71c3b" positionType="Float" x="437" y="154" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -349,7 +352,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Kasir]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="a733db74-416d-4399-9b89-3c2161167905" x="502" y="201" width="65" height="31"/>
+					<reportElement uuid="a733db74-416d-4399-9b89-3c2161167905" positionType="Float" x="502" y="123" width="65" height="31"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -363,7 +366,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="d569ce20-51f1-4012-92b0-3b56acc19297" x="0" y="201" width="65" height="31"/>
+					<reportElement uuid="d569ce20-51f1-4012-92b0-3b56acc19297" positionType="Float" x="0" y="123" width="65" height="31"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -381,7 +384,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 				</image>
 				<staticText>
-					<reportElement uuid="daa8c7f3-c5fa-4a23-8354-98880c46b6c3" x="437" y="201" width="65" height="31"/>
+					<reportElement uuid="daa8c7f3-c5fa-4a23-8354-98880c46b6c3" positionType="Float" x="437" y="123" width="65" height="31"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -430,7 +433,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<textFieldExpression><![CDATA[$F{POSTED_DATE}]]></textFieldExpression>
 				</textField>
 				<componentElement>
-					<reportElement uuid="cad9e237-d970-4ceb-9479-98c94122e6a5" key="table 8" x="0" y="48" width="567" height="50"/>
+					<reportElement uuid="cad9e237-d970-4ceb-9479-98c94122e6a5" key="table 8" x="0" y="48" width="567" height="33"/>
 					<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 						<datasetRun subDataset="TableData" uuid="5dc1acde-6dd3-41ea-bb14-00d7b965603a">
 							<datasetParameter name="co_id">
@@ -574,7 +577,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					</jr:table>
 				</componentElement>
 				<staticText>
-					<reportElement uuid="30f94bfc-a22f-4d3d-b951-72cdc3af3b15" x="65" y="232" width="65" height="11"/>
+					<reportElement uuid="30f94bfc-a22f-4d3d-b951-72cdc3af3b15" positionType="Float" x="65" y="154" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -588,7 +591,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Manager Akutansi]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="fc204f71-4946-4e83-b0be-0156fcdc1ae0" x="65" y="190" width="65" height="11"/>
+					<reportElement uuid="fc204f71-4946-4e83-b0be-0156fcdc1ae0" positionType="Float" x="65" y="112" width="65" height="11"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -602,7 +605,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					<text><![CDATA[Mengetahui]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="4a09b54a-59d6-47fb-a9ac-5244b1135cfe" x="65" y="201" width="65" height="31"/>
+					<reportElement uuid="4a09b54a-59d6-47fb-a9ac-5244b1135cfe" positionType="Float" x="65" y="123" width="65" height="31"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -615,6 +618,14 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 					</textElement>
 					<text><![CDATA[]]></text>
 				</staticText>
+				<textField>
+					<reportElement uuid="59b30e2d-5ef4-456e-8cf7-becf2c7021f1" x="0" y="90" width="100" height="14"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+						<paragraph leftIndent="5" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{BANK_NAMA}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<staticText>
 				<reportElement uuid="6ce256bc-4b4f-4cc2-88ee-70e2150c6f06" x="-255" y="52" width="65" height="11"/>
@@ -661,7 +672,7 @@ where co_id=$P{co_id} and inv_code=$P{inv_code}]]>
 		</band>
 	</title>
 	<detail>
-		<band height="50">
+		<band height="21">
 			<staticText>
 				<reportElement uuid="3f63035c-9134-4bd1-9cb6-6cf6144ffef7" x="-255" y="10" width="65" height="11"/>
 				<box>

@@ -128,11 +128,19 @@ Ext.define('App.ux.PilihProductSearch',
         onGridClick: function(grid, selected){
             prod_id = selected.data.prod_id;
             this.setValue(prod_id);
+            if(Ext.ComponentQuery.query('#sat_ap')[0]){
+                Ext.ComponentQuery.query('#sat_ap')[0].setValue(selected.data.satuan_id);
+            }
+            if( Ext.ComponentQuery.query('#sat_id_so')[0]){
+                Ext.ComponentQuery.query('#sat_id_so')[0].setValue(selected.data.satuan_id);
+            }
+            if( Ext.ComponentQuery.query('#prod_id_bj_adl')[0]){
+                Ext.ComponentQuery.query('#prod_id_bj_adl')[0].setValue(selected.data.prod_nama);
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.ComponentQuery.query('#sat_ap')[0].setValue(selected.data.satuan_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -34,8 +34,8 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                 {header : 'Supplier',dataIndex : 'vend_nama', flex:1},
                 {header : 'Transporter',dataIndex : 'vend_tr_nama'},
                 {header : 'Type', dataIndex : 'gr_type_desc'},
-                { header : 'Gudang',dataIndex : 'gudang_id', width : 100,hidden: true},
-                {header : 'Gudang', dataIndex : 'gudang_nama'},
+                {header : 'Gudang',dataIndex : 'gudang_id', width : 100},
+                {header : 'Pabrik', dataIndex : 'pabrik'},
                 {header : 'status',dataIndex : 'status',hidden: true},
                 {header : 'rc_type',dataIndex : 'rc_type',hidden: true},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}],
@@ -167,13 +167,13 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                 {text: 'gr_num', width:70, sortable: false, dataIndex: 'gr_num', hidden: true},
                 {text: 'ID', sortable: false, dataIndex: 'bb_id', hidden: true},
                 {text: 'Nama Barang', flex: 1, sortable: true, dataIndex: 'bb_nama'},
-                {text: 'Qty PO#',  sortable: false, dataIndex: 'qty_po'},
-                {text: 'Kekurangan Qty#',  sortable: false, dataIndex: 'qtygrn'},
+                {text: 'Qty PO#',  sortable: false, dataIndex: 'qty_po',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Kekurangan Qty#',  sortable: false, dataIndex: 'qtygrn',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'SAT ID', sortable: false, dataIndex: 'sat_id'},
-                {text: 'PCS/SAK',  sortable: false, dataIndex: 'qty_pcs'},
-                {text: 'Qty Muatan',  sortable: false, dataIndex: 'qty_brutto'},
-                {text: 'Qty Diterima',  sortable: false, dataIndex: 'qty_netto'},
-                {text: 'Qty Selisih',  sortable: false, dataIndex: 'qty_selisih'},
+                {text: 'PCS/SAK',  sortable: false, dataIndex: 'qty_pcs',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty Muatan',  sortable: false, dataIndex: 'qty_brutto',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty Diterima',  sortable: false, dataIndex: 'qty_netto',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty Selisih',  sortable: false, dataIndex: 'qty_selisih',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
             ],
             viewConfig :
@@ -408,7 +408,7 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                                     xtype: 'xtGudangBMPopup',
                                     name: 'gudang_id',
                                     id:'gudang_id',
-                                    allowBlank:true
+                                    readOnly:true
                                 },
                                 {
                                     width: 100,
@@ -541,7 +541,8 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                                 },
                                 {
                                     width: 150,
-                                    xtype: 'textfield',
+                                    xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_po',
                                     readOnly:true
                                 },
@@ -593,8 +594,9 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                                     value: 'Qty Received # :'
                                 },
                                 {
-                                    width: 80,
+                                    width: 100,
                                     xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_netto',
                                     value:1,
                                     allowBlank:false
@@ -604,8 +606,9 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                                     value: 'Qty (SAK) # :'
                                 },
                                 {
-                                    width: 80,
+                                    width: 100,
                                     xtype: 'numberfield',
+                                    hideTrigger:true,
                                     name:'qty_pcs',
                                     value:1
                                 }
@@ -749,6 +752,7 @@ Ext.define('App.view.transaksi.goodsreceived.GoodsReceived', {
                         if (store.getCount() > 0) {
                             sm.select(0);
                         }
+                        me.GRItemsStore.load({params:{gr_num: me.gr_num}});
                     }
                 }
         })

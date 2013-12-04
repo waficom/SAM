@@ -29,7 +29,8 @@ Ext.define('App.ux.ARPopup',
                         {name: 'account_type',type: 'string'},
                         {name: 'account',type: 'string'},
                         {name: 'cust_id',type: 'string'},
-                        {name: 'posted_date',type: 'date'}
+                        {name: 'posted_date',type: 'date'},
+                        {name: 'cust_nama',type: 'string'}
                     ],
                     proxy :
                     {
@@ -55,14 +56,14 @@ Ext.define('App.ux.ARPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 100,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'SO Number',sortable: true,dataIndex: 'so_num'},
-                    {width: 100,text: 'Account_type',sortable: true,dataIndex: 'account_type', hidden:true},
-                    {width: 100,text: 'Account',sortable: true,dataIndex: 'account', hidden:true},
-                    {width: 100,text: 'Customer',sortable: true,dataIndex: 'cust_id', hidden:true},
-                    {width: 100,text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {width: 100,text: 'Posted Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                    {text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {text: 'Account_type',sortable: true,dataIndex: 'account_type', hidden:true},
+                    {text: 'Account',sortable: true,dataIndex: 'account', hidden:true},
+                    {text: 'Customer',sortable: true,dataIndex: 'cust_id', hidden:true},
+                    {flex:1, text: 'Customer',sortable: true,dataIndex: 'cust_nama'},
+                    {text: 'Piutang',sortable: true,dataIndex: 'piutangdebtor', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                    {width: 80,text: 'Posted Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
 
                 ],
@@ -124,19 +125,17 @@ Ext.define('App.ux.ARPopup',
         onGridClick: function(grid, selected){
             inv_code = selected.data.inv_code;
             this.setValue(inv_code);
+
+            Ext.ComponentQuery.query('#cust_id_lpi')[0].setValue(selected.data.cust_id);
+            Ext.ComponentQuery.query('#piutang_lpi')[0].setValue(selected.data.piutangdebtor);
+            Ext.getCmp('account_ar').setValue(selected.data.account);
+            Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
+            Ext.getCmp('posted_date_ar').setValue(selected.data.posted_date);
+
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            //Ext.getCmp('account_type').setValue(selected.data.account_type);
-            Ext.getCmp('account_ar').setValue(selected.data.account);
-            Ext.getCmp('cust_id_pay').setValue(selected.data.cust_id);
-            Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
-            //Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
-            Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
-            Ext.getCmp('piutangdebtor_pay').setValue(selected.data.piutangdebtor);
-            Ext.getCmp('posted_date_ar').setValue(selected.data.posted_date);
-
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

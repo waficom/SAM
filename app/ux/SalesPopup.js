@@ -129,8 +129,6 @@ Ext.define('App.ux.SalesPopup',
         },
         ondblclick: function(grid, selected){
             var me = this;
-            me.onGridClick(grid, selected);
-            Ext.getCmp('sales_nama').setValue(selected.data.sales_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

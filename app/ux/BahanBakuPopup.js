@@ -141,14 +141,19 @@ Ext.define('App.ux.BahanBakuPopup',
         onGridClick: function(grid, selected){
             bb_id = selected.data.bb_id;
             this.setValue(bb_id);
+            if(Ext.ComponentQuery.query('#sat_id_pb')[0]){
+                Ext.ComponentQuery.query('#sat_id_pb')[0].setValue(selected.data.sat_id);
+            }
+            if( Ext.ComponentQuery.query('#sat_id_po')[0]){
+                Ext.ComponentQuery.query('#sat_id_po')[0].setValue(selected.data.sat_id);
+            }
+
+
+
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('sat_id_po').setValue(selected.data.sat_id);
-            Ext.getCmp('sat_id').setValue(selected.data.sat_id);
-            Ext.getCmp('bb_nama').setValue(selected.data.bb_nama);
-            Ext.getCmp('bb_nama_gr').setValue(selected.data.bb_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

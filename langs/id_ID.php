@@ -23,8 +23,8 @@ $LANG = array(
     'jenis'									=> 'Jenis',
     'satuan'								=> 'Satuan',
     'spesifikasi'							=> 'Spesifikasi',
-    'customer'								=> 'Pelanggan',
-    'vendor'	          					=> 'Supplier',
+    'customer'								=> 'Customer',
+    'vendor'	          					=> 'Creditor',
     'items'			    					=> 'Produk',
     'formula'			       				=> 'Resep',
     'transaksi'			       				=> 'Transaksi',
@@ -104,7 +104,8 @@ $LANG = array(
     'deliveryorder'                             => 'Pengiriman Barang Jadi',
     'ordermonitoring'                             => 'Pemantauan Pengiriman',
     'workorder1'                             => 'Produksi Formula',
-    'wo_noformula'                             => 'Produksi (ADL)',
+    'wo_adl'                             => 'Produksi (ADL)',
+    'wo_sam'                             => 'Produksi (SAM)',
     'produksi'                              => 'Permintaan Produksi',
     'route'                                 => 'Route',
     'releaseorder'                          => 'Release Order',
@@ -162,5 +163,19 @@ $LANG = array(
     'j_grn'                                  => 'Jurnal Penerimaan Barang',
     'Kapal'                                  => 'Kapal',
     'spkirim'                                  => 'SP Kirim',
+    'formulir'                                  => 'Formulir',
+    'stockopname'                                  => 'Stock Opname',
+    'cancelrelease'                                  => 'Batal Pesanan',
+    'cancelpp'                                  => 'Batal Perintah Produksi',
+    'ar_lpi'                                  => 'AR Denda Keterlabatan',
+    'wo_bbmix'                                  => 'WO BB Campuran',
+    'ardeduction'                                  => 'Pengurang Piutang',
+    'risk'                                  => 'Risk',
+    'grndal'                                  => 'Penerimaan Barang (ADL)',
+    'bj_adl'                                  => 'Barang Jadi (ADL)',
+    'refund'                                  => 'Refund',
+    'role'                                  => 'Tingkatan Jabatan'
+
+
 
 );

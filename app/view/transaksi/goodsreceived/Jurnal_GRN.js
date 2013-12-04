@@ -195,11 +195,6 @@ Ext.define('App.view.transaksi.goodsreceived.Jurnal_GRN', {
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_do').disable();
-        }else{
-            Ext.getCmp('delete_do').enable();
-        }
         me.GRN_JurnalStore.load({params:{inv_code: me.currGRN}});
 
     },

@@ -476,8 +476,11 @@
 		<parameter name="so_num" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="periode" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
-			<![CDATA[select * from RPT_OHP_TL ($P{so_num},$P{co_id})]]>
+			<![CDATA[select * from RPT_OHP_TL ($P{periode},$P{so_num},$P{co_id})]]>
 		</queryString>
 		<field name="OHP_TL" class="java.math.BigDecimal"/>
 		<field name="SUM_QTY" class="java.math.BigDecimal"/>
@@ -499,6 +502,9 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="so_num" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="periode" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
@@ -523,19 +529,22 @@
 			<componentElement>
 				<reportElement uuid="ec256fac-9973-4350-a5a6-5f05a7d4df95" key="table 18" style="table 18" x="0" y="10" width="595" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="TableData" uuid="d5e4aace-054f-4c25-8474-139a9bfb470a">
+					<datasetRun subDataset="TableData" uuid="be017e6d-ce2f-4c8c-abd6-31f3256719b8">
 						<datasetParameter name="co_id">
 							<datasetParameterExpression><![CDATA[$P{co_id}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="so_num">
 							<datasetParameterExpression><![CDATA[$P{so_num}]]></datasetParameterExpression>
 						</datasetParameter>
+						<datasetParameter name="periode">
+							<datasetParameterExpression><![CDATA[$P{periode}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="70" uuid="25b1354d-656b-42a1-9da6-350f854a88b3">
+					<jr:column width="59" uuid="25b1354d-656b-42a1-9da6-350f854a88b3">
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a3fe4a60-afab-4489-8e2c-f9ea34e5fcd8" x="0" y="0" width="70" height="19"/>
+								<reportElement uuid="a3fe4a60-afab-4489-8e2c-f9ea34e5fcd8" x="0" y="0" width="59" height="19"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -545,7 +554,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-								<reportElement uuid="fe3e20c5-39ce-4f5f-945c-06cd547b45ba" x="0" y="0" width="70" height="12"/>
+								<reportElement uuid="fe3e20c5-39ce-4f5f-945c-06cd547b45ba" x="0" y="0" width="59" height="12"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -554,10 +563,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="100" uuid="c94eb1b2-4bfe-442a-8504-2982fc87155b">
+					<jr:column width="83" uuid="c94eb1b2-4bfe-442a-8504-2982fc87155b">
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="f50e3a90-a692-41ad-8775-d4bd7620590b" x="0" y="0" width="100" height="19"/>
+								<reportElement uuid="f50e3a90-a692-41ad-8775-d4bd7620590b" x="0" y="0" width="83" height="19"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -567,7 +576,7 @@
 						</jr:columnHeader>
 						<jr:columnFooter style="table 18_TD" height="15" rowSpan="1">
 							<staticText>
-								<reportElement uuid="2daf8db7-4b7a-4894-95c3-bf005a267c5e" x="0" y="0" width="100" height="15"/>
+								<reportElement uuid="2daf8db7-4b7a-4894-95c3-bf005a267c5e" x="0" y="0" width="83" height="15"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -577,7 +586,7 @@
 						</jr:columnFooter>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField>
-								<reportElement uuid="b3b5ad1f-c188-4eb2-8535-b970890e1c00" x="0" y="0" width="100" height="12"/>
+								<reportElement uuid="b3b5ad1f-c188-4eb2-8535-b970890e1c00" x="0" y="0" width="83" height="12"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -609,12 +618,12 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="101" uuid="d18c39fc-d8ea-43da-bfdf-405b29651570">
+					<jr:column width="86" uuid="d18c39fc-d8ea-43da-bfdf-405b29651570">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="a9cda39e-5b47-4038-a896-b1e4a5b0a837" x="0" y="0" width="101" height="19"/>
+								<reportElement uuid="a9cda39e-5b47-4038-a896-b1e4a5b0a837" x="0" y="0" width="86" height="19"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -625,7 +634,7 @@
 						<jr:columnFooter height="15" rowSpan="1"/>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="5cfc3a90-357f-4c0d-b38d-c13ea89d073b" x="0" y="0" width="101" height="12"/>
+								<reportElement uuid="5cfc3a90-357f-4c0d-b38d-c13ea89d073b" x="0" y="0" width="86" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -634,7 +643,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="a81da38b-3a7d-42e6-932f-8e5cbd52d995">
+					<jr:column width="59" uuid="a81da38b-3a7d-42e6-932f-8e5cbd52d995">
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
 								<reportElement uuid="e59d20b6-3dcc-47e8-aab4-69e63711b0ed" x="0" y="0" width="59" height="19"/>
@@ -656,7 +665,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="68" uuid="5e42a9dd-e7c6-446a-8c10-e6e3fda8b786">
+					<jr:column width="66" uuid="5e42a9dd-e7c6-446a-8c10-e6e3fda8b786">
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
 								<reportElement uuid="f83938f6-34cb-4411-b539-8adff9593b87" x="0" y="0" width="66" height="19"/>
@@ -678,10 +687,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="103" uuid="c64c21ec-ecaf-4daa-b47b-ef4b88600a24">
+					<jr:column width="85" uuid="c64c21ec-ecaf-4daa-b47b-ef4b88600a24">
 						<jr:columnHeader style="table 18_CH" height="19" rowSpan="1">
 							<staticText>
-								<reportElement uuid="aa61395e-e445-48c7-8a86-aa01a069270d" x="0" y="0" width="103" height="19"/>
+								<reportElement uuid="aa61395e-e445-48c7-8a86-aa01a069270d" x="0" y="0" width="85" height="19"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -691,7 +700,7 @@
 						</jr:columnHeader>
 						<jr:columnFooter style="table 18_TD" height="15" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="5748b0c4-5508-428b-a1ba-13a995db498d" x="0" y="0" width="103" height="15"/>
+								<reportElement uuid="5748b0c4-5508-428b-a1ba-13a995db498d" x="0" y="0" width="85" height="15"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -701,7 +710,7 @@
 						</jr:columnFooter>
 						<jr:detailCell style="table 18_TD" height="12" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="124491ee-2491-401b-89e9-01f48f10e96f" x="0" y="0" width="103" height="12"/>
+								<reportElement uuid="124491ee-2491-401b-89e9-01f48f10e96f" x="0" y="0" width="85" height="12"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>

@@ -145,4 +145,16 @@ class SalesOrder_Rpt extends Reports
         );
     }
 
+    public function Checklist(stdClass $params)
+    {
+
+        $this->reportfile = '/var/www/modules/reportcenter/report/marketing/CheckList.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+
 }

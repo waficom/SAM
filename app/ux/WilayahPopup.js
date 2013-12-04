@@ -114,8 +114,6 @@ Ext.define('App.ux.WilayahPopup',
         },
         ondblclick: function(grid, selected){
             var me = this;
-            me.onGridClick(grid, selected);
-            Ext.getCmp('wilayah_nama').setValue(selected.data.wilayah_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

@@ -2,7 +2,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
     extend: 'App.ux.RenderPanel',
     id: 'panelViewReclass',
     pageTitle: 'Reclass Biaya',
-    pageLayout: 'border',
+    pageLayout: 'anchor',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
@@ -49,13 +49,14 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                 {name: 'for_inv_code',type: 'string'},
                 {name: 'do_num',type: 'string'},
                 {name: 'so_num',type: 'string'},
-                {name: 'qty_do',type: 'float'},
+                {name: 'qty_ar',type: 'float'},
                 {name: 'qty_susut',type: 'float'},
                 {name: 'rata2_hpp',type: 'float'},
                 {name: 'total',type: 'float'},
                 {name: 'debit',type: 'float'},
                 {name: 'timeedit',type: 'date'},
-                {name: 'posted_date',type: 'date'}
+                {name: 'posted_date',type: 'date'},
+                {name: 'keterangan',type: 'string'}
             ]
 
         });
@@ -150,6 +151,7 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                                     itemId : 'tgl_post',
                                     width : 100,
                                     format : 'd-m-Y',
+                                    value: new Date(),
                                     maxValue: new Date()
                                 }]
                         },
@@ -181,18 +183,17 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
         });
         me.ReclassOBJGrid = Ext.create('App.ux.GridPanel', {
             store: me.ReclassOBJStore,
-            height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
+            region: 'center',
             selModel :  Ext.create( 'Ext.selection.CheckboxModel'),
             columns: [
-                {text: 'Dok. AR',sortable: true,dataIndex: 'for_inv_code', flex:1},
-                {text: 'DO Num',sortable: true,dataIndex: 'do_num',flex:1},
-                {text: 'SO Num',sortable: true, dataIndex: 'so_num',flex:1},
-                {text: 'Qty DO',sortable: true, dataIndex: 'qty_do'},
+                {text: 'Kode Inv',sortable: true,dataIndex: 'for_inv_code', flex:1},
+                {text: 'Kode DO',sortable: true,dataIndex: 'do_num',flex:1},
+                {text: 'Kode SO',sortable: true, dataIndex: 'so_num',flex:1},
+                {text: 'Qty AR',sortable: true, dataIndex: 'qty_ar'},
                 {text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut'},
                 {text: 'Harga Rata2 HPP',sortable: true,dataIndex: 'rata2_hpp', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Jumlah',sortable: true,dataIndex: 'total', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Keterangan',sortable: true, dataIndex: 'keterangan',flex:1},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             features:[searching],
@@ -233,7 +234,8 @@ Ext.define('App.view.transaksi.AP-Invoice.Reclass', {
                                     itemId : 'tgl_post_2',
                                     width : 100,
                                     format : 'd-m-Y',
-                                    value : new Date()
+                                    value : new Date(),
+                                    maxValue : new Date()
                                 }]
                         },
                         {

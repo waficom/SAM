@@ -79,5 +79,77 @@ class Logistics_Rpt extends Reports
             'url' => $url
         );
     }
+    public function SPKirim(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/SPKirim.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LPKirim(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/LPKirim.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function RekapPengadaanBarang(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/RekapPengadaanBarang.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LPDKirim(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/LPDKirim.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LP_sowodo(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/LP_SOWODO.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LRPKirim(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/LRPKirim.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+    public function LPKBB(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/logistics/LPKBB.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
+
+
 
 }

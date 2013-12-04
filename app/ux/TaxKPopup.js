@@ -165,14 +165,11 @@ Ext.define('App.ux.TaxKPopup',
         onGridClick: function(grid, selected){
             tax_code = selected.data.tax_code;
             this.setValue(tax_code);
+            Ext.getCmp('tax_code').setValue(selected.data.description);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('tax_code').setValue(selected.data.description);
-            Ext.getCmp('tax_code_po').setValue(selected.data.description);
-            Ext.getCmp('tax_code_ap').setValue(selected.data.description);
-            Ext.getCmp('tax_nama_cashbon').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

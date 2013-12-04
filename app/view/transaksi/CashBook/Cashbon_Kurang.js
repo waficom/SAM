@@ -1,22 +1,16 @@
 Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbon_Kurang',
-    pageTitle: 'Penyelesaian Kas Bon',
-    pageLayout: 'border',
+    pageTitle: 'Penyelesaian CashBon',
+    pageLayout: 'anchor',
     uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    initComponent : function()
+    {
         var me = this;
-        me.currInv_Code = null;
-        me.currCoa = null;
-        me.currDebtor = null;
-        me.currPosted = null;
-        me.curr_coid = null;
-        me.userinput =null;
-        me.useredit=null;
-        //me.myWinChooseItem=null;
-        Ext.define('Cashbon_KurangModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        me.kode = null;
+        Ext.define('KBModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_cb',type: 'string'},
@@ -28,729 +22,357 @@ Ext.define('App.view.transaksi.CashBook.Cashbon_Kurang', {
                 {name: 'nominal_1',type: 'float'},
                 {name: 'nominal_2',type: 'float'},
                 {name: 'remaks',type: 'string'},
-                {name: 'timeedit',type: 'date'},
-                {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'},
                 {name: 'status',type: 'string'},
                 {name: 'account',type: 'string'},
                 {name: 'account_nama',type: 'string'},
                 {name: 'posted_date',type: 'date'},
-                {name: 'btl_cashbon',type: 'string'},
-                {name: 'posted_date_cb_cashbon',type: 'date'},
+                {name: 'btl_cashbon',type: 'bool'},
                 {name: 'cf_code',type: 'string'}
-            ]
-
-        });
-        me.Cashbon_KurangStore = Ext.create('Ext.data.Store', {
-            model: 'Cashbon_KurangModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Cashbon_Kurang.getCashbon_Kurang,
                     create: Cashbon_Kurang.addCashbon_Kurang,
                     update: Cashbon_Kurang.updateCashbon_Kurang,
                     destroy : Cashbon_Kurang.deleteCashbon_Kurang
-                },
-                reader : {
-                    totalProperty : 'totals',
-                    root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
-        });
+            }
 
-        Ext.define('Cb_Kurang_JurnalModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        });
+        Ext.define('JurnalModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
+                {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'float'},
                 {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
-            ]
-
-        });
-        me.Cashbon_Kurang_JurnalStore = Ext.create('Ext.data.Store', {
-            model: 'Cb_Kurang_JurnalModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Jurnal.getJurnal
-                },
-                reader : {
-                    totalProperty : 'totals',
-                    root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
+            }
+
+        });
+        me.KBModel = Ext.create('Ext.data.Store', {
+            storeId : 'KBModel',
+            model : 'KBModel',
+            remoteSort : false
         });
 
+        me.JurnalStore = Ext.create('Ext.data.Store', {
+            storeId : 'JurnalStore',
+            model : 'JurnalModel',
+            remoteSort : false
+        });
         var searching={
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit','inv_date']
-
+            disableIndexes:['timeedit','tanggal']
         }
-
-        /**
-         * Lists Grid
-         */
-        me.Cashbon_KurangGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbon_KurangStore,
-            height: 300,
+        me.KasBonGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('KBModel'),
+            height: 370,
             margin: '0 0 3 0',
             region: 'north',
-            columns: [
-                {width: 150,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 150,text: 'Doc CB',sortable: true,dataIndex: 'inv_cb'},
-                {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 100,text: 'Tax',sortable: true,dataIndex: 'tax_code'},
-                {width: 100,text: 'Account',sortable: true,dataIndex: 'account'},
-                {width: 150,text: 'Nominal 1',sortable: true,dataIndex: 'nominal_1', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 150,text: 'Nominal 2',sortable: true,dataIndex: 'nominal_2', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'remaks'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : '';
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
                 }
             },
             listeners: {
                 scope: me,
-                select: me.onPBGridClick,
-                itemdblclick: function(view, record){
-                    if(record.get('status')!=1){
-                        me.onItemdblclick(me.Cashbon_KurangStore, record, 'Edit Penyelesaian Cashbon');
-                        Ext.getCmp('post_cashbon').setDisabled(false);
-                        Ext.getCmp('total_cb_krg').setValue(record.get('nominal_1')-record.get('nominal_2'));
-
-                        var totalDebit= 0, totalCredit= 0;
-                        me.Cashbon_Kurang_JurnalStore.each(function(record){
-                            if(record.get('inv_code') == me.currInv_Code) {
-                                if(record.get('coa_nama')==Ext.getCmp('bank_nama_cashbon').getValue()){
-                                    totalDebit += record.get('debit');
-                                    totalCredit += record.get('credit');
-                                    console.log(totalDebit, totalCredit);
-                                }
-
-                            }
-                        });
-
-                        /*if(totalDebit != '' || totalDebit != 0){
-                            console.log('xxxxxxxx');
-                            //Ext.getCmp('cf_code_cashbon').remove(0);
-                            Ext.getCmp('cf_code_cashbon').add({xtype:'xtCFPopup',name:'cf_code', value: this.getValue()});
-                        }
-                        else if(totalCredit != '' || totalCredit !=0 ){
-                            console.log('zzzzzzz');
-                            //Ext.getCmp('cf_code_cashbon').remove(0);
-                            Ext.getCmp('cf_code_cashbon').add({xtype:'xtCF_OPopup',name:'cf_code', value: this.getValue()});
-                        }*/
-                    }
-
-
-                }
+                select: me.onGridClick
             },
             features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            scope: me,
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewPB(form, 'Cashbon_KurangModel', 'Tambah Data');
-                                Ext.getCmp('inv_date_cashbon').setValue(new Date());
-                                Ext.getCmp('tax_cd_ck').setValue('NT01')
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            id:'delete_cashbon',
-                            handler:function() {
-                                me.onPBDelete(me.Cashbon_KurangStore);
-                            }
-                        },'->',
-                        {
-                            xtype:'displayfield',
-                            itemId:'itemuserinput',
-                            margin : '0 5 0 0'
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode Dokumen',
+                                            name:'inv_code',
+                                            valueText:'otomatis',
+                                            readOnly: true,
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Input',
+                                            format : 'd-m-Y',
+                                            itemId:'tgl_input_kasbon',
+                                            name:'inv_date',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'xtCashbonOutPopup',
+                                            fieldLabel : 'Kode Kas Bon',
+                                            name:'inv_cb',
+                                            width:300,
+                                            allowBlank:false
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kode Bank',
+                                            name:'bank_code',
+                                            itemId:'kode_bank_cb',
+                                            width:200,
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Bank',
+                                            name:'bank_nama',
+                                            itemId:'bank_kasbon',
+                                            width:300,
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'Batal Kas Bon',
+                                            name:'btl_cashbon',
+                                            width:150,
+                                            handler: function(field, value) {
+                                                if (value== true) {
+                                                    Ext.ComponentQuery.query('#akun_kasbon')[0].setDisabled(true);
+                                                    Ext.ComponentQuery.query('#nominal_kasbon')[0].setDisabled(true);
+                                                }else{
+                                                    Ext.ComponentQuery.query('#akun_kasbon')[0].setDisabled(false);
+                                                    Ext.ComponentQuery.query('#nominal_kasbon')[0].setDisabled(false);
+                                                }
+
+                                            }
+                                        },
+                                        {
+                                            xtype:'xtCFPopup',
+                                            fieldLabel : 'Kode Cash Flow',
+                                            name:'cf_code',
+                                            width:200,
+                                            allowBlank:false
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kode Pajak',
+                                            name:'tax_code',
+                                            itemId:'tax_code_kasbon',
+                                            readOnly:true,
+                                            width:200
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+
+                                        {
+                                            xtype : 'xtCoaPopup',
+                                            fieldLabel : 'Akun',
+                                            name:'account',
+                                            itemId:'akun_kasbon',
+                                            width:200,
+                                            allowBlank:false
+                                        },
+                                        {
+                                            xtype : 'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Jumlah',
+                                            name:'nominal_1',
+                                            itemId:'nominal_kasbon',
+                                            readOnly:true,
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Nominal Bayar',
+                                            name:'nominal_2',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'remaks',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'mitos.checkbox',
+                                            fieldLabel : 'Posting',
+                                            name:'status',
+                                            width:150,
+                                            handler: function(field, value) {
+                                                if (value== true) {
+                                                    Ext.ComponentQuery.query('#tgl_post_kasbon')[0].setDisabled(false);
+                                                    Ext.ComponentQuery.query('#tgl_post_kasbon')[0].setValue(new Date());
+                                                }else{
+                                                    Ext.ComponentQuery.query('#tgl_post_kasbon')[0].setDisabled(true);
+                                                }
+
+                                            }
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Posting',
+                                            format : 'd-m-Y',
+                                            maxValue : new Date(),
+                                            name:'posted_date',
+                                            disabled:true,
+                                            width:200,
+                                            itemId:'tgl_post_kasbon'
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.Cashbon_KurangStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
+                })
+            ],
+            columns:[
+                {text: 'Kode Dokumen',sortable: true,dataIndex: 'inv_code'},
+                {width: 80,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Kode KasBon',sortable: true,dataIndex: 'inv_cb'},
+                {text: 'Kode Bank',sortable: true,dataIndex: 'bank_code'},
+                {text: 'Kode Pajak',sortable: true,dataIndex: 'tax_code'},
+                {text: 'Akun',sortable: true,dataIndex: 'account'},
+                {width: 150,text: 'Nominal 1',sortable: true,dataIndex: 'nominal_1', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {width: 150,text: 'Nominal 2',sortable: true,dataIndex: 'nominal_2', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {flex:1,text: 'Remarks',sortable: true,dataIndex: 'remaks'},
+                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'KBModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'delete',
+                    scope:me,
+                    handler:me.onDeleteRec
                 }
+
             ]
         });
-
-        me.Cb_Kurang_JurnalGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbon_Kurang_JurnalStore,
-            region: 'center',
-            enablePaging: true,
-            columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+        me.JurnalGrid = Ext.create('Ext.grid.Panel', {
+            title:'Jurnal',
+            store: Ext.data.StoreManager.lookup('JurnalStore'),
+            region:'center',
+            columns:[
+                {header : 'co_id', dataIndex : 'co_id', hidden: true},
                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Creditor', dataIndex : 'vend_id',width : 100},
-                {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                {header : 'Doc. Number', dataIndex : 'inv_code'},
+                {header : 'Creditor', dataIndex : 'vend_id'},
+                {header : 'Coa', dataIndex : 'coa'},
+                {header : 'Description', dataIndex : 'coa_nama',flex:1, summaryRenderer: function(){
                     return '<b>Total</b>';
                 }},
                 {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                {header : 'Remarks', dataIndex : 'remaks', flex:1},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
-            ],
-            viewConfig: {
-                stripeRows: false,
-                getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
-                }
-            },
-            features: [{
+            ],features: [{
                 ftype: 'summary'
-            }, searching]
+            }]
         });
 
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'inv_code',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Entry Date'
-                                },
-                                {
-                                    fieldLabel : 'Entry Date',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'inv_date',
-                                    format : 'd-m-Y',
-                                    maxValue: new Date(),
-                                    id:'inv_date_cashbon',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'CB Doc : '
-                                },
-                                {
-                                    width: 180,
-                                    xtype: 'xtCashbonOutPopup',
-                                    name: 'inv_cb',
-                                    allowBlank: false
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'datefield',
-                                    id:'posted_date_cb_cashbon',
-                                    name: 'posted_date_cb_cashbon',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    hidden: true
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'bank_code',
-                                    id:'bank_code_cashbon',
-                                    hidden: true
-                                },
-                                {
-                                    //width: 200,
-                                    xtype: 'displayfield',
-                                    name:'bank_nama',
-                                    id:'bank_nama_cashbon'
-                                },{
-                                    //width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Batal Cashbon',
-                                    name:'btl_cashbon',
-                                    handler: function(field, value) {
-                                        if (value== true) {
-                                            Ext.getCmp('tax_cd_ck').disable();
-                                            Ext.getCmp('acc_id_cashbon').disable();
-                                            //Ext.getCmp('nominal_1_cb_krg').disable();
-                                            Ext.getCmp('nominal_2_cb_krg').disable();
-                                            //Ext.getCmp('total_cb_krg').disable();
-                                        }else{
-                                            Ext.getCmp('tax_cd_ck').enable();
-                                            Ext.getCmp('acc_id_cashbon').enable();
-                                            //Ext.getCmp('nominal_1_cb_krg').enable();
-                                            Ext.getCmp('nominal_2_cb_krg').enable();
-                                            //Ext.getCmp('total_cb_krg').enable();
-                                        }
-
-                                    }
-                                },
-                                {
-                                    xtype: 'displayfield',
-                                    value: 'Batal Cashbon'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tax Code : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',//'xtTaxMPopup',
-                                    name: 'tax_code',
-                                    id:'tax_cd_ck',
-                                    allowBlank: false,
-                                    readOnly:true
-                                },{
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'tax_nama',
-                                    id:'tax_nama_cashbon'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Account : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'account',
-                                    id:'acc_id_cashbon',
-                                    allowBlank: false
-                                },{
-                                    width: 200,
-                                    xtype: 'displayfield',
-                                    name:'account_nama',
-                                    id:'account_cashbon'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    name: 'nominal_1',
-                                    id:'nominal_1_cb_krg',
-                                    readOnly: true,
-                                    readonly:true
-
-                                },
-                                {
-                                    width: 10,
-                                    xtype: 'displayfield',
-                                    value: ' - '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    name: 'nominal_2',
-                                    id:'nominal_2_cb_krg',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                },{
-                                    width: 10,
-                                    xtype: 'displayfield',
-                                    value: ' = '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    id:'total_cb_krg',
-                                    readOnly: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'CF Code :'
-                                },
-                                {
-                                    width: 100,
-                                    xtype:'xtCFPopup',
-                                    id:'cf_code_cashbon',
-                                    name:'cf_code',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Remaks : '
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'remaks'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posted',
-                                    id:'post_cashbon',
-                                    disabled: true,
-                                    name: 'status',
-                                    handler: function(field, value) {
-                                        if (value== true) {
-                                            Ext.getCmp('posted_date_cashbon').setDisabled(false);
-                                            Ext.getCmp('posted_date_cashbon').setValue(new Date());
-                                        }else{
-                                            Ext.getCmp('posted_date_cashbon').setDisabled(true);
-                                        }
-
-                                    }
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'posted_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    disabled: true,
-                                    maxValue: new Date(),
-                                    allowBlank:false,
-                                    id:'posted_date_cashbon'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPBSave(form, me.Cashbon_KurangStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
-        });
-
-        me.pageBody = [me.Cashbon_KurangGrid, me.Cb_Kurang_JurnalGrid];
+        me.pageBody = [me.KasBonGrid, me.JurnalGrid];
         me.callParent(arguments);
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
 
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
+    }, // end of initComponent
+
+    onGridClick: function(grid, selected){
+        var me = this;
+        me.kode = selected.data.inv_code;
+        me.JurnalStore.load({params:{inv_code: me.kode}});
+        var  deletebtn = me.query('button[action="delete"]')[0];
+        if(selected.data.status==1 || selected.data.status==2){
+            deletebtn.setDisabled(true);
+        }else{
+            deletebtn.setDisabled(false);
         }
-    },
-    action1: function(action, window){
-        var winf = window, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onItemdblclick1: function(store, record, title, window, form){
 
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old',window);
-        window.show();
     },
-
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewPB: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+        newModel = Ext.ModelManager.create({
         }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
 
-    },
-    onNewProduksi1: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new',window);
-        window.show();
+        Ext.ComponentQuery.query('#tgl_input_kasbon')[0].setValue(new Date());
+        Ext.ComponentQuery.query('#tax_code_kasbon')[0].setValue('NT02');
     },
 
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-    onPBGridClick: function(grid, selected){
-        var me = this;
-        me.currInv_Code = selected.data.inv_code;
-        me.currDebtor=selected.data.from_bank_code;
-        me.currPosted = selected.data.status;
-        var TopBarItems = this.Cashbon_KurangGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.Cashbon_Kurang_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_cashbon').disable();
-        }else{
-            Ext.getCmp('delete_cashbon').enable();
-        }
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
 
-    },
-
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-
-    onPBSave: function(form, store){
-        var me = this;
-        me.savePB(form, store);
-    },
-    savePB: function(form, store){
-        var me = this;
-        var tglPost_CB_out = Ext.getCmp('posted_date_cb_cashbon').getValue();
-        var StatusPosting = form.findField('status').getValue();
-        var tglPosting = form.findField('posted_date').getValue();
-        if(StatusPosting){
-            if(tglPosting < tglPost_CB_out ){
-                Ext.MessageBox.alert('Warning', 'Tgl Posting Penyelesaian Cashbon Lebih Kecil dari tgl Posting Cashbook');
-            }else{
-                me.CallFuctionSave(form, store);
-            }
-        }else{
-            me.CallFuctionSave(form, store);
-        }
-    },
-
-    CallFuctionSave: function(form, store){
-        var me = this , record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-                store.load();
-                me.Cashbon_Kurang_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-            },
-            failure:function(){
-                store.load();
-                me.msg('Opps!', 'Error!!', true);
-            }
-        });
-},
-
-    onPBDelete: function(store){
-        var me = this, grid = me.Cashbon_KurangGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    PB.deletePB(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
                     }
-                    me.Cashbon_Kurang_JurnalStore.load();
-
                 }
-            }
-        });
+            });
+
+        }
+
     },
 
-    onEnter : function(field, e)
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive : function(callback)
     {
-       var nominal_1 = Ext.getCmp('nominal_1_cb_krg').getValue();
-        var nominal_2 = Ext.getCmp('nominal_2_cb_krg').getValue();
-        Ext.getCmp('total_cb_krg').setValue(nominal_1 - nominal_2);
-    },
-
-    onActive: function(callback){
-        var me = this;
-        this.Cashbon_KurangStore.load({params:{start:0, limit:5}});
-        this.Cashbon_Kurang_JurnalStore.load();
-
+        this.KBModel.load();
+        this.JurnalStore.load();
         callback(true);
     }
 });
+//ens LogPage class

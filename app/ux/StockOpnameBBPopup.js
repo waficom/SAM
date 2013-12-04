@@ -1,7 +1,7 @@
-Ext.define('App.ux.ARPayUMCancelPopup',
+Ext.define('App.ux.StockOpnameBBPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtARPayUMCancelPopup',
+        alias : 'widget.xtStockOpnameBBPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,21 +17,25 @@ Ext.define('App.ux.ARPayUMCancelPopup',
                 },
                 prod_id = null;
 
-            Ext.define('JenisSearchModel',
+            Ext.define('StockOpnameBBModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {name: 'inv_code',type: 'string'},
-                        {name: 'inv_date',type: 'date'},
-                        {name: 'saldo_akhir',type: 'string'},
-                        {name: 'posted_date',type: 'date'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'co_id',type: 'string'},
+                        {name: 'bb_id',type: 'string'},
+                        {name: 'bb_nama',type: 'string'},
+                        {name: 'gudang_id',type: 'string'},
+                        {name: 'sat_id',type: 'string'},
+                        {name: 'periode',type: 'string'},
+                        {name: 'qty_akhir',type: 'string'},
+                        {name: 'harga_akhir',type: 'string'},
+                        {name: 'total_akhir',type: 'string'}
 
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getARPayUMCancelpopup},
+                        api : {read : Popup.getStockOpname},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -41,34 +45,32 @@ Ext.define('App.ux.ARPayUMCancelPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'JenisSearchModel',
+                    model : 'StockOpnameBBModel',
                     pageSize : 50,
                     autoLoad : false
                 });
 
-
-//            me.smGrid = Ext.create('Ext.selection.CheckboxModel');
-            // create the Grid
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Saldo akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {text: 'Posting Date', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                    {text: 'Periode',sortable: true,dataIndex: 'periode'},
+                    {text: 'Kode',sortable: true,dataIndex: 'bb_id'},
+                    {text: 'Bahan Baku',sortable: true,dataIndex: 'bb_nama', flex:1},
+                    {text: 'Gudang',sortable: true,dataIndex: 'gudang_id'},
+                    {text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
+                    {text: 'Qty Stock',sortable: true,dataIndex: 'qty_akhir'},
+                    {text: 'Harga Rata2',sortable: true,dataIndex: 'harga_akhir'},
+                    {text: 'Total',sortable: true,dataIndex: 'total_akhir'}
                 ],
                 height: 200,
-//                selModel : me.smGrid,
                 width: 600,
-                title: 'AR Payment UM',
+                title: 'Stock Opname',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
                     pageSize    : 50,
                     store      : me.store,
                     displayInfo: false,
-//                    displayMsg : 'Data yang ada {0} - {1} Dari {2}',
                     emptyMsg   : "Tidak ada data"
                 }),
                 listeners: {
@@ -85,7 +87,6 @@ Ext.define('App.ux.ARPayUMCancelPopup',
                     {
                         text: 'Pilih',
                         cls: 'winSave',
-//                        handler: me.btnSavePressed
                         handler : function(btn){
                             btn.up('window').close();
                         }
@@ -108,20 +109,31 @@ Ext.define('App.ux.ARPayUMCancelPopup',
         },
 
         onTrigger1Click : function(){
-            var me = this;
+            var me = this, periode= 0, gudang_id=null;
             me.searchwin.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
-            me.store.load();
+            if( Ext.ComponentQuery.query('#periode_stock')[0]){
+                periode=  Ext.ComponentQuery.query('#periode_stock')[0].getValue();
+            }
+            if( Ext.ComponentQuery.query('#gudang_stock')[0]){
+                gudang_id = Ext.ComponentQuery.query('#gudang_stock')[0].getValue();
+            }
+            me.store.load({params:{periode: periode, gudang_id:gudang_id}});
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            inv_code = selected.data.inv_code;
-            this.setValue(inv_code);
+            bb_id = selected.data.bb_id;
+            this.setValue(bb_id);
+                Ext.ComponentQuery.query('#qty_akhir')[0].setValue(selected.data.qty_akhir);
+                Ext.ComponentQuery.query('#harga_akhir')[0].setValue(selected.data.harga_akhir);
+                Ext.ComponentQuery.query('#total_akhir')[0].setValue(selected.data.total_akhir);
+                Ext.ComponentQuery.query('#sat_id_stock')[0].setValue(selected.data.sat_id);
+                Ext.ComponentQuery.query('#periode_stock')[0].setValue(selected.data.periode);
+                Ext.ComponentQuery.query('#gudang_stock')[0].setValue(selected.data.gudang_id);
+
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('uangmuka_ar').setValue(selected.data.saldo_akhir);
-            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

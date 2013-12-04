@@ -114,22 +114,14 @@ class Formula
 	 */
 	public function updateformula(stdClass $params)
 	{
-		$data       = get_object_vars($params);
-        if ($data['old_formula_id'] == $data['formula_id']) {
-            unset($data['id'], $data['formula_id'], $data['old_formula_id']);
-            $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
-        }
-        else
-        {
-            $sql = "UPDATE formula1 SET formula_id = '" . $data['formula_id'] . "' WHERE formula_id = '". $data['old_formula_id'] . "'";
-            $this->db->setSQL($sql);
-            $this->db->execLog();
-            unset($data['id'], $data['formula_id'], $data['old_formula_id']);
-        }
+        $company =  $_SESSION['user']['site'];
+        $data       = get_object_vars($params);
+        unset($data['id'], $data['formula_id'], $data['old_formula_id'], $data['cust_nama'],$data['spesifikasi_nama']);
+        $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-        $sql = $this->db->sqlBind($data, 'formula0', 'U', array('formula_id' => $params->old_formula_id, 'co_id' => $params->co_id));
+        $sql = $this->db->sqlBind($data, 'formula0', 'U', array('formula_id' => $params->formula_id, 'co_id' => $company));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -138,10 +130,10 @@ class Formula
 	public function deleteformula(stdClass $params)
 	{
         $company =  $_SESSION['user']['site'];
-		$sql = "DELETE FROM formula1 WHERE (formula_id = '$params->formula_id', co_id='$company')";
+		$sql = "DELETE FROM formula1 WHERE formula_id = '$params->formula_id' and co_id='$company'";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
-		$sql = "DELETE FROM formula0 WHERE (formula_id = '$params->formula_id', co_id='$company')";
+		$sql = "DELETE FROM formula0 WHERE formula_id = '$params->formula_id' and co_id='$company'";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;
@@ -191,7 +183,7 @@ class Formula
         $company =  $_SESSION['user']['site'];
         $data       = get_object_vars($params);
 		unset($data['id'], $data['bb_id'], $data['old_bb_id'], $data['bb_nama'], $data['satuan_nama'],$data['sequence_no']);
-		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('sequence_no' => trim($params->sequence_no)));
+		$sql = $this->db->sqlBind($data, 'formula1', 'U', array('co_id' => $company,'formula_id' => $params->formula_id, 'sequence_no' => $params->sequence_no));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -199,7 +191,8 @@ class Formula
 
 	public function deleteformula1(stdClass $params)
 	{
-		$sql = "DELETE FROM formula1 WHERE (co_id = '$params->co_id') and (formula_id = '$params->formula_id') and (sequence_no = '$params->sequence_no')";
+        $company =  $_SESSION['user']['site'];
+		$sql = "DELETE FROM formula1 WHERE (co_id = '$company') and (formula_id = '$params->formula_id') and (sequence_no = '$params->sequence_no')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;

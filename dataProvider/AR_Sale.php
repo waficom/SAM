@@ -78,10 +78,14 @@ class AR_Sale
         }
         else
         {
-            $orderx = 'timeedit';
+            $orderx = 'a.timeedit';
         }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM ar_sale_detail where co_id='$company' and inv_code ='$params->inv_code' ORDER BY $orderx DESC";
+        $sql = "SELECT a.*, c.qty_do
+        FROM ar_sale_detail a
+        inner join ar_sale b on a.co_id=b.co_id and a.inv_code=b.inv_code
+        inner join deliveryorder c on b.co_id=c.co_id and b.do_num=c.do_num
+        where a.co_id='$company' and a.inv_code ='$params->inv_code' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -139,7 +143,7 @@ class AR_Sale
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'], $data['sequence_no']);
+        unset($data['id'], $data['sequence_no'], $data['qty_do']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_detail', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -171,7 +175,7 @@ class AR_Sale
         $data = get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['inv_code'], $data['sequence_no']);
+        unset($data['id'],$data['inv_code'], $data['sequence_no'], $data['qty_do']);
         $sql = $this -> db -> sqlBind($data, 'ar_sale_detail', 'U', array('inv_code' => $params -> inv_code,'sequence_no' => $params -> sequence_no ));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

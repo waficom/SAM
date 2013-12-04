@@ -14,6 +14,7 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
         me.currProd_id = null;
         me.currWo_num = null;
         me.currProduksi = null;
+        me.qtySO = null;
         Ext.define('WO_BB_FormulaModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -61,6 +62,7 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
                 {name: 'wo_num',type: 'string'},
                 {name: 'so_num',type: 'string'},
                 {name: 'prod_id',type: 'string'},
+                {name: 'prod_nama',type: 'string'},
                 {name: 'no_ppd',type: 'string'},
                 {name: 'qty',type: 'float'},
                 {name: 'qty_pcs',type: 'float'},
@@ -115,10 +117,10 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
                 {text: 'WO Num',sortable: true,dataIndex: 'wo_num', hidden:true},
                 {text: 'Customer',sortable: true,dataIndex: 'cust_nama', flex:1},
                 {text: 'Produk',sortable: true,dataIndex: 'prod_id'},
-                {text: 'Qty SO',sortable: true,dataIndex: 'qtyso'},
-                {text: 'Qty BB',sortable: true,dataIndex: 'qtybb'},
-                {text: 'Qty BDP',sortable: true,dataIndex: 'qtybdp'},
-                {text: 'Qty BJ',sortable: true,dataIndex: 'qtybj'},
+                {text: 'Qty SO',sortable: true,dataIndex: 'qtyso',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BB',sortable: true,dataIndex: 'qtybb',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BDP',sortable: true,dataIndex: 'qtybdp',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BJ',sortable: true,dataIndex: 'qtybj',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Formula',sortable: true,dataIndex: 'formula_id'},
                 {text: 'KA Shift',sortable: true,dataIndex: 'ka_shift'},
                 {text: 'status',sortable: true,dataIndex: 'status', hidden:true},
@@ -177,8 +179,8 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
                 {header : 'Sequence No', dataIndex : 'sequence_no'},
                 {header : 'ID Produk', dataIndex : 'prod_id'},
                 {header : 'Produk', dataIndex : 'prod_nama',flex:1},
-                {header : 'Qty',dataIndex : 'qty'},
-                {header : 'Qty/Sak',dataIndex : 'qty_pcs'},
+                {header : 'Qty',dataIndex : 'qty',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Qty/Sak',dataIndex : 'qty_pcs',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Sat', dataIndex : 'sat_id'},
                 {header : 'Darigudang', dataIndex : 'gudang_id'},
                 {header : 'kegudang', dataIndex : 'kegudang'},
@@ -205,13 +207,22 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype: 'numberfield',
-                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    hideTrigger:true,
+                                    width: 150,
                                     name : 'qty',
                                     fieldLabel: 'Qty',
                                     value:1,
                                     id:'qty_bj_formula',
-                                    labelWidth : 30
+                                    labelWidth : 30,
+                                    enableKeyEvents: true,
+                                    listeners: {
+                                        'keyup':function(field, event){
+                                            if(field.value > me.qtySO ) {
+                                                Ext.Msg.alert('Warning', '<span style="color: #ff2110"> KUANTUM BARANG JADI APAKAH SUDAH BENAR ..?</span>');
+                                            }
+                                        }
+                                    }
                                 }]
                         },{
                             xtype : 'fieldcontainer',
@@ -229,8 +240,9 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype: 'numberfield',
-                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    hideTrigger:true,
+                                    width: 150,
                                     name : 'qty_pcs',
                                     fieldLabel: 'Qty/Sak',
                                     id:'qtypcs_bj_formula',
@@ -391,6 +403,7 @@ Ext.define('App.view.transaksi.workorder.WO_BJ_Formula', {
         me.currStatus = selected.data.status;
         me.Formula = selected.data.formula_id;
         me.currProduksi = selected.data.no_ppd;
+        me.qtySO = selected.data.qtyso;
         var TopBarItems = this.WO_BB_FormulaGrid.getDockedItems('toolbar[dock="top"]')[0];
         me.userinput = selected.data.userinput;
         me.useredit = selected.data.useredit;

@@ -39,9 +39,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder', {
                 api: {
                     read: DeliveryOrder.getDeliveryOrder,
                     create: DeliveryOrder.addDeliveryOrder,
-                    create: DeliveryOrder.addDeliveryOrderReturn,
                     update: DeliveryOrder.updateDeliveryOrder,
-                    update: DeliveryOrder.updateDeliveryOrderPosting,
                     destroy: DeliveryOrder.deleteDeliveryOrder
                 }
             }
@@ -243,11 +241,7 @@ Ext.define('App.view.transaksi.DeliveryOrder.Jurnal_DeliveryOrder', {
         me.useredit = selected.data.useredit;
         me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
         TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_do').disable();
-        }else{
-            Ext.getCmp('delete_do').enable();
-        }
+
         me.DO_JurnalStore.load({params:{inv_code: me.currDeliveryOrder}});
 
     },

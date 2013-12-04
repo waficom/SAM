@@ -459,22 +459,25 @@
 		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select * from rpt_ringkasanhpp($P{periode},$P{co_id})]]>
+		<![CDATA[select distinct b.so_num , c.prod_id, a.co_id
+from (
+ select distinct a.co_id,
+      iif(b.inv_code is not null, b.inv_code , iif(c.inv_code is not null, c.inv_code , iif(d.inv_code is not null, d.inv_code, a.for_inv_code))) as dok_ar
+ from ap_reclass a
+  left join reclass_2_ohp_tl b on a.inv_code=b.inv_reclass and a.co_id=b.co_id
+  left join reclass_aset c on a.inv_code=c.inv_reclass and a.co_id=c.co_id
+  left join ar_reclass d on a.inv_code=d.inv_reclass and a.co_id=d.co_id
+  where a.status=1 and a.periode=$P{periode} and
+  (exists(select * from reclass_2_ohp_tl where co_id=a.co_id and inv_reclass=a.inv_code and periode_reclass=$P{periode})
+    or exists(select * from reclass_aset where co_id=a.co_id and inv_reclass=a.inv_code and periode_reclass=$P{periode})
+    or exists(select * from ar_reclass where co_id=a.co_id and inv_reclass=a.inv_code and periode_reclass=$P{periode})
+    or (a.inv_type='OBJ') )
+) a
+left join ar_sale b on a.dok_ar=b.inv_code and a.co_id=b.co_id
+left join deliveryorder c on b.do_num=c.do_num and b.co_id=c.co_id]]>
 	</queryString>
-	<field name="TOTALOHP" class="java.math.BigDecimal"/>
-	<field name="HARGA_QTY" class="java.math.BigDecimal"/>
-	<field name="HARGA_JUAL" class="java.math.BigDecimal"/>
-	<field name="HARGA_AR" class="java.math.BigDecimal"/>
-	<field name="OHP_ASET" class="java.math.BigDecimal"/>
-	<field name="OHP" class="java.math.BigDecimal"/>
-	<field name="OHP_TL" class="java.math.BigDecimal"/>
-	<field name="OHP_L" class="java.math.BigDecimal"/>
-	<field name="DOK_AR" class="java.lang.String"/>
-	<field name="HPP_BB" class="java.math.BigDecimal"/>
-	<field name="QTY_DO" class="java.lang.Integer"/>
-	<field name="PROD_ID" class="java.lang.String"/>
 	<field name="SO_NUM" class="java.lang.String"/>
-	<field name="PERIODE" class="java.lang.String"/>
+	<field name="PROD_ID" class="java.lang.String"/>
 	<field name="CO_ID" class="java.lang.String"/>
 	<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
@@ -520,10 +523,6 @@
 Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 ]]></text>
 			</staticText>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="8dae9483-4c77-4921-8ef5-176f1f7abe6f" x="65" y="1" width="96" height="58"/>
-				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement uuid="b60e2826-98ad-4c65-b1c0-7e429415a245" x="195" y="71" width="72" height="10"/>
 				<textElement textAlignment="Right">
@@ -538,10 +537,14 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</textElement>
 				<textFieldExpression><![CDATA[$P{periode}]]></textFieldExpression>
 			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="dec6907e-8e0a-476f-837b-b09f6ee8ff72" x="61" y="1" width="100" height="57"/>
+				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<detail>
-		<band height="216" splitType="Immediate">
+		<band height="154" splitType="Immediate">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="37f0c104-75f8-48c4-bff8-d1bd8b3eb6c4" x="73" y="12" width="101" height="10"/>
 				<textElement verticalAlignment="Middle">
@@ -635,7 +638,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 			<subreport>
 				<reportElement uuid="47c984b4-0b24-450b-b2f9-4dd257966b05" positionType="Float" x="36" y="124" width="450" height="30"/>
 				<subreportParameter name="periode">
-					<subreportParameterExpression><![CDATA[$F{PERIODE}]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[$P{periode}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="co_id">
 					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>

@@ -211,65 +211,65 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 	<group name="po_num" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{PO_NUM}]]></groupExpression>
 		<groupHeader>
-			<band height="157">
+			<band height="189">
 				<staticText>
-					<reportElement uuid="30bc3539-aa11-43db-b483-b5cd013a27fd" x="1" y="84" width="49" height="20"/>
+					<reportElement uuid="30bc3539-aa11-43db-b483-b5cd013a27fd" x="2" y="106" width="49" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<text><![CDATA[Nomor ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6a0774bc-87f1-4ab4-b940-c93eff01f064" x="1" y="104" width="49" height="20"/>
+					<reportElement uuid="6a0774bc-87f1-4ab4-b940-c93eff01f064" x="2" y="126" width="49" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<text><![CDATA[Tanggal]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="519090aa-32e5-47de-b71e-ebf1f6233ac1" x="394" y="84" width="54" height="20"/>
+					<reportElement uuid="519090aa-32e5-47de-b71e-ebf1f6233ac1" x="395" y="106" width="54" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<text><![CDATA[Kepada Yth.]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="b497113b-1ad2-4f24-831f-21b09c32f876" x="62" y="84" width="142" height="20"/>
+					<reportElement uuid="b497113b-1ad2-4f24-831f-21b09c32f876" x="63" y="106" width="142" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{PO_NUM}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
-					<reportElement uuid="0d59ecd2-8e03-4b7d-a9b9-ec2afb9a31de" x="62" y="104" width="100" height="20"/>
+					<reportElement uuid="0d59ecd2-8e03-4b7d-a9b9-ec2afb9a31de" x="63" y="126" width="100" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{TGL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="905f4e05-8633-4563-94b3-157a1618dee4" x="394" y="104" width="172" height="20"/>
+					<reportElement uuid="905f4e05-8633-4563-94b3-157a1618dee4" x="395" y="126" width="172" height="20"/>
 					<textElement verticalAlignment="Top">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{VEND_NAMA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="3a08b77b-2682-4538-84a7-1645720f90f5" x="50" y="84" width="8" height="20"/>
+					<reportElement uuid="3a08b77b-2682-4538-84a7-1645720f90f5" x="51" y="106" width="8" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<text><![CDATA[:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="c8588d9f-e5d6-43d7-a673-939f94aae3c9" x="50" y="104" width="8" height="20"/>
+					<reportElement uuid="c8588d9f-e5d6-43d7-a673-939f94aae3c9" x="51" y="126" width="8" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 					<text><![CDATA[:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="172e4b64-e053-4e35-b180-237078646710" x="35" y="145" width="154" height="12"/>
+					<reportElement uuid="172e4b64-e053-4e35-b180-237078646710" x="35" y="167" width="139" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -277,13 +277,13 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Nama Barang]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6ec2e33f-742c-492f-af7c-e84c36b96b38" x="189" y="145" width="55" height="12"/>
+					<reportElement uuid="6ec2e33f-742c-492f-af7c-e84c36b96b38" x="174" y="167" width="71" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -291,13 +291,13 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Qty]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="d3c5d08f-2cfa-4ccd-8945-01c8666d2dba" x="277" y="145" width="50" height="12"/>
+					<reportElement uuid="d3c5d08f-2cfa-4ccd-8945-01c8666d2dba" x="299" y="167" width="75" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -305,13 +305,13 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Harga/Qty]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="71aa106d-7040-409b-82d8-4844b074bfbb" x="244" y="145" width="33" height="12"/>
+					<reportElement uuid="71aa106d-7040-409b-82d8-4844b074bfbb" x="245" y="167" width="54" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -319,13 +319,13 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Satuan]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="a0c804a8-23b2-4458-9f16-5ae9951442cb" x="399" y="145" width="167" height="12"/>
+					<reportElement uuid="a0c804a8-23b2-4458-9f16-5ae9951442cb" x="484" y="167" width="83" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -333,13 +333,13 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Keterangan]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="8f9a84bb-9382-4c35-a5a3-e29bc255883d" x="1" y="145" width="34" height="12"/>
+					<reportElement uuid="8f9a84bb-9382-4c35-a5a3-e29bc255883d" x="1" y="167" width="34" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -347,7 +347,7 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[No.]]></text>
@@ -355,14 +355,14 @@ where a.status=1 and A.posted_date between $P{fromdate} and $P{todate} and a.co_
 				<staticText>
 					<reportElement uuid="4baf6388-0a92-4f6b-b889-4cdec3030890" x="117" y="3" width="423" height="17"/>
 					<textElement>
-						<font size="10" isBold="true"/>
+						<font size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[PT. SARASWANTI ANUGERAH MAKMUR]]></text>
 				</staticText>
 				<staticText>
 					<reportElement uuid="f2e35d89-9328-4fd5-993d-f886d6945dbd" x="117" y="20" width="450" height="43"/>
 					<textElement>
-						<font size="8"/>
+						<font size="9"/>
 					</textElement>
 					<text><![CDATA[Office : 	Surya Inti Permata Juanda Super Blok A.51 - 55, Jl. Raya Juanda, Waru - Sidoarjo
 	Phone : 62 -31 8675888 (Hunting) Fax : 62 -31 - 8678555
@@ -374,14 +374,14 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<reportElement uuid="e710335a-07be-4f8d-87e0-dad78f3ecb0c" x="0" y="63" width="567" height="1"/>
 				</line>
 				<staticText>
-					<reportElement uuid="d734aed0-0cfe-4ebd-a074-e5c099d823c5" x="218" y="64" width="109" height="20"/>
+					<reportElement uuid="d734aed0-0cfe-4ebd-a074-e5c099d823c5" x="218" y="64" width="156" height="20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="8" isBold="true"/>
+						<font size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[PURCHASE ORDER]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="3fb44c74-b294-41f4-aed9-741e40f4a48d" x="327" y="145" width="72" height="12"/>
+					<reportElement uuid="3fb44c74-b294-41f4-aed9-741e40f4a48d" x="374" y="167" width="110" height="22"/>
 					<box>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -389,21 +389,21 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Jumlah (Rp)]]></text>
 				</staticText>
 				<image hAlign="Center" vAlign="Middle">
-					<reportElement uuid="0891459e-70aa-46a0-9778-e89665a3cc98" x="35" y="0" width="82" height="63"/>
+					<reportElement uuid="ec47509c-1095-4a56-a74f-3067fa07f7a7" x="2" y="0" width="115" height="64"/>
 					<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 				</image>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="24">
+			<band height="20">
 				<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-					<reportElement uuid="8798c4c6-b959-48b2-a08b-5c9651ce6157" x="189" y="0" width="55" height="13"/>
+					<reportElement uuid="8798c4c6-b959-48b2-a08b-5c9651ce6157" x="174" y="0" width="71" height="20"/>
 					<box leftPadding="2">
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -411,13 +411,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{sum_qty}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-					<reportElement uuid="c1d06a94-2337-44c8-86cd-32601b5dacea" x="327" y="0" width="72" height="13"/>
+					<reportElement uuid="c1d06a94-2337-44c8-86cd-32601b5dacea" x="374" y="0" width="110" height="20"/>
 					<box leftPadding="2">
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
@@ -425,13 +425,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{sum_total}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="fd2e1944-3d0d-4e76-a6c9-1cf0621536ab" x="115" y="0" width="74" height="13"/>
+					<reportElement uuid="fd2e1944-3d0d-4e76-a6c9-1cf0621536ab" x="115" y="0" width="74" height="20"/>
 					<box>
 						<topPen lineWidth="0.0"/>
 						<leftPen lineWidth="0.0"/>
@@ -439,7 +439,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font fontName="SansSerif" size="10" isBold="true"/>
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
 					<text><![CDATA[Total]]></text>
@@ -453,9 +453,9 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 		</band>
 	</title>
 	<detail>
-		<band height="13">
+		<band height="21">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d9b094f0-3612-48fa-8bd6-d3aee1700793" x="35" y="0" width="154" height="13"/>
+				<reportElement uuid="d9b094f0-3612-48fa-8bd6-d3aee1700793" x="35" y="0" width="139" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -463,13 +463,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BB_NAMA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="1d3d25ac-4f93-4750-8af7-972ccce61f4d" x="189" y="0" width="55" height="13"/>
+				<reportElement uuid="1d3d25ac-4f93-4750-8af7-972ccce61f4d" x="174" y="0" width="71" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -477,13 +477,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{QTY}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ac437934-073a-4b65-81a9-8294a9c1b7ea" x="244" y="0" width="33" height="13"/>
+				<reportElement uuid="ac437934-073a-4b65-81a9-8294a9c1b7ea" x="245" y="0" width="54" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -491,13 +491,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{SAT_ID}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="df3ba47f-cd16-4ac1-9ea4-a03274a70b19" x="277" y="0" width="50" height="13"/>
+				<reportElement uuid="df3ba47f-cd16-4ac1-9ea4-a03274a70b19" x="299" y="0" width="75" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -505,13 +505,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{HRG}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="13721b69-9de4-43d2-86fc-3e8c2180da5a" x="399" y="0" width="167" height="13"/>
+				<reportElement uuid="13721b69-9de4-43d2-86fc-3e8c2180da5a" x="484" y="0" width="83" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -519,13 +519,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{KETERANGAN}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="971afb88-26fd-4bfb-a2d3-aa0ea8236ef6" x="1" y="0" width="34" height="13"/>
+				<reportElement uuid="971afb88-26fd-4bfb-a2d3-aa0ea8236ef6" x="1" y="0" width="34" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -533,13 +533,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{AUTONUMBER}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-				<reportElement uuid="4217ebe9-ee48-497a-bb0b-d337b99b14f5" x="327" y="0" width="72" height="13"/>
+				<reportElement uuid="4217ebe9-ee48-497a-bb0b-d337b99b14f5" x="374" y="0" width="110" height="21"/>
 				<box leftPadding="2">
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -547,7 +547,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
@@ -555,21 +555,29 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="66">
+		<band height="92">
 			<staticText>
 				<reportElement uuid="5fff6886-e531-4419-a435-1c9a6c7d5cfc" x="374" y="0" width="154" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<text><![CDATA[PT. Saraswanti Anugerah Makmur
 Disetujui oleh]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f3cf7d67-7b0b-4407-ac7f-731d917d7622" x="374" y="46" width="154" height="20"/>
+				<reportElement uuid="f3cf7d67-7b0b-4407-ac7f-731d917d7622" x="374" y="46" width="154" height="13"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6"/>
+					<font fontName="SansSerif" size="10" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[A. Adhi Harsanto]]></text>
+				<text><![CDATA[A. Adhi Harsanto
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4924d74b-4998-47fc-891c-1c16a5adb568" x="374" y="59" width="154" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[Direktur Keuangan]]></text>
 			</staticText>
 		</band>
 	</columnFooter>

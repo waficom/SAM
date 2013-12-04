@@ -171,10 +171,6 @@ Ext.define('App.ux.CustomerPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('cust_nama').setValue(selected.data.cust_nama);
-            Ext.getCmp('cust_nama_pay').setValue(selected.data.cust_nama);
-            //Ext.getCmp('cust_nama_ar').setValue(selected.data.cust_nama);
-            Ext.getCmp('cust_nama_so').setValue(selected.data.cust_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

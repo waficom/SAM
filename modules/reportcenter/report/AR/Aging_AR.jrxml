@@ -348,7 +348,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RINGKASAN PIUTANG DEBTOR]]></text>
+				<text><![CDATA[RINGKASAN PIUTANG]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="54b71b8a-71b4-4168-b66d-58bb32335a4f" x="243" y="17" width="450" height="30"/>
@@ -441,7 +441,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[PELANGGAN]]></text>
+								<text><![CDATA[CUSTOMER]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table 8_TD" height="13" rowSpan="1">

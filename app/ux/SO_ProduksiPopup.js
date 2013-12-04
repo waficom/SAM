@@ -116,6 +116,7 @@ Ext.define('App.ux.SO_ProduksiPopup',
         onGridClick: function(grid, selected){
             so_num = selected.data.so_num;
             this.setValue(so_num);
+            Ext.ComponentQuery.query('#cust_id_pp')[0].setValue(selected.data.cust_id);
         },
         ondblclick: function(grid, selected){
             var me = this;

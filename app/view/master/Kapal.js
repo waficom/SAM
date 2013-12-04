@@ -2,7 +2,7 @@
 Ext.define('App.view.master.Kapal', {
     extend: 'App.ux.RenderPanel',
     id: 'panelVessel',
-    pageTitle: i18n('Kapal'),
+    pageTitle: 'Kapal',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;

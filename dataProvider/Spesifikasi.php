@@ -134,7 +134,7 @@ class Spesifikasi
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'spesifikasi', 'U', array('spesifikasi_id' => $params->old_spesifikasi_id));
+		$sql = $this->db->sqlBind($data, 'spesifikasi', 'U', array('spesifikasi_id' => $params->spesifikasi_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

@@ -123,23 +123,32 @@ Ext.define('App.ux.DOPopup',
         onGridClick: function(grid, selected){
             do_num = selected.data.do_num;
             this.setValue(do_num);
-        },
-        ondblclick: function(grid, selected){
-            var me = this;
-            me.onGridClick(grid, selected);
             Ext.getCmp('do_num_ar').setValue(selected.data.do_num);
-            Ext.ComponentQuery.query('#so_num')[0].setValue(selected.data.so_num);
-            Ext.ComponentQuery.query('#prod_id_do')[0].setValue(selected.data.prod_id);
-            Ext.ComponentQuery.query('#gudang_do')[0].setValue(selected.data.darigudang);
-            Ext.ComponentQuery.query('#route_code')[0].setValue(selected.data.route);
-            Ext.ComponentQuery.query('#vessel_id')[0].setValue(selected.data.vessel_id);
+            if(Ext.ComponentQuery.query('#so_num')[0]){
+                Ext.ComponentQuery.query('#so_num')[0].setValue(selected.data.so_num);
+            }
+            if(Ext.ComponentQuery.query('#prod_id_do')[0]){
+                Ext.ComponentQuery.query('#prod_id_do')[0].setValue(selected.data.prod_id);
+            }
+            if(Ext.ComponentQuery.query('#gudang_do')[0]){
+                Ext.ComponentQuery.query('#gudang_do')[0].setValue(selected.data.darigudang);
+            }
+            if(Ext.ComponentQuery.query('#route_code')[0]){
+                Ext.ComponentQuery.query('#route_code')[0].setValue(selected.data.route);
+            }
+            if(Ext.ComponentQuery.query('#cust_id_do')[0]){
+                Ext.ComponentQuery.query('#cust_id_do')[0].setValue(selected.data.cust_id);
+            }
             if(selected.data.cust_id==''){
                 Ext.ComponentQuery.query('#kategory_c')[0].setValue(selected.data.kategory_kirim);
             }else{
                 Ext.ComponentQuery.query('#kategory_o')[0].setValue(selected.data.kategory_kirim);
             }
-            Ext.ComponentQuery.query('#cust_id_do')[0].setValue(selected.data.cust_id);
 
+        },
+        ondblclick: function(grid, selected){
+            var me = this;
+            me.onGridClick(grid, selected);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

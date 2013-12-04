@@ -2,65 +2,81 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
     extend: 'App.ux.RenderPanel',
     id: 'panelDeliveryOrder',
     pageTitle: 'Pengiriman Barang Jadi',
-    pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    initComponent : function()
+    {
         var me = this;
-        me.currDeliveryOrder = null;
-        me.curr_coid = null;
-        me.userinput =null;
-        me.useredit=null;
-        me.currPosted = null;
-        //me.myWinChooseItem=null;
+        me.do_num=null;
+        me.cust_id=null;
 
-        Ext.define('DeliveryOrderModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        Ext.define('DOModel', {
+            extend : 'Ext.data.Model',
+            fields : [
+                {name: 'co_id',type: 'string'},
                 {name: 'do_num',type: 'string'},
                 {name: 'so_num',type: 'string'},
                 {name: 'route',type: 'string'},
-                {name: 'route_nama',type: 'string'},
                 {name: 'deliverydate',type: 'date'},
                 {name: 'cust_nama',type: 'string'},
                 {name: 'qty',type: 'float'},
                 {name: 'qty_do',type: 'float'},
-                {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'},
                 {name: 'timeedit',type: 'date'},
-                {name: 'timeinput',type: 'date'},
                 {name: 'status',type: 'string'},
                 {name: 'prod_id',type: 'string'},
                 {name: 'prod_nama',type: 'string'},
-                {name: 'sat_id',type: 'string'},
                 {name: 'darigudang',type: 'string'},
-                {name: 'gudang_nama',type: 'string'},
                 {name: 'for_do_num',type: 'string'},
                 {name: 'do_type',type: 'string'},
-                {name: 'kategory_kirim',type: 'string'},
                 {name: 'cust_id',type: 'string'},
-                {name: 'vessel_id',type: 'string'},
-                {name: 'keterangan',type: 'string'}
+                {name: 'keterangan',type: 'string'},
+                {name: 'sp_kirim',type: 'string'},
+                {name: 'posted_date',type: 'date'},
             ],
-            proxy: {
-                type: 'direct',
-                api: {
+            proxy:{
+                type:'direct',
+                api:{
                     read: DeliveryOrder.getDeliveryOrder,
                     create: DeliveryOrder.addDeliveryOrder,
-                    create: DeliveryOrder.addDeliveryOrderReturn,
                     update: DeliveryOrder.updateDeliveryOrder,
-                    update: DeliveryOrder.updateDeliveryOrderPosting,
                     destroy: DeliveryOrder.deleteDeliveryOrder
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
                 }
             }
-        });
-        me.DeliveryOrderStore = Ext.create('Ext.data.Store', {
-            model: 'DeliveryOrderModel',
-            autoLoad: false
-        });
 
-        Ext.define('DeliveryOrder1Model', {
-            extend: 'Ext.data.Model',
-            fields: [
+        });
+        Ext.define('DOLocModel', {
+            extend : 'Ext.data.Model',
+            fields : [
+                { name : 'co_id', type : 'string'},
+                { name : 'do_num', type : 'string'},
+                { name : 'cust_id',type : 'string'},
+                { name : 'custloc_id',type : 'string'},
+                { name : 'custloc_nama',type : 'string'},
+                { name : 'alamat',type : 'string'},
+                { name : 'keterangan',type : 'string'},
+                {name: 'status',type: 'string'},
+                { name : 'qty', type : 'float'},
+                { name : 'qty_do', type : 'float'}
+            ],
+            proxy:{
+                type:'direct',
+                api:{
+                    read: DeliveryOrder.getDOLoc,
+                    update: DeliveryOrder.updateDOLoc
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
+                }
+            }
+
+        });
+        Ext.define('DORouteModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'do_num',type: 'string'}
                 ,{name: 'sequence_no',type: 'string'}
                 ,{name: 'ordersource',type: 'string'}
@@ -74,942 +90,620 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
                 ,{name: 'seal_no',type: 'string'}
                 ,{name: 'origin',type: 'string'}
                 ,{name: 'destination',type: 'string'}
-                ,{name: 'status',type: 'string'}
-                ,{name: 'timeedit',type: 'date'}
-                ,{name: 'timeinput',type: 'date'}
-                ,{name: 'useredit',type: 'string'}
-                ,{name: 'userinput',type: 'string'}
-                ,{name: 'old_sequence_no',type: 'string'}
-
             ],
-            proxy: {
-                type: 'direct',
-                api: {
+            proxy:{
+                type:'direct',
+                api:{
                     read: DeliveryOrder.getDeliveryOrder1,
                     create: DeliveryOrder.addDeliveryOrder1,
                     update: DeliveryOrder.updateDeliveryOrder1,
                     destroy: DeliveryOrder.deleteDeliveryOrder1
-                }
-            }
-        });
-        me.DeliveryOrder1Store = Ext.create('Ext.data.Store', {
-            model: 'DeliveryOrder1Model',
-            autoLoad: false
-        });
-        Ext.define('DO_JurnalModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'co_id',type: 'string'},
-                {name: 'inv_date',type: 'date'},
-                {name: 'inv_code',type: 'string'},
-                {name: 'inv_code_link',type: 'string'},
-                {name: 'vend_id',type: 'string'},
-                {name: 'coa',type: 'string'},
-                {name: 'coa_nama',type: 'string'},
-                {name: 'debit',type: 'float'},
-                {name: 'credit',type: 'float'},
-                {name: 'sequence_no',type: 'string'},
-                {name: 'timeedit',type: 'date'},
-                {name: 'remaks',type: 'string'}
-            ]
-
-        });
-        me.DO_JurnalStore = Ext.create('Ext.data.Store', {
-            model: 'DO_JurnalModel',
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: Jurnal.getJurnal
                 },
                 reader : {
                     totalProperty : 'totals',
                     root : 'rows'
                 }
-            },
+            }
+
+        });
+
+        me.DOStore = Ext.create('Ext.data.Store', {
+            storeId : 'DOStore1',
+            model : 'DOModel',
+            remoteSort : false,
+            pageSize : 10,
+            autoLoad: false
+        });
+        me.DOLocStore = Ext.create('Ext.data.Store', {
+            storeId : 'DOLocStore1',
+            model : 'DOLocModel',
+            remoteSort : false,
+            pageSize : 10,
+            autoLoad: false
+        });
+        me.DORouteStore = Ext.create('Ext.data.Store', {
+            storeId : 'DORouteModel',
+            model : 'DORouteModel',
+            remoteSort : false,
             pageSize : 10,
             autoLoad: false
         });
 
-        var searching={
-            ftype : 'searching',
-            mode: 'local'
-            ,           width:  200,
-            disableIndexes:['timeedit']
 
+        function authCk(val){
+            if(val == '1'){
+                return '<img src="resources/images/icons/yes.gif" />';
+            }else if(val == '0'){
+                return '<img src="resources/images/icons/no.gif" />';
+            }
+            return val;
         }
-        me.DeliveryOrderGrid = Ext.create('App.ux.GridPanel', {
-            store: me.DeliveryOrderStore,
-            itemId: 'DeliveryOrderGrid',
-            height: 300,
-            margin: '0 0 3 0',
-            region: 'north',
-            selModel :  Ext.create( 'Ext.selection.CheckboxModel'),
-            columns: [
-                {text: 'Do Num',sortable: true,dataIndex: 'do_num'},
-                {text: 'DO Date', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'So Num', sortable: false, dataIndex: 'so_num'},
-                {text: 'Produk ID',width:150, sortable: false, dataIndex: 'prod_id', hidden:true},
-                {text: 'Produk', sortable: false, dataIndex: 'prod_nama'},
+        var searching = {
+            ftype: 'searching',
+            mode: 'local',
+            width: 200
+        };
+
+
+        me.DOGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('DOStore1'),
+            title:'Delivery Order',
+            border:false,
+            frame:false,
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
+                }
+            },
+            listeners: {
+                scope: me,
+                select: me.onGridClick
+            },
+            features:[searching],
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
+                        {
+                            xtype:'container',
+                            layout:'hbox',
+                            flex:1,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode DO',
+                                            name:'do_num',
+                                            readOnly:true,
+                                            width:300
+                                        },
+                                        {
+                                            fieldLabel : 'Tanggal',
+                                            xtype : 'datefield',
+                                            width : 200,
+                                            name : 'deliverydate',
+                                            format : 'd-m-Y',
+                                            readOnly: true,
+                                            itemId:'tgl_input_do'
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            width : 300,
+                                            fieldLabel: "Jenis ",
+                                            defaults: {xtype: "radio", name:'do_type'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel:'Kirim',
+                                                    checked: true,
+                                                    inputValue:'N',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#do_retur')[0].setDisabled(true);
+                                                            Ext.ComponentQuery.query('#so_num_do')[0].setReadOnly(false);
+                                                        }
+                                                    }
+
+                                                },
+                                                {
+                                                    boxLabel:'Retur',
+                                                    inputValue:'R',
+                                                    handler: function(field, value) {
+                                                        if (value) {
+                                                            Ext.ComponentQuery.query('#do_retur')[0].setDisabled(false);
+                                                            Ext.ComponentQuery.query('#so_num_do')[0].setReadOnly(true);
+                                                        }
+                                                    }
+
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            xtype: 'xtDOPopup',
+                                            fieldLabel : 'DO Retur',
+                                            name:'for_do_num',
+                                            itemId:'do_retur',
+                                            disabled: true,
+                                            allowBlank:false,
+                                            width:300
+                                        },
+                                        {
+                                            xtype: 'xtSODeliveryPopup',
+                                            fieldLabel : 'Kode SO',
+                                            name:'so_num',
+                                            itemId:'so_num_do',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kode Produk',
+                                            name:'prod_id',
+                                            itemId:'prod_id_do',
+                                            readOnly: true,
+                                            width:385
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kode Customer',
+                                            name:'cust_id',
+                                            itemId:'cust_id_do',
+                                            readOnly: true,
+                                            width:200
+                                        }
+                                    ]
+                                }, {
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype : 'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Qty Kirim',
+                                            name:'qty_do',
+                                            itemId:'qty_do',
+                                            readOnly:true,
+                                            width:250
+                                        },
+                                        {
+                                            xtype: 'xtRoutePopup',
+                                            name: 'route',
+                                            fieldLabel : 'Route',
+                                            width:200
+                                        },
+                                        {
+                                            xtype: 'xtSPKirimPopup',
+                                            fieldLabel : 'Surat P. Kirim',
+                                            name: 'sp_kirim',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'keterangan',
+                                            width:385
+                                        },
+                                        {
+                                            xtype : 'mitos.checkbox',
+                                            fieldLabel : 'Posting',
+                                            name:'status',
+                                            width:150,
+                                            handler: function(field, value) {
+                                                if (value== true) {
+                                                    Ext.ComponentQuery.query('#tgl_post_do')[0].setDisabled(false);
+                                                    Ext.ComponentQuery.query('#tgl_post_do')[0].setValue(new Date());
+                                                }else{
+                                                    Ext.ComponentQuery.query('#tgl_post_do')[0].setDisabled(true);
+                                                }
+
+                                            }
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Posting',
+                                            format : 'd-m-Y',
+                                            maxValue : new Date(),
+                                            name:'posted_date',
+                                            disabled:true,
+                                            width:200,
+                                            itemId:'tgl_post_do'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                })
+            ],
+            columns:[
+                {text: 'Kode DO',sortable: true,dataIndex: 'do_num'},
+                {text: 'Tgl Input', width : 80, sortable: true, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Kode SO', sortable: false, dataIndex: 'so_num'},
+                {text: 'Nama Produk', sortable: false, dataIndex: 'prod_nama'},
                 {text: 'Route', sortable: false, dataIndex: 'route'},
                 {text: 'Customer', flex:1, sortable: false,dataIndex: 'cust_nama'},
+                {text: 'Kode Gudang', flex:1, sortable: false,dataIndex: 'darigudang'},
                 {text: 'Qty SO', sortable: false,dataIndex: 'qty'},
                 {text: 'Qty DO', sortable: false,dataIndex: 'qty_do'},
-                {text: 'Sat.', sortable: false, dataIndex: 'sat_id'},
-                {text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {text: 'LastUpdate', dataIndex: 'timeedit',width: 100,renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+                {
+                    text: 'Posting',
+                    sortable: true,
+                    dataIndex: 'status',
+                    renderer: authCk
+                },
+                {text: 'LastUpdate', dataIndex: 'timeedit',width: 80,renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'DOModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'DOModel',
+                    scope:me,
+                    handler:me.onDeleteRec
+                }
+
+            ]
+        });
+        me.DOLocGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('DOLocStore1'),
+            title:'Lokasi Kirim',
+            border:false,
+            frame:false,
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
                 }
             },
-            listeners: {
-                scope: me,
-                select: me.onDeliveryOrderGridClick,
-                itemdblclick: function(view, record){
-                    if(me.currPosted =='1' || me.currPosted =='2'){
-                    }else{
-                        me.onItemdblclick(me.DeliveryOrderStore, record, 'Edit DeliveryOrder');
-                    }
-
-                }
-            },
-            features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing2', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            text: 'Dok Kirim',
-                            iconCls: 'icoArrowRightSmall',
-                            scope: me,
-                            handler: function(){
-                                DeliveryOrder.addDeliveryOrder(function(provider, response){
-                                });
-                                me.DeliveryOrderStore.load();
-                            },
-                            tooltip : 'Tambah Data'
-                        },
-                        {
-                            text: 'Dok Return',
-                            iconCls: 'icoArrowRightSmall',
-                            scope: me,
-                            handler: function(){
-                                DeliveryOrder.addDeliveryOrderReturn(function(provider, response){
-                                    Ext.MessageBox.alert('Sukses', '!!!!');
-                                });
-                                me.DeliveryOrderStore.load();
-                            },
-                            tooltip : 'Tambah Data'
-                        },
-                        {
-                            text: 'Delete',
-                            iconCls: 'delete',
-                            itemId: 'listDeleteBtn',
-                            id:'delete_do',
-                            scope: me,
-                            handler:function() {
-                                me.onDeliveryOrderDelete(me.DeliveryOrderStore);
-                            },
-                            tooltip: 'Hapus Data'
-                        },'->',{
-                            xtype : 'fieldcontainer',
-                            itemId : 'fieldContainerDateRange',
-                            items : [
-
+                            xtype:'container',
+                            layout:'hbox',
+                            flex:1,
+                            items:[
                                 {
-                                    xtype : 'datefield',
-                                    itemId : 'tgl_post_do',
-                                    width : 100,
-                                    format : 'd-m-Y',
-                                    value : new Date(),
-                                    maxValue: new Date()
-                                }]
-                        },{
-                            text: 'Posting',
-                            iconCls: 'icoArrowRightSmall',
-                            id:'post_do',
-                            scope: me,
-                            handler: function(){
-                                var form = me.win.down('form').getForm();
-                                form.findField('do_num').setValue(me.currDeliveryOrder);
-                                form.findField('posted_date').setValue(Ext.ComponentQuery.query('#tgl_post_do')[0].getValue());
-                                var values = form.getValues();
-                                DeliveryOrder.updateDeliveryOrderPosting(values,function(provider, response){
-                                    if (response.type == 'exception'){
-                                        Ext.MessageBox.alert('Error', response.message);
-                                    }
-                                });
-                                me.DeliveryOrderStore.load();
-                            },
-                            tooltip : 'Tambah Data'
-                        },'->',
-                        {
-                            xtype:'displayfield',
-                            itemId:'itemuserinput',
-                            margin : '0 5 0 0'
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode Sub Customer',
+                                            name:'custloc_id',
+                                            readOnly: true,
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Customer',
+                                            name:'custloc_nama',
+                                            width:385,
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Alamat',
+                                            name:'alamat',
+                                            readOnly: true,
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Qty',
+                                            name:'qty',
+                                            readOnly:true,
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Qty DO',
+                                            name:'qty_do',
+                                            allowBlank:false,
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'keterangan',
+                                            width:385
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.DeliveryOrderStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
+                })
+            ],
+            columns:[
+                {
+                    header:'Company',
+                    hidden:true,
+                    dataIndex:'co_id'
+                },
+                {
+                    header : 'Kode Sub Customer',
+                    dataIndex : 'custloc_id'
+                },
+                {
+                    header : 'Customer',
+                    dataIndex : 'custloc_nama',
+                    flex:1
+                },
+                {
+                    header : 'Alamat',
+                    dataIndex : 'alamat',
+                    flex:1,
+                    summaryRenderer: function(){
+                    return '<b>Total</b>';}
+                },
+                {
+                    header : 'Est Qty SO',
+                    dataIndex : 'qty',
+                    width : 200,
+                    renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')
+                },
+                {
+                    header : 'Qty DO',
+                    dataIndex : 'qty_do',
+                    width : 200,
+                    renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')
+                },
+                {
+                    header : 'Keterangan',
+                    dataIndex : 'keterangan',
+                    flex:1
                 }
-            ]
+            ], tbar:[
+                {
+                    text:'Refresh',
+                    iconCls:'icoGreen',
+                    scope:me,
+                    handler: function(){
+                        var qty_do =0;
+                        me.DOLocStore.each(function(record){
+                            if(record.get('do_num') == me.do_num ) {
+                                qty_do += record.get('qty_do');
+                            }
+                        });
+                        Ext.ComponentQuery.query('#qty_do')[0].setValue(qty_do);
+                    }
+                }
+
+            ],features: [{
+                ftype: 'summary'
+            }]
         });
-        me.DeliveryOrder1Grid = Ext.create('App.ux.GridPanel', {
-            store: me.DeliveryOrder1Store,
-            region: 'center',
-            enablePaging: true,
-            columns: [
-                {text: 'do_num', sortable: false, dataIndex: 'do_num',  hidden : true},
-                {text: 'prod_id', sortable: false, dataIndex: 'prod_id',  hidden : true},
-                {text: 'sequence_no', sortable: false, dataIndex: 'sequence_no'},
-                {text: 'Vend_id', sortable: false,dataIndex: 'vend_id', hidden: true},
-                {text: 'Vendor', sortable: false,dataIndex: 'vend_nama'},
-                {text: 'Police No', sortable: false,dataIndex: 'police_no'},
+        me.DORouteGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('DORouteModel'),
+            title:'Route Kirim',
+            border:false,
+            frame:false,
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing2', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
+                        {
+                            xtype:'container',
+                            layout:'hbox',
+                            flex:1,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode DO',
+                                            name:'do_route',
+                                            hidden:true,
+                                            width:300
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            width:300,
+                                            fieldLabel: "Jenis Angkutan",
+                                            defaults: {xtype: "radio",name: "ordersource"},
+                                            items: [
+                                                {
+                                                    boxLabel: "Darat",
+                                                    inputValue: "Land",
+                                                    checked: true
+                                                },
+                                                {
+                                                    boxLabel: "Laut",
+                                                    inputValue: "Sea"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            fieldLabel : 'Surat Jalan',
+                                            name:'suratjalan',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Plat Nomor',
+                                            name:'police_no',
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Nama Angkutan',
+                                            name:'vessel',
+                                            width:385
+                                        },
+                                        {
+                                            xtype: "radiogroup",
+                                            fieldLabel: "Finish",
+                                            width:250,
+                                            defaults: {xtype: "radio",name: "status"},
+                                            items: [
+                                                {
+                                                    boxLabel: "Y",
+                                                    inputValue: "Y"
+                                                },
+                                                {
+                                                    boxLabel: "N",
+                                                    inputValue: "N",
+                                                    checked: true
+                                                }
+                                            ]
+                                        }
+
+                                    ]
+                                }, {
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype: 'textfield',
+                                            fieldLabel : 'Nama Container',
+                                            name: 'container_name',
+                                            width:385
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'container_no',
+                                            fieldLabel : 'No Container',
+                                            width:300
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'seal_no',
+                                            fieldLabel : 'No Segel',
+                                            width:300
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'origin',
+                                            fieldLabel : 'Dari Lokasi',
+                                            width:385
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'destination',
+                                            fieldLabel : 'Ke Lokasi',
+                                            width:385
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                })
+            ],
+            columns:[
+                {text: 'No.', sortable: false, dataIndex: 'sequence_no'},
+                {text: 'Plat No.', sortable: false,dataIndex: 'police_no'},
                 {text: 'Surat Jalan', sortable: false,dataIndex: 'suratjalan'},
-                {text: 'Vessel', sortable: false,dataIndex: 'vessel'},
-                {text: 'Container Name',  sortable: false,dataIndex: 'container_name'},
-                {text: 'Container No', sortable: false,dataIndex: 'container_no'},
-                {text: 'Seal No', sortable: false,dataIndex: 'seal_no'},
-                {text: 'Delivery Date', sortable : false, dataIndex: 'deliverydate', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {text: 'Origin', sortable: false,dataIndex: 'origin'},
-                {text: 'Destination', sortable: false,dataIndex: 'destination'},
-                {text: 'Status', sortable: false,dataIndex: 'status'},
+                {text: 'Angkutan', sortable: false,dataIndex: 'vessel'},
+                {text: 'Nama Container',  sortable: false,dataIndex: 'container_name', flex:1},
+                {text: 'No. Container', sortable: false,dataIndex: 'container_no'},
+                {text: 'No. Seal', sortable: false,dataIndex: 'seal_no'},
+                {text: 'Status Tiba', sortable: false,dataIndex: 'status'},
+                {text: 'Dari Lokasi', sortable: false,dataIndex: 'origin', flex:1},
+                {text: 'Sampai Lokasi', sortable: false,dataIndex: 'destination', flex:1},
                 {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
-            viewConfig :
-            {
-                stripeRows: false,
-                getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
-                }
-            },
-            listeners: {
-                scope: me,
-                //select: me.onGridClick,
-                itemdblclick: function(view, record){
-                    me.onItemdblclick1(me.DeliveryOrder1Store, record, 'Edit Detail DeliveryOrder');
-                }
-            },
-            features:[searching],
-            dockedItems: [
+            tbar:[
                 {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [{
-                        text: 'Add',
-                        iconCls: 'icoAddRecord',
-                        id:'add_dt_do',
-                        scope: me,
-                        handler: function(){
-                            var form1 = me.winform1.down('form');
-                            me.onNewDeliveryOrder1(form1, 'DeliveryOrder1Model', 'Tambah Data');
-                        }
-                    },
-                        {
-                            xtype: 'button',
-                            text: 'Delete',
-                            iconCls: 'delete',
-                            id:'delete_dt_do',
-                            handler: function() {
-                                me.deleteDeliveryOrder1(me.DeliveryOrder1Store);
-                            }
-                        }
-                    ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.DeliveryOrder1Grid,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'DORouteModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete002',
+                    action:'DORouteModel',
+                    scope:me,
+                    handler:me.onDeleteRec
                 }
+
             ]
         });
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'do_num'
-                        },
-                        {
-                            xtype: 'datefield',
-                            hidden: true,
-                            name: 'posted_date'
-                        },
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Jenis ", hidden:true,
-                            defaults: {xtype: "radio", name:'do_type'
-                            },
-                            items: [
-                                {
-                                    inputValue:'N',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.ComponentQuery.query('#for_do_num')[0].setDisabled(true);
-                                        }
-                                    }
 
-                                },
-                                {
-                                    inputValue:'R',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.ComponentQuery.query('#for_do_num')[0].setDisabled(false);
-                                        }
-                                    }
-
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Delivery Date:'
-                                },
-                                {
-                                    fieldLabel : 'Tanggal',
-                                    xtype : 'datefield',
-                                    width : 150,
-                                    name : 'deliverydate',
-                                    format : 'd-m-Y',
-                                    readOnly: true,
-                                    id:'do_date_do',
-                                    allowBlank:false
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Do Return :'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtDOPopup',
-                                    name:'for_do_num',
-                                    itemId:'for_do_num',
-                                    disabled: true,
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "Kirim Berdasarkan ",
-                            defaults: {xtype: "radio", name:'kategory_kirim'
-                            },
-                            items: [
-                                {
-                                    boxLabel: "Order",
-                                    inputValue:'O',
-                                    itemId:'kategory_o',
-                                    checked: true,
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.ComponentQuery.query('#so_num')[0].setDisabled(false);
-                                            Ext.ComponentQuery.query('#cust_id_do')[0].setDisabled(true);
-                                        }
-                                    }
-
-                                },
-                                {
-                                    boxLabel: "Customer",
-                                    inputValue:'C',
-                                    itemId:'kategory_c',
-                                    handler: function(field, value) {
-                                        if (value) {
-                                            Ext.ComponentQuery.query('#cust_id_do')[0].setDisabled(false);
-                                            Ext.ComponentQuery.query('#so_num')[0].setDisabled(true);
-                                        }
-                                    }
-
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtCustomerPopup',
-                                    name:'cust_id',
-                                    itemId:'cust_id_do',
-                                    disabled: true,
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Sales Order :'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtSalesOrderPopup',
-                                    name:'so_num',
-                                    itemId:'so_num',
-                                    allowBlank:false
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Produk:'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtlistproduct',
-                                    name:'prod_id',
-                                    itemId:'prod_id_do',
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Dari Gudang : '
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtGudangBJPopup',
-                                    name: 'darigudang',
-                                    itemId:'gudang_do',
-                                    allowBlank:true
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Qty Kirim:'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'numberfield',
-                                    name:'qty_do',
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Route :'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtRoutePopup',
-                                    name: 'route',
-                                    allowBlank:false,
-                                    itemId:'route_code'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Kapal :'
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'xtKapalPopup',
-                                    name: 'vessel_id',
-                                    allowBlank:false,
-                                    itemId:'vessel_id'
-                                }]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Keterangan'
-                                },
-                                {
-                                    width: 450,
-                                    xtype: 'textfield',
-                                    name:'keterangan'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onDeliveryOrderSave(form, me.DeliveryOrderStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
-        });
-        me.winform1 = Ext.create('App.ux.window.Window', {
-            width: 750,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'sequence_no'
-                        },
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'do_num'
-                        },
-                        {
-                            xtype: "radiogroup",
-                            fieldLabel: "OrderSource",
-                            defaults: {xtype: "radio",name: "ordersource"},
-                            items: [
-                                {
-                                    boxLabel: "Land",
-                                    inputValue: "Land",
-                                    checked: true
-                                },
-                                {
-                                    boxLabel: "Sea",
-                                    inputValue: "Sea"
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Police No:'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'police_no'
-                                    // disabled: true
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Surat jalan :'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',
-                                    name: 'suratjalan'
-                                    // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Vessel:'
-                                },
-                                {
-                                    width:200,
-                                    xtype: 'textfield',
-                                    name: 'vessel'
-                                    // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Container Name:'
-                                },
-                                {
-                                    width:150,
-                                    xtype: 'textfield',
-                                    name: 'container_name'
-                                    // disabled: true
-                                },
-                                {
-                                    width: 80,
-                                    xtype: 'displayfield',
-                                    value: 'Container No:'
-                                },
-                                {
-                                    width:150,
-                                    xtype: 'textfield',
-                                    name: 'container_no'
-                                    // disabled: true
-                                },
-                                {
-                                    width: 50,
-                                    xtype: 'displayfield',
-                                    value: 'Seal No:'
-                                },
-                                {
-                                    width:150,
-                                    xtype: 'textfield',
-                                    name: 'seal_no'
-                                    // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Origin:'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'origin',
-                                    allowBlank:false
-                                    // disabled: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Destination:'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name: 'destination',
-                                    allowBlank:false
-                                    // disabled: true
-                                }
-                            ]
-                        },{
-                            xtype: "radiogroup",
-                            fieldLabel: "Finish",
-                            defaults: {xtype: "radio",name: "status"},
-                            items: [
-                                {
-                                    boxLabel: "Y",
-                                    inputValue: "Y",
-                                    checked: true
-                                },
-                                {
-                                    boxLabel: "N",
-                                    inputValue: "N"
-                                }
-                            ]
-                        }
-
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winform1.down('form').getForm();
-                        if(form.isValid()){
-                            me.onDeliveryOrder1Save(form, me.DeliveryOrder1Store);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            features:[searching],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close');
-                }
-            }
+        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+            activeTab:0,
+            items:[ me.DOGrid, me.DOLocGrid, me.DORouteGrid]
         });
 
-        me.pageBody = [me.DeliveryOrderGrid,me.DeliveryOrder1Grid];
+        me.pageBody = [me.FormulirPanel];
         me.callParent(arguments);
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform1.show();
-    },
 
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    action1: function(action){
-        var winf = this.winform1, form = winf.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onNewDeliveryOrder1: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        record = form.getRecord()
-        this.action1('new');
-        this.winform1.show();
-    },
-    onItemdblclick1: function(store, record, title){
-        var form = this.winform1.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old');
-        this.winform1.show();
-    },
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-    onDeliveryOrderGridClick: function(grid, selected){
+    }, // end of initComponent
+    onGridClick:function(grid,selected){
         var me = this;
-        me.currDeliveryOrder = selected.data.do_num;
-        me.currPosted = selected.data.status;
-        var TopBarItems = this.DeliveryOrderGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_do').disable();
-            Ext.getCmp('post_do').disable();
-        }else{
-            Ext.getCmp('delete_do').enable();
-            Ext.getCmp('post_do').enable();
+        me.do_num = selected.data.do_num;
+        me.cust_id = selected.data.cust_id;
+        me.DOLocStore.load({params:{do_num:me.do_num, cust_id:me.cust_id}});
+        me.DORouteStore.load({params:{do_num:me.do_num}});
+
+    },
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+//        plugin.cancelEdit();
+        newModel = Ext.ModelManager.create({ co_id : globals.site }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+        if(Ext.ComponentQuery.query('#tgl_input_do')[0]){
+            Ext.ComponentQuery.query('#tgl_input_do')[0].setValue(new Date());
         }
-        Ext.getCmp('sat_id').setValue(selected.data.sat_id);
-        me.DO_JurnalStore.load({params:{inv_code: me.currDeliveryOrder}});
-
     },
 
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
 
-    onDeliveryOrderSave: function(form, store){
-        var me = this, form = me.win.down('form').getForm();
-            var values = form.getValues();
-                DeliveryOrder.updateDeliveryOrder(values,function(provider, response){
-                me.win.close();
-            });
-        me.DeliveryOrderStore.load();
-    },
-    onDeliveryOrder1Save: function(form, store){
-        var me = this, showWin= me.winform1, form = me.winform1.down('form').getForm(), record = form.getRecord(), storeIndex = store.indexOf(record);
-        form.findField('do_num').setValue(me.currDeliveryOrder);
-        var values = form.getValues();
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                showWin.close();
-                // store.load({params:{do_num: me.currDeliveryOrder}});
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Warning', 'Stock Items Kurang..!!');
-                // me.msg('Stock Items Kurang!', 'Error!!', true);
-            }
-        });
-
-        store.load({params:{do_num: me.currDeliveryOrder}});
-
-    },
-
-    onDeliveryOrderDelete: function(store){
-        var me = this, grid = me.DeliveryOrderGrid;
-        me. CallFunctionDel(store, grid);
-    },
-    deleteDeliveryOrder1: function(store){
-        var me = this, grid = me.DeliveryOrder1Grid;
-        me. CallFunctionDel(store, grid);
-    },
-
-    CallFunctionDel:function(store, grid){
-        var me=this;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('do_num');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
                     }
-                    store.load({params:{do_num: me.currDeliveryOrder}});
-                    me.DeliveryOrder1Store.load({params:{do_num: me.currDeliveryOrder}});
                 }
-            }
-        });
+            });
+
+        }
+
     },
 
     /**
@@ -1018,11 +712,12 @@ Ext.define('App.view.transaksi.DeliveryOrder.DeliveryOrder', {
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive: function(callback){
-        var me = this;
-        this.DeliveryOrderStore.load(); // this.DeliveryOrderStore.load({params:{start:0, limit:5}});
-        this.DeliveryOrder1Store.load({params:{start:0, limit:5}});
-
+    onActive : function(callback)
+    {
+        this.DOStore.load();
+        this.DOLocStore.load();
+        this.DORouteStore.load();
         callback(true);
     }
 });
+//ens LogPage class

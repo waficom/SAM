@@ -74,14 +74,32 @@ class Pinjaman_BB_BJ
      * @param stdClass $params
      * @return stdClass
      */
-    public function addPinjam_I()
+    public function addPinjam_I(stdClass $params)
     {
-
-        $co_id= $_SESSION['user']['site'];
+        /*$co_id= $_SESSION['user']['site'];
         $userinput=$_SESSION['user']['name'];
         $useredit=$_SESSION['user']['name'];
         $this->db->setSQL("execute procedure PINJAMAN_BB_BJ_I '$useredit','$userinput','I','$co_id'");
-        $this->db->execOnly();
+        $this->db->execOnly();*/
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['userinput'] = $_SESSION['user']['name'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id']);
+        if($params->status =='false'){
+            $data['status']= '0';
+        }
+        else if($params->status =='true'){
+            $data['status']='1';
+        }
+        $sql = $this -> db -> sqlBind($data, 'pinjaman_bb_bj', 'I');
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
     }
     public function addPinjam_O()
     {
@@ -107,10 +125,20 @@ class Pinjaman_BB_BJ
         $this -> db -> execLog();
         return $params;
     }
+    public function updatePinjamDetail(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        unset($data['id'],$data['bb_nama'],$data['prod_nama']);
+        $sql = $this -> db -> sqlBind($data, 'PINJAMAN_BB_BJ_Detail', 'U', array('co_id' => $params-> co_id, 'dok_no' => $params-> dok_no, 'bb_id' => $params-> bb_id,'sequence_no' => $params-> sequence_no));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
 
     public function updatePinjam(stdClass $params)
     {
-
+/*
         $co_id= $_SESSION['user']['site'];
         $userinput=$_SESSION['user']['name'];
         $useredit=$_SESSION['user']['name'];
@@ -133,6 +161,23 @@ class Pinjaman_BB_BJ
         $this->db->setSQL($sql);
         $this->db->execOnly();
 
+        return $params;*/
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['tgl_jt'] = $this->db->Date_Converter($data['tgl_jt']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
+        unset($data['id']);
+        if($params->status =='false'){
+            $data['status']= '0';
+        }
+        else if($params->status =='true'){
+            $data['status']='1';
+        }
+        $sql = $this -> db -> sqlBind($data, 'pinjaman_bb_bj', 'U', array('co_id' => $params-> co_id, 'dok_no' => $params-> dok_no));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         return $params;
 
     }

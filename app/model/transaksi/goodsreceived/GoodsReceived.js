@@ -24,7 +24,8 @@ Ext.define( 'App.model.transaksi.goodsreceived.GoodsReceived',
             { name : 'grn_return', type : 'string'},
             { name : 'rc_type', type : 'string'},
             { name : 'account', type : 'string'},
-            { name : 'account_nama', type : 'string'}
+            { name : 'account_nama', type : 'string'},
+            { name : 'pabrik', type : 'string'}
         ],
         proxy :
         {

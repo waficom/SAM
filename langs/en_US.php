@@ -23,7 +23,7 @@ $LANG = array(
     'satuan'								=> 'Unit',
     'spesifikasi'							=> 'Specification',
     'customer'								=> 'Customer',
-    'vendor'	          					=> 'Vendor',
+    'vendor'	          					=> 'Creditor',
     'items'			    					=> 'Items',
     'formula'			       				=> 'Formula',
     'transaksi'			       				=> 'Transaction',
@@ -108,7 +108,8 @@ $LANG = array(
     'stock'                                 => 'Stock',
     'factory'                               => 'Factory',
     'workorder1'                             => 'Work Order',
-    'wo_noformula'                             => 'Manufacture (ADL)',
+    'wo_adl'                             => 'Manufacture (ADL)',
+    'wo_sam'                             => 'Manufacture (SAM)',
     'deliveryorder'                             => 'Delivery Order',
     'ordermonitoring'                             => 'Order Monitoring',
     'report'                                => 'Report',
@@ -163,5 +164,19 @@ $LANG = array(
     'j_grn'                                  => 'Jurnal Goods Received',
     'Kapal'                                  => 'Vessel',
     'spkirim'                                  => 'Delivery Order Letter',
+    'formulir'                                  => 'Formulir',
+    'stockopname'                                  => 'Stock Opname',
+    'cancelrelease'                                  => 'Cancel Sales Order',
+    'cancelpp'                                  => 'Cancel Manufacture Request',
+    'ar_lpi'                                  => 'AR Late Payment Interest',
+    'wo_bbmix'                                  => 'Raw Material Mix',
+    'ardeduction'                                  => 'AR Deduction',
+    'risk'                                  => 'Risk',
+    'grndal'                                  => 'Goods Received (ADL)',
+    'bj_adl'                                  => 'Barang Jadi (ADL)',
+    'refund'                                  => 'Refund',
+    'role'                                    => 'Role'
+
+
 
 );

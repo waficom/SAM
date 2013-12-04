@@ -46,23 +46,17 @@ class BahanBaku
 	public function getbb(stdClass $params)
 	{
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM bahanbaku where co_id='$company' ORDER BY bb_id";
-		$this -> db -> setSQL($sql);
-        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
+        $sql = "SELECT * FROM bahanbaku
+        where co_id='$company' ORDER BY bb_id";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
         }
 
-        $total   = count($records);
-        $records = array_slice($records, $params->start, $params->limit);
-        return array(
-            'totals' => $total,
-            'rows'   => $records
-        );
+        return $rows;
 
 	}
 	/**
@@ -96,7 +90,7 @@ class BahanBaku
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'bahanbaku', 'U', array('bb_id' => $params->old_bb_id,'co_id' => $company ));
+		$sql = $this->db->sqlBind($data, 'bahanbaku', 'U', array('bb_id' => $params->bb_id,'co_id' => $company ));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

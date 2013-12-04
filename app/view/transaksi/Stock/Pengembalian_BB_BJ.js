@@ -1,7 +1,7 @@
 Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPengembalian_BB_BJ',
-    pageTitle: 'Pengembalian Bahan Masuk',
+    pageTitle: 'Pengembalian Bahan Baku Masuk',
     pageLayout: 'border',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
@@ -58,7 +58,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                 {name: 'bb_nama',type: 'string'},
                 {name: 'prod_id',type: 'string'},
                 {name: 'prod_nama',type: 'string'},
-                {name: 'qty',type: 'string'},
+                {name: 'qty',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'sat_id',type: 'string'},
                 {name: 'hpp',type: 'float'},
@@ -472,13 +472,30 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                         var form = me.win.down('form').getForm();
                         if(form.isValid()){
                             var values = form.getValues();
-                            Pengembalian_BB_BJ.updatePengembalian(values,function(provider, response){
-                                if (response.type == 'exception'){
-                                    Ext.MessageBox.alert('Error', response.message);
+                            var StatusPosting = form.findField('status').getValue();
+                            var CountDetail = me.PengembalianDetailStore.getCount({params:{inv_code: me.currInv_Code}});
+                            if(StatusPosting){
+                                if(CountDetail > 0){
+                                    Pengembalian_BB_BJ.updatePengembalian(values,function(provider, response){
+                                        if (response.type == 'exception'){
+                                            Ext.MessageBox.alert('Error', response.message);
+                                        }
+                                        me.win.close();
+                                        me.PengembalianStore.load();
+                                    });
+                                }else{
+                                    Ext.MessageBox.alert('Warning', 'Cek Detail');
                                 }
-                                me.win.close();
-                                me.PengembalianStore.load();
-                            });
+                            }else{
+                                Pengembalian_BB_BJ.updatePengembalian(values,function(provider, response){
+                                    if (response.type == 'exception'){
+                                        Ext.MessageBox.alert('Error', response.message);
+                                    }
+                                    me.win.close();
+                                    me.PengembalianStore.load();
+                                });
+                            }
+
                         }
                     }
                 },
@@ -575,7 +592,7 @@ Ext.define('App.view.transaksi.Stock.Pengembalian_BB_BJ', {
                                 },
                                 {
                                     width: 100,
-                                    xtype: 'mitos.currency',
+                                    xtype: 'numberfield',
                                     hideTrigger: true,
                                     name: 'qty',
                                     allowBlank:false

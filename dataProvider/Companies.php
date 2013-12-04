@@ -48,16 +48,6 @@ class Companies
      */
     public function getCompanies(stdClass $params)
     {
-/*
-        if (isset($params -> aktif))
-        {
-            $wherex = "aktif = '" . $params -> aktif . "'";
-        }
-        else
-        {
-            $wherex = "aktif = '1'";
-        }
-*/
         if (isset($params -> sort))
         {
             $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
@@ -111,7 +101,7 @@ class Companies
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
+        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> co_id));
         $this -> db -> setSQL($sql);
         //print_r($sql);
         $this -> db -> execLog();
@@ -119,19 +109,10 @@ class Companies
         return $params;
     }
 
-    /**
-     * Not in used. For Now you can only set the Company "inactive"
-     *
-     * @param stdClass $params
-     * @return stdClass
-     */
+
     public function deleteCompany(stdClass $params)
     {
-        $data = get_object_vars($params);
-        $data['aktif'] = '0';
-        unset($data['co_id'], $data['old_co_id'], $data['id']);
-        $sql = $this -> db -> sqlBind($data, 'company', 'U', array('co_id' => $params -> old_co_id));
-//		$sql = "DELETE FROM company WHERE co_id = ". $params -> co_id;
+        $sql = "DELETE FROM company WHERE co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

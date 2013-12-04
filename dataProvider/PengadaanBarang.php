@@ -27,9 +27,6 @@ include_once ($_SESSION['root'] . '/classes/dbHelper.php');
 class PengadaanBarang
 {
 
-    /**
-     * @var dbHelper
-     */
     private $db;
     /**
      * @var
@@ -44,23 +41,19 @@ class PengadaanBarang
     public function getPB0(stdClass $params)
     {
         $company =  $_SESSION['user']['site'];
-        $sql = "select A.* from pb0 A where a.co_id='$company' ORDER BY A.timeedit";
+        $sql = "select A.*, c.description as factory from pb0 A
+        left join gudang b on a.co_id=b.co_id and a.gudang_id=b.gudang_id
+        left join pabrik_location c on b.pabrik_sequence=c.pabrik_sequence and b.co_id=c.co_id
+        where a.co_id='$company' ORDER BY A.timeedit";
         $this -> db -> setSQL($sql);
-        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
         }
 
-        $total   = count($records);
-        $records = array_slice($records, $params->start, $params->limit);
-        return array(
-            'totals' => $total,
-            'rows'   => $records
-        );
+        return $rows;
 
     }
     /**
@@ -76,6 +69,7 @@ class PengadaanBarang
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        unset($data['id'], $data['factory']);
         foreach($data as $key => $val){
             if($val == null || $val == ''){
                 unset($data[$key]);
@@ -84,7 +78,6 @@ class PengadaanBarang
         $sql = $this->db->sqlBind($data, 'pb0', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
-//		$params->id = $this->user_id = $this->db->lastInsertId;
         return $params;
     }
 
@@ -98,49 +91,48 @@ class PengadaanBarang
         $data['useredit'] = $_SESSION['user']['name'];
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['pb_num']);
-        $sql = $this->db->sqlBind($data, 'pb0', 'U', array('pb_num' => $params->pb_num));
+        unset($data['id'], $data['pb_num'], $data['factory']);
+        foreach($data as $key => $val){
+            if($val == null || $val == ''){
+                unset($data[$key]);
+            }
+        }
+        $sql = $this->db->sqlBind($data, 'pb0', 'U', array('co_id' => $params->co_id, 'pb_num' => $params->pb_num));
         $this->db->setSQL($sql);
-        // print_r($sql);
         $this->db->execLog();
         return $params;
     }
 
     public function deletePB0(stdClass $params)
     {
-        $sql = "DELETE FROM pengadaan_barang WHERE (co_id = '$params->co_id') and (pb_num = '$params->pb_num')" ;
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM pengadaan_barang WHERE (co_id = '$company') and (pb_num = '$params->pb_num')" ;
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM pb0 WHERE (co_id = '$params->co_id') and (pb_num = '$params->pb_num')" ;
+        $sql = "DELETE FROM pb0 WHERE (co_id = '$company') and (pb_num = '$params->pb_num')" ;
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-
         return $params;
     }
 
     public function getPB(stdClass $params)
     {
-        $sql = "select A.*, B.bb_nama from
-pengadaan_barang A
-left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
-WHERE (A.co_id = '$params->co_id') and (A.pb_num = '$params->pb_num')
-        ORDER BY A.timeedit";
+        $company =  $_SESSION['user']['site'];
+        $sql = "select A.*, B.bb_nama, c.status
+        from pengadaan_barang A
+        left join bahanbaku B on A.co_id=B.co_id and A.bb_id=B.bb_id
+        left join pb0 c on a.co_id=c.co_id and a.pb_num=c.pb_num
+        WHERE A.co_id = '$company' and A.pb_num = '$params->pb_num'
+        ORDER BY A.bb_id ASC";
         $this -> db -> setSQL($sql);
-        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
         }
 
-        $total   = count($records);
-        $records = array_slice($records, $params->start, $params->limit);
-        return array(
-            'totals' => $total,
-            'rows'   => $records
-        );
+        return $rows;
     }
     /**
      * @param stdClass $params
@@ -162,7 +154,6 @@ WHERE (A.co_id = '$params->co_id') and (A.pb_num = '$params->pb_num')
         }
         $sql = $this->db->sqlBind($data, 'pengadaan_barang', 'I');
         $this->db->setSQL($sql);
-        //print_r($sql);
         $this->db->execLog();
         return $params;
     }
@@ -173,12 +164,13 @@ WHERE (A.co_id = '$params->co_id') and (A.pb_num = '$params->pb_num')
      */
     public function updatePB(stdClass $params)
     {
-        $data       = get_object_vars($params);
+        $company =  $_SESSION['user']['site'];
+        $data= get_object_vars($params);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['tanggal'] = $this->db->Date_Converter($data['tanggal']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['pb_num'], $data['bb_nama']);
-        $sql = $this->db->sqlBind($data, 'pengadaan_barang', 'U', array('pb_num' => $params->pb_num));
+        unset($data['id'], $data['pb_num'], $data['bb_nama'], $data['status']);
+        $sql = $this->db->sqlBind($data, 'pengadaan_barang', 'U', array('co_id' => $company,'pb_num' => $params->pb_num, 'bb_id' => $params->bb_id));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -186,7 +178,8 @@ WHERE (A.co_id = '$params->co_id') and (A.pb_num = '$params->pb_num')
 
     public function deletePB(stdClass $params)
     {
-        $sql = "DELETE FROM pengadaan_barang WHERE (co_id = '$params->co_id') and (pb_num = '$params->pb_num')" ;
+        $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM pengadaan_barang WHERE co_id = '$company' and pb_num = '$params->pb_num' and bb_id = '$params->bb_id'" ;
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

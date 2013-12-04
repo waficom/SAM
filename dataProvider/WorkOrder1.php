@@ -276,6 +276,15 @@ where co_id='$company' and (a.so_num = '$params->so_num') and (a.wo_num = '$para
         $this -> db -> execLog();
         return $params;
     }
+    public function updateWO_NoFormula(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id'], $data['bb_nama']);
+        $sql = $this -> db -> sqlBind($data, 'wo1', 'U', array('wo_num' => $params->wo_num,'so_num' => $params->so_num,'no_ppd' => $params->no_ppd,'sat_id' => $params->sat_id,'prod_id' => $params->prod_id, 'co_id' => $params->co_id, 'bb_id' => $params->bb_id));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
 
     public function deleteWO_NoFormula /*deleteWorkOrder1DetailBBaku*/(stdClass $params)
     {

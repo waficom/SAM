@@ -1,1324 +1,622 @@
-/**
- GaiaEHR (Electronic Health Records)
- Billing.js
- Billing Forms
- Copyright (C) 2012 Certun, inc.
+Ext.define('App.view.transaksi.salesorder.SalesOrder', {
+    extend:'App.ux.RenderPanel',
+    id:'panelSO',
+    pageTitle:'Sales Order',
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+    initComponent : function()
+    {
+        var me = this;
+        me.so_num=null;
+        me.cust_id= null;
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+        Ext.define('SalesOrderModel', {
+            extend : 'Ext.data.Model',
+            fields : [
+                { name : 'co_id', type : 'string'},
+                { name : 'so_num', type : 'string'},
+                { name : 'tanggal',type : 'date'},
+                { name : 'cust_id',type : 'string'},
+                { name : 'cust_nama',type : 'string'},
+                { name : 'wilayah_id',type : 'string'},
+                { name : 'sales_id',type : 'string'},
+                { name : 'tgl_jt_kirim',type : 'date'},
+                { name : 'pembayaran', type : 'string'},
+                { name : 'status', type : 'string'},
+                { name : 'keterangan', type : 'string'},
+                { name : 'userinput', type : 'string'},
+                { name : 'useredit', type : 'string'},
+                { name : 'timeedit', type : 'date'},
+                { name : 'prod_id', type : 'string'},
+                { name : 'sat_id', type : 'string'},
+                { name : 'qty', type : 'integer'},
+                { name : 'hrg', type : 'float'},
+                { name : 'n_brutto', type : 'float'},
+                { name : 'n_netto', type : 'float'},
+                { name : 'hrg_loco', type : 'float'},
+                { name : 'hrg_transport', type : 'float'},
+                { name : 'hrg_promosi', type : 'float'},
+                { name : 'hrg_sosialisasi', type : 'float'},
+                { name : 'hrg_lain', type : 'float'},
+                { name : 'lokasi_nama', type : 'string'},
+                { name : 'lokasi_kec', type : 'string'},
+                { name : 'lokasi_kab', type : 'string'},
+                { name : 'ppn_exc', type : 'string'},
+                { name : 'informasi_harga', type : 'string'}
+            ],
+            proxy:{
+                type:'direct',
+                api:{
+                    read : SalesOrder.getFilterSOData,
+                    create: SalesOrder.addSO,
+                    update: SalesOrder.updateSO,
+                    destroy: SalesOrder.deleteSO
+                }
+            }
 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelSO',
-	pageTitle : 'Pesanan Penjualan',
-	uses : ['App.ux.GridPanel'],
-	pageLayout : 'card',
+        });
+        Ext.define('SOLocModel', {
+            extend : 'Ext.data.Model',
+            fields : [
+                { name : 'co_id', type : 'string'},
+                { name : 'so_num', type : 'string'},
+                { name : 'cust_id',type : 'string'},
+                { name : 'custloc_id',type : 'string'},
+                { name : 'custloc_nama',type : 'string'},
+                { name : 'alamat',type : 'string'},
+                { name : 'keterangan',type : 'string'},
+                { name : 'qty', type : 'string'}
+            ],
+            proxy:{
+                type:'direct',
+                api:{
+                    read : SalesOrder.getSOLoc,
+                    update: SalesOrder.updateSOLoc
+                }
+            }
 
-	initComponent : function()
-	{
-		var me = this;
-		me.so_numsearch = null;
-        me.cust_search = null;
-        me.curr_prod_id = null;
-        me.curr_co_id = null;
-        me.curr_so_num = null;
-        me.curr_Qty = null;
-        me.curr_Sat = null;
-        me.userinput =null;
-        me.useredit=null;
+        });
+
+        me.SalesOrderStore = Ext.create('Ext.data.Store', {
+            storeId : 'SoStore',
+            model : 'SalesOrderModel',
+            remoteSort : false
+        });
+        me.SOLocStore = Ext.create('Ext.data.Store', {
+            storeId : 'SoLocStore',
+            model : 'SOLocModel',
+            remoteSort : false
+        });
         var searching={
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit','pp_date','finishdate','est_finishdate']
-
+            disableIndexes:['timeedit','tanggal','tgl_jt_kirim']
         }
-
-        me.step = [];
-
-		me.SOStore = Ext.create( 'App.store.transaksi.salesorder.SalesOrder' );
-        me.SOItemsStore = Ext.create('App.store.transaksi.salesorder.SOItems');
-        me.SOLocationStore = Ext.create('App.store.transaksi.salesorder.SOLocation');
-
-/*
-        me.SOModel = Ext.create('App.model.transaksi.salesorder.SalesOrder');
-        me.SOItemsModel = Ext.create('App.model.transaksi.salesorder.SOItems');
-        me.SOLocModel = Ext.create('App.model.transaksi.salesorder.SOLocation');
-*/
-		/**
-		 *  Sales Order Search data grid.
-		 * Gives a list of encounter based on the search
-		 *
-		 */
-		me.SOGrid = Ext.create( 'Ext.grid.Panel',{
-			store : me.SOStore,
-			viewConfig :
-			{
+        me.SalesOrderGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('SoStore'),
+            title:'Sales Order',
+            border:false,
+            frame:false,
+            viewConfig :
+            {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                  return record.get('status') == 'B' ? 'child-row' : (record.get('status') == 'C' ? 'yellow-row':'');
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
                 }
-			},
-			columns : [
-			{
-				header : 'Sales Order #',
-				dataIndex : 'so_num',
-				width : 200
-			},
-			{
-				header : 'Tanggal',
-				dataIndex : 'tanggal',
-				renderer:Ext.util.Format.dateRenderer('d-m-Y'),
-				width : 100
-			},
-			{
-				header : 'Customer',
-				dataIndex : 'cust_nama',
-				width : 200
-			},
-			{
-				header : 'PO# Customer',
-				dataIndex : 'cust_po_num',
-				width : 200
-			},
+            },
+            listeners: {
+                scope: me,
+                select: me.onGridClick
+            },
+            features:[searching],
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
+                        {
+                            xtype:'container',
+                            layout:'hbox',
+                            width:1200,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:360,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'No. Dokumen',
+                                            name:'so_num',
+                                            valueText:'otomatis',
+                                            readOnly: true,
+                                            width:350
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Pemesanan',
+                                            format : 'd-m-Y',
+                                            itemId:'tgl_input_so',
+                                            name:'tanggal',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tanggal JT Kirim',
+                                            format : 'd-m-Y',
+                                            value : new Date(),
+                                            name:'tgl_jt_kirim',
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'xtCustomerPopup',
+                                            fieldLabel : 'Customer',
+                                            name:'cust_id',
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'xtWilayahPopup',
+                                            fieldLabel : 'Wilayah',
+                                            name:'wilayah_id',
+                                            allowBlank:false,
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'xtSalesPopup',
+                                            fieldLabel : 'Sales',
+                                            name:'sales_id',
+                                            allowBlank:false,
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Pembayaran',
+                                            name:'pembayaran',
+                                            allowBlank:false,
+                                            width:350
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Lokasi Kirim',
+                                            name:'lokasi_nama',
+                                            allowBlank:false,
+                                            width:350
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kecamatan',
+                                            name:'lokasi_kec',
+                                            allowBlank:false,
+                                            width:350
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kabupaten',
+                                            name:'lokasi_kab',
+                                            allowBlank:false,
+                                            width:350
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:300,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype : 'xtlistproduct',
+                                            fieldLabel : 'Produk',
+                                            name:'prod_id',
+                                            allowBlank:false,
+                                            width:275
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            fieldLabel:'Qty',
+                                            hideTrigger: true,
+                                            xtAlign : 'right',
+                                            name:'qty',
+                                            width:275,
+                                            itemId:'qty_so'
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            fieldLabel:'Harga / Qty',
+                                            hideTrigger: true,
+                                            xtAlign : 'right',
+                                            name:'hrg',
+                                            width:275,
+                                            itemId:'hrg_so',
+                                            enableKeyEvents: true,
+                                            listeners: {
+                                                'keyup':function(field, event){
+                                                    var qty_so = Ext.ComponentQuery.query('#qty_so')[0].getValue();
+                                                    Ext.ComponentQuery.query('#n_netto_so')[0].setValue(qty_so * field.value );
+                                                   }
+                                            }
+                                        },
+                                        {
+                                            width:275,
+                                            xtype: "radiogroup",
+                                            fieldLabel: "Informasi Harga",
+                                            defaults: {xtype: "radio", name:'informasi_harga'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel: "Indikasi",
+                                                    checked: true,
+                                                    inputValue:'I'
+                                                },
+                                                {
+                                                    boxLabel: "Fix",
+                                                    inputValue:'F'
+
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            width:275,
+                                            xtype: "radiogroup",
+                                            fieldLabel: "PPN",
+                                            defaults: {xtype: "radio", name:'ppn_exc'
+                                            },
+                                            items: [
+                                                {
+                                                    boxLabel: "Exclude",
+                                                    checked: true,
+                                                    inputValue:'N'
+                                                },
+                                                {
+                                                    boxLabel: "Include",
+                                                    inputValue:'Y'
+
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel:'Total',
+                                            xtAlign : 'right',
+                                            name:'n_netto',
+                                            itemId:'n_netto_so',
+                                            width:275,
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel:'Harga Loco',
+                                            name:'hrg_loco',
+                                            xtAlign : 'right',
+                                            width:275,
+                                            itemId:'loco_so',
+                                            enableKeyEvents: true,
+                                            listeners: {
+                                                'keyup':function(field, event){
+                                                    var hrg_so = Ext.ComponentQuery.query('#hrg_so')[0].getValue(),
+                                                        satu = Ext.ComponentQuery.query('#transport_so')[0].getValue(),
+                                                        dua = Ext.ComponentQuery.query('#promosi_so')[0].getValue(),
+                                                        tiga = Ext.ComponentQuery.query('#sosialisasi_so')[0].getValue();
+                                                    if(hrg_so < (satu+dua+tiga+field.value)){
+                                                        Ext.Msg.alert('Warning', 'rincian harga melebihi hrg order');
+                                                    }
+                                                 }
+                                            }
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel:'Biaya Transport',
+                                            name:'hrg_transport',
+                                            xtAlign : 'right',
+                                            width:275,
+                                            itemId:'transport_so',
+                                            enableKeyEvents: true,
+                                            listeners: {
+                                                'keyup':function(field, event){
+                                                    var hrg_so = Ext.ComponentQuery.query('#hrg_so')[0].getValue(),
+                                                        satu = Ext.ComponentQuery.query('#loco_so')[0].getValue(),
+                                                        dua = Ext.ComponentQuery.query('#promosi_so')[0].getValue(),
+                                                        tiga = Ext.ComponentQuery.query('#sosialisasi_so')[0].getValue();
+                                                    if(hrg_so < (satu+dua+tiga+field.value)){
+                                                        Ext.Msg.alert('Warning', 'rincian harga melebihi hrg order');
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel:'Biaya promosi',
+                                            name:'hrg_promosi',
+                                            xtAlign : 'right',
+                                            width:275,
+                                            itemId:'promosi_so',
+                                            enableKeyEvents: true,
+                                            listeners: {
+                                                'keyup':function(field, event){
+                                                    var hrg_so = Ext.ComponentQuery.query('#hrg_so')[0].getValue(),
+                                                        satu = Ext.ComponentQuery.query('#loco_so')[0].getValue(),
+                                                        dua = Ext.ComponentQuery.query('#transport_so')[0].getValue(),
+                                                        tiga = Ext.ComponentQuery.query('#sosialisasi_so')[0].getValue();
+                                                    if(hrg_so < (satu+dua+tiga+field.value)){
+                                                        Ext.Msg.alert('Warning', 'rincian harga melebihi hrg order');
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel:'Biaya Sosialisasi',
+                                            name:'hrg_sosialisasi',
+                                            xtAlign : 'right',
+                                            width:275,
+                                            itemId:'sosialisasi_so',
+                                            enableKeyEvents: true,
+                                            listeners: {
+                                                'keyup':function(field, event){
+                                                    var hrg_so = Ext.ComponentQuery.query('#hrg_so')[0].getValue(),
+                                                        satu = Ext.ComponentQuery.query('#loco_so')[0].getValue(),
+                                                        dua = Ext.ComponentQuery.query('#transport_so')[0].getValue(),
+                                                        tiga = Ext.ComponentQuery.query('#promosi_so')[0].getValue();
+                                                    if(hrg_so < (satu+dua+tiga+field.value)){
+                                                        Ext.Msg.alert('Warning', 'rincian harga melebihi hrg order');
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:350,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Satuan',
+                                            name:'sat_id',
+                                            width:180,
+                                            itemId:'sat_id_so',
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Reference',
+                                            name:'keterangan',
+                                            value: 'Keterangan',
+                                            width:385
+                                        }
+
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                })
+            ],
+            columns:[
                 {
-                    header : 'wilayah',
-                    dataIndex : 'wilayah_nama',
-                    width : 200, hidden: true
+                    header:'Company',
+                    hidden:true,
+                    dataIndex:'co_id'
                 },
                 {
-                    header : 'sales_nama',
-                    dataIndex : 'sales_nama',
-                    width : 200, hidden: true
+                    header:'No. Dokumen',
+                    width:100,
+                    dataIndex:'so_num'
                 },
-			{
-				header : 'JT Kirim',
-				dataIndex : 'tgl_jt_kirim',
-				width : 100
-			},
-			{
-				header : 'PPN',
-				dataIndex : 'ppn_so',
-                renderer: me.boolRenderer,
-				width : 50
-			},
-			{
-				header : 'Netto',
-				dataIndex : 'n_netto',
-				renderer: Ext.util.Format.numberRenderer('0,000.00'),
-				width : 300
-			},
-            {
-                    header : 'status',
-                    dataIndex : 'released',
-                    width : 200, hidden: true
-            },
-            {
-                    header : 'status',
-                    dataIndex : 'status',
-                    width : 200, hidden: true
-            }],
-			// ToolBar for Encounter DataGrid.
-			tbar : [
-			{
-				xtype : 'fieldcontainer',
-				itemId : 'fieldcontainerso_numsearch',
-				items : [
-				{
-					xtype : 'displayfield',
-					fieldLabel : 'Sales Order #'
-				},
-				{
-					xtype : 'textfield',
-					itemId : 'so_numsearch',
-					width : 150,
-					margin : '0 5 0 0'
-				}]
-			},
-			{
-                xtype : 'fieldcontainer',
-                itemId : 'fieldcontainercust_search',
-                items : [
-                    {
-                        xtype : 'displayfield',
-                        fieldLabel : 'Customer'
-                    },
-                    {
-                        xtype : 'xtCustomerPopup',
-                        itemId : 'cust_search',
-                        width : 150,
-                        margin : '0 5 0 0'
-                    }]
-            },
                 {
-				xtype : 'fieldcontainer',
-				itemId : 'fieldContainerDateRange',
-				items : [
-				{
-					xtype : 'datefield',
-					itemId : 'datefrom',
-					fieldLabel : 'dari',
-					labelWidth : 35,
-					width : 150,
-					format : 'd-m-Y',
-					labelAlign : 'right',
-					value : new Date(),
-                    maxValue: new Date()
-				},
-				{
-					xtype : 'datefield',
-					itemId : 'dateto',
-					fieldLabel : 'sampai',
-					labelWidth : 35,
-					padding : '0 10 0 0',
-					width : 150,
-					format : 'd-m-Y',
-					labelAlign : 'right',
-					value : new Date(),
-                    maxValue: new Date()
-				}]
-			}, '-',
-			{
-				xtype : 'fieldcontainer',
-				itemId : 'fieldContainerSearch',
-				layout : 'vbox',
-				items : [
-				{
-					xtype : 'button',
-					width : 80,
-					margin : '0 0 3 0',
-					text : 'Cari',
-					listeners :
-					{
-						scope : me,
-						click : me.ReloadGrid
-					}
-				}]
-			},
-			{
-				xtype : 'fieldcontainer',
-				itemId : 'fieldContainerAdd',
-				layout : 'vbox',
-				items : [
-				{
-					xtype : 'button',
-					width : 100,
-					margin : '0 0 3 0',
-					text : 'Tambah Data',
-					listeners :
-					{
-						scope : me,
-						click : me.onNew
-                    }
-				}]
-            },
-            {
-                xtype : 'fieldcontainer',
-                itemId : 'fieldContainerDelete',
-                layout : 'vbox',
-                items : [
+                    header : 'Tanggal',
+                    dataIndex : 'tanggal',
+                    renderer:Ext.util.Format.dateRenderer('d-m-Y'),
+                    width : 100
+                },
                 {
-                    xtype : 'button',
-                    width : 100,
-                    margin : '0 0 3 0',
-                    text : 'Hapus Data',
-//                    disabled: acl.accessdashboard,
-                    listeners :
-                    {
-                        scope : me,
-                        click : me.onDelete
-                    }
-                }]
-			},'->',
+                    header : 'Tgl JT Kirim',
+                    dataIndex : 'tgl_jt_kirim',
+                    renderer:Ext.util.Format.dateRenderer('d-m-Y'),
+                    width : 100
+                },
+                {
+                    header : 'Customer',
+                    dataIndex : 'cust_nama',
+                    flex:1
+                },
+                {
+                    header : 'Produk',
+                    dataIndex : 'prod_id',
+                    width : 200
+                },
+                {
+                    header : 'qty',
+                    dataIndex : 'qty',
+                    width : 200
+                },
+                {
+                    header : 'Keterangan',
+                    dataIndex : 'keterangan',
+                    flex:1
+                },
+                {
+                    header:'Status',
+                    hidden:true,
+                    dataIndex:'status'
+                },
+                {
+                    header : 'Lastupdate',
+                    dataIndex : 'timeedit',
+                    renderer:Ext.util.Format.dateRenderer('d-m-Y'),
+                    width : 100
+                }
+
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'SalesOrderModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'delete',
+                    scope:me,
+                    handler:me.onDeleteRec
+                },
+                '->',
                 {
                     xtype:'displayfield',
                     itemId:'itemuserinput',
                     margin : '0 5 0 0'
-                }],
-			listeners :
-			{
-				scope : me,
-                select: me.onGridClick,
-                itemdblclick: function(view, record){
-                    me.rowDblClicked(me.SOStore, record);
                 }
 
-		    }
-
+            ]
         });
-
-		/**
-		 * Panel:
-		 */
-		me.salesorderpnl = Ext.create( 'Ext.panel.Panel',{
-			defaultTitle : 'Sales Order',
-			title : 'Sales Order Detail',
-			layout : 'border',
-			bodyStyle : 'background-color:#fff',
-			items : [
-                Ext.create( 'Ext.container.Container',{
-                    region : 'center',
-                    layout : 'card',
-                    style : 'background-color:#fff',
-                    items : [
-                        me.GeneralForm = Ext.create( 'Ext.form.Panel',
+        me.SOLocGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('SoLocStore'),
+            title:'Rincian Lokasi',
+            border:false,
+            frame:false,
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing2', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            region : 'north',
-                            border : false,
-                            items : [
-                            {
-                                xtype : 'fieldset',
-                                title : 'General Info',
-                                margin : '0 10 0 10',
-                                items : [
+                            xtype:'container',
+                            layout:'hbox',
+                            flex:1,
+                            items:[
                                 {
-                                    xtype: 'fieldcontainer',
-                                    hidden: true,
-                                    layout: {type: 'hbox'},
-                                    defaults :{margin : '0 10 0 10'},
-                                    hideLabel: true,
-                                    items : [
-                                        {name: 'co_id', xtype:'textfield', hidden : true},
-                                        {name: 'n_disc', xtype: 'numberfield', id:'i_n_disc', hidden : true},
-                                        {name: 'n_bruto', xtype: 'numberfield', id: 'i_n_bruto', hidden : true},
-                                        {name: 'n_ppn', xtype: 'numberfield', id: 'i_n_ppn', hidden : true}
-                                    ]
-                                },
-                                {
-                                    xtype: 'fieldcontainer',
-                                    hidden: false,
-                                    layout: {type: 'hbox'},
-                                    defaults :{margin : '0 10 0 10'},
-                                    hideLabel: true,
-                                    items : [
+                                    xtype:'container',
+                                    flex:1,
+                                    layout:'anchor',
+                                    items:[
                                         {
-                                            xtype: 'mitos.UpperCaseTextField',
-                                            name : 'so_num',
-                                            id : 'so_num_input',
-                                            width: 300,
-                                            fieldLabel: 'Sales Order #',
-                                            readOnly: true
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode Sub Customer',
+                                            name:'custloc_id',
+                                            readOnly: true,
+                                            width:250
                                         },
                                         {
-                                            xtype: 'datefield',
-                                            name : 'tanggal',
-                                            width: 300,
-                                            fieldLabel: 'Tanggal',
-                                            labelAlign: 'right',
-                                            submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format'],
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Customer',
+                                            name:'custloc_nama',
+                                            width:385,
+                                            readOnly:true
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Alamat',
+                                            name:'alamat',
+                                            readOnly: true,
+                                            width:250
+                                        },
+                                        {
+                                            xtype:'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Qty',
+                                            name:'qty',
                                             allowBlank:false,
-                                            value : new Date(),
-                                            maxValue: new Date()
-
-                                        }
-                                    ]
-
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                    {
-                                        xtype : 'xtCustomerPopup',
-                                        fieldLabel : 'Customer',
-                                        hideLabel : false,
-                                        width: 200,
-                                        itemId : 'cust_id',
-                                        name : 'cust_id',
-                                        id: 'cust_id_so',
-                                        labelAlign : 'right'
-                                    },
-                                        {
-                                            xtype:'displayfield',
-                                            width: 200,
-                                            name : 'cust_nama',
-                                            id: 'cust_nama_so'
-                                        }]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                        {
-                                            name : 'cust_po_num',
-                                            xtype: 'mitos.UpperCaseTextField',
-                                            fieldLabel: 'Customer PO #',
-                                            labelAlign: 'right',
-                                            width : 300
+                                            width:250
                                         },
                                         {
-                                            xtype: 'mitos.UpperCaseTextField',
-                                            name : 'fp_num',
-                                            fieldLabel: 'Faktur Pajak #',
-                                            labelAlign: 'right',
-                                            width : 300
-                                        },
-                                        {
-                                            xtype: 'mitos.UpperCaseTextField',
-                                            name : 'inv_num',
-                                            fieldLabel: 'Invoice #',
-                                            labelAlign: 'right',
-                                            width : 300
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'keterangan',
+                                            width:385
                                         }
                                     ]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                        {
-                                            xtype: 'datefield',
-                                            name : 'cust_po_tgl',
-                                            width: 300,
-                                            fieldLabel: 'Tanggal PO',
-                                            labelAlign: 'right',
-                                            submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format'],
-                                            value : new Date(),
-                                            maxValue: new Date(),
-                                            allowBlank:false
-                                        },
-                                        {
-                                            xtype: 'datefield',
-                                            name : 'tgl_jt_kirim',
-                                            width: 300,
-                                            fieldLabel: 'Tgl JT Kirim',
-                                            labelAlign: 'right',
-                                            submitFormat: 'Y-m-d',
-                                            format : globals['date_display_format'],
-                                            allowBlank:true,
-                                            value : new Date(),
-                                            allowBlank:false
-                                        }
-                                    ]
-                                },/*
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : true,
-                                    items : [
-                                    {
-                                        xtype: 'fieldcontainer',
-                                        msgTarget: 'under',
-                                        items: [
-                                            {
-                                                width: 200,
-                                                xtype: 'mitos.checkbox',
-                                                fieldLabel: 'PPN',
-                                                labelAlign: 'right',
-                                                name: 'ppn_so'
-                                            },{
-                                                width: 200,
-                                                xtype: 'mitos.checkbox',
-                                                fieldLabel: 'Exclude PPN',
-                                                labelAlign: 'right',
-                                                name: 'ppn_exc'
-                                            }
-                                        ]
-
-                                    }]
-                                },*/
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : false,
-                                    items : [
-                                        {
-                                            xtype: 'xtWilayahPopup',
-                                            name : 'wilayah_id',
-                                            hideLabel : false,
-                                            width: 200,
-                                            fieldLabel: 'Wilayah',
-                                            labelAlign: 'right',
-                                            allowBlank:true
-                                        },{
-                                            xtype:'displayfield',
-                                            width: 100,
-                                            name : 'wilayah_nama',
-                                            id: 'wilayah_nama'
-                                        },
-                                        {
-                                            xtype: 'xtSalesPopup',
-                                            name : 'sales_id',
-                                            width: 200,
-                                            fieldLabel: 'Sales',
-                                            hideLabel : false,
-                                            labelAlign: 'right',
-                                            allowBlank:true
-                                        },{
-                                            xtype:'displayfield',
-                                            width: 100,
-                                            name : 'sales_nama',
-                                            id: 'sales_nama'
-                                        }
-                                    ]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : false,
-                                    items : [
-                                        {
-                                            width: 400,
-                                            height: 100,
-                                            fieldLabel : 'Pembayaran',
-                                            labelAlign : 'right',
-                                            xtype: 'textareafield',
-                                            name: 'pembayaran'
-                                        }
-                                    ]
-                                }/*,
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : false,
-                                    items : [
-                                        {
-                                            xtype: 'mitos.currency',
-                                            name: 'n_bruto',
-                                            id : 'so0_n_bruto',
-                                            fieldLabel : 'Brutto',
-                                            hideTrigger: true,
-                                            width: 300,
-                                            hideLabel : false,
-                                            labelAlign: 'right',
-                                            disabled:true
-                                        }
-                                    ]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : false,
-                                    items : [
-                                        {
-                                            xtype: 'mitos.currency',
-                                            name: 'ppn_prs',
-                                            id : 'so0_ppn_prs',
-                                            fieldLabel : 'PPN %',
-                                            hideTrigger: true,
-                                            width: 150,
-                                            hideLabel : false,
-                                            labelAlign: 'right'
-                                        },
-                                        {
-                                            xtype: 'mitos.currency',
-                                            labelWidth : 30,
-                                            name: 'n_ppn',
-                                            id : 'so0_n_ppn',
-                                            fieldLabel : 'PPN',
-                                            hideTrigger: true,
-                                            width: 200,
-                                            hideLabel : false,
-                                            labelAlign: 'right',
-                                            readonly : true
-                                        },
-                                        {
-                                            xtype: 'mitos.currency',
-                                            labelWidth : 50,
-                                            name: 'n_disc',
-                                            id : 'so0_n_disc',
-                                            fieldLabel : 'Discount',
-                                            hideTrigger: true,
-                                            width: 200,
-                                            hideLabel : false,
-                                            labelAlign: 'right'
-                                        }
-                                    ]
-                                },
-                                {
-                                    xtype : 'fieldcontainer',
-                                    layout :
-                                    {
-                                        type : 'hbox'
-                                    },
-                                    defaults :
-                                    {
-                                        margin : '0 10 0 10'
-                                    },
-                                    hideLabel : false,
-                                    items : [
-                                        {
-                                            xtype: 'mitos.currency',
-                                            name: 'n_netto',
-                                            id : 'so0_n_netto',
-                                            fieldLabel : 'Netto',
-                                            hideTrigger: true,
-                                            width: 300,
-                                            hideLabel : false,
-                                            labelAlign: 'right',
-                                            readonly: true
-                                        }
-                                    ]
-                                }*/]
-                            }]
-                        })
+                                }
+                            ]
+                        }
                     ]
                 })
             ],
-            buttons : [
+            columns:[
                 {
-                    text : 'Sales Order',
-                    scope : me,
-                    action : 'encounters',
-                    tooltip : 'Kembali ke Sales Order',
-                    handler : me.onBtnBack
-                }, '->',
-                {
-                    text : 'Simpan',
-                    scope : me,
-                    action : 'save',
-                    tooltip : 'Simpan Data',
-                    id: 'save-btn',
-                    handler: function(){
-                        var form = me.GeneralForm.getForm();
-                        if(form.isValid()){
-                            me.onBtnSave(form, me.SOStore);
-                        }
-                    }
+                    header:'Company',
+                    hidden:true,
+                    dataIndex:'co_id'
                 },
                 {
-                    text : 'Batal',
-                    scope : me,
-                    action : 'cancel',
-                    tooltip : 'Batal dan kembali ke Sales Order',
-                    handler : me.onBtnCancel
+                    header : 'Kode Sub Customer',
+                    dataIndex : 'custloc_id'
                 },
                 {
-                    text : 'Berikut',
-                    scope : me,
-                    action : 'next',
-                    iconCls : 'icoArrowRightSmall',
-                    iconAlign : 'right',
-                    tooltip : 'Berikutnya',
-                    id:'move-next',
-                    handler : me.onBtnNext
-                }]
-		} );
-
-        me.SOItemspnl = Ext.create( 'Ext.panel.Panel',{
-                defaultTitle : 'Sales Order',
-                title : 'Sales Order Items',
-                layout : 'border',
-                bodyStyle : 'background-color:#fff',
-                items : [
-                    me.ItemsGrid = Ext.create('App.ux.GridPanel', {
-                        store: me.SOItemsStore,
-                        height: 250,
-                        margin: '0 0 3 0',
-                        region: 'north',
-                        columns: [
-                            {text: 'co_id', width:70, sortable: false, dataIndex: 'co_id', hidden: true},
-                            {text: 'so_num', width:70, sortable: false, dataIndex: 'so_num', hidden: true},
-                            {text: 'ID', width:70, sortable: false, dataIndex: 'prod_id'},
-                            {text: 'Nama Product', flex: 1, sortable: true, dataIndex: 'prod_nama'},
-                            {text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                            {text: 'Satuan', width: 100, sortable: true, dataIndex: 'satuan_nama'},
-                            {text: 'Qty', width: 100, sortable: false, dataIndex: 'qty',
-                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
-                            {text: 'Harga', width: 150, sortable: false, dataIndex: 'hrg',
-                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
-                            {text: 'Jumlah', width: 150, sortable: false, dataIndex: 'n_brutto', hidden: true},
-                            {text: 'Disc %', width: 150, sortable: false, dataIndex: 'disc_prs', hidden : true},
-                            {text: 'Discount', width: 150, sortable: false, dataIndex: 'n_disc', hidden : true},
-                            {text: 'Total', width: 150, sortable: false, dataIndex: 'n_netto',
-                                   renderer: Ext.util.Format.numberRenderer('0,000.00'), align: 'right'},
-                            {text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
-                        ],
-                        listeners: {
-                            scope: me,
-                            select: me.onItemsGridClick,
-                            itemdblclick: function(view, record){
-                                oldName = record.get('prod_id');
-                                record.set("old_prod_id",oldName);
-                                me.onItemsdblclick(me.SOItemsStore, record, 'Edit Product');
-                                }
-                            },
-                        dockedItems: [
-                            {
-                                xtype: 'toolbar',
-                                dock: 'top',
-                                items: [
-                                    {
-                                        text: 'Add',
-                                        iconCls: 'icoAddRecord',
-                                        scope: me,
-                                        handler: function(){
-                                            var form = me.win.down('form');
-                                            me.onNewItems(form, 'App.model.transaksi.salesorder.SOItems', 'Tambah data Items');
-                                        },
-                                        tooltip : 'Tambah Data'
-                                    },
-                                    {
-                                        text: 'Delete',
-                                        iconCls: 'icoDeleteBlack',
-                                        itemId: 'listDeleteBtn',
-                                        scope: me,
-                                        handler: function () {
-                                            me.onItemsDelete(me.SOItemsStore);
-                                        },
-                                        tooltip: 'Hapus Data'
-                                    }
-                                ]
-                            }
-                        ]
-                    }),
-                    me.LocationGrid = Ext.create('App.ux.GridPanel', {
-                        store: me.SOLocationStore,
-                        region: 'center',
-                        columns: [
-                            { text: 'company', dataIndex: 'co_id', hidden: true},
-                            { text: 'so_num', dataIndex: 'so_num', hidden: true},
-                            { text: 'Prod_id', dataIndex: 'prod_id', hidden: true},
-                            { text: 'urut', dataIndex: 'urut', hidden: true},
-                            { text: 'Lokasi', flex:1, sortable: true, dataIndex: 'lokasi_nama'},
-                            { text: 'Kecamatan', width: 100, sortable: true, dataIndex: 'lokasi_kec'},
-                            { text: 'Kabupaten', width: 100, sortable: true, dataIndex: 'lokasi_kab'},
-                            { text: 'Qty', width: 50, sortable: false, dataIndex: 'qty'},
-                            { text: 'SAT ID', width:70, sortable: false, dataIndex: 'sat_id', hidden : true},
-                            { text: 'Satuan', width: 100, sortable: true, dataIndex: 'sat_id'},
-                            { text: 'Keterangan', flex:1, sortable: true, dataIndex: 'keterangan'}
-                        ],
-                        listeners: {
-                            scope: me,
-                            itemdblclick: function(view, record){
-                                me.onLocdblclick(me.SOLocationStore, record, 'Edit Detail Lokasi');
-                            }
-                        },
-                        dockedItems: [
-                            {
-                                xtype: 'toolbar',
-                                dock: 'top',
-                                items: [{
-                                    text: 'Add',
-                                    iconCls: 'icoAddRecord',
-                                    scope: me,
-                                    handler: function(){
-                                        var form = me.winLoc.down('form');
-                                        me.onNewLoc(form, 'App.model.transaksi.salesorder.SOLocation', 'Tambah Data');
-                                        Ext.getCmp('qty_loc_so').setValue(me.curr_Qty);
-                                        Ext.getCmp('sat_id_so').setValue(me.curr_Sat);
-                                    }
-                                },
-                                    {
-                                        xtype: 'button',
-                                        text: 'Hapus Data',
-                                        iconCls: 'delete',
-                                        handler: function() {
-                                            me.onLocDelete(me.SOLocationStore);
-                                        }
-                                    }]
-                            }
-                        ]
-                    })
-                ],
-                buttons : [
-                    {
-                        text : 'Kembali',
-                        scope : me,
-                        action : 'back',
-                        iconCls : 'icoArrowLeftSmall',
-                        tooltip : 'Kembali ke Awal',
-                        id: 'move-prev-1',
-                        handler : me.onButtonBack
-                    }]
-            });
-
-
-
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            hidden : true,
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            items: [
-                                {name:'co_id', xtype:'textfield', hidden : true},
-                                {name: 'so_num', xtype: 'textfield', hidden : true},
-                                {name: 'n_disc', xtype: 'numberfield', id:'n_disc_input', hidden : true},
-                                {name: 'n_brutto', xtype: 'numberfield', id: 'n_brutto_input', hidden : true},
-                                {name: 'hrg_lain', xtype: 'numberfield', id: 'hrg_lain_input', hidden : true}
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: { hideLabel: false },
-                            anchor : '100%',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 300,
-                                    name: 'prod_id',
-                                    fieldLabel : 'Product ID ',
-                                    xtype : 'xtlistproduct',
-                                    itemId : 'prod_id',
-                                    labelAlign : 'right',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: { hideLabel: false },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 250,
-                                    name: 'sat_id',
-                                    xtype: 'xtSatuanPopup',
-                                    fieldLabel : 'Satuan ',
-                                    itemId:'sat_ap',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel : false,
-                                margin: '0 0 0 0'
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'qty',
-                                    id : 'qty_input',
-                                    fieldLabel : 'Qty ',
-                                    labelAlign: 'right',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'hrg',
-                                    id : 'hrg_input',
-                                    fieldLabel : 'Harga',
-                                    labelAlign: 'right',
-                                    hideTrigger: true,
-                                    margin: '0 0 0 -15',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                },
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.currency',
-                                    name: 'disc_prs',
-                                    fieldLabel : 'Diskon % ',
-                                    labelAlign : 'right',
-                                    id : 'disc_prs_input',
-                                    margin: '0 0 0 -15',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 300,
-                                    xtype: 'displayfield',
-                                    name: 'n_netto',
-                                    id : 'n_netto_input',
-                                    fieldLabel : 'Jumlah ',
-                                    labelAlign : 'right',
-                                    hideTrigger: true,
-                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
-                                }
-                            ]
-                        },{
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            fieldLabel : 'RINCIAN HARGA ',
-                            labelAlign : 'right'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'hrg_loco',
-                                    id : 'hrg_loco_input',
-                                    fieldLabel : 'Loco ',
-                                    labelAlign : 'right',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'hrg_transport',
-                                    id : 'hrg_transport_input',
-                                    fieldLabel : 'Transport ',
-                                    labelAlign : 'right',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'hrg_promosi',
-                                    id : 'hrg_promosi_input',
-                                    fieldLabel : 'Promosi ',
-                                    labelAlign : 'right',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'hrg_sosialisasi',
-                                    id : 'hrg_sosialisasi_input',
-                                    fieldLabel : 'Sosialisasi ',
-                                    labelAlign : 'right',
-                                    hideTrigger: true,
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: false
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 400,
-                                    height: 100,
-                                    fieldLabel : 'Keterangan',
-                                    labelAlign : 'right',
-                                    xtype: 'textareafield',
-                                    name: 'keterangan'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onitemsSave(form, me.SOItemsStore);
-                        }
-                    }
+                    header : 'Customer',
+                    dataIndex : 'custloc_nama',
+                    flex:1
                 },
-                '-',
                 {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
+                    header : 'Alamat',
+                    dataIndex : 'alamat',
+                    flex:1
+                },
+                {
+                    header : 'qty',
+                    dataIndex : 'qty',
+                    width : 200
+                },
+                {
+                    header : 'Keterangan',
+                    dataIndex : 'keterangan',
+                    flex:1
                 }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action(me.win, 'close');
-                }
-            }
+            ]
         });
 
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.winLoc = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            hidden : true,
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {name: 'co_id', xtype:'textfield', hidden : true},
-                                {name: 'so_num', xtype: 'textfield', hidden : true},
-                                {name: 'prod_id', xtype: 'textfield', hidden : true}
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Lokasi : ',
-                                    labelAlign: 'right'
-                                },
-                                {
-                                    width: 400,
-                                    name: 'lokasi_nama',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Kecamatan : ',
-                                    labelAlign: 'right'
-                                },
-                                {
-                                    width: 400,
-                                    name: 'lokasi_kec',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Kabupaten : ',
-                                    labelAlign: 'right'
-                                },
-                                {
-                                    width: 400,
-                                    name: 'lokasi_kab',
-                                    xtype: 'textfield'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Qty :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    name: 'qty',
-                                    hideTrigger: true,
-                                    id:'qty_loc_so',
-                                    listeners : {
-                                        scope : me,
-                                        specialkey : me.onEnter
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Satuan : ',
-                                    labelAlign: 'right'
-                                },
-                                {
-                                    width: 100,
-                                    name: 'sat_id',
-                                    xtype: 'xtSatuanPopup',
-                                    itemId : 'sat_id',
-                                    id:'sat_id_so',
-                                    margin : '0 0 0 0',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Keterangan :'
-                                },
-                                {
-                                    width: 300,
-                                    height: 100,
-                                    xtype: 'textareafield',
-                                    name: 'keterangan'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winLoc.down('form').getForm();
-                        if(form.isValid()){
-                            me.onlocSave(form, me.SOLocationStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action(me.winLoc, 'close');
-                }
-            }
+        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+            activeTab:0,
+            items:[ me.SalesOrderGrid, me.SOLocGrid]
         });
 
-        me.pageBody = [me.SOGrid, me.salesorderpnl, me.SOItemspnl];
-		me.callParent( arguments );
-	},
+        me.pageBody = [me.FormulirPanel];
+        me.callParent(arguments);
 
-	/**
-	 * Event: onBtnClicked
-	 */
-	onBtnClicked : function(btn)
-	{
-		var datefrom = this.query( 'datefield[itemId="datefrom"]' ), 
-		    dateto = this.query( 'datefield[itemId="dateto"]' );
-		if (btn.pressed)
-		{
-			datefrom[0].reset();
-			dateto[0].reset();
-		}
-		this.ReloadGrid();
+    }, // end of initComponent
 
-	},
+    onGridClick: function(grid, selected){
+        var me = this;
+        me.so_num= selected.data.so_num;
+        me.cust_id= selected.data.cust_id;
+        var  deletebtn = me.query('button[action="delete"]')[0];
+        if(selected.data.status==1 || selected.data.status==2){
+            deletebtn.setDisabled(true);
+        }else{
+            deletebtn.setDisabled(false);
+        }
+        me.SOLocStore.load({params:{so_num:me.so_num, cust_id:me.cust_id}});
 
-    onNew : function(store)
-    {
-        var me = this, form = me.GeneralForm.getForm();
-        form.reset();
-        this.goToSODetail();
-        Ext.getCmp('move-next').setDisabled(true);
+        /* tampilkan user input dan useredit*/
+        var user = '<span style="color: #ff2110">User Input : </span>'+selected.data.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+selected.data.useredit;
+        Ext.ComponentQuery.query('#itemuserinput')[0].setValue(user);
     },
-    onDelete: function(){
-        var me = this,
-            grid = me.SOGrid,
-            store = grid.getStore(),
-            record = grid.getSelectionModel().getSelection(),
-            co_id = record[0].get('co_id'),
-            so_num = record[0].get('so_num');
-        if (record != []) {
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+        newModel = Ext.ModelManager.create({
+        }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+
+        Ext.ComponentQuery.query('#tgl_input_so')[0].setValue(new Date());
+    },
+
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
+
+        plugin.cancelEdit();
+        if (selection) {
             Ext.Msg.show({
                 title: 'Please Confirm' + '...',
                 msg: 'Are you sure want to delete' + ' ?',
@@ -1326,403 +624,30 @@ Ext.define( 'App.view.transaksi.salesorder.SalesOrder',
                 buttons: Ext.Msg.YESNO,
                 fn: function(btn){
                     if(btn == 'yes'){
-                        store.remove(record);
-                        SalesOrder.deleteSO(record);
+                        store.remove(selection);
                         store.sync();
                         if (store.getCount() > 0) {
-                            grid.getSelectionModel().select(0);
+                            sm.select(0);
                         }
-//                        me.ReloadGrid();
                     }
                 }
             });
-        }
-    },
 
-	/**
-	 * Event: rowDblClicked
-	 */
-	rowDblClicked : function(store, record)
-	{
-        var me = this;
-        var form = this.GeneralForm;
-        form.loadRecord(record);
-        me.curr_so_num = form.getForm().findField('so_num').getValue();
-        me.curr_co_id = form.getForm().findField('co_id').getValue();
-		this.goToSODetail();
-        Ext.getCmp('move-next').setDisabled(false);
-	},
-
-	/**
-	 * Function: goToSalesOrderDetail
-	 */
-	goToSODetail : function()
-	{
-		this.getPageBody().getLayout().setActiveItem( 1 );
-	},
-
-	/**
-	 * Function: goToEncounterList
-	 */
-	goToSOList : function()
-	{
-		this.getPageBody().getLayout().setActiveItem( 0 );
-	},
-
-	/**
-	 * Event: onBtnCancel
-	 */
-	onBtnCancel : function()
-	{
-		this.getPageBody().getLayout().setActiveItem( 0 );
-	},
-
-	/**
-	 * Event: onBtnBack
-	 */
-	onBtnBack : function()
-	{
-        this.getPageBody().getLayout().setActiveItem( 0 );
-	},
-
-    onButtonBack : function()
-    {
-        this.getPageBody().getLayout().setActiveItem( 1 );
-    },
-
-	/**
-	 * Event: onBtnNext
-	 */
-	onBtnNext : function()
-	{
-        var me = this, coid = globals.site;
-        me.curr_co_id = coid;
-        this.getPageBody().getLayout().setActiveItem( 2 );
-        me.SOItemsStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});
-
-    },
-
-	/**
-	 * Event: onBtnSave
-	 */
-	onBtnSave : function(form, store)
-	{
-        var me = this, form = me.GeneralForm.getForm( ), record = form.getRecord(), values = form.getValues(),
-            storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.curr_so_num = Ext.getCmp('so_num_input').getValue();
-                Ext.getCmp('move-next').setDisabled(false);
-                me.getPageBody().getLayout().setActiveItem( 0 );
-                store.load();
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Opps', 'Error..!!');
-               // me.msg('Opps!', 'Error!!', true);
-            }
-        });
-
-   	},
-
-	/**
-	 * Function: Search for Sales Order based on the search fields
-	 * This function will pass all the fields to the server side 
-	 * so PHP dataProvider can calculate and do the search against 
-	 * the SQL Server
-	 */
-	ReloadGrid : function(btn)
-	{
-		// Declare some variables
-		var topBarItems = this.SOGrid.getDockedItems('toolbar[dock="top"]')[0],
-		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ), 
-		dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
-		
-		// Load the ExtJs dataStore with the new parameters
-		this.SOStore.load(
-		{
-			params :
-			{
-				datefrom : datefrom,
-				dateto : dateto,
-				so_numsearch : topBarItems.getComponent( 'fieldcontainerso_numsearch' ).getComponent( 'so_numsearch' ).getValue( ),
-                cust_search : topBarItems.getComponent( 'fieldcontainercust_search' ).getComponent( 'cust_search' ).getValue( )
-			}
-		} );
-
-	},
-
-    onNewItems: function(form, model, title){
-        var me = this;
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({so_num:me.curr_so_num}, model);
-        form.getForm().loadRecord(newModel);
-        this.action(this.win, 'new');
-        this.win.show();
-    },
-    onNewLoc: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action(this.winLoc, 'new');
-
-        this.winLoc.show();
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    action: function(wnd, action){
-        var form = wnd.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onItemsGridClick: function(grid, selected){
-        var me = this;
-        me.curr_prod_id = selected.data.prod_id;
-        me.curr_co_id = selected.data.co_id;
-        me.curr_so_num = selected.data.so_num;
-        me.curr_Qty = selected.data.qty;
-        me.curr_Sat = selected.data.sat_id;
-        me.SOLocationStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
-
-    },
-    onItemsdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action(this.win, 'old');
-        this.win.show();
-    },
-    onLocdblclick: function(store, record, title){
-        var form = this.winLoc.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action(this.winLoc, 'old');
-        this.winLoc.show();
-    },
-
-    onitemsSave: function(form, store){
-        var me = this;
-        var hrg_loco = Ext.getCmp('hrg_loco_input').getValue(),
-            hrg_transport = Ext.getCmp('hrg_transport_input').getValue(),
-            hrg_promosi = Ext.getCmp('hrg_promosi_input').getValue(),
-            hrg_sosialisasi = Ext.getCmp('hrg_sosialisasi_input').getValue(),
-            jumlah = Ext.getCmp('hrg_input').getValue(),
-            totalRincian =0;
-        totalRincian = hrg_loco + hrg_transport + hrg_promosi + hrg_sosialisasi;
-        if(totalRincian != jumlah){
-            Ext.MessageBox.alert('Warning', 'Rincian Biaya Tidak Sesuai Dengan Harga');
-        }else{
-            me.saveitem(form, store);
         }
 
     },
 
-    saveitem: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Opps', 'Error..!!');
-            }
-        });
-        store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num}});
-    },
-    onlocSave: function(form, store){
-        var me = this;
-        me.saveloc(form, store);
-    },
-    saveloc: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-
-        form.findField('so_num').setValue(me.curr_so_num);
-        form.findField('prod_id').setValue(me.curr_prod_id);
-        values = form.getValues();
-
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.winLoc.close();
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Opps', 'Error..!!');
-                //me.msg('Opps!', 'Error!!', true);
-            }
-        });
-        store.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
-    },
-    onItemsDelete: function(store){
-        var me = this, grid = me.ItemsGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('prod_id');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                    me.SOLocationStore.load({params:{co_id: me.curr_co_id, so_num: me.curr_so_num, prod_id: me.curr_prod_id}});
-                }
-            }
-        });
-//        store.load();
-    },
-
-    onLocDelete: function(store){
-        var me = this, grid = me.LocationGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('urut');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                }
-            }
-        });
-//        store.load();
-    },
-    onEnter : function(field, e)
-    {
-        var hrg = 0,
-            qty = 0,
-            disc_prs = 0,
-            n_brutto = 0,
-            n_netto = 0,
-            n_disc = 0,
-            n_loco = 0,
-            n_transport = 0,
-            n_promosi = 0,
-            n_sosialisasi = 0,
-            n_lain = 0;
-        if (e.getKey() == e.ENTER)
-        {
-            qty = Ext.getCmp('qty_input').getValue();
-            hrg = Ext.getCmp('hrg_input').getValue();
-            disc_prs = Ext.getCmp('disc_prs_input').getValue();
-            n_loco = Ext.getCmp('hrg_loco_input').getValue();
-            n_transport = Ext.getCmp('hrg_transport_input').getValue();
-            n_promosi = Ext.getCmp('hrg_promosi_input').getValue();
-            n_sosialisasi = Ext.getCmp('hrg_sosialisasi_input').getValue();
-            n_lain = Ext.getCmp('hrg_lain_input').getValue();
-            n_brutto = qty * hrg;
-            n_netto = n_brutto;
-            if (disc_prs > 0) {
-                n_disc = (disc_prs/100)*n_brutto;
-                n_netto = n_brutto - n_disc;
-            }
-            if (n_loco == 0) {
-                n_loco = hrg;
-                n_transport = 0;
-                n_promosi = 0;
-                n_sosialisasi = 0;
-                n_lain = 0;
-            }
-            n_lain = hrg - n_loco - n_transport - n_promosi - n_sosialisasi;
-            Ext.getCmp('n_netto_input').setValue(n_netto);
-        }
-        //Ext.getCmp('n_disc_input').setValue(n_disc);
-        //Ext.getCmp('n_brutto_input').setValue(n_brutto);
-        //
-        //Ext.getCmp('hrg_loco_input').setValue(n_loco);
-        //Ext.getCmp('hrg_transport_input').setValue(n_transport);
-        //Ext.getCmp('hrg_promosi_input').setValue(n_promosi);
-        //Ext.getCmp('hrg_sosialisasi_input').setValue(n_sosialisasi);
-        Ext.getCmp('hrg_lain_input').setValue(n_lain);
-
-    },
-
-
-    /*
-     * Event: navigate
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
      */
-    navigate:function(panel, to){
-        var me = this,
-            layout = panel.getLayout(),
-            currCard;
-        if(typeof to == 'string'){
-            layout[to]();
-        }
-        else{
-            layout.setActiveItem(to);
-        }
-        currCard = layout.getActiveItem();
-/*
-        if(me.step[currCard.action]){
-            Ext.getCmp('move-next').setDisabled(false);
-        }
-        else{
-            Ext.getCmp('move-next').setDisabled(true);
-        }
-*/
-//        Ext.getCmp('move-prev').setVisible(layout.getPrev());
-
-    },
-
-    /*
-     * Event: okToGoNext
-     */
-    okToGoNext:function(ok){
-        var me = this, layout = me.mainPanel.getLayout();
-        if(me.GeneralForm.getLayout().getActiveItem().action != 2) Ext.getCmp('move-next').setDisabled(!ok);
-    },
-    onGridClick: function(grid, selected){
-        var me = this;
-        var TopBarItems = this.SOGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-
-    },
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive : function(callback)
-	{
-		this.ReloadGrid();
-		callback( true );
-	}
-} );
-
+    onActive : function(callback)
+    {
+        this.SalesOrderStore.load();
+        this.SOLocStore.load();
+        callback(true);
+    }
+});
+//ens LogPage class

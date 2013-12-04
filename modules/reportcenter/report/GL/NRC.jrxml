@@ -1,118 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NRC" language="groovy" pageWidth="595" pageHeight="842" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="20" bottomMargin="20" uuid="3d47b7e0-87e1-4e43-9c59-c7de6c8ee4d3">
-	<property name="ireport.zoom" value="1.24184264611831"/>
+	<property name="ireport.zoom" value="2.657341500000001"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{MBUH}.contains( "z" )]]></conditionExpression>
+			<style backcolor="#E6DAC3" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="coid" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["/var/www/modules/reportcenter/report/GL/"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="prd" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="lvl" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[SELECT c.*, c1.coa_nama as cp_nama, tb.periode, coalesce(tb.begining_balance,0) as begining_balance, coalesce(tb.ending_balance,0) as ending_balance,
-coalesce(tb.incdec,0) as incdec
-FROM COA c
-LEFT OUTER JOIN COA c1 ON c.CO_ID = c1.CO_ID AND c.COA_PARENT = c1.COA_ID
-LEFT OUTER JOIN GET_SUM_NERACA($P{coid}, c.coa_id, $P{prd}) tb ON c.CO_ID = tb.CO_ID AND c.COA_ID = tb.COA_ID
-WHERE c.CO_ID = $P{coid} AND c.COA_PARENT is null
-ORDER BY c.COA_ID]]>
+		<![CDATA[select *
+from rpt_view_neraca($P{coid}, $P{prd}, $P{lvl})
+where NOT((ending_balance = 0) and (begining_balance = 0))
+  and coa_level <= $P{lvl}
+order by urut]]>
 	</queryString>
+	<field name="URUT" class="java.lang.String"/>
 	<field name="CO_ID" class="java.lang.String"/>
 	<field name="COA_ID" class="java.lang.String"/>
 	<field name="COA_NAMA" class="java.lang.String"/>
 	<field name="COA_LEVEL" class="java.lang.Integer"/>
 	<field name="COA_PARENT" class="java.lang.String"/>
-	<field name="KETERANGAN" class="java.lang.String"/>
-	<field name="AKTIF" class="java.lang.String"/>
 	<field name="STATUS" class="java.lang.String"/>
-	<field name="CP_NAMA" class="java.lang.String"/>
-	<field name="PERIODE" class="java.lang.String"/>
-	<field name="BEGINING_BALANCE" class="java.math.BigDecimal"/>
 	<field name="ENDING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="BEGINING_BALANCE" class="java.math.BigDecimal"/>
 	<field name="INCDEC" class="java.math.BigDecimal"/>
-	<variable name="ENDING_BALANCE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="BYCOA" calculation="Sum">
-		<variableExpression><![CDATA[$F{ENDING_BALANCE}]]></variableExpression>
+	<field name="VENDING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="VBEGINING_BALANCE" class="java.math.BigDecimal"/>
+	<field name="VINCDEC" class="java.math.BigDecimal"/>
+	<variable name="MBUH" class="java.lang.String">
+		<variableExpression><![CDATA[$F{URUT}]]></variableExpression>
 	</variable>
-	<variable name="BEGINING_BALANCE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="BYCOA" calculation="Sum">
-		<variableExpression><![CDATA[$F{BEGINING_BALANCE}]]></variableExpression>
-	</variable>
-	<variable name="INCDEC_1" class="java.math.BigDecimal" resetType="Group" resetGroup="BYCOA" calculation="Sum">
-		<variableExpression><![CDATA[$F{INCDEC}]]></variableExpression>
-	</variable>
-	<group name="BYCOA">
-		<groupExpression><![CDATA[$F{COA_ID}]]></groupExpression>
-		<groupFooter>
-			<band height="25">
-				<textField pattern="#,##0">
-					<reportElement uuid="cea38f9a-d916-4d1d-b3a9-6cfb13ef62a3" x="329" y="0" width="86" height="12"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right">
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{ENDING_BALANCE_1}]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0">
-					<reportElement uuid="eecde98e-a443-4460-bb28-ae940d4fad35" x="415" y="0" width="86" height="12"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right">
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{BEGINING_BALANCE_1}]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0">
-					<reportElement uuid="fb66ad2e-fab1-4f70-b2f2-e396c23f47b3" x="501" y="0" width="66" height="12"/>
-					<box>
-						<pen lineWidth="0.5"/>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right">
-						<paragraph leftIndent="3" rightIndent="3"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{INCDEC_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement uuid="50feedac-edbd-4f88-a71b-8caba390eba2" x="0" y="0" width="329" height="12"/>
-					<box>
-						<topPen lineWidth="0.5"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.5"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement>
-						<font size="8" isBold="true"/>
-						<paragraph leftIndent="80" rightIndent="5"/>
-					</textElement>
-					<textFieldExpression><![CDATA["Total "+$F{COA_NAMA}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupFooter>
-	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="68">
+	<pageHeader>
+		<band height="91" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="57e6a4da-d469-4ab1-99ba-1ff946982189" x="118" y="22" width="383" height="28"/>
+				<reportElement uuid="bbd71bf2-13a3-4b27-af87-e3169b2d7740" x="0" y="70" width="75" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KODE AKUN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a0520551-a636-4429-b00f-327ac738d857" x="75" y="70" width="207" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAMA AKUN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc7e2a9e-ee54-4b1b-b5d9-7ad4aa6dd0b2" x="282" y="70" width="97" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BULAN INI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="64b5761e-3624-48ce-a9a3-d081aef595a3" x="379" y="70" width="96" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BULAN LALU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="be5b43fc-a03e-4956-8ad7-b0737ad681a6" x="0" y="45" width="567" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NERACA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fbd7f0d1-b181-4546-a3f5-862e53f6aec6" x="105" y="0" width="315" height="17"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PT. SARASWANTI ANUGERAH MAKMUR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0fd91da9-a5dc-437b-a753-03e35a216db8" x="105" y="17" width="315" height="28"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
@@ -122,109 +130,48 @@ ORDER BY c.COA_ID]]>
 Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 ]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="de8de317-b869-496c-9a3f-d6e973153138" x="118" y="5" width="315" height="17"/>
-				<textElement>
+			<textField>
+				<reportElement uuid="abf34375-9f88-4c97-bde0-9916c6892470" x="0" y="62" width="567" height="12"/>
+				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PT. SARASWANTI ANUGERAH MAKMUR]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["Periode : " +$P{prd}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement uuid="cd52bb67-f2bc-43c0-b822-3e2a3440450a" x="158" y="50" width="202" height="17"/>
+				<reportElement uuid="189ead9f-6ee2-4333-9c7e-2873a0fa0979" x="475" y="70" width="86" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[NERACA]]></text>
+				<text><![CDATA[NAIK/TURUN]]></text>
 			</staticText>
+			<line>
+				<reportElement uuid="c9f99dcd-2109-4c5c-aa70-851b887554dc" x="0" y="89" width="567" height="1"/>
+			</line>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="e2f188c1-34db-47ff-98ce-30963b3a8914" x="43" y="2" width="75" height="48"/>
+				<reportElement uuid="c8f9bbf3-312e-45d6-b42b-c6b8bdbf541b" x="0" y="0" width="105" height="48"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>
-	</title>
-	<pageHeader>
-		<band height="20" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="bbd71bf2-13a3-4b27-af87-e3169b2d7740" x="0" y="0" width="75" height="20"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.5" lineStyle="Double"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[KODE AKUN]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="a0520551-a636-4429-b00f-327ac738d857" x="75" y="0" width="254" height="20"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.5" lineStyle="Double"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DESCRIPTION]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="fc7e2a9e-ee54-4b1b-b5d9-7ad4aa6dd0b2" x="329" y="0" width="86" height="20"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.5" lineStyle="Double"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CURRENT]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="64b5761e-3624-48ce-a9a3-d081aef595a3" x="415" y="0" width="86" height="20"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.5" lineStyle="Double"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PREVIOUS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="189ead9f-6ee2-4333-9c7e-2873a0fa0979" x="501" y="0" width="66" height="20"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.5" lineStyle="Double"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Inc/Dec]]></text>
-			</staticText>
-		</band>
 	</pageHeader>
 	<detail>
-		<band height="12" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement uuid="cba0f3a9-db79-4e88-9835-790eb41acefe" x="0" y="0" width="75" height="12"/>
+				<reportElement uuid="cba0f3a9-db79-4e88-9835-790eb41acefe" style="Row" x="0" y="2" width="75" height="12">
+					<printWhenExpression><![CDATA[new Boolean(!$F{URUT}.contains( 'z' ))]]></printWhenExpression>
+				</reportElement>
 				<box>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement>
 					<font size="8"/>
@@ -233,12 +180,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{COA_ID}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="eb923ca3-02c2-40a2-80a3-bb0c12ad9904" x="75" y="0" width="254" height="12"/>
+				<reportElement uuid="eb923ca3-02c2-40a2-80a3-bb0c12ad9904" style="Row" x="75" y="2" width="207" height="12"/>
 				<box>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement>
 					<font size="8"/>
@@ -246,63 +194,35 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</textElement>
 				<textFieldExpression><![CDATA[$F{COA_NAMA}]]></textFieldExpression>
 			</textField>
-			<subreport>
-				<reportElement uuid="831e248c-9176-4314-b20e-783cdeffee92" x="0" y="12" width="567" height="0"/>
-				<subreportParameter name="coid">
-					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="prd">
-					<subreportParameterExpression><![CDATA[$P{prd}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="parent">
-					<subreportParameterExpression><![CDATA[$F{COA_ID}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "NRC_SR1.jasper"]]></subreportExpression>
-			</subreport>
-			<textField pattern="#,##0">
-				<reportElement uuid="2565b1e1-f9ae-4a0e-887f-645dbb7e55c1" x="329" y="0" width="86" height="12"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Right">
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="7f086b72-2736-4501-9e90-ba055d3ad7bb" style="Row" x="282" y="2" width="97" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{ENDING_BALANCE} == 0) || ($F{STATUS} == "N")? " " : $F{ENDING_BALANCE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{VENDING_BALANCE} == 0)? " " :$F{VENDING_BALANCE}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0">
-				<reportElement uuid="d6751568-b783-4830-81a4-dfa4b6080916" x="415" y="0" width="86" height="12"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Right">
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="80a23f42-4080-43eb-9880-5df036c34b23" style="Row" x="379" y="2" width="96" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{BEGINING_BALANCE} == 0) || ($F{STATUS} == "N") ? " " : $F{BEGINING_BALANCE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{VBEGINING_BALANCE} == 0) ? " " : $F{VBEGINING_BALANCE}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="e20a6404-7cc1-4b07-9de1-b4e4877c4c12" x="501" y="0" width="66" height="12"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+			<textField pattern="#,##0;(#,##0)">
+				<reportElement uuid="e2569f00-db2b-4d23-aa0c-58ddcd07eae5" style="Row" x="475" y="2" width="86" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
 					<paragraph leftIndent="3" rightIndent="3"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{INCDEC} == 0) || ($F{STATUS} == "N") ? " " : $F{INCDEC}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{VINCDEC} == 0) ? " " : $F{VINCDEC}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="4e4b56f0-1e47-4e30-b9f6-024800e78e6c" x="282" y="2" width="279" height="1">
+					<printWhenExpression><![CDATA[new Boolean($F{URUT}.contains( "z" ))]]></printWhenExpression>
+				</reportElement>
+			</line>
 		</band>
 	</detail>
 	<pageFooter>
@@ -316,4 +236,22 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 			</textField>
 		</band>
 	</pageFooter>
+	<summary>
+		<band height="12">
+			<subreport>
+				<reportElement uuid="df7581cc-bdc3-44fb-991c-538a66d8f4c1" x="0" y="0" width="567" height="10"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coid">
+					<subreportParameterExpression><![CDATA[$P{coid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="prd">
+					<subreportParameterExpression><![CDATA[$P{prd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "NRC_SR2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
 </jasperReport>

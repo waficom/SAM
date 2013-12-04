@@ -44,16 +44,8 @@ class Cashbook_Bank_Out
 
     public function getCashbook_Bank_Out(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "select * from cashbook_bank where co_id='$company' and cb_type='O' ORDER BY $orderx DESC";
+        $sql = "select * from cashbook_bank where co_id='$company' and cb_type='O' ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -82,10 +74,10 @@ class Cashbook_Bank_Out
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['cb_type'] ='O';
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
         }
         unset($data['id'],$data['inv_code']);
         $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'I');
@@ -107,7 +99,12 @@ class Cashbook_Bank_Out
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'U', array('inv_code' => $params -> inv_code));
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'cashbook_bank', 'U', array('inv_code' => $params -> inv_code, 'co_id' => $params -> co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -115,13 +112,13 @@ class Cashbook_Bank_Out
 
     public function deleteCashbook_Bank_Out(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cb_bank_detail WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cashbook_bank WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cashbook_bank WHERE inv_code = '$params->inv_code' and co_id = '$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

@@ -66,6 +66,7 @@ class ACL
 		$roles = array();
 		$this->conn->setSQL("SELECT * FROM acl_roles ORDER BY seq ASC");
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
+            $row = array_change_key_case($row);
 			array_push($roles, $row);
 		}
 		$total = $this->conn->rowCount();
@@ -85,12 +86,13 @@ class ACL
 		$this->conn->setSQL($strSQL);
 		$resp = array();
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
+            $row = array_change_key_case($row);
 			if($format == 'full'){
-				$resp[$row['PERM_KEY']] = array(
-					'id' => $row['ID'], 'Name' => $row['PERM_NAME'], 'Key' => $row['PERM_KEY'], 'Cat' => $row['PERM_CAT']
+				$resp[$row['perm_key']] = array(
+					'id' => $row['id'], 'Name' => $row['perm_name'], 'Key' => $row['perm_key'], 'Cat' => $row['perm_cat']
 				);
 			} else {
-				$resp[] = $row['ID'];
+				$resp[] = $row['id'];
 			}
 		}
 		return $resp;
@@ -107,7 +109,9 @@ class ACL
                           LEFT JOIN acl_roles ar ON aur.role_id = ar.id
                               WHERE aur.user_id = " . $this->user_id);
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) AS $role){
-			$roles[] = $role['ROLE_KEY'];
+
+			$role = array_change_key_case($role);
+            $roles[] = $role['role_key'];
 		}
 		return $roles;
 	}
@@ -132,7 +136,8 @@ class ACL
 		$strSQL = "SELECT FIRST 1 perm_name FROM acl_permissions WHERE perm_key = '" . $perm_Key . "'";
 		$this->conn->setSQL($strSQL);
 		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
-		return $row['PERM_NAME'];
+        $row = array_change_key_case($row);
+		return $row['perm_name'];
 	}
 
 	/**
@@ -142,8 +147,8 @@ class ACL
 	private function getRoleNameByRoleKey($role_key)
 	{
 		$this->conn->setSQL("SELECT FIRST 1 role_name FROM acl_roles WHERE role_key = '" . $role_key . "'");
-		$row = $this->conn->fetchRecord(PDO::FETCH_ASSOC);
-		return $row['ROLE_NAME'];
+		$row = array_change_key_case($this->conn->fetchRecord(PDO::FETCH_ASSOC));
+		return $row['role_name'];
 	}
 
 	/**
@@ -162,17 +167,18 @@ class ACL
 		$this->conn->setSQL($roleSQL);
 		$perms = array();
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$pK = $pK = strtolower($row['PERM_KEY']);
+            $row = array_change_key_case($row);
+			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == ''){
 				continue;
 			}
-			if($row['VAL'] == '1'){
+			if($row['val'] == '1'){
 				$hP = true;
 			} else {
 				$hP = false;
 			}
 			$perms[$pK] = array(
-				'perm' => $pK, 'inheritted' => true, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['PERM_KEY']), 'id' => $row['ID']
+				'perm' => $pK, 'inheritted' => true, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
 			);
 		}
 		return $perms;
@@ -187,17 +193,18 @@ class ACL
 		$this->conn->setSQL("SELECT * FROM acl_user_perms WHERE user_id = " . $this->user_id . " ORDER BY add_date ASC");
 		$perms = array();
 		foreach($this->conn->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$pK = strtolower($row['PERM_KEY']);
+            $row = array_change_key_case($row);
+			$pK = strtolower($row['perm_key']);
 			if($pK == ''){
 				continue;
 			}
-			if($row['VAL'] == '1'){
+			if($row['val'] == '1'){
 				$hP = true;
 			} else {
 				$hP = false;
 			}
 			$perms[$pK] = array(
-				'perm' => $pK, 'inheritted' => false, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['PERM_KEY']), 'id' => $row['ID']
+				'perm' => $pK, 'inheritted' => false, 'value' => $hP, 'Name' => $this->getPermNameByPermKey($row['perm_key']), 'id' => $row['id']
 			);
 		}
 		return $perms;

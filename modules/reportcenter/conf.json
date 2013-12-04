@@ -58,6 +58,9 @@
                 "FormulirPesanan":
                 {
                     "len":1
+                }, "Checklist":
+                {
+                    "len":1
                 }
             }
         },
@@ -102,7 +105,34 @@
                 "RincianBahanBarangMasuk":
                 {
                     "len":1
+                },
+                "SPKirim":
+                {
+                    "len":1
+                },
+                "LPKirim":
+                {
+                    "len":1
+                },
+                "RekapPengadaanBarang":
+                {
+                    "len":1
+                },
+                "LPDKirim":
+                {
+                    "len":1
+                },
+                "LP_sowodo":
+                {
+                    "len":1
+                },"LRPKirim":
+                {
+                    "len":1
+                },"LPKBB":
+                {
+                    "len":1
                 }
+
             }
         },
         "Finance_Rpt":{
@@ -180,7 +210,10 @@
                 },"StockDetailBB":
                 {
                     "len":1
-                },"StockBJ":
+                },"StockBDP":
+                {
+                    "len":1
+                }, "StockBJ":
                 {
                     "len":1
                 },"StockDetailBJ":
@@ -227,6 +260,20 @@
                 {
                     "len":1
                 },"KasBankMasuk_Voucher":
+                {
+                    "len":1
+                }
+            }
+        },
+        "RptFormulir":{
+            "methods":{
+                "AnalisaBJ":
+                {
+                    "len":1
+                },"AnalisaBB":
+                {
+                    "len":1
+                },"AnalisaTB":
                 {
                     "len":1
                 }

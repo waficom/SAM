@@ -106,6 +106,18 @@ $API = array(
     /**
      * Navigation Function
      */
+    'CombosData' => array(
+        'methods' => array(
+            'getUsers' => array(
+                'len' => 0
+            ),
+            'getRoles' => array(
+                'len' => 0
+            ),
+            'getThemes' => array(
+                'len' => 0
+            )
+        )),
     'Navigation' => array(
         'methods' => array(
             'getNavigation' => array(
@@ -122,6 +134,61 @@ $API = array(
                 'len' => 0
             ),
             'saveRolesData' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Role' => array(
+        'methods' => array(
+            'hasRolePerms' => array(
+                'len' => 0
+            ),
+            'getRole' => array(
+                'len' => 1
+            ),
+            'addRole' => array(
+                'len' => 1
+            ),
+            'updateRole' => array(
+                'len' => 1
+            ),
+            'deleteRole' => array(
+                'len' => 1
+            ),
+            'getPermissions' => array(
+                'len' => 1
+            ),
+            'addPermissions' => array(
+                'len' => 1
+            ),
+            'updatePermissions' => array(
+                'len' => 1
+            ),
+            'deletePermissions' => array(
+                'len' => 1
+            ),
+            'getRolePermissions' => array(
+                'len' => 1
+            ),
+            'addRolePermissions' => array(
+                'len' => 1
+            ),
+            'updateRolePermissions' => array(
+                'len' => 1
+            ),
+            'deleteRolePermissions' => array(
+                'len' => 1
+            ),
+            'getUserPermissions' => array(
+                'len' => 1
+            ),
+            'addUserPermissions' => array(
+                'len' => 1
+            ),
+            'updateUserPermissions' => array(
+                'len' => 1
+            ),
+            'deleteUserPermissions' => array(
                 'len' => 1
             )
         )
@@ -365,9 +432,6 @@ $API = array(
      */
     'Customer' => array(
         'methods' => array(
-            /*'getCustLiveSearch' => array(
-                'len' => 1
-            ),*/
             'getcustomer' => array(
                 'len' => 1
             ),
@@ -380,16 +444,17 @@ $API = array(
             'deletecustomer' => array(
                 'len' => 1
             ),
-            'getcustomerL' => array(
+            'getCustLoc' => array(
                 'len' => 1
             ),
-            'addcustomerL' => array(
+            'addCustLoc' => array(
                 'len' => 1
             ),
-            'updatecustomerL' => array(
+            'updateCustLoc' => array(
                 'len' => 1
             ),
-            'deletecustomerL' => array(
+            'deleteCustLoc
+            ' => array(
                 'len' => 1
             )
         )
@@ -598,6 +663,12 @@ $API = array(
             ),
             'updateSOnetto' => array(
                 'len' => 1
+            ),
+            'getSOLoc' => array(
+                'len' => 1
+            ),
+            'updateSOLoc' => array(
+                'len' => 1
             )
         )
     ),
@@ -802,6 +873,14 @@ $API = array(
                 'len' => 1
             ),'getReleaseOrder' => array(
                 'len' => 1
+            ),'updateReleaseOrderCancel' => array(
+                'len' => 1
+            ),'getReleaseOrderCancel' => array(
+                'len' => 1
+            ),'getRCL' => array(
+                'len' => 1
+            ),'updateRCL' => array(
+                'len' => 1
             )
         )
     ),
@@ -846,6 +925,8 @@ $API = array(
                 'len' => 1
             ),'deleteWO_NoFormula' => array(
                 'len' => 1
+            ),'updateWO_NoFormula' => array(
+                'len' => 1
             )
         )
     ),
@@ -878,6 +959,12 @@ $API = array(
                 'len' => 1
             ),
             'getFormulapopup'=> array(
+                'len' => 1
+            ),
+            'getProduksiCancel' => array(
+                'len' => 1
+            ),
+            'updateProduksiCancel'=> array(
                 'len' => 1
             )
         )
@@ -954,7 +1041,14 @@ $API = array(
             ),
             'updateDeliveryOrder1' => array(
                 'len' => 1
+            ),
+            'getDOLoc' => array(
+                'len' => 1
+            ),
+            'updateDOLoc' => array(
+                'len' => 1
             )
+
         )
     ),
     'OrderMonitoring' => array(
@@ -1005,9 +1099,6 @@ $API = array(
             'getAPPayUMpopup' => array(
                 'len' => 1
             ),
-            'getAPPayUMCancelpopup' => array(
-                'len' => 1
-            ),
             'getAP_Invpopup' => array(
                 'len' => 1
             ),
@@ -1023,9 +1114,6 @@ $API = array(
             'getARPayUMpopup' => array(
                 'len' => 1
             ),
-            'getAPAlpopup' => array(
-                'len' => 1
-            ),
             'getAPPaypopup' => array(
                 'len' => 1
             ),
@@ -1038,9 +1126,6 @@ $API = array(
             'getARPaypopup' => array(
                 'len' => 1
             ),
-            'getARAlpopup' => array(
-                'len' => 1
-            ),
             'getDeliveryOrderpopup' => array(
                 'len' => 1
             ),
@@ -1051,9 +1136,6 @@ $API = array(
                 'len' => 1
             ),
             'getTaxMPopup' => array(
-                'len' => 1
-            ),
-            'getARPayUMCancelpopup' => array(
                 'len' => 1
             ),
             'getCashbonOutPopup' => array(
@@ -1112,7 +1194,52 @@ $API = array(
             ),
             'getKapal' => array(
                 'len' => 1
+            ),
+            'getSPKirim' => array(
+                'len' => 1
+            ),
+            'getStock_OUTpopup' => array(
+                'len' => 1
+            ),
+            'getAP_Rptpopup' => array(
+                'len' => 1
+            ),
+            'SO_RptPopup' => array(
+                'len' => 1
+            ),
+            'getStockOpname' => array(
+                'len' => 1
+            ),
+            'getStockOpnameBJ' => array(
+                'len' => 1
+            ),
+            'getAR_LPIpopup' => array(
+                'len' => 1
+            ),
+            'getAR_Rptpopup' => array(
+                'len' => 1
+            ),
+            'getARDeduction' => array(
+                'len' => 1
+            ),
+            'getCBPopup' => array(
+                'len' => 1
+            ),
+            'getAPPaymentCancel' => array(
+                'len' => 1
+            ),
+            'getARPaymentCancel' => array(
+                'len' => 1
+            ),
+            'getCB_BankPopup' => array(
+                'len' => 1
+            ),
+            'getStock_Cancelpopup' => array(
+                'len' => 1
             )
+
+
+
 
 
 
@@ -1294,7 +1421,10 @@ $API = array(
             ),
             'deleteAR_Sale_Payment' => array(
                 'len' => 1
-            )
+            ),
+            'getAR_Deduction' => array(
+                'len' => 1
+            ),
         )
     ),
     'AR_Giro' => array(
@@ -1597,6 +1727,9 @@ $API = array(
             ),
             'deletePinjamDetail' => array(
                 'len' => 1
+            ),
+            'updatePinjamDetail' => array(
+                'len' => 1
             )
         )
     ),
@@ -1802,6 +1935,217 @@ $API = array(
                 'len' => 1
             ),
             'deleteSP_Kirim_Detail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Formulir' => array(
+        'methods' => array(
+            'getAnalisaBJ' => array(
+                'len' => 1
+            ),
+            'addAnalisaBJ' => array(
+                'len' => 1
+            ),
+            'updateAnalisaBJ' => array(
+                'len' => 1
+            ),
+            'deleteAnalisaBJ' => array(
+                'len' => 1
+            ),
+            'getAnalisaBB' => array(
+                'len' => 1
+            ),
+            'addAnalisaBB' => array(
+                'len' => 1
+            ),
+            'updateAnalisaBB' => array(
+                'len' => 1
+            ),
+            'deleteAnalisaBB' => array(
+                'len' => 1
+            ),
+            'getAnalisaTB' => array(
+                'len' => 1
+            ),
+            'addAnalisaTB' => array(
+                'len' => 1
+            ),
+            'updateAnalisaTB' => array(
+                'len' => 1
+            ),
+            'deleteAnalisaTB' => array(
+                'len' => 1
+            )
+        )),
+    'StockOpname' => array(
+        'methods' => array(
+            'getStockOpname' => array(
+                'len' => 1
+            ),
+            'addStockOpname' => array(
+                'len' => 1
+            ),
+            'updateStockOpname' => array(
+                'len' => 1
+            ),
+            'deleteStockOpname' => array(
+                'len' => 1
+            ),
+            'getStockOpnameBJ' => array(
+                'len' => 1
+            ),
+            'addStockOpnameBJ' => array(
+                'len' => 1
+            ),
+            'updateStockOpnameBJ' => array(
+                'len' => 1
+            ),
+            'deleteStockOpnameBJ' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'AR_LatePaymentInterest' => array(
+        'methods' => array(
+            'getAR_Lpi' => array(
+                'len' => 1
+            ),
+            'addAR_Lpi' => array(
+                'len' => 1
+            ),
+            'updateAR_Lpi' => array(
+                'len' => 1
+            ),
+            'deleteAR_Lpi' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_BB_Mix' => array(
+        'methods' => array(
+            'getWO_BJ_Mix' => array(
+                'len' => 1
+            ),
+            'addWO_BJ_Mix' => array(
+                'len' => 1
+            ),
+            'updateWO_BJ_Mix' => array(
+                'len' => 1
+            ),
+            'deleteWO_BJ_Mix' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Risk' => array(
+        'methods' => array(
+            'getRisk' => array(
+                'len' => 1
+            ),'addRisk' => array(
+                'len' => 1
+            ),'updateRisk' => array(
+                'len' => 1
+            ),'deleteRisk' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'GrnDal' => array(
+        'methods' => array(
+            'getGrnDal' => array(
+                'len' => 1
+            ),'addGrnDal' => array(
+                'len' => 1
+            ),'updateGrnDal' => array(
+                'len' => 1
+            ),'deleteGrnDal' => array(
+                'len' => 1
+            ),'getGrnDalDetail' => array(
+                'len' => 1
+            ),'addGrnDalDetail' => array(
+                'len' => 1
+            ),'updateGrnDalDetail' => array(
+                'len' => 1
+            ),'deleteGrnDalDetail' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_ADL' => array(
+        'methods' => array(
+            'getWO_ADL' => array(
+                'len' => 1
+            ),'addWO_ADL' => array(
+                'len' => 1
+            ),'updateWO_ADL' => array(
+                'len' => 1
+            ),'deleteWO_ADL' => array(
+                'len' => 1
+            ),'getWOBB_ADL' => array(
+                'len' => 1
+            ),'addWOBB_ADL' => array(
+                'len' => 1
+            ),'updateWOBB_ADL' => array(
+                'len' => 1
+            ),'deleteWOBB_ADL' => array(
+                'len' => 1
+            ),'getWOBJM_ADL' => array(
+                'len' => 1
+            ),'updateWOBJM_ADL' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'BJ_ADL' => array(
+        'methods' => array(
+            'getBJ_ADL' => array(
+                'len' => 1
+            ),'addBJ_ADL' => array(
+                'len' => 1
+            ),'updateBJ_ADL' => array(
+                'len' => 1
+            ),'deleteBJ_ADL' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Refund' => array(
+        'methods' => array(
+            'getRefund' => array(
+                'len' => 1
+            ),'addRefund' => array(
+                'len' => 1
+            ),'updateRefund' => array(
+                'len' => 1
+            ),'deleteRefund' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'WO_SAM' => array(
+        'methods' => array(
+            'getWO_SAM' => array(
+                'len' => 1
+            ),'addWO_SAM' => array(
+                'len' => 1
+            ),'updateWO_SAM' => array(
+                'len' => 1
+            ),'deleteWO_SAM' => array(
+                'len' => 1
+            ),'getWOBB_SAM' => array(
+                'len' => 1
+            ),'addWOBB_SAM' => array(
+                'len' => 1
+            ),'updateWOBB_SAM' => array(
+                'len' => 1
+            ),'deleteWOBB_SAM' => array(
+                'len' => 1
+            ),'getWOBJM_SAM' => array(
+                'len' => 1
+            ),'updateWOBJM_SAM' => array(
+                'len' => 1
+            ), 'addWOBBPaket_SAM' => array(
                 'len' => 1
             )
         )

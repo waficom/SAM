@@ -110,7 +110,7 @@ class AP_Invoice
         $sql = "SELECT A.*, B.description as bank_nama, C.vend_nama, D.posted_date as ap_inv_date, D.hutangsuplier
         FROM ap_inv_pembayaran A
         left join bank_m B on A.bank_code=B.bank_code and A.co_id=B.co_id
-        left join vendor C on A.vend_id=C.vend_id and A.co_id=C.vend_id
+        left join vendor C on A.vend_id=C.vend_id and A.co_id=C.co_id
         left join ap_inv D on A.inv_code=D.inv_code and A.co_id=D.co_id
         where A.inv_type <>'A' and a.co_id='$company' ORDER BY $orderx DESC";
         $this -> db -> setSQL($sql);
@@ -235,15 +235,16 @@ class AP_Invoice
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
+        $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
         }
         unset($data['id'],$data['ap_inv_payment'],$data['hutangsuplier'],$data['bank_nama']
-        ,$data['vend_nama'],$data['inv_date_um'],$data['ap_inv_date']);
+        ,$data['vend_nama'],$data['inv_date_um'],$data['uangmuka'],$data['ap_inv_date']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -309,7 +310,6 @@ class AP_Invoice
         ,$data['totalx'],$data['nd_setelah_discx'],$data['vend_nama'],$data['account_nama'],$data['tax_nama']);
         $sql = $this -> db -> sqlBind($data, 'ap_inv', 'U', array('inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -333,6 +333,11 @@ class AP_Invoice
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['ap_inv_payment'],$data['uangmuka'],$data['hutangsuplier'],$data['bank_nama']
         ,$data['vend_nama'],$data['inv_date_um'],$data['ap_inv_date']);
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
         $sql = $this -> db -> sqlBind($data, 'ap_inv_pembayaran', 'U', array('ap_inv_payment' => $params -> ap_inv_payment));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

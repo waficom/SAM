@@ -404,23 +404,21 @@
 		<parameter name="periode" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
+		<parameter name="rata2harga" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
 		<queryString>
 			<![CDATA[select * from RPT_RINGKASANHPP($P{periode},$P{co_id})]]>
 		</queryString>
+		<field name="CUSTOMER" class="java.lang.String"/>
 		<field name="TOTALOHP" class="java.math.BigDecimal"/>
 		<field name="HARGA_QTY" class="java.math.BigDecimal"/>
-		<field name="HARGA_JUAL" class="java.math.BigDecimal"/>
-		<field name="HARGA_AR" class="java.math.BigDecimal"/>
-		<field name="OHP_ASET" class="java.math.BigDecimal"/>
 		<field name="OHP" class="java.math.BigDecimal"/>
-		<field name="OHP_TL" class="java.math.BigDecimal"/>
-		<field name="OHP_L" class="java.math.BigDecimal"/>
 		<field name="DOK_AR" class="java.lang.String"/>
 		<field name="HPP_BB" class="java.math.BigDecimal"/>
-		<field name="QTY_DO" class="java.lang.Integer"/>
+		<field name="QTY_DO" class="java.math.BigDecimal"/>
 		<field name="PROD_ID" class="java.lang.String"/>
 		<field name="SO_NUM" class="java.lang.String"/>
-		<field name="PERIODE" class="java.lang.String"/>
 		<field name="CO_ID" class="java.lang.String"/>
 		<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
 			<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
@@ -438,9 +436,6 @@
 		<variable name="SUM_QTYDO" class="java.math.BigDecimal" calculation="Sum">
 			<variableExpression><![CDATA[$F{QTY_DO}]]></variableExpression>
 		</variable>
-		<variable name="SUM_TTLHRGJUAL" class="java.math.BigDecimal" calculation="Sum">
-			<variableExpression><![CDATA[$F{HARGA_JUAL}]]></variableExpression>
-		</variable>
 	</subDataset>
 	<parameter name="co_id" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -449,17 +444,10 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[]]>
+		<![CDATA[select  sum(totalohp)/sum(qty_do) as hpp
+from RPT_RINGKASANHPP($P{periode},$P{co_id})]]>
 	</queryString>
-	<field name="CO_ID" class="java.lang.String"/>
-	<field name="PERIODE" class="java.lang.String"/>
-	<field name="ACCOUNT" class="java.lang.String"/>
-	<field name="DESCRIPTION" class="java.lang.String"/>
-	<field name="QTY" class="java.math.BigDecimal"/>
-	<field name="JUMLAH" class="java.math.BigDecimal"/>
-	<field name="JUMLAH2" class="java.math.BigDecimal"/>
-	<field name="JOBDESC" class="java.lang.String"/>
-	<field name="URUT" class="java.lang.Integer"/>
+	<field name="HPP" class="java.math.BigDecimal"/>
 	<variable name="AUTONUMBER" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{AUTONUMBER}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
@@ -498,16 +486,19 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 			<componentElement>
 				<reportElement uuid="becfa1bc-f20a-4bfa-bcf6-1019de91fcb5" key="table 15" style="table 15" x="0" y="74" width="814" height="50"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="TableData" uuid="b853f03f-8f4e-49ac-9de9-dcbca872f083">
+					<datasetRun subDataset="TableData" uuid="622c358b-7aca-4e67-a83b-d9c295cb9c5e">
 						<datasetParameter name="co_id">
 							<datasetParameterExpression><![CDATA[$P{co_id}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="periode">
 							<datasetParameterExpression><![CDATA[$P{periode}]]></datasetParameterExpression>
 						</datasetParameter>
+						<datasetParameter name="rata2harga">
+							<datasetParameterExpression><![CDATA[$F{HPP}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="34" uuid="0fe1e3f2-25a5-4589-b3c1-0283b701e8f4">
+					<jr:column width="32" uuid="0fe1e3f2-25a5-4589-b3c1-0283b701e8f4">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
 								<reportElement uuid="53c77e88-c607-4f88-abf9-b67198bb0461" x="0" y="0" width="32" height="17"/>
@@ -548,26 +539,27 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 								<reportElement uuid="0ad01a90-595e-42f4-b916-95c14145452b" x="0" y="0" width="99" height="13"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
+									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{DOK_AR}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="74" uuid="9ae8e60b-6540-42e6-9060-163db7c871aa">
+					<jr:column width="95" uuid="9ae8e60b-6540-42e6-9060-163db7c871aa">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="1b8f3d69-9adb-4dc0-894d-25d122bfb187" x="0" y="0" width="74" height="17"/>
+								<reportElement uuid="1b8f3d69-9adb-4dc0-894d-25d122bfb187" x="0" y="0" width="95" height="17"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[NO. PESANAN]]></text>
+								<text><![CDATA[NO.  DOK PESANAN]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="11" rowSpan="1"/>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement uuid="6472b9d5-0273-4032-aae1-a389a65ffb77" x="0" y="0" width="74" height="13"/>
+								<reportElement uuid="6472b9d5-0273-4032-aae1-a389a65ffb77" x="0" y="0" width="95" height="13"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -576,10 +568,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="86" uuid="1c8e20ec-b183-4504-b20b-c267d06ea903">
+					<jr:column width="105" uuid="1c8e20ec-b183-4504-b20b-c267d06ea903">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="73d267dc-9b58-4ae9-b694-72683e4cb274" x="0" y="0" width="86" height="17"/>
+								<reportElement uuid="73d267dc-9b58-4ae9-b694-72683e4cb274" x="0" y="0" width="105" height="17"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -599,7 +591,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnFooter>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement uuid="df5513d9-4b09-41ba-aa23-368add30d710" x="0" y="0" width="86" height="13"/>
+								<reportElement uuid="df5513d9-4b09-41ba-aa23-368add30d710" x="0" y="0" width="105" height="13"/>
 								<textElement verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -640,10 +632,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="77" uuid="fa217e14-0d51-4a0b-9526-f976417645c0">
+					<jr:column width="115" uuid="fa217e14-0d51-4a0b-9526-f976417645c0">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="9eed910f-cf5d-4d8d-a9bb-93ef1e94a3a7" x="0" y="0" width="77" height="17"/>
+								<reportElement uuid="9eed910f-cf5d-4d8d-a9bb-93ef1e94a3a7" x="0" y="0" width="115" height="17"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -653,7 +645,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnHeader>
 						<jr:columnFooter style="table 15_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="fa301da5-6109-4ffe-8257-ec4e00057d73" x="0" y="0" width="77" height="11"/>
+								<reportElement uuid="fa301da5-6109-4ffe-8257-ec4e00057d73" x="0" y="0" width="115" height="11"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -663,7 +655,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnFooter>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="3f34d481-0972-4054-b8e3-6ae2c822ea5a" x="0" y="0" width="77" height="13"/>
+								<reportElement uuid="3f34d481-0972-4054-b8e3-6ae2c822ea5a" x="0" y="0" width="115" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -672,10 +664,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="86" uuid="87508c0e-cf6c-4af1-9513-e2753bed27cc">
+					<jr:column width="113" uuid="87508c0e-cf6c-4af1-9513-e2753bed27cc">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="461a5961-6884-4a8b-b0ff-b27143d58250" x="0" y="0" width="86" height="17"/>
+								<reportElement uuid="461a5961-6884-4a8b-b0ff-b27143d58250" x="0" y="0" width="113" height="17"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -685,7 +677,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnHeader>
 						<jr:columnFooter style="table 15_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="6d44f9dc-ab90-4134-b846-11f94dd80491" x="0" y="0" width="86" height="11"/>
+								<reportElement uuid="6d44f9dc-ab90-4134-b846-11f94dd80491" x="0" y="0" width="113" height="11"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -695,7 +687,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnFooter>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="8086a7d8-d174-4240-938d-979cdc144f67" x="0" y="0" width="86" height="13"/>
+								<reportElement uuid="8086a7d8-d174-4240-938d-979cdc144f67" x="0" y="0" width="113" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -704,10 +696,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="78" uuid="743c54d5-d6d5-4a9e-b503-2e8a74644e0b">
+					<jr:column width="108" uuid="743c54d5-d6d5-4a9e-b503-2e8a74644e0b">
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="480d2762-94dd-40d2-86a2-4c94fea69d51" x="0" y="0" width="78" height="17"/>
+								<reportElement uuid="480d2762-94dd-40d2-86a2-4c94fea69d51" x="0" y="0" width="108" height="17"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -717,7 +709,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnHeader>
 						<jr:columnFooter style="table 15_TD" height="11" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="7fd00c65-7297-4e30-883d-08e27e33a2b0" x="0" y="0" width="78" height="11"/>
+								<reportElement uuid="7fd00c65-7297-4e30-883d-08e27e33a2b0" x="0" y="0" width="108" height="11"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -727,7 +719,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 						</jr:columnFooter>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="40c69c54-c2a3-4063-b6f5-f1b8a1242349" x="0" y="0" width="78" height="13"/>
+								<reportElement uuid="40c69c54-c2a3-4063-b6f5-f1b8a1242349" x="0" y="0" width="108" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
@@ -736,83 +728,28 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="58" uuid="bcc491de-f5c3-440d-ab15-01b9ce3da605">
+					<jr:column width="72" uuid="bcc491de-f5c3-440d-ab15-01b9ce3da605">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
 							<staticText>
-								<reportElement uuid="c3023866-b785-46ac-97e1-2669372bd002" x="0" y="0" width="58" height="17"/>
+								<reportElement uuid="c3023866-b785-46ac-97e1-2669372bd002" x="0" y="0" width="72" height="17"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[HRG RATA2 HPP]]></text>
+								<text><![CDATA[HRG / QTY(HPP)]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="11" rowSpan="1"/>
 						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="6f4df2de-43c5-4bbb-807c-c0cc723c5e31" x="0" y="0" width="58" height="13"/>
+								<reportElement uuid="6f4df2de-43c5-4bbb-807c-c0cc723c5e31" x="0" y="0" width="72" height="13"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="6"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{HARGA_QTY}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="70" uuid="c6686513-5636-4f5b-a96b-65c8bbd16d73">
-						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
-							<staticText>
-								<reportElement uuid="e4247317-5fc2-47c2-839e-24a8575d5662" x="0" y="0" width="70" height="17"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6" isBold="true"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<text><![CDATA[HRG RATA2 JUAL]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter style="table 15_TD" height="11" rowSpan="1"/>
-						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
-							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="3d6f8c78-2030-467a-8329-8520bffe8cbf" x="0" y="0" width="70" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{HARGA_AR}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="97" uuid="54241abc-39d8-4910-9c33-05715e05eb95">
-						<jr:columnHeader style="table 15_CH" height="17" rowSpan="1">
-							<staticText>
-								<reportElement uuid="2c0606a8-0192-4f2f-9d04-786762f25b38" x="0" y="0" width="97" height="17"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6" isBold="true"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<text><![CDATA[TOTAL HARGA JUAL]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter style="table 15_TD" height="11" rowSpan="1">
-							<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-								<reportElement uuid="5c03f5f3-a840-4f89-9505-d7c664789c2f" x="0" y="0" width="97" height="11"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6" isBold="true"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{SUM_TTLHRGJUAL}]]></textFieldExpression>
-							</textField>
-						</jr:columnFooter>
-						<jr:detailCell style="table 15_TD" height="13" rowSpan="1">
-							<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
-								<reportElement uuid="84412c33-f849-4440-9cab-ec5c75bc7267" x="0" y="0" width="97" height="13"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font size="6"/>
-									<paragraph leftIndent="5" rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{HARGA_JUAL}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -833,19 +770,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<text><![CDATA[Periode :]]></text>
 			</staticText>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="3900da6d-1510-4939-9816-99e390e360da" x="-120" y="-60" width="96" height="58"/>
-				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
-			</image>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="c8123e0d-c8d5-4de9-aa95-94a58fedc428" x="-101" y="-61" width="63" height="41"/>
-				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
-			</image>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="6a82fd55-ebce-49ca-b05f-1e2f78fd25a9" x="-101" y="-61" width="63" height="41"/>
-				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
-			</image>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="33706b1f-f613-425e-8599-193fa1e53bc6" x="-101" y="-61" width="63" height="41"/>
+				<reportElement uuid="d636a3e5-5db3-4fe5-8f77-3c16538e924c" x="110" y="0" width="105" height="48"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>

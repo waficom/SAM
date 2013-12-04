@@ -1,7 +1,7 @@
-Ext.define('App.ux.APAlPopup',
+Ext.define('App.ux.ARPaymentCancelPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtAPAlPopup',
+        alias : 'widget.xtARPaymentCancelPopup',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -21,17 +21,19 @@ Ext.define('App.ux.APAlPopup',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {name: 'ap_inv_payment',type: 'string'},
+                        {name: 'inv_code',type: 'string'},
                         {name: 'inv_date',type: 'date'},
-                        {name: 'nilaidasar',type: 'string'},
-                        {name: 'timeedit',type: 'date'},
-                        {name: 'posted_date',type: 'date'}
+                        {name: 'cust_id',type: 'string'},
+                        {name: 'cust_nama',type: 'string'},
+                        {name: 'saldo_akhir',type: 'string'},
+                        {name: 'posted_date',type: 'date'},
+                        {name: 'timeedit',type: 'date'}
 
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getAPAlpopup},
+                        api : {read : Popup.getARPaymentCancel},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -52,16 +54,17 @@ Ext.define('App.ux.APAlPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Nilai',sortable: true,dataIndex: 'nilaidasar', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {width: 100,text: 'Posted Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
+                    {width: 100,text: 'Inv. Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {text: 'Customer ID',sortable: true,dataIndex: 'cust_id'},
+                    {text: 'Nama Customer',sortable: true,dataIndex: 'cust_nama'},
+                    {width: 100,text: 'Saldo akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AP Alocation',
+                title: 'AR Payment UM',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -110,18 +113,19 @@ Ext.define('App.ux.APAlPopup',
         onTrigger1Click : function(){
             var me = this;
             me.searchwin.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
-            me.store.load();
+            if(Ext.ComponentQuery.query('#cancel_tmp')[0]){
+                inv_type = Ext.ComponentQuery.query('#cancel_tmp')[0].getValue();
+            }
+            me.store.load({params:{inv_type: inv_type}});
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            ap_inv_payment = selected.data.ap_inv_payment;
-            this.setValue(ap_inv_payment);
+            inv_code = selected.data.inv_code;
+            this.setValue(inv_code);
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
-            me.searchwin.close();
         },
         btnCancelPressed : function(btn) {
             var me = this;

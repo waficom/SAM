@@ -73,10 +73,10 @@ class CancelReturn
     {
         $data = get_object_vars($params);
         unset($data['id']);
-        foreach($data as $key => $val){
-            if($val == null || $val == ''){
-                unset($data[$key]);
-            }
+        if($params->status=='true'){
+            $data['status'] ='1';
+        }else{
+            $data['status'] ='0';
         }
         $data['co_id'] = $_SESSION['user']['site'];
         $data['inv_date'] = $this->db->Date_Converter($data['inv_date']);
@@ -105,6 +105,11 @@ class CancelReturn
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'canceltransaksi', 'U', array('inv_code' => $params->inv_code));
         $this->db->setSQL($sql);
         $this->db->execLog();

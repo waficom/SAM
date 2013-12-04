@@ -705,4 +705,17 @@ class dbHelper
         return $date;
 
     } # End Function
+    public function DateTime_Converter($date) {
+
+        # Exception
+        if (!is_null($date))
+        {
+            $date = new DateTime($date, new DateTimeZone($_SESSION['site']['timezone']));
+            $strdate = $date->format('Y-m-d H:i:s');
+
+        }
+
+        return $strdate;
+
+    } # End Function
 }

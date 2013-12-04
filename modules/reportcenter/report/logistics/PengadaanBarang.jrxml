@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PengadaanBarang" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" isFloatColumnFooter="true" uuid="2dd3edc5-a07d-4774-9e4f-8e3a837ac104">
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="3"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Table">
 		<box>
@@ -141,7 +141,7 @@ FROM PB0 WHERE CO_ID=$P{co_id} and pb_num=$P{pbnum}]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[FORMULIR PERMINTAAN BAHAN/BARANG]]></text>
+					<text><![CDATA[FORMULIR PENGADAAN BAHAN/BARANG]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement uuid="06be9e81-3548-409f-8019-f8f86c4abe1c" x="219" y="18" width="145" height="20"/>
@@ -155,21 +155,20 @@ FROM PB0 WHERE CO_ID=$P{co_id} and pb_num=$P{pbnum}]]>
 					<textElement verticalAlignment="Middle">
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
-					<text><![CDATA[No. Order]]></text>
+					<text><![CDATA[]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement uuid="10ff8a2a-b78a-45ea-8393-9c33351b2d30" x="94" y="50" width="244" height="20"/>
 					<textElement verticalAlignment="Middle">
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{No_Order}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement uuid="7cd89d7b-6d93-491a-b5e3-7c879acc36f7" x="84" y="50" width="10" height="20"/>
 					<textElement verticalAlignment="Middle">
 						<paragraph leftIndent="5" rightIndent="5"/>
 					</textElement>
-					<text><![CDATA[:]]></text>
+					<text><![CDATA[]]></text>
 				</staticText>
 				<componentElement>
 					<reportElement uuid="6be7783f-786c-458a-a648-daebf8c0a1f4" key="table 2" style="table 2" x="0" y="70" width="570" height="50"/>
@@ -315,39 +314,127 @@ FROM PB0 WHERE CO_ID=$P{co_id} and pb_num=$P{pbnum}]]>
 						</jr:column>
 					</jr:table>
 				</componentElement>
-				<staticText>
-					<reportElement uuid="ef9bb107-8081-4337-b3b0-f9b3dea93f79" x="16" y="179" width="100" height="20"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<text><![CDATA[Menyetujui,]]></text>
-				</staticText>
-				<staticText>
-					<reportElement uuid="c7bee8ba-7df3-4cc8-b7cc-67e44e4d2735" x="16" y="225" width="100" height="20"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<text><![CDATA[Direksi]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-					<reportElement uuid="6e15862e-7287-45c1-912e-85a8ce6e59d4" x="421" y="159" width="108" height="20"/>
+					<reportElement uuid="6e15862e-7287-45c1-912e-85a8ce6e59d4" positionType="Float" x="395" y="140" width="108" height="20"/>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{TANGGAL}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="2b714ca2-389d-43eb-a471-a0f6b7c141b1" x="364" y="159" width="57" height="20"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<text><![CDATA[Sidoarjo,]]></text>
+					<reportElement uuid="2b714ca2-389d-43eb-a471-a0f6b7c141b1" positionType="Float" x="338" y="139" width="57" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[Sidoarjo, ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="2f4116ea-2985-4b4f-a97f-f6ab2252a354" x="364" y="179" width="183" height="20"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<reportElement uuid="ae2f615c-4f83-43e8-8430-dfc57fc5c042" positionType="Float" x="430" y="221" width="92" height="19"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
 					<text><![CDATA[Administrasi]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="f7120e75-658c-4c49-b783-0371e928656a" x="364" y="225" width="183" height="20"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<text><![CDATA[(..................................................)]]></text>
+					<reportElement uuid="40487c3f-f267-475b-b546-55729c32d900" positionType="Float" x="338" y="160" width="184" height="19"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Logistik]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="297aa6b6-ce4a-49b0-93ed-390075ac1532" positionType="Float" x="338" y="179" width="92" height="42"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="909f62ce-7895-4be1-be58-11ed90604b10" positionType="Float" x="19" y="221" width="94" height="19"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Direktur]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="99bd7f21-a72c-4c77-8139-3b31b899e2d4" positionType="Float" x="19" y="159" width="94" height="20"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Menyetujui]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ca48a9bc-7871-41a2-8ef5-50bcb7385bc5" positionType="Float" x="338" y="221" width="92" height="19"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Manager]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fc060bd7-32b4-495b-951f-c7734d139050" positionType="Float" x="430" y="179" width="92" height="42"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b66f975d-933f-43e4-9918-68b7fb010f58" positionType="Float" x="19" y="179" width="94" height="42"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
 				</staticText>
 			</frame>
 		</band>

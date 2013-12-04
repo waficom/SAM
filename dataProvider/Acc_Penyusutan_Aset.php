@@ -25,14 +25,6 @@ class Acc_Penyusutan_Aset
     }
     public function getAcc_Penyusutan_Aset(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'A.timeedit';
-        }
         $company =  $_SESSION['user']['site'];
         $sql = "SELECT A.*, B.coa_nama as acc_master_desc, C.coa_nama as acc_debit_desc, D.coa_nama as acc_credit_desc
         FROM account_penyusutan_aset A
@@ -40,7 +32,7 @@ class Acc_Penyusutan_Aset
         left join coa C on A.co_id=C.co_id and A.account_master=C.coa_id
         left join coa D on A.co_id=D.co_id and A.account_master=D.coa_id
         where a.co_id = '$company'
-        ORDER BY $orderx DESC";
+        ORDER BY apa_id ASC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -65,6 +57,9 @@ class Acc_Penyusutan_Aset
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'account_penyusutan_aset', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
@@ -82,6 +77,9 @@ class Acc_Penyusutan_Aset
         $data['co_id'] = $_SESSION['user']['site'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'account_penyusutan_aset', 'U', array('co_id' => $params->co_id,'apa_id' => $params->apa_id));
         $this->db->setSQL($sql);
         $this->db->execLog();

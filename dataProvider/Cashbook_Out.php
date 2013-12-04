@@ -44,16 +44,9 @@ class Cashbook_Out
 
     public function getCashbook_Out(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "select * from cashbook_in where co_id='$company' and cb_type='O' ORDER BY $orderx DESC";
+        $sql = "select * from cashbook_in where co_id='$company' and cb_type='O'
+        ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -83,10 +76,11 @@ class Cashbook_Out
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['cb_type'] ='O';
         foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
-        }
+            if($params->status=='true'){
+                $data['status'] = '1';
+            }else{
+                $data['status'] = '0';
+            }
         unset($data['id'],$data['inv_code']);
         $sql = $this -> db -> sqlBind($data, 'cashbook_in', 'I');
         $this -> db -> setSQL($sql);
@@ -107,7 +101,12 @@ class Cashbook_Out
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'],$data['inv_code']);
-        $sql = $this -> db -> sqlBind($data, 'cashbook_in', 'U', array('inv_code' => $params->inv_code));
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'cashbook_in', 'U', array('inv_code' => $params->inv_code, 'co_id' => $params->co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
@@ -116,13 +115,13 @@ class Cashbook_Out
 
     public function deleteCashbook_Out(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code' and co_id='$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cb_in_detail WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cb_in_detail WHERE inv_code = '$params->inv_code' and co_id='$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
-        $sql = "DELETE FROM cashbook_in WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cashbook_in WHERE inv_code = '$params->inv_code' and co_id='$params->co_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

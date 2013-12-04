@@ -463,7 +463,22 @@
 from wo0 a
 left join wo2 b on a.co_id=b.co_id and a.so_num=b.so_num and a.prod_id=b.prod_id and a.wo_num=b.wo_num
 where a.status=1 and a.co_id=$P{co_id} and (select hasil from get_periode(a.posted_date))=$P{periode}
-group by a.co_id, a.so_num, a.prod_id]]>
+group by a.co_id, a.so_num, a.prod_id
+
+union all
+
+select a.co_id, a.so_num, a.prod_id, sum(a.qty_do) as qty
+from deliveryorder a
+where a.status=1 and a.do_type='R' and (select hasil from get_periode(a.posted_date))=$P{periode}
+group by a.co_id, a.so_num, a.prod_id
+
+union all
+
+select a.co_id, a.inv_code as so_num, b.description as prod_id, sum(b.qty) as qty
+from ap_inv a
+left join ap_inv_detail b on a.co_id=b.co_id and a.inv_code=b.inv_code
+where a.status=1 and a.choose='B'
+group by a.co_id, a.inv_code, b.description]]>
 	</queryString>
 	<field name="CO_ID" class="java.lang.String"/>
 	<field name="SO_NUM" class="java.lang.String"/>
@@ -528,13 +543,13 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$P{periode}]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="3fd7e194-ae71-4357-ac01-b24d0dcc75ff" x="73" y="0" width="88" height="58"/>
+				<reportElement uuid="42dfc940-e079-45d8-8b52-d4ecb761a6dd" x="72" y="1" width="89" height="57"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<detail>
-		<band height="135">
+		<band height="199">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="37f0c104-75f8-48c4-bff8-d1bd8b3eb6c4" x="72" y="19" width="101" height="10"/>
 				<textElement verticalAlignment="Middle">
@@ -552,7 +567,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{PROD_ID}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="a97429a5-2840-4d75-af12-94d18985fa4d" x="36" y="31" width="451" height="31"/>
+				<reportElement uuid="a97429a5-2840-4d75-af12-94d18985fa4d" positionType="Float" x="39" y="106" width="451" height="31"/>
 				<subreportParameter name="co_id">
 					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -612,7 +627,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 					<font size="6" isBold="true"/>
 					<paragraph leftIndent="5" rightIndent="5"/>
 				</textElement>
-				<text><![CDATA[KWANTUM]]></text>
+				<text><![CDATA[QTY]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0" isBlankWhenNull="true">
 				<reportElement uuid="9e94f4e4-5f30-4ec4-9d4f-b4b84e108fc2" x="248" y="19" width="77" height="10"/>
@@ -623,7 +638,7 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$F{QTY}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="483d5a52-2a38-4b76-9be2-59d046e5ea77" positionType="Float" x="36" y="62" width="451" height="31"/>
+				<reportElement uuid="483d5a52-2a38-4b76-9be2-59d046e5ea77" positionType="Float" x="39" y="137" width="451" height="31"/>
 				<subreportParameter name="co_id">
 					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -634,7 +649,10 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianMasukBJ_2.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement uuid="3a6f7547-e1e8-4972-8a56-1c6fb8548fd7" positionType="Float" x="37" y="93" width="450" height="31"/>
+				<reportElement uuid="3a6f7547-e1e8-4972-8a56-1c6fb8548fd7" positionType="Float" x="39" y="168" width="450" height="31"/>
+				<subreportParameter name="periode">
+					<subreportParameterExpression><![CDATA[$P{periode}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="co_id">
 					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -643,6 +661,28 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianMasukBJ_4.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="9dcbd46f-64f9-4aad-a58a-566d627e5d8a" x="39" y="43" width="449" height="31"/>
+				<subreportParameter name="co_id">
+					<subreportParameterExpression><![CDATA[$P{co_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="so_num">
+					<subreportParameterExpression><![CDATA[$F{SO_NUM}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianHPP_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="43849e8b-f7de-4058-b88f-4b4e16c23dd6" positionType="Float" x="39" y="74" width="449" height="31"/>
+				<subreportParameter name="co_id">
+					<subreportParameterExpression><![CDATA[$P{co_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="so_num">
+					<subreportParameterExpression><![CDATA[$F{SO_NUM}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianMasukBJ_5.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

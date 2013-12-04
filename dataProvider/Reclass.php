@@ -58,13 +58,8 @@ class Reclass
     }
     public function getViewReclassOBJ(stdClass $params)
     {
-        (string)$whereClause = '';
-        if($params->periode != null)
-            $whereClause .= chr(13) . " and (select hasil from get_periode(posted_date))  like '%" . $params->periode . "%'";
-        if($params->so_num != null)
-            $whereClause .= chr(13) . " and so_num like '%" . $params->so_num . "%'";
         $company =  $_SESSION['user']['site'];
-        $sql = "select * from view_reclass_barangjadi where co_id='$company' $whereClause
+        $sql = "select * from rpt_reclass_bj('$params->periode','$params->so_num','$company')
         ORDER BY timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();

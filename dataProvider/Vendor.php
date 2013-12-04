@@ -91,7 +91,7 @@ class Vendor
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'vendor', 'U', array('vend_id' => $params->old_vend_id));
+		$sql = $this->db->sqlBind($data, 'vendor', 'U', array('co_id' => $params->co_id, 'vend_id' => $params->vend_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

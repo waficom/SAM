@@ -1,12 +1,13 @@
 Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
     extend:'App.ux.RenderPanel',
     id:'panelSPKirim',
+    pageLayout: 'border',
     pageTitle:'Surat Perintah Kirim',
 
     initComponent : function()
     {
         var me = this;
-        me.sequence_no=null;
+        me.nosurat=null;
 
         Ext.define('SP_KirimModel', {
             extend : 'Ext.data.Model',
@@ -21,7 +22,8 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
                 { name : 'perkiraan_muat', type : 'date'},
                 { name : 'vessel_id', type : 'string'},
                 { name : 'tujuan', type : 'string'},
-                { name : 'timeedit', type : 'date'}
+                { name : 'timeedit', type : 'date'},
+                { name : 'keterangan', type : 'string'}
             ],
             proxy:{
                 type:'direct',
@@ -39,10 +41,13 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
             extend : 'Ext.data.Model',
             fields : [
                 { name : 'co_id', type : 'string'},
-                { name : 'sequence_no', type : 'string'},
+                { name : 'nosurat', type : 'string'},
                 { name : 'no_urut',type : 'string'},
-                { name : 'cust_id',type : 'string'},
-                { name : 'prod_id',type : 'string'},
+                { name : 'tujuan',type : 'string'},
+                { name : 'barang',type : 'string'},
+                { name : 'spesifikasi',type : 'string'},
+                { name : 'kemasan',type : 'string'},
+                { name : 'satuan',type : 'string'},
                 { name : 'qty', type : 'string'},
                 { name : 'keterangan', type : 'string'}
             ],
@@ -71,10 +76,10 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
         });
         
         me.SP_KirimGrid = Ext.create('Ext.grid.Panel', {
-            title:'SP Kirim',
             store: Ext.data.StoreManager.lookup('SPKirim'),
-            border:false,
-            frame:false,
+            height: 300,
+            margin: '0 0 3 0',
+            region: 'north',
             viewConfig:{
                 stripeRows:true
             },
@@ -235,14 +240,13 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
         });
         me.SP_Kirim_DetailGrid = Ext.create('Ext.grid.Panel', {
             title:'Detail',
-            store: Ext.data.StoreManager.lookup('SPKirimDetail').load({params:{sequence_no: me.sequence_no}}),
-            border:false,
-            frame:false,
+            store: Ext.data.StoreManager.lookup('SPKirimDetail'),
+            region: 'center',
             viewConfig:{
                 stripeRows:true
             },
             plugins:[
-                Ext.create('App.ux.grid.RowFormEditing', {
+                Ext.create('App.ux.grid.RowFormEditing2', {
                     autoCancel:false,
                     errorSummary:false,
                     clicksToEdit:1,
@@ -258,27 +262,27 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
                                     layout:'anchor',
                                     items:[
                                         {
-                                            xtype : 'numberfield',
+                                            xtype : 'textfield',
                                             hidden:true,
-                                            name:'sequence_no',
-                                            itemId:'sequence_no_spk'
+                                            name:'nosurat',
+                                            itemId:'nosurat'
                                         },
                                         {
-                                            xtype:'xtCustomerPopup',
-                                            fieldLabel:'Cust ID',
-                                            name:'cust_id',
+                                            xtype:'textfield',
+                                            fieldLabel:'Tujuan',
+                                            name:'tujuan',
                                             width:385
                                         },
                                         {
                                             xtype:'xtlistproduct',
-                                            fieldLabel:'Produk ID',
-                                            name:'prod_id',
+                                            fieldLabel:'barang',
+                                            name:'barang',
                                             width:385
                                         },
                                         {
-                                            xtype : 'numberfield',
-                                            fieldLabel : 'Qty',
-                                            name:'qty',
+                                            xtype:'textfield',
+                                            fieldLabel:'Spesifikasi',
+                                            name:'spesifikasi',
                                             width:385
                                         },
                                         {
@@ -286,6 +290,31 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
                                             fieldLabel : 'Keterangan',
                                             name:'keterangan',
                                             width:385
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:300,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype : 'numberfield',
+                                            fieldLabel : 'Qty',
+                                            name:'qty',
+                                            width:385
+                                        },
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kemasan',
+                                            name:'kemasan',
+                                            width:385
+                                        },
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Satuan',
+                                            name:'satuan',
+                                            width:200
                                         }
                                     ]
                                 }
@@ -296,9 +325,9 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
             ],
             columns:[
                 {
-                    header:'Sequence_No',
+                    header:'nosurat',
                     hidden:true,
-                    dataIndex:'sequence_no'
+                    dataIndex:'nosurat'
                 },
                 {
                     header:'No Urut',
@@ -311,18 +340,28 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
                     dataIndex:'co_id'
                 },
                 {
-                    header:'Customer',
-                    width:100,
-                    dataIndex:'cust_id'
+                    header:'Tujuan',
+                    dataIndex:'tujuan', flex:1
                 },
                 {
-                    header:'Produk',
-                    width:100,
-                    dataIndex:'prod_id'
+                    header:'Barang',
+                    dataIndex:'barang'
+                },
+                {
+                    header:'Spesifikasi',
+                    dataIndex:'spesifikasi'
                 },
                 {
                     header:'Qty',
                     dataIndex:'qty'
+                },
+                {
+                    header:'Kemasan',
+                    dataIndex:'kemasan'
+                },
+                {
+                    header:'Satuan',
+                    dataIndex:'satuan'
                 },
                 {
                     header:'Keterangan',
@@ -348,20 +387,22 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
             ]
         });
 
-        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+        /*me.FormulirPanel = Ext.create('Ext.tab.Panel', {
             activeTab:0,
             items:[ me.SP_KirimGrid, me.SP_Kirim_DetailGrid]
 
-        });
+        });*/
 
-        me.pageBody = [me.FormulirPanel];
+        me.pageBody = [/*me.FormulirPanel*/me.SP_KirimGrid, me.SP_Kirim_DetailGrid];
         me.callParent(arguments);
 
     }, // end of initComponent
 
     onGridClick: function(grid, selected){
         var me = this;
-        me.sequence_no = selected.data.sequence_no;
+        me.nosurat = selected.data.nosurat;
+        me.SP_Kirim_DetailStore.load({params:{nosurat: me.nosurat}});
+
     },
     onNewRec:function(btn){
         var me = this;
@@ -369,12 +410,12 @@ Ext.define('App.view.transaksi.DeliveryOrder.SP_Kirim', {
         say(grid);
         say(plugin);
         say(model);
-//        plugin.cancelEdit();
         newModel = Ext.ModelManager.create({
         }, model);
         say(newModel);
         store.insert(0, newModel);
         plugin.startEdit(0, 0);
+        Ext.ComponentQuery.query('#nosurat')[0].setValue(me.nosurat);
     },
 
     onDeleteRec:function(btn){

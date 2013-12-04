@@ -43,16 +43,8 @@ class Bank
     }
     public function getBank(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'bank_code';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM bank_m where co_id='$company' ORDER BY $orderx";
+        $sql = "SELECT * FROM bank_m where co_id='$company' ORDER BY bank_code ASC";
         $this -> db -> setSQL($sql);
         // print_r($sql);
         $rows = array();
@@ -85,7 +77,6 @@ class Bank
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $sql = $this->db->sqlBind($data, 'bank_m', 'I');
         $this->db->setSQL($sql);
-        //print_r($sql);
         $this->db->execLog();
         return $params;
     }
@@ -103,7 +94,7 @@ class Bank
         }
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
-        $sql = $this->db->sqlBind($data, 'bank_m', 'U', array('bank_code' => $params->old_bank_code));
+        $sql = $this->db->sqlBind($data, 'bank_m', 'U', array('co_id' => $params->co_id,'bank_code' => $params->bank_code));
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;

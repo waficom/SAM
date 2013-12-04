@@ -60,16 +60,17 @@ Ext.define('App.view.administration.Users', {
                 },
                 {
                     name: 'fullname',
-                    type: 'string'                
-                },
-                {
-                    name: 'co_id',
                     type: 'string'
                 },
                 {
                     name: 'role_id',
                     type: 'int'
+                },
+                {
+                    name: 'co_id',
+                    type: 'string'
                 }
+
             ]
 
         });
@@ -119,6 +120,12 @@ Ext.define('App.view.administration.Users', {
                     dataIndex: 'fullname'
                 },
                 {
+                    flex: 1,
+                    text: i18n('aditional_info'),
+                    sortable: true,
+                    dataIndex: 'info'
+                },
+                {
                     text: i18n('active'),
                     sortable: true,
                     dataIndex: 'aktif',
@@ -129,13 +136,20 @@ Ext.define('App.view.administration.Users', {
                     sortable: true,
                     dataIndex: 'authorized',
                     renderer: authCk
+/*
+                },
+                {
+                    text: i18n('calendar_q'),
+                    sortable: true,
+                    dataIndex: 'calendar',
+                    renderer: authCk
+*/
                 }
             ],
             listeners: {
                 scope: me,
                 itemdblclick: function(view, record){
                     me.onItemdblclick(me.userStore, record, i18n('edit_user'));
-                    me.userStore.load();
                 }
             },
             dockedItems: [
@@ -230,10 +244,10 @@ Ext.define('App.view.administration.Users', {
                                 {
                                     width: 100,
                                     xtype: 'displayfield',
-                                    value: i18n('first_middle_last')
+                                    value: 'First Last'
                                 },
                                 {
-                                    width: 105,
+                                    width: 80,
                                     xtype: 'textfield',
                                     name: 'fname',
                                     allowBlank: false
@@ -262,7 +276,88 @@ Ext.define('App.view.administration.Users', {
                                     name: 'authorized'
                                 }
                             ]
-                        }]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: 'Role'
+                                },
+                                {
+                                    width: 150,
+                                    xtype: 'mitos.rolescombo',
+                                    name: 'role_id',
+                                    allowBlank: false
+                                }
+                            ]
+                        },
+/*
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            msgTarget: 'under',
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('authorizations') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'see_auth'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('access_control') + ': '
+                                },
+                                {
+                                    width: 100,
+//                                    xtype: 'mitos.rolescombo',
+                                    xtype: 'textfield',
+                                    name: 'role_id',
+                                    allowBlank: false
+
+                                },
+                                // not implemented yet
+                                {
+                                    width: 100,
+                                    xtype: 'displayfield',
+                                    value: i18n('taxonomy') + ': '
+                                },
+                                {
+                                    width: 105,
+                                    xtype: 'textfield',
+                                    name: 'taxonomy'
+
+                                }
+                            ]
+                        },
+*/
+                        {
+                            width: 410,
+                            height: 50,
+                            xtype: 'textfield',
+                            name: 'info',
+                            emptyText: i18n('additional_info')
+                        }
+                    ]
                 }
             ],
             buttons: [
@@ -306,10 +401,10 @@ Ext.define('App.view.administration.Users', {
         this.win.show();
     },
     onUserSave: function(form, store){
-        var me = this, passwd = form.findField('passwd').getValue(), id = form.findField('id').getValue();
-        if(passwd != ''){
+        var me = this, password = form.findField('passwd').getValue(), id = form.findField('id').getValue();
+        if(password != ''){
             User.chechPasswordHistory({
-                    passwd: passwd,
+                    password: password,
                     id: id
                 }, function(provider, response){
                     if(response.result.error){
@@ -318,7 +413,7 @@ Ext.define('App.view.administration.Users', {
                         me.saveUser(form, store);
                     }
                 });
-        	}else{
+        }else{
             me.saveUser(form, store);
         }
     },

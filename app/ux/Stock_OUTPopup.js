@@ -1,7 +1,7 @@
-Ext.define('App.ux.APPayUMCancelPopup',
+Ext.define('App.ux.Stock_OUTPopup',
     {
         extend : 'Ext.form.field.Trigger',
-        alias : 'widget.xtAPPayUMCancelPopup',
+        alias : 'widget.xtStock_OUT',
 
         trigger1Cls: Ext.baseCSSPrefix + 'form-search-trigger',
 
@@ -17,23 +17,21 @@ Ext.define('App.ux.APPayUMCancelPopup',
                 },
                 prod_id = null;
 
-            Ext.define('JenisSearchModel',
+            Ext.define('TaxSearchModel',
                 {
                     extend : 'Ext.data.Model',
                     fields : [
-                        {name: 'ap_inv_payment',type: 'string'},
-                        {name: 'inv_date',type: 'date'},
-                        {name: 'saldo_akhir',type: 'string'},
+                        {name: 'dok_no',type: 'string'},
                         {name: 'vend_id',type: 'string'},
-                        {name: 'vend_nama',type: 'string'},
-                        {name: 'timeedit',type: 'date'},
-                        {name: 'posted_date',type: 'date'}
-
+                        {name: 'cust_id',type: 'string'},
+                        {name: 'remaks',type: 'string'},
+                        {name: 'posted_date',type: 'date'},
+                        {name: 'timeedit',type: 'date'}
                     ],
                     proxy :
                     {
                         type : 'direct',
-                        api : {read : Popup.getAPPayUMCancelpopup},
+                        api : {read :Popup.getStock_OUTpopup},
                         reader : {
                             totalProperty : 'totals',
                             root : 'rows'
@@ -43,7 +41,7 @@ Ext.define('App.ux.APPayUMCancelPopup',
 
             me.store = Ext.create('Ext.data.Store',
                 {
-                    model : 'JenisSearchModel',
+                    model : 'TaxSearchModel',
                     pageSize : 50,
                     autoLoad : false
                 });
@@ -54,18 +52,18 @@ Ext.define('App.ux.APPayUMCancelPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {width: 150,text: 'Doc. Number',sortable: true,dataIndex: 'ap_inv_payment'},
-                    {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 100,text: 'Saldo Akhir',sortable: true,dataIndex: 'saldo_akhir', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                    {width: 150,text: 'Vendor',sortable: true,dataIndex: 'vend_id', hidden: true},
-                    {width: 150,text: 'Vendor',sortable: true,dataIndex: 'vend_nama'},
-                    {width: 100,text: 'Posting Date',sortable: true,dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                    {flex:1,text: 'Dok No',sortable: true,dataIndex: 'dok_no'},
+                    {text: 'Vendor',sortable: true,dataIndex: 'vend_id'},
+                    {text: 'Customer',sortable: true,dataIndex: 'cust_id'},
+                    {text: 'Remarks',sortable: true,dataIndex: 'remaks'},
+                    {text: 'Tgl Posting', width : 80, sortable: true, dataIndex: 'posted_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
                     {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+
                 ],
                 height: 200,
 //                selModel : me.smGrid,
                 width: 600,
-                title: 'AP Payment UM',
+                title: 'Stock In Out',
                 features : [searching],
                 viewConfig: {stripeRows: true},
                 bbar: new Ext.PagingToolbar({
@@ -118,14 +116,11 @@ Ext.define('App.ux.APPayUMCancelPopup',
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){
-            ap_inv_payment = selected.data.ap_inv_payment;
-            this.setValue(ap_inv_payment);
+            dok_no = selected.data.dok_no;
+            this.setValue(dok_no);
         },
         ondblclick: function(grid, selected){
             var me = this;
-            me.onGridClick(grid, selected);
-            Ext.getCmp('uangmuka').setValue(selected.data.saldo_akhir);
-            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

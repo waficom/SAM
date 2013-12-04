@@ -359,7 +359,7 @@
 		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
 	</variable>
 	<title>
-		<band height="140">
+		<band height="201">
 			<elementGroup/>
 			<staticText>
 				<reportElement uuid="5fa33553-7721-4270-95bf-e802bc72bb34" x="243" y="0" width="423" height="17"/>
@@ -376,7 +376,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RINCIAN HUTANG CREDITOR PER]]></text>
+				<text><![CDATA[RINCIAN HUTANG PER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="54b71b8a-71b4-4168-b66d-58bb32335a4f" x="243" y="17" width="450" height="30"/>
@@ -1041,38 +1041,34 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<reportElement uuid="7c173589-41cc-44cd-92ba-332bcee7c6f9" x="168" y="0" width="75" height="48"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
-		</band>
-	</title>
-	<columnFooter>
-		<band height="75">
 			<staticText>
-				<reportElement uuid="2d589f6e-1bae-4450-a8f4-a6842b73d8fd" x="19" y="16" width="65" height="20"/>
+				<reportElement uuid="2d589f6e-1bae-4450-a8f4-a6842b73d8fd" positionType="Float" x="42" y="146" width="65" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Dibuat Oleh :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d0a97738-e4a4-4333-a57a-4c0efc116e1a" x="693" y="16" width="75" height="20"/>
+				<reportElement uuid="d0a97738-e4a4-4333-a57a-4c0efc116e1a" positionType="Float" x="716" y="146" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Disetujui Oleh]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="aa00eb1a-e9fb-43f6-a832-69113d323a3a" x="9" y="51" width="75" height="20"/>
+				<reportElement uuid="aa00eb1a-e9fb-43f6-a832-69113d323a3a" positionType="Float" x="32" y="181" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[(....................)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5ee92bb2-cfd5-4b54-ab43-57f871c0130c" x="693" y="51" width="75" height="20"/>
+				<reportElement uuid="5ee92bb2-cfd5-4b54-ab43-57f871c0130c" positionType="Float" x="716" y="181" width="75" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[(....................)]]></text>
 			</staticText>
 		</band>
-	</columnFooter>
+	</title>
 </jasperReport>

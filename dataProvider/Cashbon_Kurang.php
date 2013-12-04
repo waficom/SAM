@@ -44,14 +44,6 @@ class Cashbon_Kurang
 
     public function getCashbon_Kurang(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
         $sql = "select A.*, B.description as bank_nama, C.description as tax_nama, D.coa_nama as account_nama, E.posted_date as posted_date_cb_cashbon
         from cashbon A
@@ -60,7 +52,7 @@ class Cashbon_Kurang
         left join coa D on A.account=D.coa_id and A.co_id=D.co_id
         left join cashbook_in E on A.inv_cb=E.inv_code and A.co_id=E.co_id
         where a.co_id='$company'
-        ORDER BY $orderx DESC";
+        ORDER BY a.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -88,12 +80,17 @@ class Cashbon_Kurang
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
         foreach ($data AS $key => $val)
         {
             if ($val == '')
                 unset($data[$key]);
         }
-        unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama'],$data['posted_date_cb_cashbon']);
+        unset($data['id'],$data['bank_nama'],$data['tax_nama'],$data['account_nama']);
         $sql = $this -> db -> sqlBind($data, 'cashbon', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -112,8 +109,18 @@ class Cashbon_Kurang
         $data['posted_date'] = $this->db->Date_Converter($data['posted_date']);
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        if($params->status=='true'){
+            $data['status'] = '1';
+        }else{
+            $data['status'] = '0';
+        }
+        foreach ($data AS $key => $val)
+        {
+            if ($val == '')
+                unset($data[$key]);
+        }
         unset($data['id'],$data['inv_code'],$data['bank_nama'],$data['tax_nama'],$data['account_nama'] ,$data['posted_date_cb_cashbon']);
-        $sql = $this -> db -> sqlBind($data, 'cashbon', 'U', array('inv_code' => $params -> inv_code));
+        $sql = $this -> db -> sqlBind($data, 'cashbon', 'U', array('co_id' => $params -> co_id, 'inv_code' => $params -> inv_code));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -121,11 +128,11 @@ class Cashbon_Kurang
 
     public function deleteCashbon_Kurang(stdClass $params)
     {
-        $sql = "DELETE FROM jurnal WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM jurnal WHERE co_id = '$params->co_id' and inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 
-        $sql = "DELETE FROM cashbon WHERE inv_code = '$params->inv_code'";
+        $sql = "DELETE FROM cashbon WHERE co_id = '$params->co_id' and inv_code = '$params->inv_code'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
 

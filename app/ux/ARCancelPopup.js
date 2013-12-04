@@ -124,17 +124,17 @@ Ext.define('App.ux.ARCancelPopup',
         onGridClick: function(grid, selected){
             inv_code = selected.data.inv_code;
             this.setValue(inv_code);
-        },
-        ondblclick: function(grid, selected){
-            var me = this;
-            me.onGridClick(grid, selected);
-            //Ext.getCmp('account_type').setValue(selected.data.account_type);
+
             Ext.getCmp('account_ar').setValue(selected.data.account);
             Ext.getCmp('cust_id_pay').setValue(selected.data.cust_id);
             Ext.getCmp('cust_id_al').setValue(selected.data.cust_id);
             Ext.getCmp('cust_id_ar').setValue(selected.data.cust_id);
             Ext.getCmp('piutang').setValue(selected.data.piutangdebtor);
             Ext.getCmp('posted_date').setValue(selected.data.posted_date);
+        },
+        ondblclick: function(grid, selected){
+            var me = this;
+            me.onGridClick(grid, selected);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

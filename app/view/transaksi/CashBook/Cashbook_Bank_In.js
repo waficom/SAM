@@ -2,22 +2,15 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
     extend: 'App.ux.RenderPanel',
     id: 'panelCashbook_Bank_In',
     pageTitle: 'Bank Masuk',
-    pageLayout: 'border',
+    pageLayout: 'anchor',
     uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    initComponent : function()
+    {
         var me = this;
-        me.currInv_Code = null;
-        me.currCoa = null;
-        me.currDebtor = null;
-        me.currPosted = null;
-        me.curr_coid = null;
-        me.userinput =null;
-        me.useredit=null;
-        me.MaxNominal=null;
-        //me.myWinChooseItem=null;
-        Ext.define('Cashbook_Bank_InModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        me.kode = null;
+        Ext.define('CB_INModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'inv_date',type: 'date'},
@@ -32,890 +25,450 @@ Ext.define('App.view.transaksi.CashBook.Cashbook_Bank_In', {
                 {name: 'tax_code',type: 'string'},
                 {name: 'posted_date',type: 'date'},
                 {name: 'cf_code',type: 'string'}
-            ]
-
-        });
-        me.Cashbook_Bank_InStore = Ext.create('Ext.data.Store', {
-            model: 'Cashbook_Bank_InModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Cashbook_Bank_In.getCashbook_Bank_In,
                     create: Cashbook_Bank_In.addCashbook_Bank_In,
                     update: Cashbook_Bank_In.updateCashbook_Bank_In,
                     destroy : Cashbook_Bank_In.deleteCashbook_Bank_In
-                },
-                reader : {
-                    totalProperty : 'totals',
-                    root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
+            }
+
         });
-        Ext.define('CB_Bank_In_DetailModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        Ext.define('CB_INDetailModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'account',type: 'string'},
+                {name: 'status',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
                 {name: 'nominal',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
                 {name: 'userinput',type: 'string'}
-            ]
-
-        });
-        me.CB_Bank_In_DetailStore = Ext.create('Ext.data.Store', {
-            model: 'CB_Bank_In_DetailModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Cashbook_Bank_In.getCashbook_Bank_In_Detail,
                     create: Cashbook_Bank_In.addCashbook_Bank_In_Detail,
                     update: Cashbook_Bank_In.updateCashbook_Bank_In_Detail,
                     destroy : Cashbook_Bank_In.deleteCashbook_Bank_In_Detail
-                },
-                reader : {
-                    totalProperty : 'totals',
-                    root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
-        });
+            }
 
-        Ext.define('Cb_Bank_In_JurnalModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+        });
+        Ext.define('JurnalModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_date',type: 'date'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'vend_id',type: 'string'},
                 {name: 'coa',type: 'string'},
                 {name: 'coa_nama',type: 'string'},
+                {name: 'harga',type: 'string'},
                 {name: 'debit',type: 'float'},
                 {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'remaks',type: 'string'}
-            ]
-
-        });
-        me.Cashbook_Bank_In_JurnalStore = Ext.create('Ext.data.Store', {
-            model: 'Cb_Bank_In_JurnalModel',
-            proxy: {
-                type: 'direct',
-                api: {
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Jurnal.getJurnal
-                },
-                reader : {
-                    totalProperty : 'totals',
-                    root : 'rows'
                 }
-            },
-            pageSize : 10,
-            autoLoad: false
-        });
+            }
 
+        });
+        me.CB_INStore = Ext.create('Ext.data.Store', {
+            storeId : 'CB_INStore',
+            model : 'CB_INModel',
+            remoteSort : false
+        });
+        me.CB_INDetailStore = Ext.create('Ext.data.Store', {
+            storeId : 'CB_INDetailStore',
+            model : 'CB_INDetailModel',
+            remoteSort : false
+        });
+        me.JurnalStore = Ext.create('Ext.data.Store', {
+            storeId : 'JurnalStore',
+            model : 'JurnalModel',
+            remoteSort : false
+        });
         var searching={
             ftype : 'searching',
             mode: 'local'
             ,           width:  200,
-            disableIndexes:['timeedit','inv_date']
-
+            disableIndexes:['timeedit','tanggal']
         }
-
-        /**
-         * Lists Grid
-         */
-        me.Cashbook_Bank_InGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbook_Bank_InStore,
-            height: 300,
+        me.CB_INGrid = Ext.create('Ext.grid.Panel', {
+            title:'Cash Book',
+            store: Ext.data.StoreManager.lookup('CB_INStore'),
+            height: 370,
             margin: '0 0 3 0',
             region: 'north',
-            columns: [
-                {width: 150,text: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
-                {width: 100,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                {width: 100,text: 'Bank Code',sortable: true,dataIndex: 'bank_code'},
-                {width: 100,text: 'From Bank',sortable: true,dataIndex: 'received_from'},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {width: 200,text: 'Remarks',sortable: true,dataIndex: 'remaks'},
-                {width: 200,text: 'status',sortable: true,dataIndex: 'status', hidden: true},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return record.get('status') == '1'? 'child-row' : record.get('status') == '2'? 'adult-row' : '';
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
                 }
             },
             listeners: {
                 scope: me,
-                select: me.onPBGridClick,
-                itemdblclick: function(view, record){
-                    if(record.get('status')!=1){
-                        me.onItemdblclick(me.Cashbook_Bank_InStore, record, 'Edit CashBook Bank In');
-                        Ext.getCmp('post_cb_bank_in').setDisabled(false);
-                    }
-                }
+                select: me.onGridClick
             },
             features:[searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            scope: me,
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNewPB(form, 'Cashbook_Bank_InModel', 'Tambah Data');
-                                Ext.getCmp('inv_date_cb_bank_in').setValue(new Date());
-                                Ext.getCmp('tax_cd_bankin').setValue('NT02');
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            id:'delete_cb_bank_in',
-                            handler:function() {
-                                me.onPBDelete(me.Cashbook_Bank_InStore);
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Detail',
-                            iconCls: 'document',
-                            scope: me,
-                            handler: function(){
-                                me.ShowGridPopup(me.CB_Bank_In_DetailStore, 'Detail Item',me.CB_Bank_In_DetailGrid);
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode Dokumen',
+                                            name:'inv_code',
+                                            valueText:'otomatis',
+                                            readOnly: true,
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Input',
+                                            format : 'd-m-Y',
+                                            itemId:'tgl_input_bankin',
+                                            name:'inv_date',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'xtBankPopup',
+                                            fieldLabel : 'Kode Bank',
+                                            name:'bank_code',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'xtCF_IPopup',
+                                            fieldLabel : 'Kode Cash Flow',
+                                            name:'cf_code',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Kode Pajak',
+                                            name:'tax_code',
+                                            itemId:'tax_code_bankin',
+                                            readOnly:true,
+                                            width:200
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'xtCustomerPopup',
+                                            fieldLabel:'Diterima Dari',
+                                            name:'received_from',
+                                            allowBlank:false,
+                                            width:200
+                                        },
+                                        {
+                                            xtype : 'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Nominal',
+                                            name:'nominal',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Keterangan',
+                                            name:'remaks',
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'mitos.checkbox',
+                                            fieldLabel : 'Posting',
+                                            name:'status',
+                                            width:150,
+                                            handler: function(field, value) {
+                                                if (value== true) {
+                                                    Ext.ComponentQuery.query('#tgl_post_bankin')[0].setDisabled(false);
+                                                    Ext.ComponentQuery.query('#tgl_post_bankin')[0].setValue(new Date());
+                                                }else{
+                                                    Ext.ComponentQuery.query('#tgl_post_bankin')[0].setDisabled(true);
+                                                }
 
-                            }
-                        },'->',
-                        {
-                            xtype:'displayfield',
-                            itemId:'itemuserinput',
-                            margin : '0 5 0 0'
+                                            }
+                                        },
+                                        {
+                                            xtype : 'datefield',
+                                            fieldLabel : 'Tgl Posting',
+                                            format : 'd-m-Y',
+                                            maxValue : new Date(),
+                                            name:'posted_date',
+                                            disabled:true,
+                                            width:200,
+                                            itemId:'tgl_post_bankin'
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.Cashbook_Bank_InStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
+                })
+            ],
+            columns:[
+                {header: 'Company',sortable: true,dataIndex: 'co_id', hidden:true},
+                {header: 'Doc Number',sortable: true,dataIndex: 'inv_code'},
+                {width: 80,text: 'Entry Date',sortable: true,dataIndex: 'inv_date', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
+                {text: 'Kode Bank',sortable: true,dataIndex: 'bank_code'},
+                {text: 'Dari Customer',sortable: true,dataIndex: 'received_from'},
+                {text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {flex:1,text: 'Keterangan',sortable: true,dataIndex: 'remaks'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'CB_INModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'delete',
+                    scope:me,
+                    handler:me.onDeleteRec
                 }
+
             ]
         });
-        me.CB_Bank_In_DetailGrid = Ext.create('App.ux.GridPanel', {
-            store: me.CB_Bank_In_DetailStore,
-            height: 300,
+        me.CB_INDetailGrid = Ext.create('Ext.grid.Panel', {
+            title:'Rincian Detail',
+            store: Ext.data.StoreManager.lookup('CB_INDetailStore'),
+            height: 370,
             margin: '0 0 3 0',
             region: 'north',
-            columns: [
-                {text: 'Account',sortable: true,dataIndex: 'account'},
-                {text: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
-                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00'), id:'SumNominal'},
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
-            ],
             viewConfig :
             {
                 stripeRows: false,
                 getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : me.currPosted == '2'? 'adult-row' : '';
+                    return record.get('status') == 'B' ? 'child-row' : (record.get('status') == 'C' ? 'yellow-row':'');
                 }
             },
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    if(me.currPosted =='1' || me.currPosted =='2'){
-                    }else{
-                        var form = this.winform.down('form');
-                        me.onItemdblclick1(me.CB_Bank_In_DetailStore, record, 'Edit CashBank In Detail',me.winform, form);
-                    }
-
-                }
-            },
-            features: [{
-                ftype: 'summary'
-            }, searching],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing2', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            text: 'Add',
-                            iconCls: 'icoAddRecord',
-                            id:'add_dt_cb_bank_in',
-                            scope: me,
-                            handler: function(){
-                                var form = me.winform.down('form');
-                                me.onCb_In_DetailNew(form, 'CB_Bank_In_DetailModel', 'Tambah Data', me.winform);
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            id:'delete_dt_cb_bank_in',
-                            handler:function() {
-                                me.onCb_In_DetailDelete(me.CB_Bank_In_DetailStore);
-                            }
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode Dokumen',
+                                            name:'inv_code',
+                                            itemId:'inv_code_bankin',
+                                            hidden: true,
+                                            width:300
+                                        },
+                                        {
+                                            xtype : 'xtCoaPopup',
+                                            fieldLabel : 'Kode Akun',
+                                            name:'account',
+                                            width:200
+                                        },
+                                        {
+                                            xtype: 'mitos.currency',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Nominal',
+                                            name:'nominal',
+                                            width:300
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
-                },{
-                    xtype: 'pagingtoolbar',
-                    store: me.CB_Bank_In_DetailStore,
-                    beforePageText: 'Page',
-                    afterPageText: 'of {0}',
-                    displayMsg: 'Diplay {0} - {1} Of {2}',
-                    emptyMsg: 'No Record Found',
-                    dock: 'bottom',
-                    displayInfo: true,
-                    pageSize: 5
-
+                })
+            ],
+            columns:[
+                {header: 'Company',sortable: true,dataIndex: 'co_id', hidden:true},
+                {header: 'Account',sortable: true,dataIndex: 'account'},
+                {header: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
+                {width: 150,text: 'Nominal',sortable: true,dataIndex: 'nominal', renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00'), id:'SumNominal'},
+                {text: 'status',sortable: true,dataIndex: 'status', hidden: true},
+                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'CB_INDetailModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'delete002',
+                    scope:me,
+                    handler:me.onDeleteRec
+                },
+                {
+                    text:'Refresh',
+                    iconCls:'icoGreen',
+                    scope:me,
+                    handler:me.onRefresh
                 }
+
             ]
         });
-        me.Cb_In_JurnalGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Cashbook_Bank_In_JurnalStore,
-            region: 'center',
-            enablePaging: true,
-            columns: [
-                {header : 'co_id', dataIndex : 'co_id',width : 200, hidden: true},
+        me.JurnalGrid = Ext.create('Ext.grid.Panel', {
+            title:'Jurnal',
+            store: Ext.data.StoreManager.lookup('JurnalStore'),
+            region:'center',
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == 'B' ? 'child-row' : (record.get('status') == 'C' ? 'yellow-row':'');
+                }
+            },
+            columns:[
+                {header : 'co_id', dataIndex : 'co_id', hidden: true},
                 {header : 'Posting Date',dataIndex : 'inv_date',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100},
-                {header : 'Doc. Number', dataIndex : 'inv_code',width : 150},
-                {header : 'Debitor', dataIndex : 'vend_id',width : 100},
-                {header : 'Coa', dataIndex : 'coa',width : 100},
-                {header : 'Description', dataIndex : 'coa_nama',width : 200, summaryRenderer: function(){
+                {header : 'Doc. Number', dataIndex : 'inv_code'},
+                {header : 'Creditor', dataIndex : 'vend_id'},
+                {header : 'Coa', dataIndex : 'coa'},
+                {header : 'Description', dataIndex : 'coa_nama',flex:1, summaryRenderer: function(){
                     return '<b>Total</b>';
                 }},
                 {header : 'Debit', dataIndex : 'debit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {header : 'Credit', dataIndex : 'credit',width : 150,renderer: Ext.util.Format.numberRenderer('0,000.00'), summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
-                {header : 'sequence_no', dataIndex : 'sequence_no',width : 150, hidden: true},
-                {header : 'Remarks', dataIndex : 'remaks',width : 200},
+                {header : 'Remarks', dataIndex : 'remaks', flex:1},
                 {header : 'LastUpdate',dataIndex : 'timeedit',renderer:Ext.util.Format.dateRenderer('d-m-Y'), width : 100}
-            ],
-            viewConfig: {
-                stripeRows: false,
-                getRowClass: function(record, index) {
-                    return me.currPosted == '1'? 'child-row' : '';
-                }
-            },
-            features: [{
+            ],features: [{
                 ftype: 'summary'
-            }, searching]
+            }]
         });
-
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {hideLabel: true},
-                            msgTarget: 'under',
-                            name:'inv_code',
-                            hidden:true
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Entry Date'
-                                },
-                                {
-                                    fieldLabel : 'Entry Date',
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'inv_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    id:'inv_date_cb_bank_in',
-                                    maxValue: new Date(),
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Bank Code : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtBankPopup',
-                                    name: 'bank_code',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'CF Code : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtCF_IPopup',
-                                    name: 'cf_code',
-                                    allowBlank:false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Tax Code: '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'textfield',//'xtTaxKPopup',
-                                    name: 'tax_code',
-                                    id:'tax_cd_bankin',
-                                    allowBlank: false,
-                                    readOnly:true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Diterima dari : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtCustomerPopup',
-                                    name: 'received_from',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    name: 'nominal',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Remarks : '
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'remaks'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 150,
-                                    xtype: 'mitos.checkbox',
-                                    fieldLabel: 'Posting',
-                                    id:'post_cb_bank_in',
-                                    disabled: true,
-                                    name: 'status',
-                                    handler: function(field, value) {
-                                        if (value== true) {
-                                            Ext.getCmp('posted_date_cb_bank_in').setDisabled(false);
-                                            Ext.getCmp('posted_date_cb_bank_in').setValue(new Date());
-                                        }else{
-                                            Ext.getCmp('posted_date_cb_bank_in').setDisabled(true);
-                                        }
-
-                                    }
-                                },
-                                {
-                                    xtype : 'datefield',
-                                    width : 100,
-                                    name : 'posted_date',
-                                    format : 'd-m-Y',
-                                    submitFormat : 'Y-m-d H:i:s',
-                                    disabled: true,
-                                    allowBlank:false,
-                                    maxValue: new Date(),
-                                    id:'posted_date_cb_bank_in'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPBSave(form, me.Cashbook_Bank_InStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
+        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+            activeTab:0,
+            items:[ me.CB_INGrid, me.CB_INDetailGrid ]
         });
-        me.winform = Ext.create('App.ux.window.Window', {
-            width: 600,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'textfield',
-                            hidden: true,
-                            name: 'inv_code'
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Account : '
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'xtCoaPopup',
-                                    name: 'account',
-                                    allowBlank: false
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Nominal : '
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    name: 'nominal',
-                                    allowBlank: false,
-                                    id:'nominal_dt_cb_bank_in'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Save',
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.winform.down('form').getForm();
-                        if(form.isValid()){
-                            me.onCB_Bank_In_DetailSave(form, me.CB_Bank_In_DetailStore, me.winform);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: 'Cancel',
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action1('close',me.winform );
-                }
-            }
-        });
-        me.pageBody = [me.Cashbook_Bank_InGrid, me.Cb_In_JurnalGrid];
+        me.pageBody = [me.FormulirPanel, me.JurnalGrid];
         me.callParent(arguments);
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    openWin1: function(){
-        this.winform.show();
-    },
 
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    action1: function(action, window){
-        var win = window, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    onItemdblclick1: function(store, record, title, window, form){
+    }, // end of initComponent
 
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action1('old',window);
-        window.show();
-    },
-
-    /**
-     * This wll load a new record to the grid
-     * and start the rowEditor
-     */
-    onNewPB: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
-
-    },
-    onCb_In_DetailNew: function(form, model, title, window){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action1('new',window);
-        window.show();
-    },
-
-    /**
-     *
-     * @param grid
-     * @param selected
-     */
-    onPBGridClick: function(grid, selected){
+    onGridClick: function(grid, selected){
         var me = this;
-        me.currInv_Code = selected.data.inv_code;
-        me.currDebtor=selected.data.received_from;
-        me.currPosted = selected.data.status;
-        me.MaxNominal = selected.data.nominal;
-        var TopBarItems = this.Cashbook_Bank_InGrid.getDockedItems('toolbar[dock="top"]')[0];
-        me.userinput = selected.data.userinput;
-        me.useredit = selected.data.useredit;
-        me.ditulis = '<span style="color: #ff2110">User Input : </span>'+me.userinput+'  ||  '+'<span style="color: #e52010">User Edit : </span>'+me.useredit;
-        TopBarItems.getComponent('itemuserinput').setValue(me.ditulis);
-        me.CB_Bank_In_DetailStore.load({params:{inv_code: me.currInv_Code}});
-        me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-        if(selected.data.status == 1 || selected.data.status == 2){
-            Ext.getCmp('delete_cb_bank_in').disable();
-            Ext.getCmp('delete_dt_cb_bank_in').disable();
-            Ext.getCmp('add_dt_cb_bank_in').disable();
-
+        me.kode = selected.data.inv_code;
+        me.CB_INDetailStore.load({params:{inv_code: me.kode}});
+        me.JurnalStore.load({params:{inv_code: me.kode}});
+        var  deletebtn = me.query('button[action="delete"]')[0],
+            delete002btn = me.query('button[action="delete002"]')[0],
+            tambahbtn =  me.query('button[action="CB_INDetailModel"]')[0];
+        if(selected.data.status==1 || selected.data.status==2){
+            deletebtn.setDisabled(true);
+            delete002btn.setDisabled(true);
+            tambahbtn.setDisabled(true);
         }else{
-            Ext.getCmp('delete_cb_bank_in').enable();
-            Ext.getCmp('delete_dt_cb_bank_in').enable();
-            Ext.getCmp('add_dt_cb_bank_in').enable();
+            deletebtn.setDisabled(false);
+            delete002btn.setDisabled(false);
+            tambahbtn.setDisabled(false);
         }
 
     },
-
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-
-    onPBSave: function(form, store){
+    onRefresh:function(btn){
         var me = this;
-        me.savePB(form, store);
-    },
-    savePB: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        var StatusPosting = form.findField('status').getValue();
-        var totalDebit= 0, totalCredit= 0, count=0 ;
-        me.Cashbook_Bank_In_JurnalStore.each(function(record){
-            if(record.get('inv_code') == me.currInv_Code ) {
-                totalDebit += record.get('debit');
-                totalCredit += record.get('credit');
-            }
+        me.JurnalStore.load({params:{inv_code: me.kode}});
 
-        });
-        if(StatusPosting){
-            if( totalDebit != totalCredit){
-                Ext.MessageBox.alert('Warning', 'Debit Credit tidak Balance');
-            }else{
-                if(storeIndex == -1){
-                    store.add(values);
-                }else{
-                    record.set(values);
-                }
-                store.sync({
-                    success:function(){
-                        me.win.close();
-                        store.load({params:{co_id:globals['site'] }});
-                        me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                    },
-                    failure:function(){
-                        Ext.MessageBox.alert('Opps', 'Error !!!!');
-                    }
-                });
-            }
+    },
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+        newModel = Ext.ModelManager.create({
+        }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
+
+        if(model=='CB_INDetailModel'){
+            Ext.ComponentQuery.query('#inv_code_bankin')[0].setValue(me.kode);
+        }else{
+            Ext.ComponentQuery.query('#tgl_input_bankin')[0].setValue(new Date());
+            Ext.ComponentQuery.query('#tax_code_bankin')[0].setValue('NT02');
         }
-        else{
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            store.sync({
-                success:function(){
-                    me.win.close();
-                    store.load({params:{co_id:globals['site'] }});
-                    me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                },
-                failure:function(){
-                    Ext.MessageBox.alert('Opps', 'Error !!!!');
-                    //me.msg('Opps!', 'Error!!', true);
+    },
+
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
+
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
+                    }
                 }
             });
+
         }
-    },
-    onCB_Bank_In_DetailSave: function(form, store, window){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        form.findField('inv_code').setValue(me.currInv_Code);
-        values = form.getValues();
 
-            if(storeIndex == -1){
-                store.add(values);
-            }else{
-                record.set(values);
-            }
-            store.sync({
-                success:function(){
-                    me.winform.close();
-                    me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                },
-                failure:function(){
-                    Ext.MessageBox.alert('Opps', 'Error !!!!');
-                }
-            });
-        store.load({params:{inv_code: me.currInv_Code}});
     },
 
-    onPBDelete: function(store){
-        var me = this, grid = me.Cashbook_Bank_InGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    PB.deletePB(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                    me.CB_Bank_In_DetailStore.load({params:{inv_code: me.currInv_Code}});
-                    me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                }
-            }
-        });
-    },
-    onCb_In_DetailDelete: function(store){
-        var me = this, grid = me.CB_Bank_In_DetailGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('inv_code');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    PB.deletePB(bid);
-                    store.remove(sm.getSelection());
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
-                    }
-                    me.Cashbook_Bank_In_JurnalStore.load({params:{inv_code: me.currInv_Code}});
-                }
-            }
-        });
-    },
-
-    ShowGridPopup: function(store, title, grid){
-        var me=this;
-        this.myWinChooseItem= Ext.create('App.ux.window.Window',{
-            layout: 'fit',
-            title: title,
-            width: 800,
-            height: 400,
-            items:[grid],
-            modal:true
-
-        });
-        store.load({params:{inv_code: me.currInv_Code}});
-        this.myWinChooseItem.show();
-    },
-    onActive: function(callback){
-        var me = this;
-        this.Cashbook_Bank_InStore.load({params:{co_id:globals['site'] }});
-        this.Cashbook_Bank_In_JurnalStore.load();
-
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive : function(callback)
+    {
+        this.CB_INStore.load();
+        this.CB_INDetailStore.load();
+        this.JurnalStore.load();
         callback(true);
     }
 });
+//ens LogPage class

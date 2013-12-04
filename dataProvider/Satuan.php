@@ -41,43 +41,8 @@ class Satuan
 		return;
 	}
 
-    public function getSatuanLiveSearch(stdClass $params)
-	{
-        $company =  $_SESSION['user']['site'];
-		$this->db->setSQL("SELECT co_id,
-		                          satuan_id, 
-		                          satuan_nama
-							FROM satuan
-   							WHERE co_id='$company' and UPPER(satuan_id) LIKE UPPER('%$params->query%')
-   							   OR UPPER(satuan_nama) LIKE UPPER('%$params->query%')");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        foreach ($records as $key => $value)
-        {
-            if (is_array($value))
-            {
-                $records[$key] = array_change_key_case($value);
-            }
-        }
-		$total   = count($records);
-		$records = array_slice($records, $params->start, $params->limit);
-		return array(
-			'totals' => $total,
-			'rows'   => $records
-		);
-	}
-
 	public function getsatuan(stdClass $params)
 	{
-/*
-		if (isset($params -> aktif))
-		{
-			$wherex = "aktif = " . $params -> aktif;
-		}
-		else
-		{
-			$wherex = "aktif = 1";
-		}
-*/
         if (isset($params -> sort))
 		{
 			$orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
@@ -131,7 +96,7 @@ class Satuan
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'satuan', 'U', array('satuan_id' => $params->old_satuan_id));
+		$sql = $this->db->sqlBind($data, 'satuan', 'U', array('satuan_id' => $params->satuan_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

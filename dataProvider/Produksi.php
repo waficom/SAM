@@ -47,11 +47,10 @@ class Produksi
     {
         $company =  $_SESSION['user']['site'];
         $sql = "select A.co_id, A.status, A.no_pp, A.description, A.pp_date, A.timeedit, A.pabrik_sequence
-, A.userinput, A.useredit, case A.status when '0' then 'new' else 'Released To Factory' end as statusdesc, B.description as factory
-from pp_produksi A
-left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence
-where a.co_id='$company'
-/*where A.pp_date between '$params->datefrom' AND '$params->dateto' */ORDER BY A.timeedit DESC";
+        , A.userinput, A.useredit, B.description as factory, a.gudang_id
+        from pp_produksi A
+        left join pabrik_location B on A.co_id=B.co_id and A.pabrik_sequence=B.pabrik_sequence
+        where a.co_id='$company' ORDER BY A.timeedit DESC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -70,7 +69,6 @@ where a.co_id='$company'
      */
     public function addProduksi(stdClass $params)
     {
-//        error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['userinput'] = $_SESSION['user']['name'];
@@ -78,13 +76,13 @@ where a.co_id='$company'
         $data['pp_date'] = $this->db->Date_Converter($data['pp_date']);
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['no_pp']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        unset($data['id'], $data['no_pp'], $data['factory']);
+        if($params->status =='false'){
+            $data['status']= '0';
         }
-
+        else if($params->status =='true'){
+            $data['status']='1';
+        }
         $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'I');
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
@@ -101,8 +99,15 @@ where a.co_id='$company'
         $data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'], $data['old_no_pp'],$data['factory'],$data['statusdesc']);
-        $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'U', array('no_pp' => $params-> old_no_pp));
+        $data['pp_date'] = $this->db->Date_Converter($data['pp_date']);
+        unset($data['id'],$data['factory'],$data['statusdesc']);
+        if($params->status =='false'){
+            $data['status']= '0';
+        }
+        else if($params->status =='true'){
+            $data['status']='1';
+        }
+        $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'U', array('no_pp' => $params-> no_pp, 'co_id' => $params-> co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -166,16 +171,11 @@ where a.co_id='$company'
     {
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['finishdate'] = $this->db->Date_Converter($data['finishdate']);
         $data['est_finishdate'] = $this->db->Date_Converter($data['est_finishdate']);
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['no_pp'], $data['old_no_ppd'], $data['cust_nama'], $data['formula_nama'], $data['prod_nama'], $data['spesifikasi_nama'],$data['kemasan_nama'],
-        $data['n'], $data['p2o5'], $data['k2o'], $data['cao'], $data['mgo'], $data['so4'], $data['b'], $data['cu'], $data['zn']
-        , $data['ah'], $data['af']);
-        $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'U', array('no_ppd' => $params-> old_no_ppd));
+        unset($data['id'],$data['no_pp'],$data['cust_nama'], $data['status'], $data['prod_nama']);
+        $sql = $this -> db -> sqlBind($data, 'PP_DETAILPRODUKSI', 'U', array('no_ppd' => $params-> no_ppd, 'co_id' => $params-> co_id));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -184,6 +184,40 @@ where a.co_id='$company'
     {
         $company =  $_SESSION['user']['site'];
         $sql = "DELETE FROM PP_DETAILPRODUKSI WHERE (no_ppd = '$params->no_ppd' and co_id='$company') ";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+
+    public function getProduksiCancel(stdClass $params)
+    {
+        $company =  $_SESSION['user']['site'];
+        $sql = "select distinct a.*
+        from pp_produksi a
+        inner join pp_detailproduksi b on a.co_id=b.co_id and a.no_pp=b.no_pp
+        where a.co_id='$company' and a.status=1 and not exists(select * from wo1 where co_id='$company' and so_num=b.so_num)
+        order by a.no_pp ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function updateProduksiCancel(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        $data['co_id'] = $_SESSION['user']['site'];
+        $data['useredit'] = $_SESSION['user']['name'];
+        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
+        $data['cancel_date'] = $this->db->Date_Converter($data['cancel_date']);
+        if($params->canceled=1){
+            $data['status'] = 2;
+        }
+        unset($data['id']);
+        $sql = $this -> db -> sqlBind($data, 'PP_Produksi', 'U', array('no_pp' => $params-> no_pp, 'co_id' => $params-> co_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

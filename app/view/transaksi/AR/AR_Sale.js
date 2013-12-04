@@ -13,6 +13,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         me.curr_coid = null;
         me.userinput =null;
         me.useredit=null;
+        me.counter=0;
         Ext.define('AR_SaleModel', {
             extend: 'Ext.data.Model',
             fields: [
@@ -77,6 +78,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {name: 'co_id',type: 'string'},
                 {name: 'inv_code',type: 'string'},
                 {name: 'description',type: 'string'},
+                {name: 'qty_do',type: 'float'},
                 {name: 'qty',type: 'float'},
                 {name: 'qty_susut',type: 'float'},
                 {name: 'harga',type: 'float'},
@@ -215,7 +217,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                 Ext.getCmp('inv_date_ar').setValue(new Date());
                                 Ext.getCmp('tgl_jt_ar').setValue(new Date());
                                 Ext.getCmp('at_Y_ar').setDisabled(false);
-
+                                me.counter=0;
                             }
                         },
                         {
@@ -234,7 +236,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             scope: me,
                             handler: function(){
                                 me.ShowGridPopup(me.AR_Sale_DetailStore, 'Detail Item',me.AR_Sale_DetailGrid);
-
+                                me.counter=1;
                             }
                         },'->',
                         {
@@ -267,8 +269,9 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                 {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code', hidden: true},
                 {text: 'sequence_no',sortable: true,dataIndex: 'sequence_no', hidden:true},
                 {flex:1,text: 'Description',sortable: true,dataIndex: 'description'},
-                {text: 'Qty',sortable: true,dataIndex: 'qty'},
-                {text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut'},
+                {text: 'Qty DO',sortable: true,dataIndex: 'qty_do', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty AR',sortable: true,dataIndex: 'qty', renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty Susut',sortable: true,dataIndex: 'qty_susut', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Satuan',sortable: true,dataIndex: 'sat_id'},
                 {text: 'Nominal',sortable: true,dataIndex: 'harga',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
@@ -412,7 +415,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                             //Ext.getCmp('gudang_id_ar').enable();
                                             Ext.getCmp('do_num_ar').enable();
                                             Ext.getCmp('for_inv_ar').setDisabled(true);
-                                            Ext.getCmp('discon_ar').enable();
                                             Ext.getCmp('at_Y_ar').setDisabled(false);
                                         }
                                     }
@@ -424,11 +426,10 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     handler: function(field, value) {
                                         if (value) {
                                             Ext.getCmp('tax_ar').disable();
-                                           // Ext.getCmp('gudang_id_ar').disable();
+                                            // Ext.getCmp('gudang_id_ar').disable();
                                             Ext.getCmp('at_Y_ar').setDisabled(true);
                                             Ext.getCmp('do_num_ar').disable();
                                             Ext.getCmp('for_inv_ar').setDisabled(false);
-                                            Ext.getCmp('discon_ar').disable();
                                         }
                                     }
 
@@ -553,7 +554,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     width: 200,
                                     xtype: 'displayfield',
                                     name:'account_nama',
-                                    id:'account_nama_ar'
+                                    itemId:'akun_nama_ar'
                                 }
                             ]
                         },
@@ -582,28 +583,6 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     xtype: 'displayfield',
                                     name:'tax_nama',
                                     id:'tax_code'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Discon % : '
-                                },
-                                {
-                                    width: 50,
-                                    xtype: 'mitos.currency',
-                                    name: 'discon',
-                                    hideTrigger: true,
-                                    id:'discon_ar'
                                 }
                             ]
                         },
@@ -726,24 +705,24 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                             name: 'sequence_no'
                         },
                         /*{
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Description :'
-                                },
-                                {
-                                    width: 200,
-                                    xtype: 'textfield',
-                                    name:'description'
-                                }
-                            ]
-                        },*/
+                         xtype: 'fieldcontainer',
+                         defaults: {
+                         hideLabel: true
+                         },
+                         msgTarget: 'under',
+                         items: [
+                         {
+                         width: 100,
+                         xtype: 'displayfield',
+                         value: 'Description :'
+                         },
+                         {
+                         width: 200,
+                         xtype: 'textfield',
+                         name:'description'
+                         }
+                         ]
+                         },*/
                         {
                             xtype: 'fieldcontainer',
                             defaults: {
@@ -761,8 +740,7 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
                                     labelAlign : 'right',
                                     name: 'qty',
                                     xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    readOnly:true
+                                    hideTrigger: true
                                 },
                                 {
                                     width: 50,
@@ -975,16 +953,24 @@ Ext.define('App.view.transaksi.AR.AR_Sale', {
         });
         var StatusPosting = form.findField('status').getValue();
         if(StatusPosting){
-            if((totalDebit == 0 && totalCredit==0)){
-                Ext.MessageBox.alert('Warning', 'Detail Data Masih Belum Terisi..!!');
+            if(me.counter > 0){
+                if((totalDebit == 0 && totalCredit==0)){
+                    Ext.MessageBox.alert('Warning', 'Detail Data Masih Belum Terisi..!!');
+                }
+                else if(totalDebit != totalCredit){
+                    Ext.MessageBox.alert('Warning', 'Debit Credit Tidak Balance..!!');
+                }else{
+                    me.CallFunctionSave(form, store, showWin);
+                }
+            }else{
+                Ext.MessageBox.alert('Warning', 'Cek Detail di Harga / Qty Jual');
             }
-            else if(totalDebit != totalCredit){
-                Ext.MessageBox.alert('Warning', 'Debit Credit Tidak Balance..!!');
-            }
+        }else{
+            me.CallFunctionSave(form, store, showWin);
         }
 
 
-        me.CallFunctionSave(form, store, showWin);
+
     },
 
     CallFunctionSave: function(form, store, showWin){

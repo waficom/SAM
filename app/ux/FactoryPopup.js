@@ -23,12 +23,8 @@ Ext.define('App.ux.FactoryPopup',
                     fields : [
                         {name: 'pabrik_sequence',type: 'string'},
                         {name: 'description',type: 'string'},
-                        {name: 'location',type: 'string'},
-                        {name: 'remarks',type: 'string'},
-                        {name: 'userinput',type: 'string'},
-                        {name: 'useredit',type: 'string'},
-                        {name: 'timeinput',type: 'date'},
-                        {name: 'timeedit',type: 'date'}
+                        {name: 'gudang_id',type: 'string'},
+                        {name: 'gudang_nama',type: 'string'}
 
                     ],
                     proxy :
@@ -55,12 +51,10 @@ Ext.define('App.ux.FactoryPopup',
             me.grid = Ext.create('Ext.grid.Panel', {
                 store: me.store,
                 columns: [
-                    {text: 'pabrik_sequence',width: 100,sortable: true,dataIndex: 'pabrik_sequence'},
-                    {text: 'Description',width: 100,sortable: true,flex:1, dataIndex: 'description'},
-                    {text: 'Location',width: 100,sortable: true,flex:1,dataIndex: 'location'},
-                    {text: 'Remarks',width: 100,sortable: true,flex:1,dataIndex: 'remarks'},
-                    {text: 'LastUpdate', width : 80, sortable: false, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-
+                    {text: 'Kode Pabrik',width: 100,sortable: true,dataIndex: 'pabrik_sequence'},
+                    {text: 'Pabrik',sortable: true,flex:1, dataIndex: 'description'},
+                    {text: 'Kode Gudang',width: 100,sortable: true,dataIndex: 'gudang_id'},
+                    {text: 'Gudang',sortable: true,flex:1,dataIndex: 'gudang_nama'}
                 ],
                 height: 200,
 //                selModel : me.smGrid,
@@ -124,7 +118,6 @@ Ext.define('App.ux.FactoryPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('factory').setValue(selected.data.description);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

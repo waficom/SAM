@@ -120,8 +120,6 @@ Ext.define('App.ux.APPayPopup',
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            Ext.getCmp('ap_inv_date').setValue(selected.data.inv_date);
-            Ext.getCmp('posted_date').setValue(selected.data.posted_date);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

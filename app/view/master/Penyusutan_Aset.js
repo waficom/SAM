@@ -1,14 +1,15 @@
-
 Ext.define('App.view.master.Penyusutan_Aset', {
     extend: 'App.ux.RenderPanel',
     id: 'panelPenyusutan_Aset',
-    pageTitle: 'Penyusutan_Aset',
+    pageTitle: 'Umur Aset',
     uses: ['App.ux.GridPanel'],
-    initComponent: function(){
+    initComponent : function()
+    {
         var me = this;
-        Ext.define('Penyusutan_AsetModel', {
-            extend: 'Ext.data.Model',
-            fields: [
+
+        Ext.define('UmurAsetModel', {
+            extend : 'Ext.data.Model',
+            fields : [
                 { name: 'co_id',type: 'string'},
                 { name: 'pa_id',type: 'string'},
                 { name: 'description',type: 'string'},
@@ -17,272 +18,208 @@ Ext.define('App.view.master.Penyusutan_Aset', {
                 { name: 'userinput',type: 'string'},
                 { name: 'useredit',type: 'string'},
                 { name: 'timeinput',type: 'date'},
-                { name: 'timeedit',type: 'date'}
-            ]
-
-        });
-        me.Penyusutan_AsetStore = Ext.create('Ext.data.Store', {
-            model: 'Penyusutan_AsetModel',
-            proxy: {
-                type: 'direct',
-                api: {
+                { name: 'timeedit',type: 'date'},
+                { name: 'aktif',type: 'bool'}
+            ],
+            proxy:{
+                type:'direct',
+                api:{
                     read: Penyusutan_Aset.getPenyusutan_Aset,
                     create: Penyusutan_Aset.addPenyusutan_Aset,
                     update: Penyusutan_Aset.updatePenyusutan_Aset,
                     destroy: Penyusutan_Aset.deletePenyusutan_Aset
+                },
+                reader : {
+                    totalProperty : 'totals',
+                    root : 'rows'
                 }
-            },
+            }
+
+        });
+
+        me.UmurAsetStore = Ext.create('Ext.data.Store', {
+            storeId : 'UmurAsetStore1',
+            model : 'UmurAsetModel',
+            remoteSort : false,
+            pageSize : 10,
             autoLoad: false
         });
 
-        // *************************************************************************************
-        // Create the GridPanel
-        // *************************************************************************************
-        me.Penyusutan_AsetGrid = Ext.create('App.ux.GridPanel', {
-            store: me.Penyusutan_AsetStore,
-            columns: [
-                {text: 'ID',sortable: true, dataIndex: 'pa_id' },
-                {text: 'Description',sortable: true, flex:1, dataIndex: 'description' },
-                {text: 'Jml Tahun',sortable: true, dataIndex: 'jml_tahun' },
-                {text: 'Jml Bulan',sortable: true, dataIndex: 'jml_bulan' },
-                {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
-            ],
-            listeners: {
-                scope: me,
-                itemdblclick: function(view, record){
-                    me.onItemdblclick(me.Penyusutan_AsetStore, record, 'Edit Penyusutan_Aset');
-                }
+        function authCk(val){
+            if(val == '1'){
+                return '<img src="resources/images/icons/yes.gif" />';
+            }else if(val == '0'){
+                return '<img src="resources/images/icons/no.gif" />';
+            }
+            return val;
+        }
+        var searching = {
+            ftype: 'searching',
+            mode: 'local',
+            width: 200
+        };
+
+
+        me.UmurAsetGrid = Ext.create('Ext.grid.Panel', {
+            store: Ext.data.StoreManager.lookup('UmurAsetStore1'),
+            border:false,
+            frame:false,
+            viewConfig:{
+                stripeRows:true
             },
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    items: [
+            features:[searching],
+            plugins:[
+                Ext.create('App.ux.grid.RowFormEditing', {
+                    autoCancel:false,
+                    errorSummary:false,
+                    clicksToEdit:1,
+                    formItems:[
                         {
-                            xtype: 'button',
-                            text: 'Tambah Data',
-                            iconCls: 'save',
-                            handler: function(){
-                                var form = me.win.down('form');
-                                me.onNew(form, 'Penyusutan_AsetModel', 'Tambah Data');
-                            }
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'Hapus Data',
-                            iconCls: 'delete',
-                            handler: function() {
-                                me.deletePenyusutan_Aset(me.Penyusutan_AsetStore);
-                            }
+                            xtype:'container',
+                            layout:'hbox',
+                            width:900,
+                            items:[
+                                {
+                                    xtype:'container',
+                                    width:400,
+                                    layout:'anchor',
+                                    items:[
+                                        {
+                                            xtype:'textfield',
+                                            fieldLabel:'Kode',
+                                            name:'pa_id',
+                                            width:250
+                                        },
+                                        {
+                                            xtype : 'textfield',
+                                            fieldLabel : 'Deskripsi',
+                                            name:'description',
+                                            width:385
+                                        },
+                                        {
+                                            xtype : 'numberfield',
+                                            hideTrigger: true,
+                                            fieldLabel : 'Jml Tahun',
+                                            name:'jml_tahun',
+                                            width:200
+                                        },
+                                        {
+                                            width: 150,
+                                            xtype: 'mitos.checkbox',
+                                            fieldLabel: 'Aktif',
+                                            name: 'aktif'
+                                        }
+
+                                    ]
+                                }
+                            ]
                         }
                     ]
+                })
+            ],
+            columns:[
+                {
+                    header:'Company',
+                    dataIndex:'co_id',
+                    hidden:true
+                },
+                {
+                    header:'Kode',
+                    dataIndex:'pa_id'
+                },
+                {
+                    header:'Umur Aset',
+                    dataIndex:'description',
+                    flex:1
+                },
+                {
+                    header: 'Jml Tahun',
+                    dataIndex: 'jml_tahun'
+                },
+                {
+                    header: 'Jml Bulan',
+                    dataIndex: 'jml_bulan'
+                },
+                {
+                    header: 'Aktif',
+                    sortable: true,
+                    dataIndex: 'aktif',
+                    renderer: authCk
                 }
+            ],
+            tbar:[
+                {
+                    text:'Tambah Data',
+                    iconCls:'save',
+                    action:'UmurAsetModel',
+                    scope:me,
+                    handler:me.onNewRec
+                },                {
+                    text:'Hapus Data',
+                    iconCls:'delete',
+                    action:'UmurAsetModel',
+                    scope:me,
+                    handler:me.onDeleteRec
+                }
+
             ]
         });
-        // *************************************************************************************
-        // Window User Form
-        // *************************************************************************************
-        me.win = Ext.create('App.ux.window.Window', {
-            width: 500,
-            items: [
-                {
-                    xtype: 'mitos.form',
-                    fieldDefaults: {
-                        msgTarget: 'side',
-                        labelWidth: 100
-                    },
-                    defaultType: 'textfield',
-                    //hideLabels      : true,
-                    defaults: {
-                        labelWidth: 89,
-                        anchor: '100%',
-                        layout: {
-                            type: 'hbox',
-                            defaultMargins: {
-                                top: 0,
-                                right: 5,
-                                bottom: 0,
-                                left: 0
-                            }
-                        }
-                    },
-                    items: [
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'ID : '
-                                },
-                                {
-                                    width: 100,
-                                    name: 'pa_id',
-                                    xtype: 'mitos.UpperCaseTextField',
-                                    allowBlank: false,
-                                    stripCharsRe: /(^\s+|\s+$)/g
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Description :'
-                                },
-                                {
-                                    width: 300,
-                                    xtype: 'textfield',
-                                    name: 'description'
-                                }
-                            ]
-                        },{
-                            xtype: 'fieldcontainer',
-                            defaults: {
-                                hideLabel: true
-                            },
-                            msgTarget: 'under',
-                            items: [
-                                {
-                                    width: 100,
-                                    xtype: 'displayfield',
-                                    value: 'Jml Tahun :'
-                                },
-                                {
-                                    width: 100,
-                                    xtype: 'mitos.currency',
-                                    hideTrigger: true,
-                                    name: 'jml_tahun',
-                                    allowBlank: false
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            buttons: [
-                {
-                    text: i18n('save'),
-                    cls: 'winSave',
-                    handler: function(){
-                        var form = me.win.down('form').getForm();
-                        if(form.isValid()){
-                            me.onPenyusutan_AsetSave(form, me.Penyusutan_AsetStore);
-                        }
-                    }
-                },
-                '-',
-                {
-                    text: i18n('cancel'),
-                    scope: me,
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                }
-            ],
-            listeners: {
-                scope: me,
-                close: function(){
-                    me.action('close');
-                }
-            }
+
+        me.FormulirPanel = Ext.create('Ext.tab.Panel', {
+            activeTab:0,
+            items:[ me.UmurAsetGrid]
         });
-        // END WINDOW
-        me.pageBody = [me.Penyusutan_AsetGrid];
+
+        me.pageBody = [/*me.FormulirPanel*/me.UmurAsetGrid];
         me.callParent(arguments);
+
     }, // end of initComponent
 
-    onNew: function(form, model, title){
-        this.setForm(form, title);
-        form.getForm().reset();
-        var newModel = Ext.ModelManager.create({
-        }, model);
-        form.getForm().loadRecord(newModel);
-        this.action('new');
-        this.win.show();
+    onNewRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+//        plugin.cancelEdit();
+        newModel = Ext.ModelManager.create({ co_id : globals.site }, model);
+        store.insert(0, newModel);
+        plugin.startEdit(0, 0);
     },
-    onPenyusutan_AsetSave: function(form, store){
-        var me = this;
-        me.savePenyusutan_Aset(form, store);
-    },
-    savePenyusutan_Aset: function(form, store){
-        var me = this, record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
-        if(storeIndex == -1){
-            store.add(values);
-        }else{
-            record.set(values);
-        }
-        store.sync({
-            success:function(){
-                me.win.close();
-            },
-            failure:function(){
-                Ext.MessageBox.alert('Opps', 'Error..!!');
-            }
-        });
-        store.load();
-    },
-    onItemdblclick: function(store, record, title){
-        var form = this.win.down('form');
-        this.setForm(form, title);
-        form.getForm().loadRecord(record);
-        this.action('old');
-        this.win.show();
-    },
-    setForm: function(form, title){
-        form.up('window').setTitle(title);
-    },
-    openWin: function(){
-        this.win.show();
-    },
-    action: function(action){
-        var win = this.win, form = win.down('form');
-        if(action == 'close'){
-            form.getForm().reset();
-        }
-    },
-    deletePenyusutan_Aset: function(store){
-        var me = this, grid = me.Penyusutan_AsetGrid;
-        sm = grid.getSelectionModel();
-        sr = sm.getSelection();
-        bid = sr[0].get('pa_id');
-        Ext.Msg.show({
-            title: 'Please Confirm' + '...',
-            msg: 'Are you sure want to delete' + ' ?',
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            fn: function(btn){
-                if(btn == 'yes'){
-//                    Penyusutan_Aset.deletePenyusutan_Aset(bid);
-                    store.remove(sr);
-                    store.sync();
-                    if (store.getCount() > 0) {
-                        sm.select(0);
+
+    onDeleteRec:function(btn){
+        var me = this, grid = btn.up('grid'), store = grid.store, plugin = grid.editingPlugin,
+            sm = grid.getSelectionModel(),
+            selection = grid.getView().getSelectionModel().getSelection()[0];
+
+        plugin.cancelEdit();
+        if (selection) {
+            Ext.Msg.show({
+                title: 'Please Confirm' + '...',
+                msg: 'Are you sure want to delete' + ' ?',
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                fn: function(btn){
+                    if(btn == 'yes'){
+                        store.remove(selection);
+                        store.sync();
+                        if (store.getCount() > 0) {
+                            sm.select(0);
+                        }
                     }
                 }
-            }
-        });
-//        store.load();
+            });
+
+        }
+
     },
+
     /**
      * This function is called from Viewport.js when
      * this panel is selected in the navigation panel.
      * place inside this function all the functions you want
      * to call every this panel becomes active
      */
-    onActive: function(callback){
-        this.Penyusutan_AsetStore.load();
+    onActive : function(callback)
+    {
+        this.UmurAsetStore.load();
         callback(true);
     }
 });
-//ens UserPage class
+//ens LogPage class

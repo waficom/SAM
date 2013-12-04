@@ -433,7 +433,14 @@
 from inv_manufaktur a
 inner join wo2 b on a.so_num=b.so_num and a.wo_num=b.wo_num and a.prod_id=b.prod_id and a.co_id=b.co_id
 inner join jurnal c on a.inv_code=c.inv_code and a.co_id=c.co_id and debit is not null
-where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num}]]>
+where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num}
+
+union all
+
+select a.co_id, a.inv_code, a.posted_date, b.description as prod_id, b.qty, b.harga as hpp, b.qty*b.harga as total
+from ap_inv a
+left join ap_inv_detail b on a.co_id=b.co_id and a.inv_code=b.inv_code
+where a.status=1 and a.inv_code=$P{so_num} and a.co_id=$P{co_id}]]>
 		</queryString>
 		<field name="CO_ID" class="java.lang.String"/>
 		<field name="INV_CODE" class="java.lang.String"/>
@@ -601,7 +608,7 @@ where a.status=1 and a.inv_type='F' and a.co_id=$P{co_id} and a.so_num=$P{so_num
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="152ae2e5-c621-4d4d-ac1a-d9d362f65057">
+					<jr:column width="69" uuid="152ae2e5-c621-4d4d-ac1a-d9d362f65057">
 						<jr:columnHeader style="table 16_CH" height="13" rowSpan="1">
 							<staticText>
 								<reportElement uuid="a1baa054-a924-402b-9353-b4eae07cdc16" x="0" y="0" width="69" height="13"/>

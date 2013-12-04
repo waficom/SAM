@@ -459,11 +459,11 @@
 		<defaultValueExpression><![CDATA["/home/dharma/PhpstormProjects/SAM/modules/reportcenter/report/GL/"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select a.co_id, a.so_num, a.prod_id, sum(b.qty) as qty
-from wo0 a
-left join wo2 b on a.co_id=b.co_id and a.so_num=b.so_num and a.prod_id=b.prod_id and a.wo_num=b.wo_num
-where a.status=1 and a.co_id=$P{co_id} and (select hasil from get_periode(a.posted_date))=$P{periode}
-group by a.co_id, a.so_num, a.prod_id]]>
+		<![CDATA[select a.co_id, a.so_num, a.prod_id, sum(a.qty_do) as qty
+from deliveryorder a
+where a.status=1 and (select hasil from get_periode(a.posted_date))=$P{periode}
+group by a.co_id, a.so_num, a.prod_id
+]]>
 	</queryString>
 	<field name="CO_ID" class="java.lang.String"/>
 	<field name="SO_NUM" class="java.lang.String"/>
@@ -528,26 +528,15 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<textFieldExpression><![CDATA[$P{periode}]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="2e27338e-9706-4d4d-bbf7-349862bdf91b" x="73" y="3" width="88" height="58"/>
+				<reportElement uuid="07780c57-d500-4be4-b7bf-bfb9d16bb70f" x="72" y="4" width="89" height="57"/>
 				<imageExpression><![CDATA["/var/www/resources/images/logon_header.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<detail>
-		<band height="216" splitType="Immediate">
+		<band height="173" splitType="Immediate">
 			<subreport>
-				<reportElement uuid="a97429a5-2840-4d75-af12-94d18985fa4d" x="36" y="31" width="451" height="31"/>
-				<subreportParameter name="co_id">
-					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="so_num">
-					<subreportParameterExpression><![CDATA[$F{SO_NUM}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianKlwrBJ_1.jasper"]]></subreportExpression>
-			</subreport>
-			<subreport>
-				<reportElement uuid="39beee0e-de62-497e-b20c-9df835dc52a1" positionType="Float" x="36" y="62" width="451" height="31"/>
+				<reportElement uuid="39beee0e-de62-497e-b20c-9df835dc52a1" positionType="Float" x="40" y="112" width="451" height="31"/>
 				<subreportParameter name="co_id">
 					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -558,7 +547,21 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianHPP_subreport2.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement uuid="47c984b4-0b24-450b-b2f9-4dd257966b05" positionType="Float" x="36" y="93" width="450" height="30"/>
+				<reportElement uuid="a97429a5-2840-4d75-af12-94d18985fa4d" positionType="Float" x="40" y="81" width="451" height="31"/>
+				<subreportParameter name="periode">
+					<subreportParameterExpression><![CDATA[$P{periode}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="co_id">
+					<subreportParameterExpression><![CDATA[$P{co_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="so_num">
+					<subreportParameterExpression><![CDATA[$F{SO_NUM}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianKlwrBJ_1.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="47c984b4-0b24-450b-b2f9-4dd257966b05" positionType="Float" x="40" y="143" width="450" height="30"/>
 				<subreportParameter name="periode">
 					<subreportParameterExpression><![CDATA[$P{periode}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -647,6 +650,17 @@ Factory : Jl. Raden Patah, Tunggal Pager, Pungging - Mojosari, mojokerto
 				</textElement>
 				<text><![CDATA[KODE PRODUK]]></text>
 			</staticText>
+			<subreport>
+				<reportElement uuid="0ebc6e2f-8c15-4293-b0a7-18f3fdc21f7b" x="42" y="50" width="449" height="31"/>
+				<subreportParameter name="co_id">
+					<subreportParameterExpression><![CDATA[$F{CO_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="so_num">
+					<subreportParameterExpression><![CDATA[$F{SO_NUM}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RincianHPP_subreport1.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<summary>

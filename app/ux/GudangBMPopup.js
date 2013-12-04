@@ -24,7 +24,8 @@ Ext.define('App.ux.GudangBMPopup',
                         {name: 'gudang_id',type: 'string'},
                         {name: 'gudang_nama',type: 'string'},
                         {name: 'gdg_type',type: 'string'},
-                        {name: 'description',type: 'string' }
+                        {name: 'description',type: 'string' },
+                        {name: 'pabrik_sequence',type: 'string' }
 
                     ],
                     proxy :
@@ -114,6 +115,19 @@ Ext.define('App.ux.GudangBMPopup',
         onGridClick: function(grid, selected){
             gudang_id = selected.data.gudang_id;
             this.setValue(gudang_id);
+            if(Ext.ComponentQuery.query('#factory_id')[0]){
+                Ext.ComponentQuery.query('#factory_id')[0].setValue(selected.data.description);
+            }
+
+            if( Ext.ComponentQuery.query('#factory')[0]){
+                Ext.ComponentQuery.query('#factory')[0].setValue(selected.data.description);
+            }
+            if( Ext.ComponentQuery.query('#factory_pb')[0]){
+                Ext.ComponentQuery.query('#factory_pb')[0].setValue(selected.data.description);
+            }
+            if( Ext.ComponentQuery.query('#kode_pabrik')[0]){
+                Ext.ComponentQuery.query('#kode_pabrik')[0].setValue(selected.data.pabrik_sequence);
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;

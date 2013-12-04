@@ -71,10 +71,8 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                 {name: 'qty_in',type: 'float'},
                 {name: 'sat_id',type: 'string'},
                 {name: 'keterangan',type: 'string'},
-                {name: 'jml_paket',type: 'string'},
-                {name: 'total_qty_in',type: 'float'},
-                {name: 'darigudang',type: 'string'},
-                {name: 'kegudang',type: 'string'}
+                {name: 'jml_paket',type: 'float'},
+                {name: 'total_qty_in',type: 'float'}
             ]
 
         });
@@ -118,10 +116,10 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                 {text: 'WO Num',sortable: true,dataIndex: 'wo_num', hidden:true},
                 {text: 'Customer',sortable: true,dataIndex: 'cust_nama', flex:1},
                 {text: 'Produk',sortable: true,dataIndex: 'prod_id'},
-                {text: 'Qty SO',sortable: true,dataIndex: 'qtyso'},
-                {text: 'Qty BB',sortable: true,dataIndex: 'qtybb'},
-                {text: 'Qty BDP',sortable: true,dataIndex: 'qtybdp'},
-                {text: 'Qty BJ',sortable: true,dataIndex: 'qtybj'},
+                {text: 'Qty SO',sortable: true,dataIndex: 'qtyso',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BB',sortable: true,dataIndex: 'qtybb',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BDP',sortable: true,dataIndex: 'qtybdp',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {text: 'Qty BJ',sortable: true,dataIndex: 'qtybj',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'Formula',sortable: true,dataIndex: 'formula_id'},
                 {text: 'KA Shift',sortable: true,dataIndex: 'ka_shift'},
                 {text: 'Pabrik',sortable: true,dataIndex: 'pabrik_produksi', hidden:true},
@@ -253,12 +251,10 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                 {header : 'prod_id', dataIndex : 'prod_id',width : 150, hidden: true},
                 {header : 'BB Id', dataIndex : 'bb_id'},
                 {header : 'Bahan Baku', dataIndex : 'bb_nama',flex:1},
-                {header : 'qty_in', dataIndex : 'qty_in'},
-                {header : 'jml_paket', dataIndex : 'jml_paket'},
-                {header : 'Total', dataIndex : 'total_qty_in'},
-                {header : 'satuan', dataIndex : 'sat_id'},
-                {header : 'Darigudang', dataIndex : 'darigudang'},
-                {header : 'kegudang', dataIndex : 'kegudang'}
+                {header : 'Qty', dataIndex : 'qty_in',align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Paket', dataIndex : 'jml_paket', align:'right',renderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Total', dataIndex : 'total_qty_in', align:'right', width : 200,renderer: Ext.util.Format.numberRenderer('0,000.00'),  summaryType: 'sum', summaryRenderer: Ext.util.Format.numberRenderer('0,000.00')},
+                {header : 'Satuan', dataIndex : 'sat_id'}
             ],
             features:[searching],
             dockedItems: [
@@ -270,8 +266,9 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                             xtype : 'fieldcontainer',
                             items : [
                                 {
-                                    xtype: 'numberfield',
-                                    width: 100,
+                                    xtype: 'mitos.currency',
+                                    hideTrigger:true,
+                                    width: 150,
                                     name : 'jml_paket',
                                     fieldLabel: 'Paket',
                                     id:'wo_paket_formula',
@@ -288,53 +285,33 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                                     fieldLabel: 'Sat',
                                     value:'KG',
                                     id:'wo_sat_formula',
-                                    labelWidth : 30
+                                    labelWidth : 30,
+                                    readOnly:true
                                 }]
                         },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtGudangBMPopup',
-                                    width: 150,
-                                    name : 'darigudang',
-                                    fieldLabel: 'Dari Gdg',
-                                    id:'wo_drgdg_formula',
-                                    labelWidth : 50
-                                }]
-                        },{
-                            xtype : 'fieldcontainer',
-                            items : [
-                                {
-                                    xtype: 'xtGudangBDPPopup',
-                                    width: 150,
-                                    name : 'kegudang',
-                                    fieldLabel: 'Ke Gdg',
-                                    id:'wo_kegdg_formula',
-                                    labelWidth : 50
-                                }]
-                        },{
-                        text: 'Generate',
-                        iconCls: 'icoArrowRightSmall',
-                        scope: me,
-                        handler: function(){
-                            var form = me.winformBahanBaku.down('form').getForm();
-                            if(form.isValid()){
-                                form.findField('wo_num').setValue(me.currWo_num);
-                                form.findField('no_ppd').setValue(me.currNo_PPD);
-                                form.findField('prod_id').setValue(me.currProd_id);
-                                form.findField('so_num').setValue(me.currSo_num);
-                                form.findField('formula_id').setValue(me.Formula);
-                                form.findField('jml_paket').setValue(Ext.getCmp('wo_paket_formula').getValue());
-                                form.findField('sat_id').setValue(Ext.getCmp('wo_sat_formula').getValue());
-                                form.findField('darigudang').setValue(Ext.getCmp('wo_drgdg_formula').getValue());
-                                form.findField('kegudang').setValue(Ext.getCmp('wo_kegdg_formula').getValue());
-                                var values = form.getValues();
-                                WO_BB_Formula.addtWO_BB_FormulaDetail(values,function(provider, response){
-                                });
-                                me.WO_BB_Formula_Detail_Store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+                            text: 'Generate',
+                            iconCls: 'icoArrowRightSmall',
+                            scope: me,
+                            handler: function(){
+                                var form = me.winformBahanBaku.down('form').getForm();
+                                if(form.isValid()){
+                                    form.findField('wo_num').setValue(me.currWo_num);
+                                    form.findField('no_ppd').setValue(me.currNo_PPD);
+                                    form.findField('prod_id').setValue(me.currProd_id);
+                                    form.findField('so_num').setValue(me.currSo_num);
+                                    form.findField('formula_id').setValue(me.Formula);
+                                    form.findField('jml_paket').setValue(Ext.getCmp('wo_paket_formula').getValue());
+                                    form.findField('sat_id').setValue(Ext.getCmp('wo_sat_formula').getValue());
+                                    var values = form.getValues();
+                                    WO_BB_Formula.addtWO_BB_FormulaDetail(values,function(provider, response){
+                                        if (response.type == 'exception'){
+                                            Ext.MessageBox.alert('Error', response.message);
+                                        }
+                                    });
+                                    me.WO_BB_Formula_Detail_Store.load({params:{so_num: me.currSo_num ,wo_num: me.currWo_num, prod_id: me.currProd_id}});
+                                }
                             }
                         }
-                    }
                     ]
                 },{
                     xtype: 'pagingtoolbar',
@@ -391,8 +368,7 @@ Ext.define('App.view.transaksi.workorder.WO_BB_Formula', {
                         {xtype: 'textfield',hidden: true,name: 'no_ppd'},
                         {xtype: 'textfield',hidden: true,name: 'jml_paket'},
                         {xtype: 'textfield',hidden: true,name: 'sat_id' },
-                        {xtype: 'textfield',hidden: true,name: 'darigudang' },
-                        {xtype: 'textfield', hidden: true,name: 'kegudang'}
+                        {xtype: 'textfield',hidden: true,name: 'darigudang' }
                     ]
                 }
 

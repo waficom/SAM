@@ -68,16 +68,6 @@ class Jenis
 	
 	public function getjenis(stdClass $params)
 	{
-
-/*		if (isset($params -> aktif))
-		{
-			$wherex = "aktif = " . $params -> aktif;
-		}
-		else
-		{
-			$wherex = "aktif = 1";
-		}
-*/
         if (isset($params -> sort))
 		{
 			$orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
@@ -131,7 +121,7 @@ class Jenis
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'jenis', 'U', array('jenis_id' => $params->old_jenis_id));
+		$sql = $this->db->sqlBind($data, 'jenis', 'U', array('jenis_id' => $params->jenis_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

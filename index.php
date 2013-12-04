@@ -23,7 +23,8 @@ session_cache_limiter('private');
 define('_GaiaEXEC', 1);
 include_once('classes/Mobile_Detect.php');
 $mobile = new Mobile_Detect();
-$site = (isset($_GET['site']) ? $_GET['site'] : 'SAM');
+// $site = (isset($_GET['site']) ? $_GET['site'] : 'SAM');
+$site = (isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'SAM');
 
 $mDebug = false;
 if($mobile->isMobile() || $mDebug){

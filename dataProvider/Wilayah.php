@@ -113,18 +113,9 @@ class Wilayah
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-        if ($data['old_wilayah_id'] == $data['wilayah_id']) {
-            unset($data['id'], $data['wilayah_id'], $data['old_wilayah_id']);
-            $sql = $this->db->sqlBind($data, 'wilayah', 'U', array('wilayah_id' => $params->old_wilayah_id));
-        }
-        else
-        {
-            $sql = "UPDATE saleswil SET wilayah_id = '" . $data['wilayah_id'] . "' WHERE wilayah_id = '". $data['old_wilayah_id'] . "'";
-            $this->db->setSQL($sql);
-            $this->db->execLog();
-            unset($data['id'], $data['wilayah_id'], $data['old_wilayah_id']);
-            $sql = $this->db->sqlBind($data, 'wilayah', 'U', array('wilayah_id' => $params->old_wilayah_id));
-        }
+        unset($data['id'], $data['wilayah_id'], $data['old_wilayah_id']);
+        $sql = $this->db->sqlBind($data, 'wilayah', 'U', array('co_id' => $params->co_id,'wilayah_id' => $params->wilayah_id));
+
         $this->db->setSQL($sql);
         $this->db->execLog();
         return $params;
@@ -147,7 +138,7 @@ class Wilayah
         $this->db->setSQL("SELECT sw.*, s.sales_nama
                          FROM saleswil sw
                     LEFT JOIN salesman s ON sw.sales_id = s.sales_id and sw.co_id = s.co_id
-                    WHERE sw.wilayah_id = '" . $params->wilayah_id ."'");
+                    WHERE sw.wilayah_id = '$params->wilayah_id '");
 
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)

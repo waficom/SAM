@@ -59,12 +59,12 @@ class WO_BB_Formula
     public function addtWO_BB_FormulaDetail(stdClass $params)
     {
         $co_id= $_SESSION['user']['site'];
-        $sql=("execute procedure getbahanbaku_wo '$params->kegudang','$params->darigudang','$params->sat_id',
+        $sql=("execute procedure getbahanbaku_wo '$params->sat_id',
         '$params->jml_paket','$params->so_num','$params->formula_id','$params->prod_id','$params->no_ppd','$params->wo_num','$co_id'
         ");
         $this->db->setSQL($sql);
         $this->db->execOnly();
-
+        return $params;
     }
     public function addWO_BB_Formula(stdClass $params)
     {
@@ -80,6 +80,12 @@ class WO_BB_Formula
     public function deleteWO_BB_Formula(stdClass $params)
     {
         $company =  $_SESSION['user']['site'];
+        $sql = "DELETE FROM wo1 WHERE co_id = '$company' and wo_num='$params->wo_num' and so_num='$params->so_num' and prod_id='$params->prod_id'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        $sql = "DELETE FROM wo4 WHERE co_id = '$company' and wo_num='$params->wo_num' and so_num='$params->so_num' and prod_id='$params->prod_id'";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
         $sql = "DELETE FROM wo0 WHERE co_id = '$company' and wo_num='$params->wo_num' and so_num='$params->so_num' and prod_id='$params->prod_id'";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();

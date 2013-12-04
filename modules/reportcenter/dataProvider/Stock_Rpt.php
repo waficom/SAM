@@ -39,6 +39,16 @@ class Stock_Rpt extends Reports
             'url' => $url
         );
     }
+    public function StockBDP(stdClass $params)
+    {
+        $this->reportfile = '/var/www/modules/reportcenter/report/Management_Stock/StockBDP.jasper';
+
+        $url = $this->report_execute($params->params);
+        return array(
+            'success' => true,
+            'url' => $url
+        );
+    }
     public function StockBJ(stdClass $params)
     {
         $this->reportfile = '/var/www/modules/reportcenter/report/Management_Stock/StockBJ.jasper';

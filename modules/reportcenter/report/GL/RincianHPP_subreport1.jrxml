@@ -553,7 +553,7 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[KWANTUM]]></text>
+								<text><![CDATA[QTY]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="13" rowSpan="1">
@@ -585,7 +585,7 @@ group by A.co_id, A.so_num, A.prod_id, A.bb_id, A.hpp, B.bb_nama]]>
 									<font size="6" isBold="true"/>
 									<paragraph leftIndent="5" rightIndent="5"/>
 								</textElement>
-								<text><![CDATA[RATA2 / KWT]]></text>
+								<text><![CDATA[HARGA RATA2]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="13" rowSpan="1"/>

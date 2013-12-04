@@ -49,11 +49,12 @@ class GoodsReceived
     public function getFilterGRData(stdClass $params)
     {
         $company =  $_SESSION['user']['site'];
-        $sql = "select a.*, d.vend_nama, b.vend_nama as vend_tr_nama, c.gudang_nama
+        $sql = "select a.*, d.vend_nama, b.vend_nama as vend_tr_nama, c.gudang_nama, e.description as pabrik
         from gr0 a
         left join vendor b on a.vend_id_trans=b.vend_id and a.co_id=b.co_id
         left join gudang c on a.gudang_id=c.gudang_id and a.co_id=c.co_id
         left join vendor d on a.vend_id=d.vend_id and a.co_id=d.co_id
+        left join pabrik_location e on c.pabrik_sequence=e.pabrik_sequence and c.co_id=e.co_id
         where a.co_id='$company' and a.gr_type='R'
         order by a.timeedit DESC";
         $this -> db -> setSQL($sql);
@@ -72,7 +73,8 @@ class GoodsReceived
     public function addGR(stdClass $params)
     {
         $co_id= $_SESSION['user']['site'];
-        $sql=("execute procedure goods_received_i '$params->po_num','$co_id'
+        $userinsert= $_SESSION['user']['name'];
+        $sql=("execute procedure goods_received_i '$userinsert','$params->po_num','$co_id'
         ");
         $this->db->setSQL($sql);
         $this->db->execOnly();
@@ -142,17 +144,24 @@ class GoodsReceived
     {
         $company =  $_SESSION['user']['site'];
         $sql = "select a.co_id,a.gr_num,a.bb_id, a.sat_id,a.qty_brutto,a.qty_netto,a.qty_pcs,
-        a.qty_brutto -  a.qty_netto  as qty_selisih,a.keterangan,coalesce(c.qty_return,0) as qtygrn , e.bb_nama, f.qty as qty_po
+        a.qty_brutto -  a.qty_netto  as qty_selisih,a.keterangan, f.qty - coalesce(c.qty_grn - coalesce(qty_return,0),0) as qtygrn , e.bb_nama, f.qty as qty_po
         , g.nopol, g.do_num, g.qty_brutto, g.qty_netto, g.qty_pcs
         from gr10 a
         left join gr0 b on a.co_id=b.co_id and a.gr_num=b.gr_num
         left join(
+            select sum(c.qty_netto) as qty_grn, c.bb_id, c.sat_id, d.po_num, c.co_id
+            from gr10 c
+            left join gr0 d on c.co_id=d.co_id and c.gr_num=d.gr_num
+            where d.status=1 and d.gr_type='R'
+            group by c.co_id, c.bb_id, c.sat_id, d.po_num
+        ) c on b.po_num=c.po_num and a.co_id=c.co_id and a.bb_id=c.bb_id and a.sat_id=c.sat_id
+         left join(
             select sum(c.qty_netto) as qty_return, c.bb_id, c.sat_id, d.po_num, c.co_id
             from gr10 c
             left join gr0 d on c.co_id=d.co_id and c.gr_num=d.gr_num
-            where d.status=1 and d.gr_type='B' --return --
+            where d.status=1 and d.gr_type='B'
             group by c.co_id, c.bb_id, c.sat_id, d.po_num
-        ) c on b.po_num=c.po_num and a.co_id=c.co_id and a.bb_id=c.bb_id and a.sat_id=c.sat_id
+        ) d on b.po_num=d.po_num and a.co_id=d.co_id and a.bb_id=d.bb_id and a.sat_id=d.sat_id
         left join bahanbaku e on a.bb_id=e.bb_id and a.co_id=e.co_id
         left join po1 f on b.po_num=f.po_num and a.bb_id=f.bb_id and a.sat_id=f.sat_id
         left join gr11 g on a.co_id=g.co_id and a.bb_id=g.bb_id and a.sat_id=g.sat_id  and a.gr_num=g.gr_num
@@ -240,17 +249,8 @@ class GoodsReceived
     public function addGRDetail(stdClass $params)
     {
         $co_id= $_SESSION['user']['site'];
-        $sql=("execute procedure goods_received_detail_i
-        '$params->do_num',
-        '$params->nopol',
-        '$params->sat_id',
-        '$params->keterangan',
-        '$params->qty_pcs',
-        '$params->qty_netto',
-        '$params->qty_po',
-        '$params->bb_id',
-        '$params->gr_num',
-        '$co_id'
+        $sql=("execute procedure goods_received_detail_i  '$params->do_num','$params->nopol','$params->sat_id','$params->keterangan',
+        $params->qty_pcs,$params->qty_netto, $params->qty_po,'$params->bb_id','$params->gr_num','$co_id'
         ");
         $this->db->setSQL($sql);
         $this->db->execOnly();

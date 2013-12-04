@@ -48,19 +48,12 @@ class Factory_location
 
     public function getFactorylocation(stdClass $params)
     {
-
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM pabrik_location where co_id='$company' ORDER BY $orderx";
+        $sql = "SELECT a.*
+         FROM pabrik_location a
+        where a.co_id='$company'
+        order by a.description ASC";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
@@ -74,18 +67,8 @@ class Factory_location
 
     public function getGudanglocation(stdClass $params)
     {
-
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
-        $sql = "SELECT * FROM gudang WHERE pabrik_sequence = '" . $params->pabrik_sequence ."' ORDER BY $orderx";
+        $sql = "SELECT * FROM gudang WHERE pabrik_sequence = '$params->pabrik_sequence' ORDER BY gudang_id ASC";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
@@ -105,22 +88,17 @@ class Factory_location
     {
 
         $data = get_object_vars($params);
-
-        //error_reporting(-1);
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['co_id'] = $_SESSION['user']['site'];
         unset($data['id'], $data['pabrik_sequence']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
         }
         $sql = $this -> db -> sqlBind($data, 'pabrik_location', 'I');
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -132,18 +110,15 @@ class Factory_location
 
         $data['userinput'] = $_SESSION['user']['name'];
         $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');//"select getdate()";
+        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['co_id'] = $_SESSION['user']['site'];
         unset($data['id']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
         }
         $sql = $this -> db -> sqlBind($data, 'gudang', 'I');
         $this -> db -> setSQL($sql);
-        // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -155,26 +130,28 @@ class Factory_location
     public function updateFactorylocation(stdClass $params)
     {
         $data = get_object_vars($params);
-        //$data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'], $data['pabrik_sequence'],$data['co_id']);
-        $sql = $this -> db -> sqlBind($data, 'pabrik_location', 'U', array('pabrik_sequence' => $params-> pabrik_sequence));
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'pabrik_location', 'U', array('co_id' => $params-> co_id,'pabrik_sequence' => $params-> pabrik_sequence));
         $this -> db -> setSQL($sql);
-       //  print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
     public function updateGudanglocation(stdClass $params)
     {
         $data = get_object_vars($params);
-        //$data['co_id'] = $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'], $data['pabrik_sequence'],$data['co_id'],$data['old_gudang_id']);
-        $sql = $this -> db -> sqlBind($data, 'gudang', 'U', array('co_id' => $params-> co_id,'pabrik_sequence' => $params-> pabrik_sequence,'gudang_id' => $params-> old_gudang_id));
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'gudang', 'U', array('co_id' => $params-> co_id,'pabrik_sequence' => $params-> pabrik_sequence,'gudang_id' => $params-> gudang_id));
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -187,23 +164,18 @@ class Factory_location
      */
     public function deleteFactorylocation(stdClass $params)
     {
-//		$sql = $this -> db -> sqlBind($data, 'Factlocation', 'U', array('Factlocation_id' => $params -> Factlocation_id));
         $sql = "DELETE FROM gudang WHERE (co_id = '$params->co_id') and (pabrik_sequence = '$params->pabrik_sequence')";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         $sql = "DELETE FROM pabrik_location WHERE (co_id = '$params->co_id') and (pabrik_sequence = '$params->pabrik_sequence')";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
     public function deleteGudanglocation(stdClass $params)
     {
-//		$sql = $this -> db -> sqlBind($data, 'Factlocation', 'U', array('Factlocation_id' => $params -> Factlocation_id));
         $sql = "DELETE FROM gudang WHERE (co_id = '$params->co_id') and (gudang_id = '$params->gudang_id')";
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }

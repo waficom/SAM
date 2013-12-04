@@ -74,7 +74,7 @@ class Account
     public function updateAccount(stdClass $params)
     {
         $data       = get_object_vars($params);
-        unset($data['id'], $data['coa_id']);
+        unset($data['id'], $data['coa_id'], $data['old_coa_id']);
         $data['co_id'] = $_SESSION['user']['site'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];

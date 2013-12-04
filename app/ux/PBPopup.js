@@ -23,7 +23,8 @@ Ext.define('App.ux.PBPopup',
                     fields : [
                         {name: 'pb_num',type: 'string'},
                         {name: 'bagian',type: 'string'},
-                        {name: 'tanggal',type: 'date'}
+                        {name: 'tanggal',type: 'date'},
+                        {name: 'gudang_id',type: 'string'}
                     ],
                     proxy :
                     {
@@ -51,7 +52,8 @@ Ext.define('App.ux.PBPopup',
                 columns: [
                     {width: 200,text: 'PB Num',sortable: true,dataIndex: 'pb_num'},
                     {text: 'Tanggal', width : 80, sortable: true, dataIndex: 'tanggal', renderer:Ext.util.Format.dateRenderer('d-m-Y')},
-                    {width: 300,text: 'Bagian',sortable: true,dataIndex: 'bagian'}
+                    {flex:1,text: 'Bagian',sortable: true,dataIndex: 'bagian'},
+                    {text: 'Kode Gudang',sortable: true,dataIndex: 'gudang_id'}
                 ],
                 height: 200,
 //                selModel : me.smGrid,
@@ -111,6 +113,10 @@ Ext.define('App.ux.PBPopup',
         onGridClick: function(grid, selected){
             pb_num = selected.data.pb_num;
             this.setValue(pb_num);
+            if( Ext.ComponentQuery.query('#gudang_po')[0]){
+                Ext.ComponentQuery.query('#gudang_po')[0].setValue(selected.data.gudang_id);
+            }
+
         },
         ondblclick: function(grid, selected){
             var me = this;

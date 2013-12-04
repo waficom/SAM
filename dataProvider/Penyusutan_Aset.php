@@ -25,17 +25,9 @@ class Penyusutan_Aset
     }
     public function getPenyusutan_Aset(stdClass $params)
     {
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'timeedit';
-        }
         $company =  $_SESSION['user']['site'];
         $sql = "SELECT * FROM penyusutan_aset where co_id='$company'
-        ORDER BY $orderx DESC";
+        ORDER BY pa_id ASC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -60,6 +52,9 @@ class Penyusutan_Aset
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'penyusutan_aset', 'I');
         $this->db->setSQL($sql);
         $this->db->execLog();
@@ -77,6 +72,9 @@ class Penyusutan_Aset
         $data['co_id'] = $_SESSION['user']['site'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         $data['useredit'] = $_SESSION['user']['name'];
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
         $sql = $this->db->sqlBind($data, 'penyusutan_aset', 'U', array('co_id' => $params->co_id,'pa_id' => $params->pa_id));
         $this->db->setSQL($sql);
         $this->db->execLog();

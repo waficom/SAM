@@ -135,15 +135,16 @@ Ext.define('App.ux.CoaPopup',
         onGridClick: function(grid, selected){
             coa_id = selected.data.coa_id;
             this.setValue(coa_id);
+            if(Ext.ComponentQuery.query('#account_nama')[0]){
+                Ext.ComponentQuery.query('#account_nama')[0].setValue(selected.data.coa_nama);
+            }
+            if(Ext.ComponentQuery.query('#akun_nama_ar')[0]){
+                Ext.ComponentQuery.query('#akun_nama_ar')[0].setValue(selected.data.coa_nama)
+            }
         },
         ondblclick: function(grid, selected){
             var me = this;
             me.onGridClick(grid, selected);
-            //Ext.getCmp('account_nama').setValue(selected.data.coa_nama);
-            Ext.getCmp('account_nama_ar').setValue(selected.data.coa_nama);
-            //Ext.getCmp('account_nama_gr').setValue(selected.data.coa_nama);
-            Ext.ComponentQuery.query('#account_nama')[0].setValue(selected.data.coa_nama);
-            Ext.getCmp('account_cashbon').setValue(selected.data.coa_nama);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

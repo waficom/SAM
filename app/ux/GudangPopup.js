@@ -117,9 +117,6 @@ Ext.define('App.ux.GudangPopup',
         },
         ondblclick: function(grid, selected){
             var me = this;
-            me.onGridClick(grid, selected);
-            //Ext.getCmp('gudang_nama').setValue(selected.data.gudang_nama);
-            //Ext.getCmp('darigudang_jd_wo').setValue(selected.data.gudang_id);
             me.searchwin.close();
         },
         btnCancelPressed : function(btn) {

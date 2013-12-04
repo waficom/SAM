@@ -41,6 +41,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
     cancelBtnText: i18n('cancel'),
     removeBtnText: i18n('remove'),
     errorsText: i18n('errors'),
+    status:0,
     dirtyText: i18n('commit_cancel_your_changes'),
     lastScrollLeft: 0,
     lastScrollTop: 0,
@@ -48,6 +49,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
     padding:'0 0 5 0',
     border: false,
 	saveBtnEnabled:false,
+    deleteBtnEnabled:false,
     buttonAlign:'center',
     // Change the hideMode to offsets so that we get accurate measurements when
     // the roweditor is hidden for laying out things like a TriggerField.
@@ -80,6 +82,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
         }];
         if(plugin.enableRemove){
             me.buttons.push({
+                action: 'delete',
                 xtype: 'button',
                 handler: plugin.completeRemove,
                 scope: plugin,
@@ -97,15 +100,21 @@ Ext.define('App.ux.grid.RowFormEditor', {
     onFieldValueChange: function() {
         var me = this,
             form = me.getForm(),
+            record = form.getRecord(),
             valid = form.isValid(), btn;
         if (me.errorSummary && me.isVisible()) {
             me[valid ? 'hideToolTip' : 'showToolTip']();
         }
         btn = me.query('button[action="update"]')[0];
         if (btn){
-            btn.setDisabled(!valid);
+            if(record.get('status')==1 || record.get('status')==2) {
+                btn.setDisabled(valid);
+            }else{
+                btn.setDisabled(!valid);
+            }
+
         }
-        me.isValid = valid;
+            me.isValid = valid
     },
 
     afterRender: function() {
@@ -345,6 +354,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
         var me = this,
             stores = me.getGridStores();
         for(var i=0; i < stores.length; i++){
+
             stores[i].sync();
         }
     },
@@ -355,6 +365,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
         for(var i=0; i < stores.length; i++){
             stores[i].rejectChanges();
         }
+
     },
 
     getEditor: function(fieldInfo) {
@@ -386,16 +397,22 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
     loadRecord: function(record) {
         var me = this,
-            form = me.getForm(),
+            form = me.getForm(), grids = me.query('grid'),
 	        updateBtn = me.query('button[action="update"]')[0],
 	        saveTxt = record.phantom ? 'save' : 'update';
 
         form.loadRecord(record);
-
-	    // change the save btn text to update is the record is a phantom (new)
 	    updateBtn.setText(i18n(saveTxt));
 
-	    if(me.saveBtnEnabled) updateBtn.setDisabled(!me.saveBtnEnabled);
+	   // if(me.saveBtnEnabled) updateBtn.setDisabled(!me.saveBtnEnabled);
+
+        if(record.get('status')==1 || record.get('status')==2){
+            updateBtn.setDisabled(!me.saveBtnEnabled);
+            me.status = record.get('status');
+        }else{
+            updateBtn.setDisabled(me.saveBtnEnabled);
+            me.status = record.get('status');
+        }
 
         if (form.isValid()) {
             me.hideToolTip();
@@ -407,6 +424,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
         Ext.Array.forEach(me.query('>displayfield'), function(field) {
             me.renderColumnData(field, record);
         }, me);
+
     },
 
     renderColumnData: function(field, record) {
@@ -489,12 +507,20 @@ Ext.define('App.ux.grid.RowFormEditor', {
         form.updateRecord(me.context.record);
         if(me.editingPlugin.autoSync){
             form._record.store.sync({
-                callback:function(){
+                success:function(){
                     me.fireEvent('sync', me, me.context);
+                    /*callback:function(){
+                        me.fireEvent('sync', me, me.context);
+                    }*/
+                },
+                failure:function(batch){
+                    var error = batch.operations[0].error;
+                    Ext.MessageBox.alert('Error', error);
                 }
-            });
+                });
         }
         me.syncChildStoresChanges();
+        form._record.store.load();
         me.hide();
         return true;
     },

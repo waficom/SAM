@@ -341,7 +341,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RINGKASAN HUTANG CREDITOR]]></text>
+				<text><![CDATA[RINGKASAN HUTANG]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="54b71b8a-71b4-4168-b66d-58bb32335a4f" x="243" y="17" width="450" height="30"/>

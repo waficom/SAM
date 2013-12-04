@@ -107,12 +107,13 @@ class Customer
 	 */
 	public function updatecustomer(stdClass $params)
 	{
+        $company =  $_SESSION['user']['site'];
 		$data = get_object_vars($params);
         unset($data['cust_id'], $data['old_cust_id'], $data['id']);
         if (is_null($data['aktif']) || ($data['aktif'] == '')) {
             $data['aktif'] = '0';
         }
-		$sql = $this->db->sqlBind($data, 'customer', 'U', array('cust_id' => $params->old_cust_id));
+		$sql = $this->db->sqlBind($data, 'customer', 'U', array('cust_id' => $params->cust_id, 'co_id' => $company));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;
@@ -120,47 +121,39 @@ class Customer
 
 	public function deletecustomer(stdClass $params)
 	{
-		$sql = "DELETE FROM customer WHERE (co_id = '$params->co_id') and (cust_id = '$params->cust_id')";
+        $sql = "DELETE FROM customer_locations WHERE (co_id = '$params->co_id') and (cust_id = '$params->cust_id')";
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+        $sql = "DELETE FROM customer WHERE (co_id = '$params->co_id') and (cust_id = '$params->cust_id')";
 		$this -> db -> setSQL($sql);
 		$this -> db -> execLog();
 		return $params;
 	}
-    public function getcustomerL(stdClass $params)
+    public function getCustLoc(stdClass $params)
     {
-        //error_reporting(-1);
-        $this->db->setSQL("SELECT *
-                         FROM customer_location
-                    WHERE cust_id = '$params->cust_id' ORDER BY location_id ASC");
-
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT * FROM customer_locations where co_id='$company' and cust_id='$params->cust_id' ORDER BY custloc_id";
+        $this -> db -> setSQL($sql);
         $rows = array();
-        //print_r($rows);
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
         {
             $row = array_change_key_case($row);
             array_push($rows, $row);
         }
-
         return $rows;
     }
 
-    public function addcustomerL(stdClass $params)
+    public function addCustLoc(stdClass $params)
     {
-        // error_reporting(-1);
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['userinput'] = $_SESSION['user']['name'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeinput'] = Time::getLocalTime('Y-m-d H:i:s');
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['location_id']);
-        foreach ($data AS $key => $val)
-        {
-            if ($val == '')
-                unset($data[$key]);
+        unset($data['id']);
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
         }
-        $sql = $this -> db -> sqlBind($data, 'customer_location', 'I');
+        $sql = $this -> db -> sqlBind($data, 'customer_locations', 'I');
         $this -> db -> setSQL($sql);
-       // print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
@@ -168,24 +161,24 @@ class Customer
      * @param stdClass $params
      * @return stdClass
      */
-    public function updatecustomerL(stdClass $params)
+    public function updateCustLoc(stdClass $params)
     {
-        // error_reporting(-1);
+        $company =  $_SESSION['user']['site'];
         $data = get_object_vars($params);
         $data['co_id'] = $_SESSION['user']['site'];
-        $data['useredit'] = $_SESSION['user']['name'];
-        $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
-        unset($data['id'],$data['cust_id'], $data['old_location_id']);
-        $sql = $this -> db -> sqlBind($data, 'customer_location', 'U', array('location_id' => $params-> old_location_id));
+        unset($data['id'],$data['cust_id'], $data['custloc_id']);
+        if (is_null($data['aktif']) || ($data['aktif'] == '')) {
+            $data['aktif'] = '0';
+        }
+        $sql = $this -> db -> sqlBind($data, 'customer_locations', 'U', array('co_id' => $company, 'cust_id' => $params-> cust_id, 'custloc_id' => $params-> custloc_id));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
 
-    public function deletecustomerL(stdClass $params)
+    public function deleteCustLoc(stdClass $params)
     {
-        $sql = "DELETE FROM customer_location WHERE (cust_id = '$params->cust_id') and (location_id = '$params->location_id') ";
+        $sql = "DELETE FROM customer_locations WHERE co_id='$params->co_id' and (cust_id = '$params->cust_id') and (custloc_id= '$params->custloc_id') ";
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;

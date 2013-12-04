@@ -69,26 +69,8 @@ class Salesman
 
 	public function getsalesman(stdClass $params)
 	{
-/*
-		if (isset($params -> aktif))
-		{
-			$wherex = "aktif = " . $params -> aktif;
-		}
-		else
-		{
-			$wherex = "aktif = 1";
-		}
-*/
-		if (isset($params -> sort))
-		{
-			$orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-		}
-		else
-		{
-			$orderx = 'sales_nama';
-		}
         $company =  $_SESSION['user']['site'];
-		$sql = "SELECT * FROM salesman where co_id='$company' ORDER BY $orderx";
+		$sql = "SELECT * FROM salesman where co_id='$company' ORDER BY sales_id ASC";
 		$this -> db -> setSQL($sql);
 		$rows = array();
 		foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -117,7 +99,6 @@ class Salesman
 		$sql = $this->db->sqlBind($data, 'salesman', 'I');
 		$this->db->setSQL($sql);
 		$this->db->execLog();
-//		$params->id = $this->db->lastInsertId;
         return $params;
 	}
 
@@ -133,7 +114,7 @@ class Salesman
             $data['aktif'] = '0';
         }
         $company =  $_SESSION['user']['site'];
-		$sql = $this->db->sqlBind($data, 'salesman', 'U', array('sales_id' => $params->old_sales_id));
+		$sql = $this->db->sqlBind($data, 'salesman', 'U', array('co_id' => $params->co_id, 'sales_id' => $params->sales_id));
 		$this->db->setSQL($sql);
 		$this->db->execLog();
 		return $params;

@@ -49,16 +49,10 @@ class ReleaseOrder
     public function getReleaseOrder(stdClass $params)
     {
 
-        if (isset($params -> sort))
-        {
-            $orderx = $params -> sort[0] -> property . ' ' . $params -> sort[0] -> direction;
-        }
-        else
-        {
-            $orderx = 'so_num';
-        }
         $company =  $_SESSION['user']['site'];
-        $sql = "SELECT * FROM releasedorder where co_id='$company' ORDER BY $orderx DESC";
+        $sql = "SELECT a.*, b.cust_nama FROM so0 a
+         left join customer b on a.co_id=b.co_id and a.cust_id=b.cust_id
+         where a.co_id='$company' and a.status=0 ORDER BY so_num ASC";
         $this -> db -> setSQL($sql);
         $rows = array();
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
@@ -78,22 +72,92 @@ class ReleaseOrder
 
     public function updateReleaseOrder(stdClass $params)
     {
-        //error_reporting(-1);
         $data = get_object_vars($params);
-        $data['released_date'] = $this->db->Date_Converter($data['released_date']);
-        unset($data['id'], $data['so_num'], $data['co_id'], $data['old_so_num'],$data['tanggal']
-        ,$data['cust_nama'],$data['cust_po_num'],$data['tgl_jt_kirim'],$data['ppn_so'],$data['n_netto'],$data['statusdesc']);
-        if (is_null($data['released']) || ($data['released'] == '')) {
-            $data['released'] = '0';
+        foreach($data as $key => $val){
+            if($val == null || $val == ''){
+                unset($data[$key]);
+            }
         }
-        $data['status'] = 'B';
-        $sql = $this -> db -> sqlBind($data, 'so0', 'U', array('so_num' => $params -> so_num));
+        unset($data['id'], $data['cust_nama'],$data['tanggal']);
+        $data['released_date'] = $this->db->Date_Converter($data['released_date']);
+        $data['status'] = 1;
+        $sql = $this -> db -> sqlBind($data, 'so0', 'U', array('so_num' => $params -> so_num,'co_id' => $params -> co_id));
         $this -> db -> setSQL($sql);
-        //print_r($sql);
         $this -> db -> execLog();
         return $params;
     }
 
+    public function getReleaseOrderCancel(stdClass $params)
+    {
+
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT a.*, b.cust_nama FROM so0 a
+         left join customer b on a.co_id=b.co_id and a.cust_id=b.cust_id
+         where a.co_id='SAM' and a.status=1 and
+         not exists (select * from pp_detailproduksi aa
+            inner join pp_produksi bb on aa.co_id=bb.co_id and aa.no_pp=bb.no_pp
+            where aa.so_num=a.so_num)
+         ORDER BY so_num ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+
+        return $rows;
+
+    }
+
+    /**
+     * @param stdClass $params
+     * @return stdClass
+     */
+
+    public function updateReleaseOrderCancel(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        foreach($data as $key => $val){
+            if($val == null || $val == ''){
+                unset($data[$key]);
+            }
+        }
+        unset($data['id'], $data['cust_nama'],$data['tanggal']);
+        $data['cancel_date'] = $this->db->Date_Converter($data['cancel_date']);
+        if($params->canceled=1){
+            $data['status'] = 2;
+        }
+        $sql = $this -> db -> sqlBind($data, 'so0', 'U', array('so_num' => $params -> so_num,'co_id' => $params -> co_id));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
+    public function getRCL(stdClass $params)
+    {
+        $company =  $_SESSION['user']['site'];
+        $sql = "SELECT a.*, b.description
+        FROM risk_cheklist a
+         left join risk_m b on a.co_id=b.co_id and a.risk_code=b.risk_code
+         where a.co_id='$company' and so_num='$params->so_num' ORDER BY so_num ASC";
+        $this -> db -> setSQL($sql);
+        $rows = array();
+        foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row)
+        {
+            $row = array_change_key_case($row);
+            array_push($rows, $row);
+        }
+        return $rows;
+    }
+    public function updateRCL(stdClass $params)
+    {
+        $data = get_object_vars($params);
+        unset($data['id'], $data['description']);
+        $sql = $this -> db -> sqlBind($data, 'risk_cheklist', 'U', array('so_num' => $params -> so_num,'co_id' => $params -> co_id, 'risk_code' => $params -> risk_code));
+        $this -> db -> setSQL($sql);
+        $this -> db -> execLog();
+        return $params;
+    }
     /**
      *
      * @param stdClass $params

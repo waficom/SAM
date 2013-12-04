@@ -110,7 +110,8 @@ Ext.define('App.ux.FormulaPopup',
         onTrigger1Click : function(){
             var me = this;
             me.searchwin.showAt([me.getPosition()[0],me.getPosition()[1]+me.getHeight()]);
-            me.store.load();
+            var cust_id = Ext.ComponentQuery.query('#cust_id_pp')[0].getValue();
+            me.store.load({params:{cust_id: cust_id}});
             me.doComponentLayout();
         },
         onGridClick: function(grid, selected){

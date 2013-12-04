@@ -2,7 +2,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
     extend: 'App.ux.RenderPanel',
     id: 'panelReclass',
     pageTitle: 'Jurnal Reclass Biaya',
-    pageLayout: 'border',
+    pageLayout: 'anchor',
     uses: ['App.ux.GridPanel'],
     initComponent: function(){
         var me = this;
@@ -22,7 +22,11 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                 {name: 'credit',type: 'float'},
                 {name: 'timeedit',type: 'date'},
                 {name: 'useredit',type: 'string'},
-                {name: 'userinput',type: 'string'}
+                {name: 'userinput',type: 'string'},
+                {name: 'typereclass',type: 'string'},
+                {name: 'keterangan',type: 'string'},
+                {name: 'so_num',type: 'string'},
+                {name: 'status',type: 'string'}
             ]
         });
         me.ReclassStore = Ext.create('Ext.data.Store', {
@@ -53,7 +57,9 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
                 {name: 'credit',type: 'float'},
                 {name: 'sequence_no',type: 'string'},
                 {name: 'timeedit',type: 'date'},
-                {name: 'remaks',type: 'string'}
+                {name: 'remaks',type: 'string'},
+                {name: 'userinput',type: 'string'},
+                {name: 'useredit',type: 'string'}
             ]
         });
         me.Reclass_JurnalStore = Ext.create('Ext.data.Store', {
@@ -87,16 +93,26 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             margin: '0 0 3 0',
             region: 'north',
             columns: [
-                {text: 'Doc. Number',sortable: true,dataIndex: 'inv_code'},
-                {text: 'Account',sortable: true,dataIndex: 'account'},
-                {text: 'Description',sortable: true,dataIndex: 'coa_nama', flex:1},
-                {text: 'Doc Inv',sortable: true,dataIndex: 'for_inv_code'},
+                {text: 'Kode Dokumen',sortable: true,dataIndex: 'inv_code'},
+                {text: 'Kode Inv',sortable: true,dataIndex: 'for_inv_code'},
+                {text: 'Kode SO',sortable: true,dataIndex: 'so_num'},
+                {text: 'Akun',sortable: true,dataIndex: 'account'},
+                {text: 'Nama Akun',sortable: true,dataIndex: 'coa_nama', flex:1},
+                {text: 'Keterangan',sortable: true,dataIndex: 'keterangan',flex:1},
+                {text: 'Jenis',sortable: true,dataIndex: 'typereclass',width:100},
                 {text: 'Jumlah',sortable: true,dataIndex: 'debit', renderer: Ext.util.Format.numberRenderer('0,000.00')},
                 {text: 'LastUpdate', width : 80, sortable: true, dataIndex: 'timeedit', renderer:Ext.util.Format.dateRenderer('d-m-Y')}
             ],
             listeners: {
                 scope: me,
                 select: me.ShowDataJurnal
+            },
+            viewConfig :
+            {
+                stripeRows: false,
+                getRowClass: function(record, index) {
+                    return record.get('status') == '1' ? 'child-row' : (record.get('status') == '2' ? 'adult-row':'');
+                }
             },
             features:[searching],
             dockedItems: [
@@ -153,7 +169,7 @@ Ext.define('App.view.transaksi.AP-Invoice.AP_Reclass', {
             },
             features: [{
                 ftype: 'summary'
-            }, searching]
+            }]
         });
 
         // *************************************************************************************

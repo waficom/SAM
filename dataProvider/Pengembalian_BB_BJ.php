@@ -129,11 +129,11 @@ where a.model_type='I' and a.co_id='$company'
         public function updatePengembalian(stdClass $params)
     {
         $data = get_object_vars($params);
-        $data['co_id'] = $_SESSION['user']['site'];
+        $company= $_SESSION['user']['site'];
         $data['useredit'] = $_SESSION['user']['name'];
         $data['timeedit'] = Time::getLocalTime('Y-m-d H:i:s');
         unset($data['id'], $data['dok_no']);
-        $sql = $this -> db -> sqlBind($data, 'pengembalian_bb_bj', 'U', array('dok_no' => $params-> dok_no));
+        $sql = $this -> db -> sqlBind($data, 'pengembalian_bb_bj', 'U', array('co_id' => $company,'dok_no' => $params-> dok_no));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
@@ -141,9 +141,9 @@ where a.model_type='I' and a.co_id='$company'
     public function updatePengembalianDetail(stdClass $params)
     {
         $data = get_object_vars($params);
-        $data['co_id'] = $_SESSION['user']['site'];
+        $company= $_SESSION['user']['site'];
         unset($data['id'], $data['dok_no']);
-        $sql = $this -> db -> sqlBind($data, 'pengembalian_bb_bj_detail', 'U', array('dok_no' => $params-> dok_no, 'bb_id' => $params-> bb_id));
+        $sql = $this -> db -> sqlBind($data, 'pengembalian_bb_bj_detail', 'U', array('co_id' => $company, 'dok_no' => $params-> dok_no, 'bb_id' => $params-> bb_id));
         $this -> db -> setSQL($sql);
         $this -> db -> execLog();
         return $params;
